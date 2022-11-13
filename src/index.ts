@@ -1,14 +1,16 @@
-import express, { Express, Request, Response} from 'express';
+import express, { Express, Request, Response } from "express";
+import appRoot from "app-root-path";
+import path from "path";
 
+const distPath = path.join(appRoot.path, "build/dist");
 const app: Express = express();
-app.use(express.static(__dirname + "/client/dist"));
-const port = 8080;
+app.use(express.static(distPath));
+const PORT = process.env.PORT || 8080;
 
-app.get('/', (req: Request, res: Response) => {
-    //res.send('Express + TypeScript Server');
-    res.sendFile(__dirname + "/client/dist/");
+app.get("/", (req: Request, res: Response) => {
+  res.sendFile(distPath);
 });
 
-app.listen(port, () => {
-    console.log(`[server]: Server is running at https://localhost:${port}`);
+app.listen(PORT, () => {
+  console.log(`[server]: Server is running at https://localhost:${PORT}`);
 });
