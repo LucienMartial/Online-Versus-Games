@@ -10,16 +10,14 @@ Bachelor's degree project
 
 ## Setup
 
-client
+Install all the dependencies and run build for the client and server.
 
 ```
-npm install --prefix src/client
-npm run build --prefix src/client
+npm run build:release
 ```
 
-server
+Run the tests for the server.
 
 ```
-npm install
-npm run dev
+npm run test
 ```
