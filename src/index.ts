@@ -2,6 +2,10 @@ import express, { Express, Request, Response } from "express";
 import appRoot from "app-root-path";
 import path from "path";
 
+import { basic } from "./shared/main";
+
+console.log(basic());
+
 const distPath = path.join(appRoot.path, "build/dist");
 const app: Express = express();
 app.use(express.static(distPath));
