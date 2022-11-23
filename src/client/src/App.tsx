@@ -11,9 +11,9 @@ function App() {
   const [started, setStarted] = useState(false);
 
   // for development
-  useEffect(() => {
-    setStarted(true);
-  });
+  // useEffect(() => {
+  //   setStarted(true);
+  // }, []);
 
   // game
   if (started) {
