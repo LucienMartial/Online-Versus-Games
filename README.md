@@ -1,6 +1,6 @@
-# Online-Versus-Game
+# Online Versus Game
 
-Bachelor's degree project
+Bachelor's degree project.
 
 ## Contributors
 
@@ -8,15 +8,22 @@ Bachelor's degree project
 - COEFFIC-QABALI Riwan
 - HIRTZ Flavien
 
-## Setup
+## Dev
 
-Install all the dependencies and run build for the client and server.
+First install all the packages in the server and client.
 
 ```
-npm run build:release
+npm run setup
 ```
 
-Run the tests for the server.
+Then, start the server and client instance in parallel.
+
+```bash
+npm run dev # in root
+npm run dev # in client
+```
+
+To run the server tests.
 
 ```
 npm run test

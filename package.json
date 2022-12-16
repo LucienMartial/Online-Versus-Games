@@ -1,41 +1,25 @@
 {
-  "name": "online-versus-game",
-  "version": "1.0.0",
-  "description": "Bachelor's degree project",
-  "main": "index.js",
+  "name": "project-test",
+  "version": "0.0.0",
+  "type": "module",
   "scripts": {
-    "test": "jest --detectOpenHandles",
-    "coverage": "npm run test -- --coverage",
-    "start": "node build/index.js",
-    "build": "tsc -p tsconfig.json",
-    "build:watch": "tsc -w -p tsconfig.json",
-    "build:release": "npm install && npm run build && npm install --prefix src/client && npm run build --prefix src/client",
-    "dev": "nodemon"
+    "start": "NODE_ENV=production node dist/index.js",
+    "dev": "node --loader ts-node/esm --watch index.ts",
+    "test": "vitest",
+    "build": "npm --prefix app-client run build && tsc",
+    "deploy": "npm --prefix app-client ci && npm ci && npm run build",
+    "setup": "npm --prefix app-client i && npm i"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/LucienMartial/Online-Versus-Game.git"
-  },
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/LucienMartial/Online-Versus-Game/issues"
-  },
-  "homepage": "https://github.com/LucienMartial/Online-Versus-Game#readme",
   "devDependencies": {
-    "@types/express": "^4.17.14",
-    "@types/jest": "^29.2.3",
-    "@types/node": "^18.11.9",
+    "@types/express": "^4.17.15",
     "@types/supertest": "^2.0.12",
-    "jest": "^29.3.1",
-    "nodemon": "^2.0.20",
-    "supertest": "^6.3.1",
-    "ts-jest": "^29.0.3",
+    "supertest": "^6.3.3",
     "ts-node": "^10.9.1",
-    "typescript": "^4.8.4"
+    "typescript": "^4.9.4",
+    "vitest": "^0.25.8"
   },
   "dependencies": {
-    "app-root-path": "^3.1.0",
-    "express": "^4.18.2"
+    "express": "^4.18.2",
+    "socket.io": "^4.5.4"
   }
 }
