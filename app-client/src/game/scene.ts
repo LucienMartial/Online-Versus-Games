@@ -48,8 +48,6 @@ class Scene {
 
   update(dt: number): void {
     this.gameObjects.character.rotation += 0.01 * dt;
-    console.log(this.gameObjects.character.position);
-    console.log();
   }
 }
 
