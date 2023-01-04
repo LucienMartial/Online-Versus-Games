@@ -58,6 +58,7 @@ class Scene {
     const player = new Player(this.ctx);
     player.setPosition(this.ctx.width / 3, this.ctx.height / 2);
     player.accelerate(-300, 300);
+    player.render();
     this.gameObjects.push(player);
 
     // init basic box
@@ -72,8 +73,10 @@ class Scene {
     box.setPosition(this.ctx.width / 2, this.ctx.height / 2);
     box.setRotation(Math.PI / 2);
     box.setOffset(50, 100);
+    box.render();
     box.onUpdate = (dt) => {
       box.rotate(2 * dt);
+      box.move(Math.cos(this.elapsed) * 5, Math.cos(this.elapsed * 0.8));
     };
     this.gameObjects.push(box);
   }

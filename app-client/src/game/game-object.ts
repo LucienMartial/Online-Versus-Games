@@ -148,7 +148,7 @@ class CollisionObject extends RenderObject {
 
   move(x: number, y: number) {
     super.move(x, y);
-    this.physicObject.setPosition(x, y);
+    this.physicObject.setPosition(this.position.x, this.position.y);
   }
 
   accelerate(x: number, y: number) {
