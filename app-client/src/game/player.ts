@@ -4,6 +4,7 @@ import {BoxShape} from "../../../app-shared/physics";
 import {Context} from "./game-object";
 
 const speed: number = 80;
+const dashSpeed: number = 500;
 
 class Player extends CollisionObject {
     constructor(context: Context) {
@@ -11,14 +12,11 @@ class Player extends CollisionObject {
     }
 
     processInput(inputs: { [key: string]: boolean }): void {
-        if (this.ctx.inputManager.inputs.space) {
-            this.physicObject.velocity.x *= 1.2;
-            this.physicObject.velocity.y *= 1.2;
-        }
-        if (this.ctx.inputManager.inputs.left) this.accelerate(-speed, 0);
-        else if (this.ctx.inputManager.inputs.right) this.accelerate(speed, 0);
-        if (this.ctx.inputManager.inputs.up) this.accelerate(0, -speed);
-        else if (this.ctx.inputManager.inputs.down) this.accelerate(0, speed);
+        const dash: number = inputs.space ? dashSpeed : 0;
+        if (inputs.left) this.accelerate(-speed - dash, 0);
+        else if (inputs.right) this.accelerate(speed + dash, 0);
+        if (inputs.up) this.accelerate(0, -speed - dash);
+        else if (inputs.down) this.accelerate(0, speed + dash);
     }
 
     update(dt: number): void {
