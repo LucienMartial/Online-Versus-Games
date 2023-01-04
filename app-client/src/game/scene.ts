@@ -1,7 +1,7 @@
 import { Container, DisplayObject, Sprite } from "pixi.js";
 import { Assets } from "@pixi/assets";
 import { PhysicEngine, Entity, BoxShape } from "../../../app-shared/physics";
-import { gameObject } from "./game-object";
+import { GameObject, RenderObject, CollisionObject } from "./game-object";
 import { Graphics } from "./graphics";
 import { InputManager } from "./input";
 import { Vector } from "sat";
@@ -11,7 +11,7 @@ class Scene {
   stage: Container<DisplayObject>;
   width: number;
   height: number;
-  gameObjects: { [key: string]: gameObject };
+  gameObjects: { [key: string]: GameObject };
   physicEngine: PhysicEngine;
   inputManager: InputManager;
 
@@ -36,34 +36,36 @@ class Scene {
     const assets = await Assets.loadBundle("basic");
 
     // player
-    const player = new gameObject(
+    const player = new CollisionObject(
       Graphics.createRectangle(100, 100),
       new BoxShape(100, 100),
       false
     );
-    player.velocity.x = 2500;
-    player.velocity.y = 1500;
-    this.physicEngine.world.entities.add(player);
+    player.accelerate(2500, 1500);
+    this.physicEngine.world.entities.add(player.physicObject);
     this.stage.addChild(player.displayObject);
     this.gameObjects.player = player;
 
     // init character
     const characterDisplay = new Sprite(assets.character);
-    const character = new gameObject(characterDisplay, new BoxShape(300, 400));
+    const character = new RenderObject(characterDisplay);
+    character.position = new Vector(this.width * 0.8, this.height / 2);
     character.setOffset(150, 150);
-    character.setPosition(this.width * 0.8, this.height / 2);
-    this.physicEngine.world.entities.add(character);
     this.stage.addChild(character.displayObject);
     this.gameObjects.character = character;
 
     // init basic box
     const size = { x: 100, y: 200 };
     const boxDisplay = Graphics.createRectangle(size.x, size.y, 0x0099ff);
-    const box = new gameObject(boxDisplay, new BoxShape(size.x, size.y), false);
+    const box = new CollisionObject(
+      boxDisplay,
+      new BoxShape(size.x, size.y),
+      false
+    );
     box.setPosition(this.width / 2, this.height / 2);
+    box.rotation = Math.PI / 2;
     box.setOffset(50, 100);
-    box.setRotation(Math.PI / 2);
-    this.physicEngine.world.entities.add(box);
+    this.physicEngine.world.entities.add(box.physicObject);
     this.stage.addChild(box.displayObject);
     this.gameObjects.box = box;
   }
@@ -74,29 +76,27 @@ class Scene {
     this.physicEngine.fixedUpdate(dt);
 
     // character
-    const character = this.gameObjects.character;
-    character.setRotation(character.rotation - 0.5 * dt);
-    character.setPosition(
-      character.position.x,
-      character.position.y + Math.cos(this.elapsed) * 5
-    );
+    const character = this.gameObjects.character as RenderObject;
+    character.rotate(-0.5 * dt);
+    character.move(0, Math.cos(this.elapsed) * 5);
 
     // box
-    const box = this.gameObjects.box;
-    box.setRotation(box.rotation + 2 * dt);
+    const box = this.gameObjects.box as CollisionObject;
+    box.rotate(2 * dt);
 
     // move player
-    const player = this.gameObjects.player;
+    const player = this.gameObjects.player as CollisionObject;
     const inputs = this.inputManager.inputs;
     const speed = 80;
 
-    if (inputs.left) player.velocity.x -= speed;
-    else if (inputs.right) player.velocity.x += speed;
-    if (inputs.up) player.velocity.y -= speed;
-    else if (inputs.down) player.velocity.y += speed;
+    if (inputs.left) player.accelerate(-speed, 0);
+    else if (inputs.right) player.accelerate(speed, 0);
+    if (inputs.up) player.accelerate(0, -speed);
+    else if (inputs.down) player.accelerate(0, speed);
 
-    // render
+    // update and render
     for (const object of Object.values(this.gameObjects)) {
+      object.update(dt);
       object.render();
     }
   }
