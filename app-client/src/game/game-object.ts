@@ -1,15 +1,41 @@
-import { DisplayObject } from "pixi.js";
+import { Container, DisplayObject } from "pixi.js";
 import { Vector } from "sat";
-import { CollisionShape, Entity } from "../../../app-shared/physics";
+import {
+  CollisionShape,
+  Entity,
+  PhysicEngine,
+} from "../../../app-shared/physics";
+import { InputManager } from "./input";
+
+/**
+ * Context object containing scene data
+ */
+class Context {
+  stage: Container<DisplayObject>;
+  physicEngine: PhysicEngine;
+  inputManager: InputManager;
+
+  constructor(
+    stage: Container<DisplayObject>,
+    physicEngine: PhysicEngine,
+    inputManager: InputManager
+  ) {
+    this.stage = stage;
+    this.physicEngine = physicEngine;
+    this.inputManager = inputManager;
+  }
+}
 
 /**
  * Basic game object
  */
 abstract class GameObject {
-  protected position: Vector;
+  private _position: Vector;
+  protected ctx: Context;
 
-  constructor() {
-    this.position = new Vector();
+  constructor(ctx: Context) {
+    this._position = new Vector();
+    this.ctx = ctx;
   }
 
   abstract update(dt: number): void;
@@ -17,11 +43,15 @@ abstract class GameObject {
 
   // getters, setters
   setPosition(x: number, y: number) {
-    this.position = new Vector(x, y);
+    this._position = new Vector(x, y);
   }
 
   move(x: number, y: number) {
-    this.position.add(new Vector(x, y));
+    this._position.add(new Vector(x, y));
+  }
+
+  get position(): Vector {
+    return this._position;
   }
 }
 
@@ -30,14 +60,12 @@ abstract class GameObject {
  */
 class RenderObject extends GameObject {
   displayObject: DisplayObject;
-  protected rotation: number;
-  protected offset: Vector;
+  private rotation: number;
 
-  constructor(displayObject: DisplayObject) {
-    super();
+  constructor(ctx: Context, displayObject: DisplayObject) {
+    super(ctx);
     this.displayObject = displayObject;
     this.rotation = 0;
-    this.offset = new Vector();
   }
 
   update(dt: number) {}
@@ -45,6 +73,7 @@ class RenderObject extends GameObject {
   render() {
     this.displayObject.position.set(this.position.x, this.position.y);
     this.displayObject.rotation = this.rotation;
+    this.ctx.stage.addChild(this.displayObject);
   }
 
   // getters, setters
@@ -68,18 +97,24 @@ class CollisionObject extends RenderObject {
   physicObject: Entity;
 
   constructor(
+    ctx: Context,
     displayObject: DisplayObject,
     collisionShape: CollisionShape,
     isStatic = false
   ) {
-    super(displayObject);
+    super(ctx, displayObject);
     this.physicObject = new Entity(collisionShape, isStatic);
     this.physicObject.setPosition(this.position.x, this.position.y);
+    this.ctx.physicEngine.world.entities.add(this.physicObject);
+    this.ctx.stage.addChild(this.displayObject);
   }
 
   update(dt: number) {
     super.update(dt);
-    this.position = this.physicObject.position;
+    this.setPosition(
+      this.physicObject.position.x,
+      this.physicObject.position.y
+    );
   }
 
   // getters, setters
@@ -114,4 +149,4 @@ class CollisionObject extends RenderObject {
   }
 }
 
-export { GameObject, RenderObject, CollisionObject };
+export { Context, GameObject, RenderObject, CollisionObject };
