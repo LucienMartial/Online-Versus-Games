@@ -6,7 +6,7 @@ import { CollisionShape, Entity } from "../../../app-shared/physics";
  * Basic game object
  */
 abstract class GameObject {
-  position: Vector;
+  protected position: Vector;
 
   constructor() {
     this.position = new Vector();
@@ -16,9 +16,12 @@ abstract class GameObject {
   abstract render(): void;
 
   // getters, setters
+  setPosition(x: number, y: number) {
+    this.position = new Vector(x, y);
+  }
+
   move(x: number, y: number) {
-    this.position.x += x;
-    this.position.y += y;
+    this.position.add(new Vector(x, y));
   }
 }
 
@@ -27,8 +30,8 @@ abstract class GameObject {
  */
 class RenderObject extends GameObject {
   displayObject: DisplayObject;
-  rotation: number;
-  private offset: Vector;
+  protected rotation: number;
+  protected offset: Vector;
 
   constructor(displayObject: DisplayObject) {
     super();
@@ -47,6 +50,10 @@ class RenderObject extends GameObject {
   // getters, setters
   setOffset(x: number, y: number): void {
     this.displayObject.pivot.set(x, y);
+  }
+
+  setRotation(angle: number) {
+    this.rotation = angle;
   }
 
   rotate(angle: number) {
@@ -77,12 +84,23 @@ class CollisionObject extends RenderObject {
 
   // getters, setters
   setPosition(x: number, y: number): void {
+    super.setPosition(x, y);
     this.physicObject.setPosition(x, y);
+  }
+
+  setRotation(angle: number) {
+    super.setRotation(angle);
+    this.physicObject.setRotation(angle);
   }
 
   setOffset(x: number, y: number): void {
     super.setOffset(x, y);
     this.physicObject.setOffset(x, y);
+  }
+
+  move(x: number, y: number) {
+    super.move(x, y);
+    this.physicObject.setPosition(x, y);
   }
 
   accelerate(x: number, y: number) {

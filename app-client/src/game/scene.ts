@@ -4,7 +4,6 @@ import { PhysicEngine, Entity, BoxShape } from "../../../app-shared/physics";
 import { GameObject, RenderObject, CollisionObject } from "./game-object";
 import { Graphics } from "./graphics";
 import { InputManager } from "./input";
-import { Vector } from "sat";
 
 class Scene {
   elapsed = 0;
@@ -49,7 +48,7 @@ class Scene {
     // init character
     const characterDisplay = new Sprite(assets.character);
     const character = new RenderObject(characterDisplay);
-    character.position = new Vector(this.width * 0.8, this.height / 2);
+    character.setPosition(this.width * 0.8, this.height / 2);
     character.setOffset(150, 150);
     this.stage.addChild(character.displayObject);
     this.gameObjects.character = character;
@@ -63,7 +62,7 @@ class Scene {
       false
     );
     box.setPosition(this.width / 2, this.height / 2);
-    box.rotation = Math.PI / 2;
+    box.setRotation(Math.PI / 2);
     box.setOffset(50, 100);
     this.physicEngine.world.entities.add(box.physicObject);
     this.stage.addChild(box.displayObject);
