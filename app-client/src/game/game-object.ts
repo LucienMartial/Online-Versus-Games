@@ -11,20 +11,24 @@ import { InputManager } from "./input";
  * Context object containing scene data
  */
 class Context {
-  gameObjects: GameObject[];
   stage: Container<DisplayObject>;
   physicEngine: PhysicEngine;
   inputManager: InputManager;
+  width: number;
+  height: number;
 
   constructor(
     stage: Container<DisplayObject>,
     physicEngine: PhysicEngine,
-    inputManager: InputManager
+    inputManager: InputManager,
+    width: number,
+    height: number
   ) {
-    this.gameObjects = [];
     this.stage = stage;
     this.physicEngine = physicEngine;
     this.inputManager = inputManager;
+    this.width = width;
+    this.height = height;
   }
 }
 
@@ -39,7 +43,6 @@ abstract class GameObject {
   constructor(ctx: Context) {
     this._position = new Vector();
     this.ctx = ctx;
-    this.ctx.gameObjects.push(this);
     this.onUpdate = undefined;
   }
 

@@ -9,25 +9,24 @@ import {
 } from "./game-object";
 import { Graphics } from "./graphics";
 import { InputManager } from "./input";
-import {Player} from "./player";
+import { MapManager } from "./map-manager";
+import { Player } from "./player";
 
 /**
  * Main scene containing the game
  */
 class Scene {
   elapsed = 0;
-  width: number;
-  height: number;
   ctx: Context;
+  gameObjects: GameObject[];
 
   constructor(width: number, height: number) {
     this.elapsed = 0;
-    this.width = width;
-    this.height = height;
+    this.gameObjects = [];
     const stage = new Container();
     const inputManager = new InputManager();
     const physicEngine = new PhysicEngine();
-    this.ctx = new Context(stage, physicEngine, inputManager);
+    this.ctx = new Context(stage, physicEngine, inputManager, width, height);
   }
 
   // clean up the scene
@@ -40,19 +39,26 @@ class Scene {
   async load(): Promise<void> {
     const assets = await Assets.loadBundle("basic");
 
+    // map
+    const mapManager = new MapManager(this.ctx);
+    this.gameObjects.push(mapManager);
+
     // init character
     const characterDisplay = new Sprite(assets.character);
     const character = new RenderObject(this.ctx, characterDisplay);
-    character.setPosition(this.width * 0.8, this.height / 2);
+    character.setPosition(this.ctx.width * 0.8, this.ctx.height / 2);
     character.setOffset(150, 150);
     character.onUpdate = (dt) => {
       character.rotate(-0.5 * dt);
       character.move(0, Math.cos(this.elapsed) * 5);
     };
+    // this.gameObjects.push(character);
 
     // init player with dash
-    const playerDash = new Player(this.ctx);
-    playerDash.accelerate(1500, 1500);
+    const player = new Player(this.ctx);
+    player.setPosition(this.ctx.width / 3, this.ctx.height / 2);
+    player.accelerate(-300, 300);
+    this.gameObjects.push(player);
 
     // init basic box
     const size = { x: 100, y: 200 };
@@ -63,12 +69,13 @@ class Scene {
       new BoxShape(size.x, size.y),
       false
     );
-    box.setPosition(this.width / 2, this.height / 2);
+    box.setPosition(this.ctx.width / 2, this.ctx.height / 2);
     box.setRotation(Math.PI / 2);
     box.setOffset(50, 100);
     box.onUpdate = (dt) => {
       box.rotate(2 * dt);
     };
+    this.gameObjects.push(box);
   }
 
   update(now: number, dt: number): void {
@@ -77,7 +84,7 @@ class Scene {
     this.ctx.physicEngine.fixedUpdate(dt);
 
     // update and render
-    for (const object of Object.values(this.ctx.gameObjects)) {
+    for (const object of Object.values(this.gameObjects)) {
       object.update(dt);
       object.render();
     }
