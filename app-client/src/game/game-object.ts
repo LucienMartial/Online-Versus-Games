@@ -33,15 +33,20 @@ class Context {
  */
 abstract class GameObject {
   private _position: Vector;
-  public ctx: Context;
+  ctx: Context;
+  onUpdate?: { (dt: number): void };
 
   constructor(ctx: Context) {
     this._position = new Vector();
     this.ctx = ctx;
     this.ctx.gameObjects.push(this);
+    this.onUpdate = undefined;
   }
 
-  abstract update(dt: number): void;
+  update(dt: number): void {
+    this.onUpdate?.(dt);
+  }
+
   abstract render(): void;
 
   // getters, setters
@@ -71,7 +76,9 @@ class RenderObject extends GameObject {
     this.rotation = 0;
   }
 
-  update(dt: number) {}
+  update(dt: number) {
+    super.update(dt);
+  }
 
   render() {
     this.displayObject.position.set(this.position.x, this.position.y);

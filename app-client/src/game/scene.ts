@@ -47,12 +47,24 @@ class Scene {
       false
     );
     player.accelerate(2500, 1500);
+    player.onUpdate = (dt) => {
+      const inputs = this.ctx.inputManager.inputs;
+      const speed = 80;
+      if (inputs.left) player.accelerate(-speed, 0);
+      else if (inputs.right) player.accelerate(speed, 0);
+      if (inputs.up) player.accelerate(0, -speed);
+      else if (inputs.down) player.accelerate(0, speed);
+    };
 
     // init character
     const characterDisplay = new Sprite(assets.character);
     const character = new RenderObject(this.ctx, characterDisplay);
     character.setPosition(this.width * 0.8, this.height / 2);
     character.setOffset(150, 150);
+    character.onUpdate = (dt) => {
+      character.rotate(-0.5 * dt);
+      character.move(0, Math.cos(this.elapsed) * 5);
+    };
 
     // init basic box
     const size = { x: 100, y: 200 };
@@ -66,30 +78,15 @@ class Scene {
     box.setPosition(this.width / 2, this.height / 2);
     box.setRotation(Math.PI / 2);
     box.setOffset(50, 100);
+    box.onUpdate = (dt) => {
+      box.rotate(2 * dt);
+    };
   }
 
   update(now: number, dt: number): void {
     // update logic
     this.elapsed += dt;
     this.ctx.physicEngine.fixedUpdate(dt);
-
-    // character
-    // const character = this.gameObjects.character as RenderObject;
-    // character.rotate(-0.5 * dt);
-    // character.move(0, Math.cos(this.elapsed) * 5);
-
-    // // box
-    // const box = this.gameObjects.box as CollisionObject;
-    // box.rotate(2 * dt);
-
-    // // player
-    // const player = this.gameObjects.player as CollisionObject;
-    // const inputs = this.ctx.inputManager.inputs;
-    // const speed = 80;
-    // if (inputs.left) player.accelerate(-speed, 0);
-    // else if (inputs.right) player.accelerate(speed, 0);
-    // if (inputs.up) player.accelerate(0, -speed);
-    // else if (inputs.down) player.accelerate(0, speed);
 
     // update and render
     for (const object of Object.values(this.ctx.gameObjects)) {
