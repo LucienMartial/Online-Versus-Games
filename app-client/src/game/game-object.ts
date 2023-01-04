@@ -11,6 +11,7 @@ import { InputManager } from "./input";
  * Context object containing scene data
  */
 class Context {
+  gameObjects: GameObject[];
   stage: Container<DisplayObject>;
   physicEngine: PhysicEngine;
   inputManager: InputManager;
@@ -20,6 +21,7 @@ class Context {
     physicEngine: PhysicEngine,
     inputManager: InputManager
   ) {
+    this.gameObjects = [];
     this.stage = stage;
     this.physicEngine = physicEngine;
     this.inputManager = inputManager;
@@ -31,11 +33,12 @@ class Context {
  */
 abstract class GameObject {
   private _position: Vector;
-  protected ctx: Context;
+  public ctx: Context;
 
   constructor(ctx: Context) {
     this._position = new Vector();
     this.ctx = ctx;
+    this.ctx.gameObjects.push(this);
   }
 
   abstract update(dt: number): void;
