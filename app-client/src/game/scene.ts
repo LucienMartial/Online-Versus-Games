@@ -9,6 +9,7 @@ import {
 } from "./game-object";
 import { Graphics } from "./graphics";
 import { InputManager } from "./input";
+import {Player} from "./player";
 
 /**
  * Main scene containing the game
@@ -39,23 +40,6 @@ class Scene {
   async load(): Promise<void> {
     const assets = await Assets.loadBundle("basic");
 
-    // player
-    const player = new CollisionObject(
-      this.ctx,
-      Graphics.createRectangle(100, 100),
-      new BoxShape(100, 100),
-      false
-    );
-    player.accelerate(2500, 1500);
-    player.onUpdate = (dt) => {
-      const inputs = this.ctx.inputManager.inputs;
-      const speed = 80;
-      if (inputs.left) player.accelerate(-speed, 0);
-      else if (inputs.right) player.accelerate(speed, 0);
-      if (inputs.up) player.accelerate(0, -speed);
-      else if (inputs.down) player.accelerate(0, speed);
-    };
-
     // init character
     const characterDisplay = new Sprite(assets.character);
     const character = new RenderObject(this.ctx, characterDisplay);
@@ -65,6 +49,10 @@ class Scene {
       character.rotate(-0.5 * dt);
       character.move(0, Math.cos(this.elapsed) * 5);
     };
+
+    // init player with dash
+    const playerDash = new Player(this.ctx);
+    playerDash.accelerate(1500, 1500);
 
     // init basic box
     const size = { x: 100, y: 200 };
