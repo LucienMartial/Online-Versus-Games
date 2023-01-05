@@ -1,28 +1,17 @@
-import { Response } from "sat";
-import { PhysicObject } from "./object";
+import SAT from "sat";
+import { PhysicObject } from "./object.js";
 
 // Engine parameters
 const PHYSIC_RATE = 1 / 60;
 
 /**
- * Temporary game state
- */
-class World {
-  entities: Set<PhysicObject>;
-
-  constructor() {
-    this.entities = new Set<PhysicObject>();
-  }
-}
-
-/**
  * Arcade physic engine
  */
 class PhysicEngine {
-  world: World;
+  private _world: Set<PhysicObject>;
 
   constructor() {
-    this.world = new World();
+    this._world = new Set<PhysicObject>();
   }
 
   /**
@@ -43,39 +32,52 @@ class PhysicEngine {
    * @param dt
    */
   step(dt: number) {
-    const entities = this.world.entities;
+    const objects = this._world;
 
     // update position and velocity
-    for (const entity of entities) {
-      if (entity.static) continue;
+    for (const object of objects) {
+      if (object.static) continue;
       // apply friction
-      entity.velocity.scale(entity.friction.x, entity.friction.y);
+      object.velocity.scale(object.friction.x, object.friction.y);
       // move
-      entity.position.add(entity.velocity.clone().scale(dt));
-      entity.collisionShape.setPosition(entity.position);
+      object.position.add(object.velocity.clone().scale(dt));
+      object.collisionShape.setPosition(object.position);
     }
 
     // handle collisions
-    const response = new Response();
-    for (const entity of entities) {
-      if (entity.static) continue;
-      for (const collidable of entities) {
-        if (collidable === entity) continue;
+    const response = new SAT.Response();
+    for (const object of objects) {
+      if (object.static) continue;
+      for (const collidable of objects) {
+        if (collidable === object) continue;
 
         // check collision
         response.clear();
-        const collided = entity.collisionShape.collideWith(
+        const collided = object.collisionShape.collideWith(
           response,
           collidable.collisionShape
         );
 
         // resolve collision
         if (collided) {
-          entity.onCollision(response, collidable);
-          entity.collisionShape.setPosition(entity.position);
+          object.onCollision(response, collidable);
+          object.collisionShape.setPosition(object.position);
         }
       }
     }
+  }
+
+  // getters, setters
+  add(object: PhysicObject) {
+    this._world.add(object);
+  }
+
+  remove(object: PhysicObject) {
+    this._world.delete(object);
+  }
+
+  get world(): Set<PhysicObject> {
+    return this._world;
   }
 }
 

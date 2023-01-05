@@ -1,14 +1,15 @@
-import {
-  Vector,
-  Circle,
-  Polygon,
-  Box,
-  testCircleCircle,
-  testCirclePolygon,
-  testPolygonCircle,
-  testPolygonPolygon,
-  Response,
-} from "sat";
+// import {
+//   Vector,
+//   Circle,
+//   Polygon,
+//   Box,
+//   testCircleCircle,
+//   testCirclePolygon,
+//   testPolygonCircle,
+//   testPolygonPolygon,
+//   Response,
+// } from "sat";
+import SAT from "sat";
 declare module "sat" {
   export interface Circle {
     offset: Vector;
@@ -27,14 +28,14 @@ enum ShapeType {
  * Dynamic collision table, indexing by pair of collidables
  */
 const collisionCallbacks: Function[][] = [
-  [testPolygonPolygon, testPolygonCircle],
-  [testCirclePolygon, testCircleCircle],
+  [SAT.testPolygonPolygon, SAT.testPolygonCircle],
+  [SAT.testCirclePolygon, SAT.testCircleCircle],
 ];
 
 /**
  * Possible collision object
  */
-type Shape = Polygon | Circle;
+type Shape = SAT.Polygon | SAT.Circle;
 
 /**
  * Base collision object
@@ -45,14 +46,14 @@ abstract class CollisionShape {
 
   constructor(type: ShapeType) {
     this.type = type;
-    this.shape = new Circle();
+    this.shape = new SAT.Circle();
   }
 
-  setPosition(position: Vector): void {
+  setPosition(position: SAT.Vector): void {
     this.shape.pos.copy(position);
   }
 
-  setOffset(offset: Vector): void {
+  setOffset(offset: SAT.Vector): void {
     this.shape.offset.copy(offset);
   }
 
@@ -64,7 +65,7 @@ abstract class CollisionShape {
    * @param other
    * @returns true if item collided
    */
-  collideWith(response: Response, other: CollisionShape): boolean {
+  collideWith(response: SAT.Response, other: CollisionShape): boolean {
     return collisionCallbacks[this.type][other.type](
       this.shape,
       other.shape,
@@ -77,18 +78,18 @@ abstract class CollisionShape {
  * Box collision shape
  */
 class BoxShape extends CollisionShape {
-  shape: Polygon;
+  shape: SAT.Polygon;
 
   constructor(width: number, height: number) {
     super(ShapeType.Polygon);
-    this.shape = new Box(new Vector(), width, height).toPolygon();
+    this.shape = new SAT.Box(new SAT.Vector(), width, height).toPolygon();
   }
 
   setRotation(angle: number): void {
     this.shape.setAngle(angle);
   }
 
-  setOffset(offset: Vector): void {
+  setOffset(offset: SAT.Vector): void {
     super.setOffset(offset);
     this.shape.translate(0, 0);
   }
@@ -98,15 +99,15 @@ class BoxShape extends CollisionShape {
  * Line collision, to have thickness, use Polygon with 4 points
  */
 class LineShape extends CollisionShape {
-  p1: Vector;
-  p2: Vector;
+  p1: SAT.Vector;
+  p2: SAT.Vector;
 
   constructor(x1: number, y1: number, x2: number, y2: number) {
     super(ShapeType.Polygon);
-    this.p1 = new Vector(x1, y1);
-    this.p2 = new Vector(x2, y2);
+    this.p1 = new SAT.Vector(x1, y1);
+    this.p2 = new SAT.Vector(x2, y2);
     const points = [this.p1, this.p2];
-    this.shape = new Polygon(new Vector(), points);
+    this.shape = new SAT.Polygon(new SAT.Vector(), points);
   }
 }
 

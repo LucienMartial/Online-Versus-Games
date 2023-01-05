@@ -6,10 +6,11 @@ import "./Game.css";
 import { GameScene } from "../game/game";
 import { Client, Room } from "colyseus.js";
 import { GameState } from "../../../app-shared/state/game-state";
+import { WORLD_WIDTH, WORLD_HEIGHT } from "../../../app-shared/constants";
 
 export interface GameProps {
   client: Client;
-  gameRoom: Room;
+  gameRoom: Room<GameState>;
 }
 
 function Game({ client, gameRoom }: GameProps) {
@@ -24,26 +25,30 @@ function Game({ client, gameRoom }: GameProps) {
       backgroundColor: 0x000011,
     });
 
-    // show current state
-    gameRoom.onStateChange((state: GameState) => {
-      console.log(state.msg);
-    });
+    // show players
+    gameRoom.state.players.onAdd = (player, key) => {
+      console.log("new player have joined", player.x, player.y, key);
+    };
+    gameRoom.state.players.onRemove = (_, key) => {
+      console.log("player with id", key, "leaved the game");
+    };
+    gameRoom.state.players.onChange = (player, key) => {
+      console.log(player, "have changed at", key);
+    };
 
     // set viewport
-    const width = 1600;
-    const height = 900;
     const viewport = new Viewport({
-      worldWidth: width,
-      worldHeight: height,
+      worldWidth: WORLD_WIDTH,
+      worldHeight: WORLD_HEIGHT,
       passiveWheel: false,
     });
 
     app.stage.addChild(viewport);
-    viewport.moveCenter(width / 2, height / 2);
+    viewport.moveCenter(WORLD_WIDTH / 2, WORLD_HEIGHT / 2);
     viewport.fit();
 
     // init scene
-    const gameScene = new GameScene(width, height);
+    const gameScene = new GameScene(WORLD_WIDTH, WORLD_HEIGHT);
     gameScene.load().then(() => {
       viewport.addChild(gameScene.ctx.stage);
       // launch game
@@ -65,7 +70,7 @@ function Game({ client, gameRoom }: GameProps) {
       app.renderer.resize(window.innerWidth, window.innerHeight);
       viewport.resize(window.innerWidth, window.innerHeight);
       viewport.fit();
-      viewport.moveCenter(width / 2, height / 2);
+      viewport.moveCenter(WORLD_WIDTH / 2, WORLD_HEIGHT / 2);
     };
     resize();
     window.addEventListener("resize", resize);

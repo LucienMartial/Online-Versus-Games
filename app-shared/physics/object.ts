@@ -1,5 +1,5 @@
-import { Vector, Response } from "sat";
-import { CollisionShape } from "./collision";
+import SAT from "sat";
+import { CollisionShape } from "./collision.js";
 
 // Default values
 const FRICTION = 0.95;
@@ -8,19 +8,19 @@ const FRICTION = 0.95;
  * Physic entity, renderless, usable on server and client
  */
 class PhysicObject {
-  position: Vector;
-  velocity: Vector;
-  friction: Vector;
-  offset: Vector;
+  position: SAT.Vector;
+  velocity: SAT.Vector;
+  friction: SAT.Vector;
+  offset: SAT.Vector;
   rotation: number;
   static: boolean;
   collisionShape: CollisionShape;
 
   constructor(collisionShape: CollisionShape, isStatic = true) {
-    this.position = new Vector();
-    this.velocity = new Vector();
-    this.friction = new Vector(FRICTION, FRICTION);
-    this.offset = new Vector();
+    this.position = new SAT.Vector();
+    this.velocity = new SAT.Vector();
+    this.friction = new SAT.Vector(FRICTION, FRICTION);
+    this.offset = new SAT.Vector();
     this.rotation = 0;
     this.static = isStatic;
     this.collisionShape = collisionShape;
@@ -33,7 +33,7 @@ class PhysicObject {
   }
 
   setOffset(x: number, y: number) {
-    this.offset = new Vector(-x, -y);
+    this.offset = new SAT.Vector(-x, -y);
     this.collisionShape.setOffset(this.offset);
   }
 
@@ -45,7 +45,7 @@ class PhysicObject {
   /**
    * Basic collision response
    */
-  onCollision(response: Response, other: PhysicObject) {
+  onCollision(response: SAT.Response, other: PhysicObject) {
     this.position.sub(response.overlapV);
   }
 }

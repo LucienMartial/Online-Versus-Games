@@ -1,5 +1,5 @@
-import { Vector } from "sat";
-import { PhysicObject, LineShape } from "./physics";
+import SAT from "sat";
+import { PhysicObject, LineShape } from "./physics/index.js";
 
 const SIDE_WIDTH_RATIO = 0.8;
 const SIDE_HEIGHT_RATIO = 0.7;
@@ -7,16 +7,16 @@ const SIDE_HEIGHT_RATIO = 0.7;
 class Map {
   walls: PhysicObject[];
 
-  constructor(screenWidth: number, screenHeight: number) {
+  constructor(worldWidth: number, worldHeight: number) {
     this.walls = [];
     const offsetX = 50;
     const offsetY = 30;
     const top = offsetY;
-    const bot = screenHeight - offsetY;
+    const bot = worldHeight - offsetY;
     const left = offsetX;
-    const right = screenWidth - offsetX;
-    const width = screenWidth - offsetX * 2;
-    const height = screenHeight - offsetY * 2;
+    const right = worldWidth - offsetX;
+    const width = worldWidth - offsetX * 2;
+    const height = worldHeight - offsetY * 2;
     const sideWidth = width * SIDE_WIDTH_RATIO;
     const sideHeight = height * SIDE_HEIGHT_RATIO;
     const diagonalWidth = (width - sideWidth) / 2;
@@ -25,59 +25,59 @@ class Map {
     // bottom walls
     // center
     this.addWall(
-      new Vector(0, 0),
-      new Vector(sideWidth, 0),
-      new Vector(left + diagonalWidth, bot)
+      new SAT.Vector(0, 0),
+      new SAT.Vector(sideWidth, 0),
+      new SAT.Vector(left + diagonalWidth, bot)
     );
     // left
     this.addWall(
-      new Vector(0, 0),
-      new Vector(diagonalWidth, diagonalHeight),
-      new Vector(left, bot - diagonalHeight)
+      new SAT.Vector(0, 0),
+      new SAT.Vector(diagonalWidth, diagonalHeight),
+      new SAT.Vector(left, bot - diagonalHeight)
     );
     // right
     this.addWall(
-      new Vector(0, 0),
-      new Vector(diagonalWidth, -diagonalHeight),
-      new Vector(right - diagonalWidth, bot)
+      new SAT.Vector(0, 0),
+      new SAT.Vector(diagonalWidth, -diagonalHeight),
+      new SAT.Vector(right - diagonalWidth, bot)
     );
 
     // top walls
     // center
     this.addWall(
-      new Vector(0, 0),
-      new Vector(sideWidth, 0),
-      new Vector(left + diagonalWidth, top)
+      new SAT.Vector(0, 0),
+      new SAT.Vector(sideWidth, 0),
+      new SAT.Vector(left + diagonalWidth, top)
     );
     // left
     this.addWall(
-      new Vector(0, 0),
-      new Vector(diagonalWidth, -diagonalHeight),
-      new Vector(left, top + diagonalHeight)
+      new SAT.Vector(0, 0),
+      new SAT.Vector(diagonalWidth, -diagonalHeight),
+      new SAT.Vector(left, top + diagonalHeight)
     );
     // right
     this.addWall(
-      new Vector(0, 0),
-      new Vector(diagonalWidth, diagonalHeight),
-      new Vector(right - diagonalWidth, top)
+      new SAT.Vector(0, 0),
+      new SAT.Vector(diagonalWidth, diagonalHeight),
+      new SAT.Vector(right - diagonalWidth, top)
     );
 
     // side walls
     // left
     this.addWall(
-      new Vector(0, 0),
-      new Vector(0, sideHeight),
-      new Vector(left, top + diagonalHeight)
+      new SAT.Vector(0, 0),
+      new SAT.Vector(0, sideHeight),
+      new SAT.Vector(left, top + diagonalHeight)
     );
     // right
     this.addWall(
-      new Vector(0, 0),
-      new Vector(0, sideHeight),
-      new Vector(right, top + diagonalHeight)
+      new SAT.Vector(0, 0),
+      new SAT.Vector(0, sideHeight),
+      new SAT.Vector(right, top + diagonalHeight)
     );
   }
 
-  addWall(p1: Vector, p2: Vector, position: Vector) {
+  addWall(p1: SAT.Vector, p2: SAT.Vector, position: SAT.Vector) {
     const wall = new PhysicObject(new LineShape(p1.x, p1.y, p2.x, p2.y), true);
     wall.setPosition(position.x, position.y);
     this.walls.push(wall);

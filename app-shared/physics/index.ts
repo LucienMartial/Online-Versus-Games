@@ -1,3 +1,3 @@
-export * from "./collision";
-export * from "./object";
-export * from "./physic";
+export * from "./collision.js";
+export * from "./object.js";
+export * from "./physic.js";

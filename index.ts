@@ -1,6 +1,7 @@
 import express from "express";
 import http from "http";
 import { Server } from "colyseus";
+import { WebSocketTransport } from "@colyseus/ws-transport";
 
 import { hello } from "./app-shared/hello.js";
 hello();
@@ -20,7 +21,9 @@ app.use(apiRouter);
 
 // game server
 const gameServer = new Server({
-  server,
+  transport: new WebSocketTransport({
+    server: server,
+  }),
 });
 
 if (process.env.NODE_ENV !== "production") {

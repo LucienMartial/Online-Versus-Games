@@ -1,8 +1,13 @@
 import { Dispatcher } from "@colyseus/command";
 import { Client, Room } from "colyseus";
-import { PhysicEngine } from "../app-shared/physics";
+import { PhysicEngine } from "../app-shared/physics/index.js";
 import { GameState } from "../app-shared/state/game-state.js";
-import { OnCreateCommand, OnJoinCommand } from "./commands/index.js";
+import {
+  OnCreateCommand,
+  OnJoinCommand,
+  OnLeaveCommand,
+  OnUpdateCommand,
+} from "./commands/index.js";
 
 class GameRoom extends Room<GameState> {
   dispatcher = new Dispatcher(this);
@@ -11,7 +16,9 @@ class GameRoom extends Room<GameState> {
   onCreate() {
     this.setState(new GameState());
     this.setSimulationInterval((dt: number) => this.update(dt));
-    this.dispatcher.dispatch(new OnJoinCommand(), { clientId: "hey" });
+
+    // custom init
+    this.physicEngine = new PhysicEngine();
     this.dispatcher.dispatch(new OnCreateCommand(), {
       physicEngine: this.physicEngine,
     });
@@ -29,6 +36,7 @@ class GameRoom extends Room<GameState> {
   }
 
   onLeave(client: Client) {
+    this.dispatcher.dispatch(new OnLeaveCommand(), { clientId: client.id });
     console.log("client leaved", client.id);
   }
 
@@ -37,7 +45,12 @@ class GameRoom extends Room<GameState> {
   }
 
   // simulation update, 60 hertz
-  update(dt: number) {}
+  update(dt: number) {
+    this.dispatcher.dispatch(new OnUpdateCommand(), {
+      physicEngine: this.physicEngine,
+      dt: dt,
+    });
+  }
 }
 
 export { GameRoom };

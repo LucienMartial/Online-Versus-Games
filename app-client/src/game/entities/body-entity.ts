@@ -18,7 +18,7 @@ class BodyEntity extends RenderEntity {
     super(ctx, displayObject);
     this.physicObject = new PhysicObject(collisionShape, isStatic);
     this.physicObject.setPosition(this.position.x, this.position.y);
-    ctx.physicEngine.world.entities.add(this.physicObject);
+    ctx.physicEngine.world.add(this.physicObject);
   }
 
   update(now: number, dt: number) {
