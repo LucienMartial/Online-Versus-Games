@@ -2,7 +2,7 @@ import { Entity } from "./entities/entity";
 import { Map } from "../../../app-shared/map";
 import { Graphics } from "./utils/graphics";
 import { LineShape } from "../../../app-shared/physics";
-import { RenderEntity } from "./entities";
+import { BodyEntity, RenderEntity } from "./entities";
 import { Context } from "./scene";
 
 class MapManager extends Entity {
@@ -15,8 +15,6 @@ class MapManager extends Entity {
     this.walls = [];
 
     for (const wall of this.map.walls) {
-      // physics
-      ctx.physicEngine.world.entities.add(wall);
       // rendering
       const shape = wall.collisionShape as LineShape;
       const displayWall = Graphics.createLine(
@@ -25,7 +23,7 @@ class MapManager extends Entity {
         shape.p2.x,
         shape.p2.y
       );
-      const wallEntity = new RenderEntity(ctx, displayWall);
+      const wallEntity = new BodyEntity(ctx, displayWall, shape, true);
       wallEntity.setPosition(wall.position.x, wall.position.y);
       wallEntity.render();
     }

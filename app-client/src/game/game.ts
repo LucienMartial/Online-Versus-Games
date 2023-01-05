@@ -17,11 +17,6 @@ class GameScene extends Scene {
     super(width, height);
   }
 
-  destroy(): void {
-    Assets.unload("basic");
-    super.destroy();
-  }
-
   async load(): Promise<void> {
     const assets = await Assets.loadBundle("basic");
 
@@ -67,6 +62,11 @@ class GameScene extends Scene {
     // renderable entity, example of collection group
     this.collections.addCollection("renderable", ["player", "box"]);
     this.render();
+  }
+
+  destroy(): void {
+    Assets.unload("basic");
+    super.destroy();
   }
 
   update(now: number, dt: number): void {
