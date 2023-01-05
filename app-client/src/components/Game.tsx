@@ -3,7 +3,7 @@ import React from "react";
 import { Application } from "pixi.js";
 import { Viewport } from "pixi-viewport";
 import "./Game.css";
-import { Scene } from "../game/scene";
+import { GameScene } from "../game/game";
 
 function Game() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -31,9 +31,9 @@ function Game() {
     viewport.fit();
 
     // init scene
-    const scene = new Scene(width, height);
-    scene.load().then(() => {
-      viewport.addChild(scene.ctx.stage);
+    const gameScene = new GameScene(width, height);
+    gameScene.load().then(() => {
+      viewport.addChild(gameScene.ctx.stage);
       // launch game
       window.requestAnimationFrame(schedule);
     });
@@ -44,7 +44,7 @@ function Game() {
       const now = Date.now();
       const dt = (now - last) * 0.001;
       last = now;
-      scene.update(now, dt);
+      gameScene.update(now, dt);
       window.requestAnimationFrame(schedule);
     }
 
