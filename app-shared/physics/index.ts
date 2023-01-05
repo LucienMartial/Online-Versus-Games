@@ -1,3 +1,3 @@
 export * from "./collision";
-export * from "./entity";
+export * from "./object";
 export * from "./physic";

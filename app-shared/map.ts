@@ -1,11 +1,11 @@
 import { Vector } from "sat";
-import { Entity, LineShape } from "./physics";
+import { PhysicObject, LineShape } from "./physics";
 
 const SIDE_WIDTH_RATIO = 0.8;
 const SIDE_HEIGHT_RATIO = 0.7;
 
 class Map {
-  walls: Entity[];
+  walls: PhysicObject[];
 
   constructor(screenWidth: number, screenHeight: number) {
     this.walls = [];
@@ -78,7 +78,7 @@ class Map {
   }
 
   addWall(p1: Vector, p2: Vector, position: Vector) {
-    const wall = new Entity(new LineShape(p1.x, p1.y, p2.x, p2.y), true);
+    const wall = new PhysicObject(new LineShape(p1.x, p1.y, p2.x, p2.y), true);
     wall.setPosition(position.x, position.y);
     this.walls.push(wall);
   }

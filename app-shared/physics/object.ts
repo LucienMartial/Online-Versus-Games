@@ -7,7 +7,7 @@ const FRICTION = 0.95;
 /**
  * Physic entity, renderless, usable on server and client
  */
-class Entity {
+class PhysicObject {
   position: Vector;
   velocity: Vector;
   friction: Vector;
@@ -45,9 +45,9 @@ class Entity {
   /**
    * Basic collision response
    */
-  onCollision(response: Response, other: Entity) {
+  onCollision(response: Response, other: PhysicObject) {
     this.position.sub(response.overlapV);
   }
 }
 
-export { Entity };
+export { PhysicObject };

@@ -1,5 +1,5 @@
 import { Response } from "sat";
-import { Entity } from "./entity";
+import { PhysicObject } from "./object";
 
 // Engine parameters
 const PHYSIC_RATE = 1 / 60;
@@ -8,10 +8,10 @@ const PHYSIC_RATE = 1 / 60;
  * Temporary game state
  */
 class World {
-  entities: Set<Entity>;
+  entities: Set<PhysicObject>;
 
   constructor() {
-    this.entities = new Set<Entity>();
+    this.entities = new Set<PhysicObject>();
   }
 }
 
