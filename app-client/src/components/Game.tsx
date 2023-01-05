@@ -4,8 +4,15 @@ import { Application } from "pixi.js";
 import { Viewport } from "pixi-viewport";
 import "./Game.css";
 import { GameScene } from "../game/game";
+import { Client, Room } from "colyseus.js";
+import { GameState } from "../../../app-shared/state/game-state";
 
-function Game() {
+export interface GameProps {
+  client: Client;
+  gameRoom: Room;
+}
+
+function Game({ client, gameRoom }: GameProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const guiRef = useRef<HTMLDivElement>(null);
 
@@ -15,6 +22,11 @@ function Game() {
       resolution: window.devicePixelRatio || 1,
       autoDensity: true,
       backgroundColor: 0x000011,
+    });
+
+    // show current state
+    gameRoom.onStateChange((state: GameState) => {
+      console.log(state.msg);
     });
 
     // set viewport

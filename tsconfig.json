@@ -7,7 +7,15 @@
     "strict": true,
     "sourceMap": true,
     "allowSyntheticDefaultImports": true,
-    "outDir": "dist"
+    "outDir": "dist",
+    // colyseus template
+    "declaration": true,
+    "removeComments": true,
+    "noImplicitAny": false,
+    "experimentalDecorators": true,
+    "esModuleInterop": true,
+    "allowJs": true,
+    "strictNullChecks": false
   },
   "exclude": ["app-client/*", "node-modules", "dist", "test"]
 }
