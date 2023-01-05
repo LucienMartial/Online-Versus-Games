@@ -16,8 +16,8 @@ class RenderEntity extends Entity {
     ctx.stage.addChild(this.displayObject);
   }
 
-  update(dt: number) {
-    super.update(dt);
+  update(now: number, dt: number) {
+    super.update(now, dt);
   }
 
   render() {

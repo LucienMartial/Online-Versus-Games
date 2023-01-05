@@ -29,7 +29,7 @@ class GameScene extends Scene {
     const character = new RenderEntity(this.ctx, characterDisplay);
     character.setPosition(this.ctx.width * 0.8, this.ctx.height / 2);
     character.setOffset(150, 150);
-    character.onUpdate = (dt) => {
+    character.onUpdate = (now, dt) => {
       character.rotate(-0.5 * dt);
       character.move(0, Math.cos(this.elapsed) * 5);
     };
@@ -53,9 +53,9 @@ class GameScene extends Scene {
     box.setPosition(this.ctx.width / 2, this.ctx.height / 2);
     box.setRotation(Math.PI / 2);
     box.setOffset(50, 100);
-    box.onUpdate = (dt) => {
+    box.onUpdate = (now, dt) => {
       box.rotate(2 * dt);
-      box.move(Math.cos(this.elapsed) * 5, Math.cos(this.elapsed * 0.8));
+      box.move(Math.cos(this.elapsed) * 2, Math.cos(this.elapsed * 0.8));
     };
     this.collections.add("box", box);
 

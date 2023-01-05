@@ -6,7 +6,7 @@ import { Context } from "../scene";
  */
 abstract class Entity {
   private _position: Vector;
-  onUpdate?: { (dt: number): void };
+  onUpdate?: { (now: number, dt: number): void };
 
   /**
    * Create an entity provided the scene context
@@ -17,8 +17,8 @@ abstract class Entity {
     this.onUpdate = undefined;
   }
 
-  update(dt: number): void {
-    this.onUpdate?.(dt);
+  update(now: number, dt: number): void {
+    this.onUpdate?.(now, dt);
   }
 
   // getters, setters

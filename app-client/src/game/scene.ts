@@ -57,9 +57,8 @@ abstract class Scene {
     // update logic
     this.elapsed += dt;
     this.ctx.physicEngine.fixedUpdate(dt);
-
     // update entities
-    this.collections.update(dt);
+    this.collections.update(now, dt);
   }
 }
 

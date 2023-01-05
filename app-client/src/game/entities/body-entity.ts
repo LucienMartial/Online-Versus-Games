@@ -21,8 +21,8 @@ class BodyEntity extends RenderEntity {
     ctx.physicEngine.world.entities.add(this.physicObject);
   }
 
-  update(dt: number) {
-    super.update(dt);
+  update(now: number, dt: number) {
+    super.update(now, dt);
     this.setPosition(
       this.physicObject.position.x,
       this.physicObject.position.y
