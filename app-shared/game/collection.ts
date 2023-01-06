@@ -1,10 +1,7 @@
-import { Entity } from "./entity";
+import { Entity } from "./index.js";
 
-type EntityCollection = { [key: string]: Set<Entity> };
+type EntityCollection = Record<string, Set<Entity>>;
 
-/**
- * Manager for multiple collection of game entities
- */
 class CollectionManager {
   private collections: EntityCollection;
   private relations: { [key: string]: Set<string> };
@@ -15,19 +12,18 @@ class CollectionManager {
   }
 
   // Entity in collection
-
-  add(collectionName = "default", entity: Entity): void {
+  add(collectionName: string, entity: Entity): void {
     if (!this.collections[collectionName]) {
       this.collections[collectionName] = new Set<Entity>();
     }
     this.collections[collectionName].add(entity);
   }
 
-  remove(collectionName = "default", entity: Entity): void {
+  remove(collectionName: string, entity: Entity): void {
     this.collections[collectionName].delete(entity);
   }
 
-  get<T extends Entity>(collectionName = "default"): Set<T> {
+  get<T extends Entity>(collectionName: string): Set<T> {
     // get all the collection childs
     const entities = new Set<T>();
     for (const childName of this.getChilds(collectionName)) {
@@ -42,9 +38,15 @@ class CollectionManager {
     return entities;
   }
 
-  // Collection in collection
+  getById<T extends Entity>(collectionName: string, id: string): T | undefined {
+    for (const entity of this.get(collectionName)) {
+      if (entity.id === id) return entity as T;
+    }
+    return undefined;
+  }
 
-  addCollection(parentName = "default", childNames: string[]): void {
+  // Collection in collection
+  addCollections(parentName: string, childNames: string[]): void {
     if (!this.relations[parentName]) {
       this.relations[parentName] = new Set<string>();
     }
@@ -57,7 +59,7 @@ class CollectionManager {
   /**
    * Remove child collection to its parent, do not remove entity
    */
-  removeCollection(parentName = "default", childName: string): void {
+  removeCollection(parentName: string, childName: string): void {
     if (!this.collections[parentName] || !this.collections[childName]) return;
     this.relations[parentName].delete(childName);
   }
@@ -72,17 +74,17 @@ class CollectionManager {
    * run update on all entities
    * @param dt
    */
-  update(now: number, dt: number) {
+  update(dt: number) {
     for (const [name, collection] of Object.entries(this.collections)) {
       // update collection child's entities
       for (const childName of this.getChilds(name)) {
         for (const entity of this.collections[childName].values()) {
-          entity.update(now, dt);
+          entity.update(dt);
         }
       }
       // update own entity
       for (const entity of collection.values()) {
-        entity.update(now, dt);
+        entity.update(dt);
       }
     }
   }

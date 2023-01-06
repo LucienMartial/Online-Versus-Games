@@ -1,11 +1,12 @@
 import SAT from "sat";
-import { PhysicObject, LineShape } from "./physics/index.js";
+import { BodyEntity } from "../game/index.js";
+import { LineShape } from "../physics/index.js";
 
 const SIDE_WIDTH_RATIO = 0.8;
 const SIDE_HEIGHT_RATIO = 0.7;
 
 class Map {
-  walls: PhysicObject[];
+  walls: BodyEntity[];
 
   constructor(worldWidth: number, worldHeight: number) {
     this.walls = [];
@@ -78,7 +79,7 @@ class Map {
   }
 
   addWall(p1: SAT.Vector, p2: SAT.Vector, position: SAT.Vector) {
-    const wall = new PhysicObject(new LineShape(p1.x, p1.y, p2.x, p2.y), true);
+    const wall = new BodyEntity(new LineShape(p1.x, p1.y, p2.x, p2.y));
     wall.setPosition(position.x, position.y);
     this.walls.push(wall);
   }

@@ -1,4 +1,4 @@
-type Inputs = "left" | "right" | "up" | "down" | "dash";
+import type { Inputs } from "../../../../app-shared/utils";
 
 const InputsKeys: Record<Inputs, string[]> = {
   left: ["q", "a", "ArrowLeft"],

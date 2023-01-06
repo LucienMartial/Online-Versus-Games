@@ -1,8 +1,8 @@
 import { Command } from "@colyseus/command";
 import { GameRoom } from "../game-room.js";
+import { WORLD_WIDTH, WORLD_HEIGHT } from "../../app-shared/utils/index.js";
 import { PhysicEngine } from "../../app-shared/physics/index.js";
-import { Map } from "../../app-shared/map.js";
-import { WORLD_HEIGHT, WORLD_WIDTH } from "../../app-shared/constants.js";
+import { Map } from "../../app-shared/disc-war/index.js";
 
 class OnCreateCommand extends Command<
   GameRoom,

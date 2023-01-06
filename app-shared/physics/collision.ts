@@ -1,14 +1,3 @@
-// import {
-//   Vector,
-//   Circle,
-//   Polygon,
-//   Box,
-//   testCircleCircle,
-//   testCirclePolygon,
-//   testPolygonCircle,
-//   testPolygonPolygon,
-//   Response,
-// } from "sat";
 import SAT from "sat";
 declare module "sat" {
   export interface Circle {
@@ -54,7 +43,8 @@ abstract class CollisionShape {
   }
 
   setOffset(offset: SAT.Vector): void {
-    this.shape.offset.copy(offset);
+    this.shape.offset.x = -offset.x;
+    this.shape.offset.y = -offset.y;
   }
 
   setRotation(rotation: number): void {}
@@ -79,9 +69,13 @@ abstract class CollisionShape {
  */
 class BoxShape extends CollisionShape {
   shape: SAT.Polygon;
+  width: number;
+  height: number;
 
   constructor(width: number, height: number) {
     super(ShapeType.Polygon);
+    this.width = width;
+    this.height = height;
     this.shape = new SAT.Box(new SAT.Vector(), width, height).toPolygon();
   }
 

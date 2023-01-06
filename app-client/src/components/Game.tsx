@@ -6,7 +6,7 @@ import "./Game.css";
 import { GameScene } from "../game/game";
 import { Client, Room } from "colyseus.js";
 import { GameState } from "../../../app-shared/state/game-state";
-import { WORLD_WIDTH, WORLD_HEIGHT } from "../../../app-shared/constants";
+import { WORLD_WIDTH, WORLD_HEIGHT } from "../../../app-shared/utils/constants";
 
 export interface GameProps {
   client: Client;
@@ -27,13 +27,13 @@ function Game({ client, gameRoom }: GameProps) {
 
     // show players
     gameRoom.state.players.onAdd = (player, key) => {
-      console.log("new player have joined", player.x, player.y, key);
+      console.log("new player has joined", player.x, player.y, key);
     };
     gameRoom.state.players.onRemove = (_, key) => {
       console.log("player with id", key, "leaved the game");
     };
     gameRoom.state.players.onChange = (player, key) => {
-      console.log(player, "have changed at", key);
+      console.log(player, "has changed at", key);
     };
 
     // set viewport
@@ -61,7 +61,8 @@ function Game({ client, gameRoom }: GameProps) {
       const now = Date.now();
       const dt = (now - last) * 0.001;
       last = now;
-      gameScene.update(now, dt);
+      gameScene.update(dt);
+      gameScene.updateRenderables(dt);
       window.requestAnimationFrame(schedule);
     }
 

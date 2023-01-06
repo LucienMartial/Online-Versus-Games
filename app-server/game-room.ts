@@ -1,7 +1,7 @@
 import { Dispatcher } from "@colyseus/command";
 import { Client, Room } from "colyseus";
 import { PhysicEngine } from "../app-shared/physics/index.js";
-import { GameState } from "../app-shared/state/game-state.js";
+import { GameState } from "../app-shared/state/index.js";
 import {
   OnCreateCommand,
   OnJoinCommand,

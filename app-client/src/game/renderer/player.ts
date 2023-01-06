@@ -1,0 +1,3 @@
+class PlayerRender {}
+
+export { PlayerRender };

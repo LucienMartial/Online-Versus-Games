@@ -1,27 +1,25 @@
 import { Container, DisplayObject } from "pixi.js";
+import { RenderObject } from "./renderer";
 import { InputManager } from "./utils/input";
-import { PhysicEngine } from "../../../app-shared/physics";
-import { CollectionManager } from "./entities";
 
 /**
  * Context object containing scene data
  */
 class Context {
+  renderables: Set<RenderObject>;
   stage: Container<DisplayObject>;
-  physicEngine: PhysicEngine;
   inputManager: InputManager;
   width: number;
   height: number;
 
   constructor(
     stage: Container<DisplayObject>,
-    physicEngine: PhysicEngine,
     inputManager: InputManager,
     width: number,
     height: number
   ) {
+    this.renderables = new Set<RenderObject>();
     this.stage = stage;
-    this.physicEngine = physicEngine;
     this.inputManager = inputManager;
     this.width = width;
     this.height = height;
@@ -34,15 +32,12 @@ class Context {
 abstract class Scene {
   elapsed = 0;
   ctx: Context;
-  collections: CollectionManager;
 
   constructor(width: number, height: number) {
     this.elapsed = 0;
-    this.collections = new CollectionManager();
     const stage = new Container();
     const inputManager = new InputManager();
-    const physicEngine = new PhysicEngine();
-    this.ctx = new Context(stage, physicEngine, inputManager, width, height);
+    this.ctx = new Context(stage, inputManager, width, height);
   }
 
   // clean up the scene
@@ -53,12 +48,14 @@ abstract class Scene {
   // load asset and create game objects
   abstract load(): Promise<void>;
 
-  update(now: number, dt: number): void {
-    // update logic
+  update(dt: number): void {
     this.elapsed += dt;
-    this.ctx.physicEngine.fixedUpdate(dt);
-    // update entities
-    this.collections.update(now, dt);
+  }
+
+  updateRenderables(dt: number) {
+    for (const object of this.ctx.renderables.values()) {
+      object.update(dt);
+    }
   }
 }
 

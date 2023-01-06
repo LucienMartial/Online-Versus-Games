@@ -1,9 +1,7 @@
-import { Graphics } from "./utils/graphics";
-import { BoxShape } from "../../../app-shared/physics";
-import { Context } from "./scene";
-import { BodyEntity } from "./entities";
-import { Vector } from "sat";
-import { Inputs } from "./utils/input";
+import SAT from "sat";
+import { BodyEntity } from "../game/index.js";
+import { BoxShape } from "../physics/index.js";
+import { Inputs } from "../utils/index.js";
 
 // shape
 const WIDTH = 80;
@@ -16,21 +14,20 @@ const DASH_SPEED = 800;
 const FRICTION = 0.95;
 
 class Player extends BodyEntity {
-  direction: Vector;
+  direction: SAT.Vector;
 
-  constructor(context: Context) {
+  constructor(id: string) {
     // default
-    const renderObject = Graphics.createRectangle(WIDTH, HEIGHT);
     const collisionShape = new BoxShape(WIDTH, HEIGHT);
-    super(context, renderObject, collisionShape, false);
+    super(collisionShape, false, id);
 
     // custom
-    this.physicObject.friction = new Vector(FRICTION, FRICTION);
-    this.direction = new Vector(0, 0);
+    this.friction = new SAT.Vector(FRICTION, FRICTION);
+    this.direction = new SAT.Vector();
   }
 
-  processInput(inputs: Record<Inputs, boolean>): void {
-    this.direction = new Vector();
+  processInput(inputs: Record<Inputs, boolean>) {
+    this.direction = new SAT.Vector();
 
     // get direction
     if (inputs.left) this.direction.x = -1;
@@ -47,10 +44,10 @@ class Player extends BodyEntity {
     this.accelerate(acc.x, acc.y);
 
     // move max speed
-    const factorX = MAX_SPEED / Math.abs(this.physicObject.velocity.x);
-    const factorY = MAX_SPEED / Math.abs(this.physicObject.velocity.y);
-    if (factorX < 1) this.physicObject.velocity.x *= factorX;
-    if (factorY < 1) this.physicObject.velocity.y *= factorY;
+    const factorX = MAX_SPEED / Math.abs(this.velocity.x);
+    const factorY = MAX_SPEED / Math.abs(this.velocity.y);
+    if (factorX < 1) this.velocity.x *= factorX;
+    if (factorY < 1) this.velocity.y *= factorY;
 
     // apply dash
     if (inputs.dash) {
