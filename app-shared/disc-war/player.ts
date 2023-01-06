@@ -1,4 +1,4 @@
-import SAT from "sat";
+import SAT, { Vector } from "sat";
 import { BodyEntity } from "../game/index.js";
 import { BoxShape } from "../physics/index.js";
 import { Inputs } from "../utils/index.js";
@@ -8,13 +8,17 @@ const WIDTH = 80;
 const HEIGHT = 160;
 
 // movement
-const ACCELERATION = 100;
+const FRICTION = 0.9;
+const ACCELERATION = 80;
 const MAX_SPEED = 800;
-const DASH_SPEED = 800;
-const FRICTION = 0.95;
+const DASH_SPEED = 2000;
+const DASH_DURATION = 300;
 
 class Player extends BodyEntity {
   direction: SAT.Vector;
+  canDash: boolean;
+  dashDirection: SAT.Vector;
+  dashStart: number;
 
   constructor(id: string) {
     // default
@@ -24,6 +28,11 @@ class Player extends BodyEntity {
     // custom
     this.friction = new SAT.Vector(FRICTION, FRICTION);
     this.direction = new SAT.Vector();
+    this.maxSpeed = MAX_SPEED;
+
+    this.canDash = true;
+    this.dashDirection = new SAT.Vector();
+    this.dashStart = 0;
   }
 
   processInput(inputs: Record<Inputs, boolean>) {
@@ -43,16 +52,25 @@ class Player extends BodyEntity {
     const acc = this.direction.clone().scale(ACCELERATION);
     this.accelerate(acc.x, acc.y);
 
-    // move max speed
-    const factorX = MAX_SPEED / Math.abs(this.velocity.x);
-    const factorY = MAX_SPEED / Math.abs(this.velocity.y);
-    if (factorX < 1) this.velocity.x *= factorX;
-    if (factorY < 1) this.velocity.y *= factorY;
-
     // apply dash
-    if (inputs.dash) {
+    if (inputs.dash && this.canDash) {
+      this.maxSpeed = DASH_SPEED;
+      this.friction = new SAT.Vector(0.92, 0.92);
+      this.canDash = false;
       const dashForce = this.direction.clone().scale(DASH_SPEED);
-      this.accelerate(dashForce.x, dashForce.y);
+      this.velocity.copy(dashForce);
+      this.dashStart = 0;
+    }
+  }
+
+  update(dt: number): void {
+    if (!this.canDash) {
+      this.dashStart += dt * 1000;
+      if (this.dashStart > DASH_DURATION) {
+        this.friction = new SAT.Vector(FRICTION, FRICTION);
+        this.maxSpeed = MAX_SPEED;
+        this.canDash = true;
+      }
     }
   }
 }

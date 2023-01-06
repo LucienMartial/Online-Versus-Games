@@ -1,26 +1,37 @@
 import { Dispatcher } from "@colyseus/command";
-import { Client, Room } from "colyseus";
-import { PhysicEngine } from "../app-shared/physics/index.js";
+import { Client, ClientState, Room } from "colyseus";
+import { DiscWarEngine } from "../app-shared/disc-war/disc-war.js";
 import { GameState } from "../app-shared/state/index.js";
-import {
-  OnCreateCommand,
-  OnJoinCommand,
-  OnLeaveCommand,
-  OnUpdateCommand,
-} from "./commands/index.js";
+import { OnJoinCommand, OnLeaveCommand } from "./commands/index.js";
+import { OnInputCommand } from "./commands/on-input.js";
+import { OnSyncCommand } from "./commands/on-sync.js";
 
 class GameRoom extends Room<GameState> {
   dispatcher = new Dispatcher(this);
-  physicEngine: PhysicEngine;
+  gameEngine: DiscWarEngine;
 
   onCreate() {
     this.setState(new GameState());
-    this.setSimulationInterval((dt: number) => this.update(dt));
+    this.gameEngine = new DiscWarEngine();
+    this.setSimulationInterval((dt: number) => this.update(dt), 1000 / 60);
+    this.setPatchRate(30);
 
-    // custom init
-    this.physicEngine = new PhysicEngine();
-    this.dispatcher.dispatch(new OnCreateCommand(), {
-      physicEngine: this.physicEngine,
+    // register event
+    this.onMessage("*", (client, type, message) => {
+      const baseData = {
+        client: client,
+        gameEngine: this.gameEngine,
+        data: message,
+      };
+
+      switch (type) {
+        case "input":
+          this.dispatcher.dispatch(new OnInputCommand(), baseData);
+          break;
+        default:
+          console.log("invalid message");
+          break;
+      }
     });
   }
 
@@ -31,13 +42,17 @@ class GameRoom extends Room<GameState> {
   }
 
   onJoin(client: Client) {
-    console.log("client joined", client.id);
-    this.dispatcher.dispatch(new OnJoinCommand(), { clientId: client.id });
+    this.dispatcher.dispatch(new OnJoinCommand(), {
+      client: client,
+      gameEngine: this.gameEngine,
+    });
   }
 
   onLeave(client: Client) {
-    this.dispatcher.dispatch(new OnLeaveCommand(), { clientId: client.id });
-    console.log("client leaved", client.id);
+    this.dispatcher.dispatch(new OnLeaveCommand(), {
+      client: client,
+      gameEngine: this.gameEngine,
+    });
   }
 
   onDispose(): void | Promise<any> {
@@ -46,9 +61,16 @@ class GameRoom extends Room<GameState> {
 
   // simulation update, 60 hertz
   update(dt: number) {
-    this.dispatcher.dispatch(new OnUpdateCommand(), {
-      physicEngine: this.physicEngine,
-      dt: dt,
+    // TODO: command to apply input, verify size of buffer etc..
+    for (const client of this.clients) {
+      const lastInput = client.userData.inputBuffer.pop();
+      if (!lastInput) continue;
+      this.gameEngine.processInput(lastInput, client.id);
+    }
+
+    this.gameEngine.update(dt * 0.001, this.clock.elapsedTime);
+    this.dispatcher.dispatch(new OnSyncCommand(), {
+      gameEngine: this.gameEngine,
     });
   }
 }

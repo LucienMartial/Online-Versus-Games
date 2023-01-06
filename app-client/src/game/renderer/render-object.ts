@@ -1,17 +1,16 @@
 import { DisplayObject, ObservablePoint } from "pixi.js";
-import { Context } from "../scene";
 
 /**
  * Renderable object
  */
 class RenderObject {
-  private displayObject: DisplayObject;
+  displayObject: DisplayObject;
+  id: string;
   onUpdate?: { (dt: number): void };
 
-  constructor(ctx: Context, displayObject: DisplayObject) {
+  constructor(displayObject: DisplayObject, id = "") {
     this.displayObject = displayObject;
-    ctx.stage.addChild(this.displayObject);
-    ctx.renderables.add(this);
+    this.id = id;
   }
 
   update(dt: number) {

@@ -32,7 +32,9 @@ class CollectionManager {
       }
     }
     // add own entities
-    for (const entity of this.collections[collectionName].values()) {
+    const collection = this.collections[collectionName];
+    if (!collection) return entities;
+    for (const entity of collection.values()) {
       entities.add(entity as T);
     }
     return entities;

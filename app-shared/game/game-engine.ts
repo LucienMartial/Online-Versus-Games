@@ -19,6 +19,12 @@ class GameEngine {
 
   processInput(inputs: Record<Inputs, boolean>, id: string) {}
 
+  processInputBuffer(inputs: Record<Inputs, boolean>[], id: string) {
+    for (const input of inputs) {
+      this.processInput(input, id);
+    }
+  }
+
   update(dt: number, elapsed: number) {
     this.physicEngine.fixedUpdate(dt);
     this.collections.update(dt);
@@ -48,6 +54,15 @@ class GameEngine {
 
   remove(collectionName: string, entity: Entity) {
     this.collections.remove(collectionName, entity);
+    if (entity instanceof BodyEntity) {
+      this.physicEngine.remove(entity);
+    }
+  }
+
+  removeById(collectionName: string, id: string) {
+    const entity = this.getById(collectionName, id);
+    if (!entity) return;
+    this.remove(collectionName, entity);
   }
 
   addCollections(collectionName: string, childNames: string[]) {

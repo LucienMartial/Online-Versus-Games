@@ -4,6 +4,7 @@ import { CollisionShape } from "../physics/index.js";
 
 // Default values
 const FRICTION = 0.95;
+const MAX_SPEED = 2000;
 
 /**
  * Entity with collision body
@@ -11,6 +12,7 @@ const FRICTION = 0.95;
 class BodyEntity extends Entity {
   velocity: SAT.Vector;
   friction: SAT.Vector;
+  maxSpeed: number;
   offset: SAT.Vector;
   rotation: number;
   static: boolean;
@@ -22,6 +24,7 @@ class BodyEntity extends Entity {
     this.friction = new SAT.Vector(FRICTION, FRICTION);
     this.offset = new SAT.Vector();
     this.rotation = 0;
+    this.maxSpeed = MAX_SPEED;
     this.static = isStatic;
     this.collisionShape = collisionShape;
   }
@@ -33,9 +36,7 @@ class BodyEntity extends Entity {
   /**
    * Basic collision response
    */
-  onCollision(response: SAT.Response, other: BodyEntity) {
-    this.move(-response.overlapV.x, -response.overlapV.y);
-  }
+  onCollision(response: SAT.Response, other: BodyEntity) {}
 
   // getters, setters
 

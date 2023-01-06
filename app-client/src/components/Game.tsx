@@ -25,17 +25,6 @@ function Game({ client, gameRoom }: GameProps) {
       backgroundColor: 0x000011,
     });
 
-    // show players
-    gameRoom.state.players.onAdd = (player, key) => {
-      console.log("new player has joined", player.x, player.y, key);
-    };
-    gameRoom.state.players.onRemove = (_, key) => {
-      console.log("player with id", key, "leaved the game");
-    };
-    gameRoom.state.players.onChange = (player, key) => {
-      console.log(player, "has changed at", key);
-    };
-
     // set viewport
     const viewport = new Viewport({
       worldWidth: WORLD_WIDTH,
@@ -48,9 +37,9 @@ function Game({ client, gameRoom }: GameProps) {
     viewport.fit();
 
     // init scene
-    const gameScene = new GameScene(WORLD_WIDTH, WORLD_HEIGHT);
+    const gameScene = new GameScene(client, gameRoom);
     gameScene.load().then(() => {
-      viewport.addChild(gameScene.ctx.stage);
+      viewport.addChild(gameScene.stage);
       // launch game
       window.requestAnimationFrame(schedule);
     });
