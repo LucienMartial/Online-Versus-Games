@@ -30,7 +30,8 @@ class Player extends BodyEntity {
     this.direction = new SAT.Vector();
     this.maxSpeed = MAX_SPEED;
 
-    this.canDash = true;
+    // dash
+    this.canDash = false;
     this.dashDirection = new SAT.Vector();
     this.dashStart = 0;
   }
@@ -64,7 +65,7 @@ class Player extends BodyEntity {
   }
 
   update(dt: number): void {
-    if (!this.canDash) {
+    if (!this.canDash && false) {
       this.dashStart += dt * 1000;
       if (this.dashStart > DASH_DURATION) {
         this.friction = new SAT.Vector(FRICTION, FRICTION);
