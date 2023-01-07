@@ -2,6 +2,8 @@ import { PhysicEngine } from "../physics/index.js";
 import { Inputs } from "../utils/index.js";
 import { Entity, BodyEntity, CollectionManager } from "./index.js";
 
+const GAME_RATE = 1 / 60;
+
 /**
  * Contain the game logic, used on server and client
  */
@@ -25,9 +27,18 @@ class GameEngine {
     }
   }
 
-  update(dt: number, elapsed: number) {
-    this.physicEngine.fixedUpdate(dt);
-    this.collections.update(dt);
+  fixedUpdate(dt: number, now: number) {
+    while (dt > 0) {
+      const stepTime = GAME_RATE;
+      this.step(stepTime, now);
+      now += stepTime;
+      dt -= stepTime;
+    }
+  }
+
+  step(dt: number, now: number) {
+    this.physicEngine.step(dt);
+    this.collections.update(dt, now);
   }
 
   /**

@@ -63,12 +63,14 @@ class GameRoom extends Room<GameState> {
   update(dt: number) {
     // TODO: command to apply input, verify size of buffer etc..
     for (const client of this.clients) {
-      const lastInput = client.userData.inputBuffer.pop();
-      if (!lastInput) continue;
-      this.gameEngine.processInput(lastInput, client.id);
+      this.gameEngine.processInputBuffer(
+        client.userData.inputBuffer,
+        client.id
+      );
+      client.userData.inputBuffer = [];
     }
 
-    this.gameEngine.update(dt * 0.001, this.clock.elapsedTime);
+    this.gameEngine.fixedUpdate(dt * 0.001, this.clock.currentTime);
     this.dispatcher.dispatch(new OnSyncCommand(), {
       gameEngine: this.gameEngine,
     });

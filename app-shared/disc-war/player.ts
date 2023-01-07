@@ -7,10 +7,10 @@ import { Inputs } from "../utils/index.js";
 const WIDTH = 80;
 const HEIGHT = 160;
 
-// movement
-const FRICTION = 0.9;
-const ACCELERATION = 80;
-const MAX_SPEED = 800;
+// movement. 0 friction mean full determinism
+const FRICTION = 0.9 * 0;
+const ACCELERATION = 80 * 10;
+const MAX_SPEED = 2000;
 const DASH_SPEED = 2000;
 const DASH_DURATION = 300;
 

@@ -51,12 +51,15 @@ class GameScene extends Scene {
     // init character
     const characterDisplay = new Sprite(assets.character);
     const characterRender = new RenderObject(characterDisplay);
-    characterRender.setPosition(WORLD_WIDTH * 0.8, WORLD_HEIGHT / 2);
     characterRender.setOffset(150, 150);
-    characterRender.onUpdate = (dt: number) => {
+    characterRender.onUpdate = (dt: number, now: number) => {
       characterRender.rotate(-0.5 * dt);
-      characterRender.move(0, Math.cos(this.elapsed) * 5);
+      characterRender.setPosition(
+        WORLD_WIDTH * 0.8,
+        WORLD_HEIGHT / 2 + Math.cos(now * 0.001) * 300
+      );
     };
+    characterRender.update(0, 0);
     this.add(characterRender);
 
     // init box
@@ -64,7 +67,7 @@ class GameScene extends Scene {
       const shape = box.collisionShape as BoxShape;
       const boxDisplay = Graphics.createRectangle(shape.width, shape.height);
       const boxRender = new RenderObject(boxDisplay);
-      boxRender.onUpdate = (dt: number) => {
+      boxRender.onUpdate = (dt: number, now: number) => {
         boxRender.setPosition(box.position.x, box.position.y);
         boxRender.setOffset(box.offset.x, box.offset.y);
         boxRender.setRotation(box.rotation);
@@ -113,7 +116,7 @@ class GameScene extends Scene {
       const player = this.gameEngine.getPlayer(id);
       if (!player) return;
       const lerpPower = this.id === id ? 0.05 : 0.9;
-      player.lerpTo(other.x, other.y, lerpPower);
+      // player.lerpTo(other.x, other.y, lerpPower);
       if (this.id === id) {
         console.log(player.position.x, player.position.y);
         console.log(other.x, other.y);
@@ -127,9 +130,9 @@ class GameScene extends Scene {
     super.destroy();
   }
 
-  update(dt: number) {
+  update(dt: number, now: number) {
     // base update
-    super.update(dt);
+    super.update(dt, now);
 
     // current inputs
     const inputs = this.inputManager.inputs;
@@ -141,7 +144,7 @@ class GameScene extends Scene {
     this.gameEngine.processInput(inputs, this.id);
 
     // game engine
-    this.gameEngine.update(dt, this.elapsed);
+    this.gameEngine.fixedUpdate(dt, now);
   }
 }
 
