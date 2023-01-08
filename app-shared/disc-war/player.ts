@@ -40,7 +40,6 @@ class Player extends BodyEntity {
 
   processInput(inputs: Record<Inputs, boolean>) {
     if (this.isDashing) return;
-    console.log("inputs");
     this.direction = new SAT.Vector();
 
     // get direction

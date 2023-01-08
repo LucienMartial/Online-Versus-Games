@@ -64,25 +64,29 @@ class GameRoom extends Room<GameState> {
 
   // simulation update, 60 hertz
   update(dt: number) {
-    // TODO: command to apply input, verify size of buffer etc..
+    // fixed update
     let now = this.clock.currentTime;
-
     this.accumulator += Math.max(dt / 1000, GAME_RATE);
     while (this.accumulator >= GAME_RATE) {
-      for (const client of this.clients) {
-        const input = client.userData.inputBuffer.pop();
-        if (input) {
-          this.gameEngine.processInput(input, client.id);
-        }
-      }
-      this.gameEngine.step(GAME_RATE, now);
+      this.step(GAME_RATE, now);
       this.accumulator -= GAME_RATE;
       now += GAME_RATE;
     }
 
+    // send state
     this.dispatcher.dispatch(new OnSyncCommand(), {
       gameEngine: this.gameEngine,
     });
+  }
+
+  step(dt: number, now: number) {
+    // TODO: command to apply input, verify size of buffer etc..
+    for (const client of this.clients) {
+      const input = client.userData.inputBuffer.pop();
+      if (!input) continue;
+      this.gameEngine.processInput(input, client.id);
+    }
+    this.gameEngine.step(dt, now);
   }
 }
 
