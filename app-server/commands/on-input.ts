@@ -10,8 +10,6 @@ interface Data {
   data: Record<Inputs, boolean>;
 }
 
-let left = 0;
-
 class OnInputCommand extends Command<GameRoom, Data> {
   execute({ client, gameEngine, data } = this.payload) {
     client.userData.inputBuffer.push(data);

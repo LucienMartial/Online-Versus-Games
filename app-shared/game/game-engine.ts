@@ -1,8 +1,7 @@
 import { PhysicEngine } from "../physics/index.js";
 import { Inputs } from "../utils/index.js";
 import { Entity, BodyEntity, CollectionManager } from "./index.js";
-
-const GAME_RATE = 1 / 60;
+import { GAME_RATE } from "../utils/index.js";
 
 /**
  * Contain the game logic, used on server and client
@@ -10,10 +9,12 @@ const GAME_RATE = 1 / 60;
 class GameEngine {
   private collections: CollectionManager;
   physicEngine: PhysicEngine;
+  accumulator: number;
 
   constructor() {
     this.physicEngine = new PhysicEngine();
     this.collections = new CollectionManager();
+    this.accumulator = 0;
     this.init();
   }
 
@@ -28,11 +29,11 @@ class GameEngine {
   }
 
   fixedUpdate(dt: number, now: number) {
-    while (dt > 0) {
-      const stepTime = GAME_RATE;
-      this.step(stepTime, now);
-      now += stepTime;
-      dt -= stepTime;
+    this.accumulator += Math.max(dt, GAME_RATE);
+    while (this.accumulator >= GAME_RATE) {
+      this.step(GAME_RATE, now);
+      this.accumulator -= GAME_RATE;
+      now += GAME_RATE;
     }
   }
 

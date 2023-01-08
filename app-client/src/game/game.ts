@@ -10,8 +10,6 @@ import { Client, Room } from "colyseus.js";
 import { GameState } from "../../../app-shared/state/game-state";
 import { WORLD_HEIGHT, WORLD_WIDTH } from "../../../app-shared/utils";
 
-let left = 0;
-
 /**
  * Game scene, all logic is in game engine
  */
@@ -75,8 +73,8 @@ class GameScene extends Scene {
       this.add(boxRender);
     }
 
-    const mainPlayer = this.gameEngine.addPlayer(this.id);
-    const mainPlayerRender = new PlayerRender(mainPlayer, this.id);
+    const mainPlayer = this.gameEngine.addPlayer(this.id + "a");
+    const mainPlayerRender = new PlayerRender(mainPlayer, this.id + "a");
     mainPlayerRender.displayObject.zIndex = 5;
     this.add(mainPlayerRender);
 
@@ -84,7 +82,7 @@ class GameScene extends Scene {
     // fetch current state
     this.room.onStateChange.once((state) => {
       for (const id of state.players.keys()) {
-        if (id === this.id) continue;
+        // if (id === this.id) continue;
         const player = this.gameEngine.addPlayer(id);
         const playerRender = new PlayerRender(player, id, 0x0099ff);
         this.add(playerRender);
@@ -92,7 +90,7 @@ class GameScene extends Scene {
     });
 
     this.room.state.players.onAdd = (_, id) => {
-      if (id === this.id) return;
+      // if (id === this.id) return;
       console.log("new player has joined", id);
       // already exist?
       if (this.gameEngine.getById("players", id)) return;
@@ -104,7 +102,7 @@ class GameScene extends Scene {
 
     // player leaved the game
     this.room.state.players.onRemove = (_, id: string) => {
-      if (id === this.id) return;
+      // if (id === this.id) return;
       console.log("player with id", id, "leaved the game");
       // remove it
       this.gameEngine.removePlayer(id);
@@ -115,12 +113,13 @@ class GameScene extends Scene {
     this.room.state.players.onChange = (other, id) => {
       const player = this.gameEngine.getPlayer(id);
       if (!player) return;
-      const lerpPower = this.id === id ? 0.05 : 0.9;
+      // const lerpPower = this.id === id ? 0.1 : 0.9;
       // player.lerpTo(other.x, other.y, lerpPower);
+      player.setPosition(other.x, other.y);
       if (this.id === id) {
-        console.log(player.position.x, player.position.y);
-        console.log(other.x, other.y);
-        console.log("");
+        // console.log(mainPlayer.position.x, mainPlayer.position.y);
+        // console.log(other.x, other.y);
+        // console.log("");
       }
     };
   }
@@ -137,11 +136,9 @@ class GameScene extends Scene {
     // current inputs
     const inputs = this.inputManager.inputs;
     this.room.send("input", inputs);
-    if (inputs.left) left++;
-    // console.log(left);
 
     // process input
-    this.gameEngine.processInput(inputs, this.id);
+    this.gameEngine.processInput(inputs, this.id + "a");
 
     // game engine
     this.gameEngine.fixedUpdate(dt, now);
