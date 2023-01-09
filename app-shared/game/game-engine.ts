@@ -20,11 +20,15 @@ class GameEngine {
 
   init() {}
 
-  processInput(inputs: Record<Inputs, boolean>, id: string) {}
+  processInput(now: number, inputs: Record<Inputs, boolean>, id: string) {}
 
-  processInputBuffer(inputs: Record<Inputs, boolean>[], id: string) {
+  processInputBuffer(
+    now: number,
+    inputs: Record<Inputs, boolean>[],
+    id: string
+  ) {
     for (const input of inputs) {
-      this.processInput(input, id);
+      this.processInput(now, input, id);
     }
   }
 
@@ -38,8 +42,8 @@ class GameEngine {
   }
 
   step(dt: number, now: number) {
-    this.physicEngine.step(dt);
     this.collections.update(dt, now);
+    this.physicEngine.step(dt);
   }
 
   /**

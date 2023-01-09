@@ -84,7 +84,7 @@ class GameRoom extends Room<GameState> {
     for (const client of this.clients) {
       const input = client.userData.inputBuffer.pop();
       if (!input) continue;
-      this.gameEngine.processInput(input, client.id);
+      this.gameEngine.processInput(input.time, input.inputs, client.id);
     }
     this.gameEngine.step(dt, now);
   }

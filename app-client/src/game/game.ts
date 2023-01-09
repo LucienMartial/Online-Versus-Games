@@ -113,8 +113,8 @@ class GameScene extends Scene {
     this.room.state.players.onChange = (other, id) => {
       const player = this.gameEngine.getPlayer(id);
       if (!player) return;
-      // const lerpPower = this.id === id ? 0.1 : 0.9;
-      // player.lerpTo(other.x, other.y, lerpPower);
+      // const lerpPower = this.id === id ? 0.9 : 0.9;
+      // mainPlayer.lerpTo(other.x, other.y, lerpPower);
       player.setPosition(other.x, other.y);
       if (this.id === id) {
         // console.log(mainPlayer.position.x, mainPlayer.position.y);
@@ -135,12 +135,8 @@ class GameScene extends Scene {
 
     // current inputs
     const inputs = this.inputManager.inputs;
-    this.room.send("input", inputs);
-
-    // process input
-    this.gameEngine.processInput(inputs, this.id + "a");
-
-    // game engine
+    this.room.send("input", { time: now, inputs: inputs });
+    this.gameEngine.processInput(now, inputs, this.id + "a");
     this.gameEngine.fixedUpdate(dt, now);
   }
 }
