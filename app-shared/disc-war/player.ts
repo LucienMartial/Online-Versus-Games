@@ -9,9 +9,9 @@ const HEIGHT = 160;
 
 // movement. 0 friction mean full determinism
 const FRICTION = 0;
-const MAX_SPEED = 1000;
+const MAX_SPEED = 800;
 const DASH_SPEED = 2000;
-const DASH_DURATION = 400;
+const DASH_DURATION = 200;
 const DASH_COOLDOWN = 1000;
 
 class Player extends BodyEntity {
