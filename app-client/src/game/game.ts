@@ -8,13 +8,19 @@ import { Graphics } from "./utils/graphics";
 import { PlayerRender, RenderObject } from "./renderer";
 import { Client, Room } from "colyseus.js";
 import { GameState } from "../../../app-shared/state/game-state";
-import { WORLD_HEIGHT, WORLD_WIDTH } from "../../../app-shared/utils";
+import {
+  InputData,
+  WORLD_HEIGHT,
+  WORLD_WIDTH,
+} from "../../../app-shared/utils";
+import { Predictor } from "./sync/predictor";
 
 /**
  * Game scene, all logic is in game engine
  */
 class GameScene extends Scene {
   gameEngine: DiscWarEngine;
+  predictor: Predictor;
   client: Client;
   room: Room<GameState>;
   id: string;
@@ -25,6 +31,7 @@ class GameScene extends Scene {
     this.client = client;
     this.room = room;
     this.id = this.room.sessionId;
+    this.predictor = new Predictor(this.gameEngine, this.id);
   }
 
   async load(): Promise<void> {
@@ -73,15 +80,16 @@ class GameScene extends Scene {
       this.add(boxRender);
     }
 
-    const mainPlayer = this.gameEngine.addPlayer(this.id + "a");
-    const mainPlayerRender = new PlayerRender(mainPlayer, this.id + "a");
+    const mainPlayer = this.gameEngine.addPlayer(this.id);
+    const mainPlayerRender = new PlayerRender(mainPlayer, this.id);
     mainPlayerRender.displayObject.zIndex = 5;
     this.add(mainPlayerRender);
 
     // player joined the game
     // fetch current state
     this.room.onStateChange.once((state) => {
-      for (const id of state.players.keys()) {
+      for (let id of state.players.keys()) {
+        if (this.id === id) id = "a";
         // if (id === this.id) continue;
         const player = this.gameEngine.addPlayer(id);
         const playerRender = new PlayerRender(player, id, 0x0099ff);
@@ -90,6 +98,7 @@ class GameScene extends Scene {
     });
 
     this.room.state.players.onAdd = (_, id) => {
+      if (this.id === id) id = "a";
       // if (id === this.id) return;
       console.log("new player has joined", id);
       // already exist?
@@ -102,6 +111,7 @@ class GameScene extends Scene {
 
     // player leaved the game
     this.room.state.players.onRemove = (_, id: string) => {
+      if (this.id === id) id = "a";
       // if (id === this.id) return;
       console.log("player with id", id, "leaved the game");
       // remove it
@@ -109,8 +119,14 @@ class GameScene extends Scene {
       this.removeById(id);
     };
 
-    // player got updated
-    this.room.state.players.onChange = (other, id) => {
+    this.room.onStateChange((state: GameState) => {
+      this.predictor.synchronize(state);
+    });
+
+    // other players got updated
+    this.room.state.players.onChange = (other, id: string) => {
+      if (this.id === id) id = "a";
+      // if (this.id === id) return;
       const player = this.gameEngine.getPlayer(id);
       if (!player) return;
       // const lerpPower = this.id === id ? 0.9 : 0.9;
@@ -135,9 +151,13 @@ class GameScene extends Scene {
 
     // current inputs
     const inputs = this.inputManager.inputs;
-    this.room.send("input", { time: now, inputs: inputs });
-    this.gameEngine.processInput(now, inputs, this.id + "a");
-    this.gameEngine.fixedUpdate(dt, now);
+    const inputData: InputData = {
+      time: now,
+      inputs: inputs,
+    };
+    this.predictor.processInput(inputData);
+    this.room.send("input", inputData);
+    this.predictor.predict(dt, now);
   }
 }
 

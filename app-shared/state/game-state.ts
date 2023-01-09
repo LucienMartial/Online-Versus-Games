@@ -13,6 +13,7 @@ class PlayerState extends Schema {
 
 class GameState extends Schema {
   @type({ map: PlayerState }) players = new MapSchema<PlayerState>();
+  @type({ map: "number" }) lastInputs = new MapSchema<number>();
 }
 
 export { GameState, PlayerState };

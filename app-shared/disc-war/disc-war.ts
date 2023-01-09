@@ -16,7 +16,7 @@ class DiscWarEngine extends GameEngine {
     box.setOffset(50, 100);
     box.setPosition(WORLD_WIDTH / 2, WORLD_HEIGHT / 2);
     box.setRotation(Math.PI / 2);
-    // this.add("boxes", box);
+    this.add("boxes", box);
   }
 
   addPlayer(id: string): Player {

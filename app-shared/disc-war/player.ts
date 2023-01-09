@@ -41,7 +41,7 @@ class Player extends BodyEntity {
   }
 
   processInput(now: number, inputs: Record<Inputs, boolean>) {
-    if (now < this.dashBegin + DASH_DURATION) return;
+    if (this.isDashing && now < this.dashBegin + DASH_DURATION) return;
 
     // get direction
     this.direction = new SAT.Vector();
@@ -79,12 +79,12 @@ class Player extends BodyEntity {
         this.setVelocity(this.dashForce.x, this.dashForce.y);
       }
       // end of dash
-      if (this.dashStart > DASH_DURATION) {
+      if (this.dashStart >= DASH_DURATION) {
         this.isDashing = false;
         this.maxSpeed = MAX_SPEED;
       }
       // cooldown
-      if (this.dashStart > DASH_COOLDOWN) {
+      if (this.dashStart >= DASH_COOLDOWN) {
         this.canDash = true;
       }
     }
