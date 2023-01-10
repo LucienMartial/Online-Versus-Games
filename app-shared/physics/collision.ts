@@ -105,4 +105,6 @@ class LineShape extends CollisionShape {
   }
 }
 
+// TODO: Circle shape
+
 export { CollisionShape, BoxShape, LineShape };

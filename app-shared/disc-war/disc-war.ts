@@ -5,6 +5,9 @@ import { Map, Player } from "./index.js";
 import { BoxShape } from "../physics/index.js";
 import SAT from "sat";
 
+/**
+ * Game logic for disc war
+ */
 class DiscWarEngine extends GameEngine {
   init() {
     // map
@@ -12,6 +15,7 @@ class DiscWarEngine extends GameEngine {
     for (const wall of map.walls) this.add("walls", wall);
 
     // disc
+    // TODO: Disc object
     const disc = new BodyEntity(new BoxShape(100, 100), false);
     disc.friction = new SAT.Vector(1, 1);
     disc.setPosition(WORLD_WIDTH / 2, WORLD_HEIGHT / 2);

@@ -4,7 +4,10 @@ import { BodyEntity } from "../../../../app-shared/game";
 import { GameState } from "../../../../app-shared/state/game-state";
 import { InputData, lerp } from "../../../../app-shared/utils";
 
-const MAX_RESIMU_STEP = 80;
+const MAX_RESIMU_STEP = 50;
+const PLAYER_BEND = 0.05;
+const DISC_BEND = 0.15;
+const OTHER_PLAYERS_BEND = 0.3;
 
 /**
  * Shadow object, contain information used for bending
@@ -73,7 +76,7 @@ class Predictor {
       const player = this.gameEngine.getPlayer(id);
       if (!player) continue;
       // interpolation new position
-      player.lerpTo(playerState.x, playerState.y, 0.3);
+      player.lerpTo(playerState.x, playerState.y, OTHER_PLAYERS_BEND);
     }
 
     // Extrapolation with bending at the end
@@ -104,17 +107,14 @@ class Predictor {
     this.reconciliate(lastInputTime, state);
 
     // bending phase
-    discShadow.bend(disc.position, disc.velocity, 0.15);
-    playerShadow.bend(player.position, player.velocity, 0.05);
+    discShadow.bend(disc.position, disc.velocity, DISC_BEND);
+    playerShadow.bend(player.position, player.velocity, PLAYER_BEND);
   }
 
   /**
    * Re apply input from a point of time, fully simulating multiple game steps
    */
   reconciliate(start: number, state: GameState) {
-    const player = this.gameEngine.getPlayer(this.playerId);
-    if (!player) return;
-
     let i = 0;
     // console.log("reconciliate");
     for (const data of this.inputs) {
@@ -131,8 +131,7 @@ class Predictor {
           const now = input.time;
           let dt = (now - last) * 0.001;
           last = input.time;
-
-          player.processInput(input.inputs);
+          this.gameEngine.processInput(input.inputs, this.playerId);
           this.gameEngine.step(dt);
         }
 

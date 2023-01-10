@@ -15,6 +15,9 @@ import {
 import { Predictor } from "./sync/predictor";
 import { MapRender } from "./renderer/map-render";
 
+const PLAYER_GHOST = false;
+const DISC_GHOST = false;
+
 /**
  * Game scene for the disc war game.
  * Render and manage inputs, all logic is in
@@ -85,18 +88,28 @@ class GameScene extends Scene {
     };
 
     // ghosts
-    const discGhost = new RenderObject();
-    discGhost.addChild(Graphics.createRectangle(100, 100, 0x0099ff));
-    const playerGhost = new RenderObject();
-    playerGhost.addChild(Graphics.createRectangle(80, 160, 0x0099ff));
-    this.add(discGhost);
-    this.add(playerGhost);
+    let discGhost: RenderObject;
+    let playerGhost: RenderObject;
+    if (DISC_GHOST) {
+      discGhost = new RenderObject();
+      discGhost.addChild(Graphics.createRectangle(100, 100, 0x0099ff));
+      this.add(discGhost);
+    }
+    if (PLAYER_GHOST) {
+      playerGhost = new RenderObject();
+      playerGhost.addChild(Graphics.createRectangle(80, 160, 0x0099ff));
+      this.add(playerGhost);
+    }
 
     // synchronization
     this.room.onStateChange((state: GameState) => {
-      const player = state.players.get(this.id);
-      if (player) playerGhost.setPosition(player.x, player.y);
-      discGhost.setPosition(state.disc.x, state.disc.y);
+      if (PLAYER_GHOST) {
+        const player = state.players.get(this.id);
+        if (player) playerGhost.setPosition(player.x, player.y);
+      }
+      if (DISC_GHOST) {
+        discGhost.setPosition(state.disc.x, state.disc.y);
+      }
       this.predictor.synchronize(state);
     });
   }
