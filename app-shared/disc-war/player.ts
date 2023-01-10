@@ -70,8 +70,8 @@ class Player extends BodyEntity {
     }
   }
 
-  update(dt: number, reenact: boolean): void {
-    super.update(dt, reenact);
+  update(dt: number): void {
+    super.update(dt);
 
     if (!this.canDash) {
       this.dashStart += dt * 1000;

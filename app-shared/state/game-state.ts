@@ -38,6 +38,9 @@ class DiscState extends Schema {
   }
 }
 
+/**
+ * Game data on the server, shared with each clients
+ */
 class GameState extends Schema {
   @type(DiscState) disc = new DiscState(0, 0, 0, 0);
   @type({ map: PlayerState }) players = new MapSchema<PlayerState>();

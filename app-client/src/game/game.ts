@@ -1,11 +1,10 @@
 import { Assets } from "@pixi/assets";
 import { Sprite } from "pixi.js";
-import { BoxShape, LineShape } from "../../../app-shared/physics";
 import { DiscWarEngine } from "../../../app-shared/disc-war/disc-war";
 import { BodyEntity } from "../../../app-shared/game";
 import { Scene } from "./scene";
 import { Graphics } from "./utils/graphics";
-import { PlayerRender, RenderObject } from "./renderer";
+import { DiscRender, PlayerRender, RenderObject } from "./renderer";
 import { Client, Room } from "colyseus.js";
 import { GameState } from "../../../app-shared/state/game-state";
 import {
@@ -14,9 +13,12 @@ import {
   WORLD_WIDTH,
 } from "../../../app-shared/utils";
 import { Predictor } from "./sync/predictor";
+import { MapRender } from "./renderer/map-render";
 
 /**
- * Game scene, all logic is in game engine
+ * Game scene for the disc war game.
+ * Render and manage inputs, all logic is in
+ * the disc war game engine class.
  */
 class GameScene extends Scene {
   gameEngine: DiscWarEngine;
@@ -34,28 +36,21 @@ class GameScene extends Scene {
     this.predictor = new Predictor(this.gameEngine, this.id);
   }
 
+  /**
+   * Load assets and init objects for the disc game.
+   * Do not forget to remove assets loaded in destroy
+   */
   async load(): Promise<void> {
     const assets = await Assets.loadBundle("basic");
 
     // map
     const walls = this.gameEngine.get<BodyEntity>("walls");
-    for (const wall of walls) {
-      const shape = wall.collisionShape as LineShape;
-      const displayLine = Graphics.createLine(
-        shape.p1.x,
-        shape.p1.y,
-        shape.p2.x,
-        shape.p2.y,
-        5
-      );
-      const wallRender = new RenderObject(displayLine);
-      wallRender.setPosition(wall.position.x, wall.position.y);
-      this.add(wallRender);
-    }
+    const mapRender = new MapRender(walls);
+    this.add(mapRender);
 
     // init character
-    const characterDisplay = new Sprite(assets.character);
-    const characterRender = new RenderObject(characterDisplay);
+    const characterRender = new RenderObject();
+    characterRender.addChild(new Sprite(assets.character));
     characterRender.setOffset(150, 150);
     characterRender.onUpdate = (dt: number, now: number) => {
       characterRender.rotate(-0.5 * dt);
@@ -67,86 +62,91 @@ class GameScene extends Scene {
     characterRender.update(0, 0);
     this.add(characterRender);
 
-    const discGhost = new RenderObject(
-      Graphics.createRectangle(100, 100, 0x0099ff)
-    );
-    const playerGhost = new RenderObject(
-      Graphics.createRectangle(80, 160, 0x0099ff)
-    );
+    // disc render
+    const disc = this.gameEngine.getOne<BodyEntity>("disc");
+    const discRender = new DiscRender(disc);
+    this.add(discRender);
+
+    // main player render
+    const mainPlayer = this.gameEngine.addPlayer(this.id);
+    const mainPlayerRender = new PlayerRender(mainPlayer, this.id);
+    mainPlayerRender.container.zIndex = 5;
+    this.add(mainPlayerRender);
+
+    // init game, add, remove players
+    this.room.onStateChange.once((state) => {
+      this.initGame(state);
+    });
+    this.room.state.players.onAdd = (_, id) => {
+      this.addPlayer(id);
+    };
+    this.room.state.players.onRemove = (_, id: string) => {
+      this.removePlayer(id);
+    };
+
+    // ghosts
+    const discGhost = new RenderObject();
+    discGhost.addChild(Graphics.createRectangle(100, 100, 0x0099ff));
+    const playerGhost = new RenderObject();
+    playerGhost.addChild(Graphics.createRectangle(80, 160, 0x0099ff));
     this.add(discGhost);
     this.add(playerGhost);
 
-    // init disc
-    for (const disc of this.gameEngine.get<BodyEntity>("disc")) {
-      const shape = disc.collisionShape as BoxShape;
-      const discDisplay = Graphics.createRectangle(shape.width, shape.height);
-      const discRender = new RenderObject(discDisplay);
-      discRender.onUpdate = (dt: number, now: number) => {
-        discRender.setPosition(disc.position.x, disc.position.y);
-        discRender.setOffset(disc.offset.x, disc.offset.y);
-      };
-      this.add(discRender);
-    }
-
-    const mainPlayer = this.gameEngine.addPlayer(this.id);
-    const mainPlayerRender = new PlayerRender(mainPlayer, this.id);
-    mainPlayerRender.displayObject.zIndex = 5;
-    this.add(mainPlayerRender);
-
-    // initial game
-    this.room.onStateChange.once((state) => {
-      for (const id of state.players.keys()) {
-        if (this.id === id) return;
-        console.log("new player has joined", id);
-        // already exist?
-        if (this.gameEngine.getById("players", id)) return;
-        // creater renderer
-        const player = this.gameEngine.getPlayer(id);
-        if (!player) {
-          const player = this.gameEngine.addPlayer(id);
-          const playerRender = new PlayerRender(player, id, 0x0099ff);
-          this.add(playerRender);
-        }
-      }
-    });
-
-    // player joined game
-    this.room.state.players.onAdd = (_, id) => {
-      if (this.id === id) return;
-      console.log("new player has joined", id);
-      // already exist?
-      if (this.gameEngine.getById("players", id)) return;
-      // creater renderer
-      const player = this.gameEngine.getPlayer(id);
-      if (!player) {
-        const player = this.gameEngine.addPlayer(id);
-        const playerRender = new PlayerRender(player, id, 0x0099ff);
-        this.add(playerRender);
-      }
-    };
-
-    // player leaved the game
-    this.room.state.players.onRemove = (_, id: string) => {
-      if (this.id === id) return;
-      console.log("player with id", id, "leaved the game");
-      // remove it
-      this.gameEngine.removePlayer(id);
-      this.removeById(id);
-    };
-
+    // synchronization
     this.room.onStateChange((state: GameState) => {
       const player = state.players.get(this.id);
-      // if (player) playerGhost.setPosition(player.x, player.y);
-      // discGhost.setPosition(state.disc.x, state.disc.y);
+      if (player) playerGhost.setPosition(player.x, player.y);
+      discGhost.setPosition(state.disc.x, state.disc.y);
       this.predictor.synchronize(state);
     });
   }
 
+  /**
+   * Custom destroy, do not forget to unload assets
+   */
   destroy() {
     Assets.unload("basic");
     super.destroy();
   }
 
+  /**
+   * Synchronize with the server state only one time at the beginning
+   */
+  initGame(state: GameState) {
+    for (const id of state.players.keys()) {
+      this.addPlayer(id);
+    }
+  }
+
+  /**
+   * Add a player it to the game engine and renderer when he joined
+   */
+  addPlayer(id: string) {
+    if (this.id === id) return;
+    if (this.gameEngine.getById("players", id)) return;
+    console.log("new player has joined", id);
+    const player = this.gameEngine.getPlayer(id);
+    if (!player) {
+      const player = this.gameEngine.addPlayer(id);
+      const playerRender = new PlayerRender(player, id, 0x0099ff);
+      this.add(playerRender);
+    }
+  }
+
+  /**
+   * Remove player when he leave
+   */
+  removePlayer(id: string) {
+    if (this.id === id) return;
+    console.log("player with id", id, "leaved the game");
+    this.gameEngine.removePlayer(id);
+    this.removeById(id);
+  }
+
+  /**
+   * Get player input, send it to server and directly predict next
+   * game simulation step
+   */
   update(dt: number, now: number) {
     // base update
     super.update(dt, now);

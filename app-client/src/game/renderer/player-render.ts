@@ -8,14 +8,12 @@ class PlayerRender extends RenderObject {
   player: Player;
 
   constructor(player: Player, id: string, color = 0x990000) {
+    super(id);
+
     const shape = player.collisionShape as BoxShape;
-    const playerDisplay = Graphics.createRectangle(
-      shape.width,
-      shape.height,
-      color
-    );
-    super(playerDisplay, id);
     this.player = player;
+    const display = Graphics.createRectangle(shape.width, shape.height, color);
+    this.addChild(display);
   }
 
   update(dt: number, now: number) {

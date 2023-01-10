@@ -6,23 +6,25 @@ import { InputData, lerp } from "../../../../app-shared/utils";
 
 const MAX_RESIMU_STEP = 80;
 
+/**
+ * Shadow object, contain information used for bending
+ * at the end of reconciliation to synchronize to server data
+ */
 class Shadow {
   oPosition: Vector;
   oVelocity: Vector;
-  position: Vector;
-  velocity: Vector;
-  bendPosition: Vector;
-  bendVelocity: Vector;
 
+  /**
+   * Register position before extrapolation, used for bending afterward
+   */
   constructor(position: Vector, velocity: Vector) {
     this.oPosition = new Vector().copy(position);
     this.oVelocity = new Vector().copy(velocity);
-    this.position = new Vector();
-    this.velocity = new Vector();
-    this.bendPosition = new Vector();
-    this.bendVelocity = new Vector();
   }
 
+  /**
+   * Interpolate between client predicted and server authorative data
+   */
   bend(position: Vector, velocity: Vector, factor = 0.1) {
     position.x = lerp(this.oPosition.x, position.x, factor);
     position.y = lerp(this.oPosition.y, position.y, factor);
@@ -31,13 +33,9 @@ class Shadow {
   }
 }
 
-interface Interpolation {
-  time: number;
-  position: Vector;
-}
-
-// predict next game state, handle synchronization with server
-// for the moment, only handle player
+/**
+ * Predict next game state, handle synchronization with the server
+ */
 class Predictor {
   gameEngine: DiscWarEngine;
   playerId: string;
@@ -49,19 +47,27 @@ class Predictor {
     this.inputs = [];
   }
 
+  /**
+   * register inputs for future reconciliation, process it afterward
+   */
   processInput(inputData: InputData) {
     this.inputs.push(structuredClone(inputData));
     this.gameEngine.processInput(inputData.inputs, this.playerId);
   }
 
+  /**
+   * Directly update the game after player input, regardless of server response
+   */
   predict(dt: number) {
     if (this.inputs.length > MAX_RESIMU_STEP) return;
-    this.gameEngine.fixedUpdate(dt, false);
+    this.gameEngine.fixedUpdate(dt);
   }
 
+  /**
+   * Synchronize state with server, extrapolating using registered inputs
+   */
   synchronize(state: GameState) {
-    // synchronize players
-
+    // Synchronize players
     for (const [id, playerState] of state.players.entries()) {
       if (id === this.playerId) continue;
       const player = this.gameEngine.getPlayer(id);
@@ -102,7 +108,9 @@ class Predictor {
     playerShadow.bend(player.position, player.velocity, 0.05);
   }
 
-  // re apply input and re update from synchronization timestamp
+  /**
+   * Re apply input from a point of time, fully simulating multiple game steps
+   */
   reconciliate(start: number, state: GameState) {
     const player = this.gameEngine.getPlayer(this.playerId);
     if (!player) return;
@@ -117,10 +125,6 @@ class Predictor {
           return;
         }
 
-        /**
-         * Interpolation
-         */
-
         // re apply input and re simulate the game
         let last = data.time;
         for (const input of this.inputs) {
@@ -129,7 +133,7 @@ class Predictor {
           last = input.time;
 
           player.processInput(input.inputs);
-          this.gameEngine.step(dt, true);
+          this.gameEngine.step(dt);
         }
 
         break;

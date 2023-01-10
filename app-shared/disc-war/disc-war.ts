@@ -17,7 +17,6 @@ class DiscWarEngine extends GameEngine {
     disc.setPosition(WORLD_WIDTH / 2, WORLD_HEIGHT / 2);
     disc.setVelocity(500, 100);
     disc.onCollision = (response: SAT.Response, other: BodyEntity) => {
-      // if (!other.static) return;
       disc.velocity.reflectN(response.overlapN.perp());
       disc.position.sub(response.overlapV);
       return;
@@ -50,8 +49,8 @@ class DiscWarEngine extends GameEngine {
     player.processInput(inputs);
   }
 
-  fixedUpdate(dt: number, reenact: boolean): void {
-    super.fixedUpdate(dt, reenact);
+  fixedUpdate(dt: number): void {
+    super.fixedUpdate(dt);
   }
 }
 
