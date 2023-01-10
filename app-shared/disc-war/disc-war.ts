@@ -19,7 +19,7 @@ class DiscWarEngine extends GameEngine {
     const disc = new BodyEntity(new BoxShape(100, 100), false);
     disc.friction = new SAT.Vector(1, 1);
     disc.setPosition(WORLD_WIDTH / 2, WORLD_HEIGHT / 2);
-    disc.setVelocity(500, 100);
+    disc.setVelocity(1800, 100);
     disc.onCollision = (response: SAT.Response, other: BodyEntity) => {
       disc.velocity.reflectN(response.overlapN.perp());
       disc.position.sub(response.overlapV);

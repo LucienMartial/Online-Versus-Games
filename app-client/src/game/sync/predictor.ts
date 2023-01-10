@@ -6,7 +6,7 @@ import { InputData, lerp } from "../../../../app-shared/utils";
 
 const MAX_RESIMU_STEP = 50;
 const PLAYER_BEND = 0.05;
-const DISC_BEND = 0.15;
+const DISC_BEND = 0.2;
 const OTHER_PLAYERS_BEND = 0.3;
 
 /**
@@ -104,7 +104,7 @@ class Predictor {
     // re simulate (extrapolation)
     const lastInputTime = state.lastInputs.get(this.playerId);
     if (!lastInputTime) return;
-    this.reconciliate(lastInputTime, state);
+    this.reconciliate(lastInputTime);
 
     // bending phase
     discShadow.bend(disc.position, disc.velocity, DISC_BEND);
@@ -114,7 +114,7 @@ class Predictor {
   /**
    * Re apply input from a point of time, fully simulating multiple game steps
    */
-  reconciliate(start: number, state: GameState) {
+  reconciliate(start: number) {
     let i = 0;
     // console.log("reconciliate");
     for (const data of this.inputs) {

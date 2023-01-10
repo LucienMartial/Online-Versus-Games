@@ -4,7 +4,7 @@ import { lerp } from "../../../../app-shared/utils";
 import { Graphics } from "../utils/graphics";
 import { RenderObject } from "./render-object";
 
-const POS_LERP = 0.98;
+const POS_LERP = 0.99;
 const COLOR = 0x00ffdd;
 
 class DiscRender extends RenderObject {
