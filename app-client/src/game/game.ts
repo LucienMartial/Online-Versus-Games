@@ -93,10 +93,26 @@ class GameScene extends Scene {
     mainPlayerRender.displayObject.zIndex = 5;
     this.add(mainPlayerRender);
 
+    // initial game
+    this.room.onStateChange.once((state) => {
+      for (const id of state.players.keys()) {
+        if (this.id === id) return;
+        console.log("new player has joined", id);
+        // already exist?
+        if (this.gameEngine.getById("players", id)) return;
+        // creater renderer
+        const player = this.gameEngine.getPlayer(id);
+        if (!player) {
+          const player = this.gameEngine.addPlayer(id);
+          const playerRender = new PlayerRender(player, id, 0x0099ff);
+          this.add(playerRender);
+        }
+      }
+    });
+
     // player joined game
     this.room.state.players.onAdd = (_, id) => {
       if (this.id === id) return;
-      // if (id === this.id) return;
       console.log("new player has joined", id);
       // already exist?
       if (this.gameEngine.getById("players", id)) return;
@@ -120,21 +136,10 @@ class GameScene extends Scene {
 
     this.room.onStateChange((state: GameState) => {
       const player = state.players.get(this.id);
-      if (player) {
-        playerGhost.setPosition(player.x, player.y);
-      }
+      // if (player) playerGhost.setPosition(player.x, player.y);
       // discGhost.setPosition(state.disc.x, state.disc.y);
       this.predictor.synchronize(state);
     });
-
-    // other players got updated
-    this.room.state.players.onChange = (other, id: string) => {
-      // if (this.id === id) return;
-      // const player = this.gameEngine.getPlayer(id);
-      // if (!player) return;
-      // const playerRender = this.getById(id);
-      // player.setPosition(other.x, other.y);
-    };
   }
 
   destroy() {

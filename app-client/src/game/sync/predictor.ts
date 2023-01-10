@@ -98,7 +98,7 @@ class Predictor {
     this.reconciliate(lastInputTime, state);
 
     // bending phase
-    discShadow.bend(disc.position, disc.velocity);
+    discShadow.bend(disc.position, disc.velocity, 0.15);
     playerShadow.bend(player.position, player.velocity, 0.05);
   }
 
