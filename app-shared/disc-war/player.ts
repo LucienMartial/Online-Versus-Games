@@ -39,8 +39,13 @@ class Player extends BodyEntity {
     this.dashForce = new SAT.Vector();
   }
 
-  processInput(now: number, inputs: Record<Inputs, boolean>) {
-    if (this.isDashing) return;
+  processInput(inputs: Record<Inputs, boolean>) {
+    // dashing
+    if (this.isDashing) {
+      this.setVelocity(this.dashForce.x, this.dashForce.y);
+      return;
+    }
+
     // get direction
     this.direction = new SAT.Vector();
     if (inputs.left) this.direction.x = -1;
@@ -66,15 +71,11 @@ class Player extends BodyEntity {
     }
   }
 
-  update(dt: number): void {
-    super.update(dt);
+  update(dt: number, reenact: boolean): void {
+    super.update(dt, reenact);
+
     if (!this.canDash) {
       this.dashStart += dt * 1000;
-
-      // dashing
-      if (this.dashStart <= DASH_DURATION) {
-        this.setVelocity(this.dashForce.x, this.dashForce.y);
-      }
 
       // end of dash
       if (this.dashStart >= DASH_DURATION) {

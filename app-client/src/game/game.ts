@@ -67,6 +67,15 @@ class GameScene extends Scene {
     characterRender.update(0, 0);
     this.add(characterRender);
 
+    const discGhost = new RenderObject(
+      Graphics.createRectangle(100, 100, 0x0099ff)
+    );
+    const playerGhost = new RenderObject(
+      Graphics.createRectangle(80, 160, 0x0099ff)
+    );
+    this.add(discGhost);
+    this.add(playerGhost);
+
     // init disc
     for (const disc of this.gameEngine.get<BodyEntity>("disc")) {
       const shape = disc.collisionShape as BoxShape;
@@ -75,7 +84,6 @@ class GameScene extends Scene {
       discRender.onUpdate = (dt: number, now: number) => {
         discRender.setPosition(disc.position.x, disc.position.y);
         discRender.setOffset(disc.offset.x, disc.offset.y);
-        // discRender.setRotation(disc.rotation);
       };
       this.add(discRender);
     }
@@ -104,45 +112,28 @@ class GameScene extends Scene {
     // player leaved the game
     this.room.state.players.onRemove = (_, id: string) => {
       if (this.id === id) return;
-      // if (id === this.id) return;
       console.log("player with id", id, "leaved the game");
       // remove it
       this.gameEngine.removePlayer(id);
       this.removeById(id);
     };
 
-    const discGhost = new RenderObject(
-      Graphics.createRectangle(100, 100, 0x0099ff)
-    );
-    const playerGhost = new RenderObject(
-      Graphics.createRectangle(80, 160, 0x0099ff)
-    );
-    this.add(discGhost);
-    this.add(playerGhost);
-
     this.room.onStateChange((state: GameState) => {
       const player = state.players.get(this.id);
       if (player) {
         playerGhost.setPosition(player.x, player.y);
       }
-      discGhost.setPosition(state.disc.x, state.disc.y);
+      // discGhost.setPosition(state.disc.x, state.disc.y);
       this.predictor.synchronize(state);
     });
 
     // other players got updated
     this.room.state.players.onChange = (other, id: string) => {
-      if (this.id === id) return;
       // if (this.id === id) return;
-      const player = this.gameEngine.getPlayer(id);
-      if (!player) return;
-      // const lerpPower = this.id === id ? 0.9 : 0.9;
-      // mainPlayer.lerpTo(other.x, other.y, lerpPower);
-      player.setPosition(other.x, other.y);
-      if (this.id === id) {
-        // console.log(mainPlayer.position.x, mainPlayer.position.y);
-        // console.log(other.x, other.y);
-        // console.log("");
-      }
+      // const player = this.gameEngine.getPlayer(id);
+      // if (!player) return;
+      // const playerRender = this.getById(id);
+      // player.setPosition(other.x, other.y);
     };
   }
 
@@ -163,7 +154,7 @@ class GameScene extends Scene {
     };
     this.room.send("input", inputData);
     this.predictor.processInput(inputData);
-    this.predictor.predict(dt, now);
+    this.predictor.predict(dt);
   }
 }
 

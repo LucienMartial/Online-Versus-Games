@@ -70,11 +70,11 @@ class GameRoom extends Room<GameState> {
       const data = client.userData as UserData;
       const inputData = data.inputBuffer.shift();
       if (!inputData) continue;
-      this.gameEngine.processInput(inputData.time, inputData.inputs, client.id);
+      this.gameEngine.processInput(inputData.inputs, client.id);
       this.state.lastInputs.set(client.id, inputData.time);
     }
 
-    this.gameEngine.fixedUpdate(dt * 0.001, this.clock.currentTime);
+    this.gameEngine.fixedUpdate(dt * 0.001, false);
 
     for (const disc of this.gameEngine.get<BodyEntity>("disc")) {
       this.state.disc = new DiscState(

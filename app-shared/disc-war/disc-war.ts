@@ -44,14 +44,14 @@ class DiscWarEngine extends GameEngine {
     return this.getById<Player>("players", id);
   }
 
-  processInput(now: number, inputs: Record<Inputs, boolean>, id: string): void {
+  processInput(inputs: Record<Inputs, boolean>, id: string): void {
     const player = this.getById<Player>("players", id);
     if (!player) return;
-    player.processInput(now, inputs);
+    player.processInput(inputs);
   }
 
-  fixedUpdate(dt: number, now: number): void {
-    super.fixedUpdate(dt, now);
+  fixedUpdate(dt: number, reenact: boolean): void {
+    super.fixedUpdate(dt, reenact);
   }
 }
 
