@@ -1,6 +1,8 @@
 import { DiscWarEngine } from "../../../../app-shared/disc-war";
+import { BodyEntity } from "../../../../app-shared/game";
 import { GameState } from "../../../../app-shared/state/game-state";
-import { GAME_RATE, InputData } from "../../../../app-shared/utils";
+import { GAME_RATE, InputData, lerp } from "../../../../app-shared/utils";
+import { PlayerRender } from "../renderer";
 
 const MAX_RESIMU_STEP = 50;
 
@@ -27,20 +29,26 @@ class Predictor {
   }
 
   predict(dt: number, now: number) {
+    if (this.inputs.length > MAX_RESIMU_STEP) return;
     this.gameEngine.fixedUpdate(dt, now);
   }
 
   synchronize(state: GameState) {
-    // main player
-    const mainPlayer = this.gameEngine.getPlayer(this.playerId);
-    if (!mainPlayer || mainPlayer.isDashing) return;
-
     // synchronize players
     for (const [id, playerState] of state.players.entries()) {
       const player = this.gameEngine.getPlayer(id);
       if (!player) continue;
+      if (playerState.isDashing) return;
       player.setPosition(playerState.x, playerState.y);
+      player.dashStart = playerState.dashStart;
+      player.isDashing = playerState.isDashing;
+      player.canDash = playerState.canDash;
     }
+
+    const disc = this.gameEngine.get<BodyEntity>("disc").values().next().value;
+    disc.setPosition(state.disc.x, state.disc.y);
+    disc.velocity.x = state.disc.vx;
+    disc.velocity.y = state.disc.vy;
 
     // re simulate (extrapolation)
     const lastInputTime = state.lastInputs.get(this.playerId);
@@ -50,13 +58,17 @@ class Predictor {
 
   // re apply input and re update from synchronization timestamp
   reconciliate(start: number) {
+    const player = this.gameEngine.getPlayer(this.playerId);
+    if (!player) return;
+
     let i = 0;
-    console.log("reconciliate");
+    // console.log("reconciliate");
     for (const data of this.inputs) {
-      if (data.time > start) {
+      if (data.time === start) {
         this.inputs.splice(0, i);
         if (this.inputs.length > MAX_RESIMU_STEP) {
           this.inputs.splice(0, this.inputs.length - MAX_RESIMU_STEP);
+          return;
         }
 
         // re apply input and re simulate the game
@@ -65,8 +77,8 @@ class Predictor {
           const now = input.time;
           let dt = (now - last) * 0.001;
           last = input.time;
-          this.gameEngine.processInput(now, input.inputs, this.playerId);
-          this.gameEngine.fixedUpdate(dt, now);
+          player.processInput(now, input.inputs);
+          this.gameEngine.step(dt, now);
         }
 
         break;

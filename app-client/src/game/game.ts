@@ -67,17 +67,17 @@ class GameScene extends Scene {
     characterRender.update(0, 0);
     this.add(characterRender);
 
-    // init box
-    for (const box of this.gameEngine.get<BodyEntity>("boxes")) {
-      const shape = box.collisionShape as BoxShape;
-      const boxDisplay = Graphics.createRectangle(shape.width, shape.height);
-      const boxRender = new RenderObject(boxDisplay);
-      boxRender.onUpdate = (dt: number, now: number) => {
-        boxRender.setPosition(box.position.x, box.position.y);
-        boxRender.setOffset(box.offset.x, box.offset.y);
-        boxRender.setRotation(box.rotation);
+    // init disc
+    for (const disc of this.gameEngine.get<BodyEntity>("disc")) {
+      const shape = disc.collisionShape as BoxShape;
+      const discDisplay = Graphics.createRectangle(shape.width, shape.height);
+      const discRender = new RenderObject(discDisplay);
+      discRender.onUpdate = (dt: number, now: number) => {
+        discRender.setPosition(disc.position.x, disc.position.y);
+        discRender.setOffset(disc.offset.x, disc.offset.y);
+        // discRender.setRotation(disc.rotation);
       };
-      this.add(boxRender);
+      this.add(discRender);
     }
 
     const mainPlayer = this.gameEngine.addPlayer(this.id);
@@ -85,33 +85,25 @@ class GameScene extends Scene {
     mainPlayerRender.displayObject.zIndex = 5;
     this.add(mainPlayerRender);
 
-    // player joined the game
-    // fetch current state
-    this.room.onStateChange.once((state) => {
-      for (let id of state.players.keys()) {
-        if (this.id === id) id = "a";
-        // if (id === this.id) continue;
-        const player = this.gameEngine.addPlayer(id);
-        const playerRender = new PlayerRender(player, id, 0x0099ff);
-        this.add(playerRender);
-      }
-    });
-
+    // player joined game
     this.room.state.players.onAdd = (_, id) => {
-      if (this.id === id) id = "a";
+      if (this.id === id) return;
       // if (id === this.id) return;
       console.log("new player has joined", id);
       // already exist?
       if (this.gameEngine.getById("players", id)) return;
       // creater renderer
-      const player = this.gameEngine.addPlayer(id);
-      const playerRender = new PlayerRender(player, id, 0x0099ff);
-      this.add(playerRender);
+      const player = this.gameEngine.getPlayer(id);
+      if (!player) {
+        const player = this.gameEngine.addPlayer(id);
+        const playerRender = new PlayerRender(player, id, 0x0099ff);
+        this.add(playerRender);
+      }
     };
 
     // player leaved the game
     this.room.state.players.onRemove = (_, id: string) => {
-      if (this.id === id) id = "a";
+      if (this.id === id) return;
       // if (id === this.id) return;
       console.log("player with id", id, "leaved the game");
       // remove it
@@ -119,13 +111,27 @@ class GameScene extends Scene {
       this.removeById(id);
     };
 
+    const discGhost = new RenderObject(
+      Graphics.createRectangle(100, 100, 0x0099ff)
+    );
+    const playerGhost = new RenderObject(
+      Graphics.createRectangle(80, 160, 0x0099ff)
+    );
+    this.add(discGhost);
+    this.add(playerGhost);
+
     this.room.onStateChange((state: GameState) => {
+      const player = state.players.get(this.id);
+      if (player) {
+        playerGhost.setPosition(player.x, player.y);
+      }
+      discGhost.setPosition(state.disc.x, state.disc.y);
       this.predictor.synchronize(state);
     });
 
     // other players got updated
     this.room.state.players.onChange = (other, id: string) => {
-      if (this.id === id) id = "a";
+      if (this.id === id) return;
       // if (this.id === id) return;
       const player = this.gameEngine.getPlayer(id);
       if (!player) return;
@@ -155,8 +161,8 @@ class GameScene extends Scene {
       time: now,
       inputs: inputs,
     };
-    this.predictor.processInput(inputData);
     this.room.send("input", inputData);
+    this.predictor.processInput(inputData);
     this.predictor.predict(dt, now);
   }
 }
