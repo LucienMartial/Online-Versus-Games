@@ -4,7 +4,7 @@ import { BodyEntity } from "../../../../app-shared/game";
 import { GameState } from "../../../../app-shared/state/game-state";
 import { InputData, lerp } from "../../../../app-shared/utils";
 
-const MAX_RESIMU_STEP = 50;
+const MAX_RESIMU_STEP = 100;
 const PLAYER_BEND = 0.05;
 const DISC_BEND = 0.2;
 const OTHER_PLAYERS_BEND = 0.3;
