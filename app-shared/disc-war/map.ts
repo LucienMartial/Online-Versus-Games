@@ -1,6 +1,5 @@
 import SAT from "sat";
 import { BodyEntity } from "../game/index.js";
-import { LineShape } from "../physics/index.js";
 import { PolylineShape } from "../physics/index.js";
 import { MIDDLE_LINE_ID } from "../utils/constants.js";
 
@@ -14,6 +13,7 @@ class Map {
 
   constructor(worldWidth: number, worldHeight: number) {
     this.walls = [];
+    this.splitLine = new BodyEntity(new PolylineShape(0, 0, 0, 0, LINE_THICKNESS));
     const offsetX = 50;
     const offsetY = 30;
     const top = offsetY;
