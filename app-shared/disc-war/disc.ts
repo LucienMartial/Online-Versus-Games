@@ -5,7 +5,7 @@ import { MIDDLE_LINE_ID } from "../utils/constants.js";
 
 const FRICTION = 1;
 const RADIUS = 50;
-const MAX_SPEED = 2000;
+const MAX_SPEED = 5000; //2000;
 
 class Disc extends BodyEntity {
   constructor() {

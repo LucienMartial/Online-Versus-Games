@@ -1,11 +1,11 @@
 import SAT from "sat";
 import { BodyEntity } from "../game/index.js";
-import { LineShape, PolylineShape } from "../physics/index.js";
+import { PolylineShape } from "../physics/index.js";
 import { MIDDLE_LINE_ID } from "../utils/constants.js";
 
 const SIDE_WIDTH_RATIO = 0.8;
 const SIDE_HEIGHT_RATIO = 0.7;
-export const LINE_THICKNESS = 5;
+export const LINE_THICKNESS = 50;
 
 class Map {
   walls: BodyEntity[];
@@ -83,13 +83,6 @@ class Map {
       new SAT.Vector(right, top + diagonalHeight)
     );
 
-    this.addWall(
-      new SAT.Vector(0, 0),
-      new SAT.Vector(0, 50),
-      new SAT.Vector(worldWidth / 6, worldWidth / 5),
-      18
-    );
-
     // split line
     this.addSplitLine(
       new SAT.Vector(0, 0),
@@ -105,8 +98,9 @@ class Map {
     position: SAT.Vector,
     thickness: number = LINE_THICKNESS
   ) {
-    // const wall = new BodyEntity(new PolylineShape(p1.x, p1.y, p2.x, p2.y, thickness));
-    const wall = new BodyEntity(new LineShape(p1.x, p1.y, p2.x, p2.y));
+    const wall = new BodyEntity(
+      new PolylineShape(p1.x, p1.y, p2.x, p2.y, thickness)
+    );
     wall.setPosition(position.x, position.y);
     this.walls.push(wall);
   }

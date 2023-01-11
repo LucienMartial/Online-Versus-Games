@@ -26,7 +26,7 @@ class DiscWarEngine extends GameEngine {
     // disc
     const disc = new Disc();
     disc.setPosition(WORLD_WIDTH / 2, WORLD_HEIGHT / 2);
-    disc.setVelocity(800, 100);
+    disc.setVelocity(4000, 3000);
     this.add("disc", disc);
 
     // timers
@@ -65,6 +65,7 @@ class DiscWarEngine extends GameEngine {
   }
 
   async playerDie(player: Player) {
+    return;
     // disc in center
     this.respawnTimer.reset();
     const disc = this.getOne<Disc>("disc");
