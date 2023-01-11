@@ -87,6 +87,6 @@ describe("cbuffer slice usage", () => {
     expect(buffer.slice(1, 4)).toEqual([20, 30, 40, 50]);
     expect(buffer.slice(1, 5)).toEqual([20, 30, 40, 50, 10]);
     expect(buffer.slice(1, 6)).toEqual([20, 30, 40, 50, 10]);
-    expect(buffer.slice(3, 1)).toEqual([30]);
+    expect(buffer.slice(3, 1)).toEqual([40]);
   });
 });
