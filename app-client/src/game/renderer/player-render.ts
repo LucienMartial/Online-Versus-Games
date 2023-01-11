@@ -27,7 +27,7 @@ class PlayerRender extends RenderObject {
     if (this.player.isDead && !this.deadHandled) {
       this.display.alpha = 0.5;
       this.timer.setTimeout(() => {
-          this.display.alpha = 0;
+          this.display.alpha = 0; // TODO
       }, 1000);
       this.deadHandled= true;
     }

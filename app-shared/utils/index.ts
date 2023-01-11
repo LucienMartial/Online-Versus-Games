@@ -2,3 +2,6 @@ export * from "./constants.js";
 export * from "../types/inputs.js";
 export * from "./math.js";
 export * from "./cbuffer.js";
+export function timeout(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}

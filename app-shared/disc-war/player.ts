@@ -24,8 +24,9 @@ class Player extends BodyEntity {
   dashTimer: number;
   dashForce: SAT.Vector;
   isDead: boolean;
+  deadCallbackFunction: Function;
 
-  constructor(id: string) {
+  constructor(id: string,deadCallbackFunction: Function) {
     // default
     const collisionShape = new BoxShape(WIDTH, HEIGHT);
     super(collisionShape, false, id);
@@ -41,6 +42,7 @@ class Player extends BodyEntity {
     this.isDashing = false;
     this.dashForce = new SAT.Vector();
     this.isDead = false;
+    this.deadCallbackFunction = deadCallbackFunction;
   }
 
   processInput(inputs: Record<Inputs, boolean>) {
@@ -105,8 +107,13 @@ class Player extends BodyEntity {
     }
   }
   onCollision(response: SAT.Response, other: BodyEntity) {
-    this.isDead = true;
-    if (!other.static) return;
+    if (!other.static) {
+      if (!this.isDead){
+        this.deadCallbackFunction();
+      }
+      this.isDead = true;
+      return;
+    }
     this.move(-response.overlapV.x, -response.overlapV.y);
     super.onCollision(response, other);
   }

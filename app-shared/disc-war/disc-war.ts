@@ -1,5 +1,5 @@
 import { GameEngine } from "../game/game-engine.js";
-import { WORLD_HEIGHT, WORLD_WIDTH, Inputs } from "../utils/index.js";
+import { WORLD_HEIGHT, WORLD_WIDTH, Inputs, timeout} from "../utils/index.js";
 import { BodyEntity } from "../game/index.js";
 import { Map, Player, Disc } from "./index.js";
 import SAT from "sat";
@@ -21,7 +21,7 @@ class DiscWarEngine extends GameEngine {
   }
 
   addPlayer(id: string): Player {
-    const player = new Player(id);
+    const player = new Player(id, () => {this.playerDie(player)});
     player.setPosition(WORLD_WIDTH / 3, WORLD_HEIGHT / 2);
     this.add("players", player);
     return player;
@@ -33,6 +33,12 @@ class DiscWarEngine extends GameEngine {
 
   getPlayer(id: string): Player | undefined {
     return this.getById<Player>("players", id);
+  }
+
+  async playerDie(player : Player){
+    await timeout(2000);
+    player.setPosition(WORLD_WIDTH / 3, WORLD_HEIGHT / 2);
+    player.isDead = false;
   }
 
   processInput(inputs: Record<Inputs, boolean>, id: string): void {
