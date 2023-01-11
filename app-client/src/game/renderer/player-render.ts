@@ -22,6 +22,7 @@ class PlayerRender extends RenderObject {
   }
 
   update(dt: number, now: number) {
+    super.update(dt, now);
     this.position.set(this.player.position.x, this.player.position.y);
     if (this.player.isDead && !this.deadHandled) {
       this.display.alpha = 0.5;

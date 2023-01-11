@@ -3,10 +3,12 @@ import { lerp } from "../utils/index.js";
 
 class Entity {
   id: string;
+  isDead: boolean;
   private _position: SAT.Vector;
 
   constructor(id = "") {
     this.id = id;
+    this.isDead = false;
     this._position = new SAT.Vector();
   }
 
