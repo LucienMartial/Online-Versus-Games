@@ -1,6 +1,7 @@
 import SAT from "sat";
 import { BodyEntity } from "../game/body-entity.js";
 import { CircleShape } from "../physics/collision.js";
+import { MIDDLE_LINE_ID } from "../utils/constants.js";
 
 const FRICTION = 1;
 const RADIUS = 50;
@@ -18,7 +19,7 @@ class Disc extends BodyEntity {
   }
 
   onCollision(response: SAT.Response, other: BodyEntity): void {
-    if (!other.static) return;
+    if (!other.static || other.id === MIDDLE_LINE_ID) return;
     this.velocity.reflectN(response.overlapN.perp());
     this.position.sub(response.overlapV);
     super.onCollision(response, other);

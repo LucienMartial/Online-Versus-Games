@@ -21,6 +21,7 @@ class DiscWarEngine extends GameEngine {
     // map
     const map = new Map(WORLD_WIDTH, WORLD_HEIGHT);
     for (const wall of map.walls) this.add("walls", wall);
+    this.add("splitLine", map.splitLine);
 
     // disc
     const disc = new Disc();
