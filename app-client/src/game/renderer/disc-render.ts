@@ -1,6 +1,5 @@
 import { BodyEntity } from "../../../../app-shared/game";
-import { BoxShape } from "../../../../app-shared/physics";
-import { lerp } from "../../../../app-shared/utils";
+import { CircleShape } from "../../../../app-shared/physics";
 import { Graphics } from "../utils/graphics";
 import { RenderObject } from "./render-object";
 
@@ -12,8 +11,8 @@ class DiscRender extends RenderObject {
   constructor(disc: BodyEntity) {
     super();
 
-    const shape = disc.collisionShape as BoxShape;
-    const display = Graphics.createRectangle(shape.width, shape.height, COLOR);
+    const shape = disc.collisionShape as CircleShape;
+    const display = Graphics.createCircle(shape.radius, COLOR);
     this.addChild(display);
 
     // custom

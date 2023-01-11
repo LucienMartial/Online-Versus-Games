@@ -1,8 +1,8 @@
-import SAT, { Vector } from "sat";
+import SAT from "sat";
 import { BodyEntity } from "../game/index.js";
 import { BoxShape } from "../physics/index.js";
 import { PlayerState } from "../state/game-state.js";
-import { GAME_RATE, Inputs } from "../utils/index.js";
+import { Inputs } from "../utils/index.js";
 
 // shape
 const WIDTH = 80;

@@ -1,8 +1,7 @@
 import { GameEngine } from "../game/game-engine.js";
 import { WORLD_HEIGHT, WORLD_WIDTH, Inputs } from "../utils/index.js";
 import { BodyEntity } from "../game/index.js";
-import { Map, Player } from "./index.js";
-import { BoxShape } from "../physics/index.js";
+import { Map, Player, Disc } from "./index.js";
 import SAT from "sat";
 
 /**
@@ -15,16 +14,9 @@ class DiscWarEngine extends GameEngine {
     for (const wall of map.walls) this.add("walls", wall);
 
     // disc
-    // TODO: Disc object
-    const disc = new BodyEntity(new BoxShape(100, 100), false);
-    disc.friction = new SAT.Vector(1, 1);
+    const disc = new Disc();
     disc.setPosition(WORLD_WIDTH / 2, WORLD_HEIGHT / 2);
     disc.setVelocity(1800, 100);
-    disc.onCollision = (response: SAT.Response, other: BodyEntity) => {
-      disc.velocity.reflectN(response.overlapN.perp());
-      disc.position.sub(response.overlapV);
-      return;
-    };
     this.add("disc", disc);
   }
 

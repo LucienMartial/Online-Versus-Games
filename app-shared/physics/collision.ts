@@ -105,6 +105,17 @@ class LineShape extends CollisionShape {
   }
 }
 
-// TODO: Circle shape
+/**
+ * Circle collision shape
+ */
+class CircleShape extends CollisionShape {
+  radius: number;
 
-export { CollisionShape, BoxShape, LineShape };
+  constructor(radius: number) {
+    super(ShapeType.Circle);
+    this.radius = radius;
+    this.shape = new SAT.Circle(new SAT.Vector(), radius);
+  }
+}
+
+export { CollisionShape, BoxShape, LineShape, CircleShape };
