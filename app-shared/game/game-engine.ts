@@ -15,10 +15,7 @@ class GameEngine {
     this.physicEngine = new PhysicEngine();
     this.collections = new CollectionManager();
     this.accumulator = 0;
-    this.init();
   }
-
-  init() {}
 
   processInput(inputs: Record<Inputs, boolean>, id: string) {}
 

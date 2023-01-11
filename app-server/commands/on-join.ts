@@ -23,7 +23,7 @@ class OnJoinCommand extends Command<GameRoom, Data> {
     const player = gameEngine.addPlayer(client.id);
     this.state.players.set(
       client.id,
-      new PlayerState(player.position.x, player.position.y)
+      new PlayerState(player.isDead, player.position.x, player.position.y)
     );
   }
 }

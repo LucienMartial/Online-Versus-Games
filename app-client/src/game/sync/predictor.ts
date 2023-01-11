@@ -93,6 +93,7 @@ class Predictor {
     const playerShadow = new Shadow(player.position, player.velocity);
 
     // synchronize
+    this.gameEngine.sync(state);
     disc.setPosition(state.disc.x, state.disc.y);
     disc.setVelocity(state.disc.vx, state.disc.vy);
     player.synchronize(playerState);
@@ -112,7 +113,6 @@ class Predictor {
    */
   reconciliate(start: number) {
     let i = 0;
-    // console.log("reconciliate");
     for (const data of this.inputs.toArray()) {
       if (data.time > start) {
         this.inputs.remove(i);

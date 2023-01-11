@@ -1,6 +1,7 @@
 import { Schema, MapSchema, type } from "@colyseus/schema";
 
 class PlayerState extends Schema {
+  @type("boolean") isDead: boolean;
   @type("number") x: number;
   @type("number") y: number;
   @type("number") dashTimer: number;
@@ -8,6 +9,7 @@ class PlayerState extends Schema {
   @type("boolean") canDash: boolean;
 
   constructor(
+    isDead: boolean,
     x: number,
     y: number,
     dashTimer = 0,
@@ -15,6 +17,7 @@ class PlayerState extends Schema {
     canDash = true
   ) {
     super();
+    this.isDead = isDead;
     this.x = x;
     this.y = y;
     this.dashTimer = dashTimer;
@@ -42,6 +45,7 @@ class DiscState extends Schema {
  * Game data on the server, shared with each clients
  */
 class GameState extends Schema {
+  @type("number") respawnTimer: number;
   @type(DiscState) disc = new DiscState(0, 0, 0, 0);
   @type({ map: PlayerState }) players = new MapSchema<PlayerState>();
   @type({ map: "number" }) lastInputs = new MapSchema<number>();

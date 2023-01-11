@@ -2,7 +2,7 @@ import SAT from "sat";
 import { BodyEntity } from "../game/index.js";
 import { BoxShape } from "../physics/index.js";
 import { PlayerState } from "../state/game-state.js";
-import { Inputs } from "../utils/index.js";
+import { Inputs, Timer } from "../utils/index.js";
 
 // shape
 const WIDTH = 80;
@@ -21,12 +21,12 @@ class Player extends BodyEntity {
   direction: SAT.Vector;
   canDash: boolean;
   isDashing: boolean;
-  dashTimer: number;
+  dashTimer: Timer;
   dashForce: SAT.Vector;
   isDead: boolean;
-  deadCallbackFunction: Function;
+  deadCallback: Function;
 
-  constructor(id: string,deadCallbackFunction: Function) {
+  constructor(id: string, deadCallback: Function) {
     // default
     const collisionShape = new BoxShape(WIDTH, HEIGHT);
     super(collisionShape, false, id);
@@ -35,14 +35,37 @@ class Player extends BodyEntity {
     this.friction = new SAT.Vector(FRICTION, FRICTION);
     this.direction = new SAT.Vector();
     this.maxSpeed = MAX_SPEED;
-
-    // dash
-    this.dashTimer = 0;
+    this.isDead = false;
+    this.deadCallback = deadCallback;
     this.canDash = true;
     this.isDashing = false;
     this.dashForce = new SAT.Vector();
-    this.isDead = false;
-    this.deadCallbackFunction = deadCallbackFunction;
+    this.registerTimer();
+  }
+
+  registerTimer() {
+    this.dashTimer = new Timer();
+    // end of dash
+    this.dashTimer.add(DASH_DURATION, () => {
+      this.isDashing = false;
+      this.maxSpeed = MAX_SPEED;
+    });
+    // cooldown
+    this.dashTimer.add(DASH_COOLDOWN, () => {
+      this.canDash = true;
+    });
+  }
+
+  onCollision(response: SAT.Response, other: BodyEntity) {
+    // dynamic bodies
+    if (!other.static) {
+      if (!this.isDead) this.deadCallback(this);
+      this.isDead = true;
+      return;
+    }
+    // static bodies
+    this.move(-response.overlapV.x, -response.overlapV.y);
+    super.onCollision(response, other);
   }
 
   processInput(inputs: Record<Inputs, boolean>) {
@@ -66,7 +89,7 @@ class Player extends BodyEntity {
 
     // apply dash
     if (inputs.dash && this.canDash) {
-      this.dashTimer = 0;
+      this.dashTimer.reset();
       this.canDash = false;
       this.isDashing = true;
       this.maxSpeed = DASH_SPEED;
@@ -76,9 +99,9 @@ class Player extends BodyEntity {
 
   synchronize(state: PlayerState) {
     this.setPosition(state.x, state.y);
-    this.dashTimer = state.dashTimer;
     this.canDash = state.canDash;
     this.isDashing = state.isDashing;
+    this.dashTimer.sync(state.dashTimer);
     if (state.isDashing) this.maxSpeed = DASH_SPEED;
   }
 
@@ -87,35 +110,12 @@ class Player extends BodyEntity {
 
     // dash
     if (!this.canDash) {
-      this.dashTimer += 1;
-
-      // dash cooldown
-      if (this.dashTimer >= DASH_COOLDOWN) {
-        this.canDash = true;
-      }
-
-      // not dashing anymore
-      if (this.dashTimer >= DASH_DURATION) {
-        this.isDashing = false;
-        this.maxSpeed = MAX_SPEED;
-      }
-
+      this.dashTimer.update();
       // dashing
       if (this.isDashing) {
         this.setVelocity(this.dashForce.x, this.dashForce.y);
       }
     }
-  }
-  onCollision(response: SAT.Response, other: BodyEntity) {
-    if (!other.static) {
-      if (!this.isDead){
-        this.deadCallbackFunction();
-      }
-      this.isDead = true;
-      return;
-    }
-    this.move(-response.overlapV.x, -response.overlapV.y);
-    super.onCollision(response, other);
   }
 }
 

@@ -10,6 +10,7 @@ interface Data {
 
 class OnSyncCommand extends Command<GameRoom, Data> {
   execute({ gameEngine } = this.payload) {
+    this.state.respawnTimer = gameEngine.respawnTimer.timer;
     // disc
     const disc = gameEngine.getOne<BodyEntity>("disc");
     this.state.disc = new DiscState(
@@ -18,14 +19,16 @@ class OnSyncCommand extends Command<GameRoom, Data> {
       disc.velocity.x,
       disc.velocity.y
     );
+
     // players
     for (const player of gameEngine.get<Player>("players")) {
       this.state.players.set(
         player.id,
         new PlayerState(
+          player.isDead,
           player.position.x,
           player.position.y,
-          player.dashTimer,
+          player.dashTimer.timer,
           player.isDashing,
           player.canDash
         )

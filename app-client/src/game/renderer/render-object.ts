@@ -1,5 +1,5 @@
-import {Container, DisplayObject, ObservablePoint} from "pixi.js";
-import {lerp} from "../../../../app-shared/utils";
+import { Container, DisplayObject, ObservablePoint } from "pixi.js";
+import { lerp } from "../../../../app-shared/utils";
 import ClockTimer from "@gamestdio/timer";
 
 /**
@@ -24,7 +24,6 @@ class RenderObject {
 
   // getters, setters
   addChild(object: DisplayObject) {
-    console.log(object);
     this.container.addChild(object);
   }
 

@@ -15,8 +15,8 @@ import {
 import { Predictor } from "./sync/predictor";
 import { MapRender } from "./renderer/map-render";
 
-const PLAYER_GHOST = true;
-const DISC_GHOST = true;
+const PLAYER_GHOST = false;
+const DISC_GHOST = false;
 
 /**
  * Game scene for the disc war game.
@@ -48,6 +48,7 @@ class GameScene extends Scene {
 
     // map
     const walls = this.gameEngine.get<BodyEntity>("walls");
+    console.log(this.gameEngine);
     const mapRender = new MapRender(walls);
     this.add(mapRender);
 
