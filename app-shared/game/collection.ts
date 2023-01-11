@@ -81,11 +81,13 @@ class CollectionManager {
       // update collection child's entities
       for (const childName of this.getChilds(name)) {
         for (const entity of this.collections[childName].values()) {
+          if (entity.isDead) continue;
           entity.update(dt);
         }
       }
       // update own entity
       for (const entity of collection.values()) {
+        if (entity.isDead) continue;
         entity.update(dt);
       }
     }

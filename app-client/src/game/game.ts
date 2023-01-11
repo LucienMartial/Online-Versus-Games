@@ -15,8 +15,8 @@ import {
 import { Predictor } from "./sync/predictor";
 import { MapRender } from "./renderer/map-render";
 
-const PLAYER_GHOST = false;
-const DISC_GHOST = false;
+const PLAYER_GHOST = true;
+const DISC_GHOST = true;
 
 /**
  * Game scene for the disc war game.
@@ -56,7 +56,7 @@ class GameScene extends Scene {
     characterRender.addChild(new Sprite(assets.character));
     characterRender.setOffset(150, 150);
     characterRender.onUpdate = (dt: number, now: number) => {
-      characterRender.rotate(-0.5 * dt);
+      characterRender.rotate(-2.5 * dt);
       characterRender.setPosition(
         WORLD_WIDTH * 0.8,
         WORLD_HEIGHT / 2 + Math.cos(now * 0.001) * 300
@@ -92,7 +92,7 @@ class GameScene extends Scene {
     let playerGhost: RenderObject;
     if (DISC_GHOST) {
       discGhost = new RenderObject();
-      discGhost.addChild(Graphics.createRectangle(100, 100, 0x0099ff));
+      discGhost.addChild(Graphics.createCircle(50, 0x0099ff));
       this.add(discGhost);
     }
     if (PLAYER_GHOST) {

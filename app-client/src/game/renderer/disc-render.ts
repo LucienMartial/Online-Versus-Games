@@ -21,6 +21,7 @@ class DiscRender extends RenderObject {
   }
 
   update(dt: number, now: number) {
+    super.update(dt, now);
     this.position.set(this.disc.position.x, this.disc.position.y);
   }
 }

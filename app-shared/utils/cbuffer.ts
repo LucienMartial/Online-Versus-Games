@@ -44,7 +44,7 @@ class CBuffer<T> {
   shift(): T {
     const index = this.get_index(0);
     const value = this.array[index];
-    this.array[index] = undefined;
+    this.array[index] = undefined!;
     this.remove(1);
     return value;
   }
@@ -52,7 +52,7 @@ class CBuffer<T> {
   pop(): T {
     const value = this.last();
     this.front = this._last;
-    this.array[this.front] = undefined;
+    this.array[this.front] = undefined!;
     this._size = Math.max(this._size - 1, 0);
     this._last = (this._last + this.capacity - 1) % this.capacity;
     return value;
