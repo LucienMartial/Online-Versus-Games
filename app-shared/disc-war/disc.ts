@@ -20,6 +20,7 @@ class Disc extends BodyEntity {
   onCollision(response: SAT.Response, other: BodyEntity): void {
     this.velocity.reflectN(response.overlapN.perp());
     this.position.sub(response.overlapV);
+    super.onCollision(response, other);
   }
 }
 

@@ -23,6 +23,7 @@ class Player extends BodyEntity {
   isDashing: boolean;
   dashTimer: number;
   dashForce: SAT.Vector;
+  isDead: boolean;
 
   constructor(id: string) {
     // default
@@ -39,6 +40,7 @@ class Player extends BodyEntity {
     this.canDash = true;
     this.isDashing = false;
     this.dashForce = new SAT.Vector();
+    this.isDead = false;
   }
 
   processInput(inputs: Record<Inputs, boolean>) {
@@ -101,6 +103,12 @@ class Player extends BodyEntity {
         this.setVelocity(this.dashForce.x, this.dashForce.y);
       }
     }
+  }
+  onCollision(response: SAT.Response, other: BodyEntity) {
+    this.isDead = true;
+    if (!other.static) return;
+    this.move(-response.overlapV.x, -response.overlapV.y);
+    super.onCollision(response, other);
   }
 }
 

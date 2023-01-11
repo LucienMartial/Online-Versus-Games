@@ -1,5 +1,6 @@
-import { Container, DisplayObject, ObservablePoint } from "pixi.js";
-import { lerp } from "../../../../app-shared/utils";
+import {Container, DisplayObject, ObservablePoint} from "pixi.js";
+import {lerp} from "../../../../app-shared/utils";
+import ClockTimer from "@gamestdio/timer";
 
 /**
  * Renderable object
@@ -7,15 +8,18 @@ import { lerp } from "../../../../app-shared/utils";
 class RenderObject {
   container: Container;
   id: string;
+  timer: ClockTimer;
   onUpdate?: { (dt: number, now: number): void };
 
   constructor(id = "") {
     this.container = new Container();
     this.id = id;
+    this.timer = new ClockTimer();
   }
 
   update(dt: number, now: number) {
     this.onUpdate?.(dt, now);
+    this.timer.tick();
   }
 
   // getters, setters

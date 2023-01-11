@@ -23,10 +23,6 @@ class DiscWarEngine extends GameEngine {
   addPlayer(id: string): Player {
     const player = new Player(id);
     player.setPosition(WORLD_WIDTH / 3, WORLD_HEIGHT / 2);
-    player.onCollision = (response: SAT.Response, other: BodyEntity) => {
-      if (!other.static) return;
-      player.move(-response.overlapV.x, -response.overlapV.y);
-    };
     this.add("players", player);
     return player;
   }
