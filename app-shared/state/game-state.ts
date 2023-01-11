@@ -3,23 +3,23 @@ import { Schema, MapSchema, type } from "@colyseus/schema";
 class PlayerState extends Schema {
   @type("number") x: number;
   @type("number") y: number;
-  @type("number") dashStart: number;
-  @type("boolean") canDash: boolean;
+  @type("number") dashTimer: number;
   @type("boolean") isDashing: boolean;
+  @type("boolean") canDash: boolean;
 
   constructor(
     x: number,
     y: number,
-    canDash = true,
+    dashTimer = 0,
     isDashing = false,
-    dashStart = 0
+    canDash = true
   ) {
     super();
     this.x = x;
     this.y = y;
-    this.canDash = canDash;
+    this.dashTimer = dashTimer;
     this.isDashing = isDashing;
-    this.dashStart = dashStart;
+    this.canDash = canDash;
   }
 }
 

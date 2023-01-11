@@ -2,10 +2,10 @@ import { Vector } from "sat";
 import { DiscWarEngine } from "../../../../app-shared/disc-war";
 import { BodyEntity } from "../../../../app-shared/game";
 import { GameState } from "../../../../app-shared/state/game-state";
-import { InputData, lerp } from "../../../../app-shared/utils";
+import { GAME_RATE, InputData, lerp } from "../../../../app-shared/utils";
 
 const MAX_RESIMU_STEP = 100;
-const PLAYER_BEND = 0.05;
+const PLAYER_BEND = 0.15;
 const DISC_BEND = 0.2;
 const OTHER_PLAYERS_BEND = 0.3;
 
@@ -86,8 +86,6 @@ class Predictor {
     const playerState = state.players.get(this.playerId);
     if (!player || !playerState) return;
 
-    if (playerState.isDashing) return;
-
     // save shadows
     const disc = this.gameEngine.getOne<BodyEntity>("disc");
     const discShadow = new Shadow(disc.position, disc.velocity);
@@ -96,10 +94,7 @@ class Predictor {
     // synchronize
     disc.setPosition(state.disc.x, state.disc.y);
     disc.setVelocity(state.disc.vx, state.disc.vy);
-    player.setPosition(playerState.x, playerState.y);
-    player.dashStart = playerState.dashStart;
-    player.isDashing = playerState.isDashing;
-    player.canDash = playerState.canDash;
+    player.synchronize(playerState);
 
     // re simulate (extrapolation)
     const lastInputTime = state.lastInputs.get(this.playerId);
@@ -118,7 +113,7 @@ class Predictor {
     let i = 0;
     // console.log("reconciliate");
     for (const data of this.inputs) {
-      if (data.time === start) {
+      if (data.time > start) {
         this.inputs.splice(0, i);
         if (this.inputs.length > MAX_RESIMU_STEP) {
           this.inputs.splice(0, this.inputs.length - MAX_RESIMU_STEP);
@@ -132,7 +127,7 @@ class Predictor {
           let dt = (now - last) * 0.001;
           last = input.time;
           this.gameEngine.processInput(input.inputs, this.playerId);
-          this.gameEngine.step(dt);
+          this.gameEngine.fixedUpdate(dt);
         }
 
         break;

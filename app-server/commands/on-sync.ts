@@ -25,9 +25,9 @@ class OnSyncCommand extends Command<GameRoom, Data> {
         new PlayerState(
           player.position.x,
           player.position.y,
-          player.canDash,
+          player.dashTimer,
           player.isDashing,
-          player.dashStart
+          player.canDash
         )
       );
     }

@@ -25,7 +25,7 @@ class GameRoom extends Room<GameState> {
     this.setState(new GameState());
     this.gameEngine = new DiscWarEngine();
     this.setSimulationInterval((dt: number) => this.update(dt), 1000 / 60);
-    this.setPatchRate(30);
+    this.setPatchRate(20);
 
     // register event
     this.onMessage("*", (client, type, message) => {

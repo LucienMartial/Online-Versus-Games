@@ -1,7 +1,8 @@
 import SAT, { Vector } from "sat";
 import { BodyEntity } from "../game/index.js";
 import { BoxShape } from "../physics/index.js";
-import { Inputs } from "../utils/index.js";
+import { PlayerState } from "../state/game-state.js";
+import { GAME_RATE, Inputs } from "../utils/index.js";
 
 // shape
 const WIDTH = 80;
@@ -10,15 +11,17 @@ const HEIGHT = 160;
 // movement. 0 friction mean full determinism
 const FRICTION = 0;
 const MAX_SPEED = 800;
-const DASH_SPEED = 2000;
-const DASH_DURATION = 200;
-const DASH_COOLDOWN = 1000;
+const DASH_SPEED = 2200;
+
+// 1 second = 60 ticks
+const DASH_DURATION = 0.2 * 60;
+const DASH_COOLDOWN = 0.8 * 60;
 
 class Player extends BodyEntity {
   direction: SAT.Vector;
   canDash: boolean;
   isDashing: boolean;
-  dashStart: number;
+  dashTimer: number;
   dashForce: SAT.Vector;
 
   constructor(id: string) {
@@ -32,18 +35,15 @@ class Player extends BodyEntity {
     this.maxSpeed = MAX_SPEED;
 
     // dash
+    this.dashTimer = 0;
     this.canDash = true;
     this.isDashing = false;
-    this.dashStart = 0;
     this.dashForce = new SAT.Vector();
   }
 
   processInput(inputs: Record<Inputs, boolean>) {
-    // dashing
-    if (this.isDashing) {
-      this.setVelocity(this.dashForce.x, this.dashForce.y);
-      return;
-    }
+    // if dashing, do not move
+    if (this.isDashing) return;
 
     // get direction
     this.direction = new SAT.Vector();
@@ -62,7 +62,7 @@ class Player extends BodyEntity {
 
     // apply dash
     if (inputs.dash && this.canDash) {
-      this.dashStart = 0;
+      this.dashTimer = 0;
       this.canDash = false;
       this.isDashing = true;
       this.maxSpeed = DASH_SPEED;
@@ -70,21 +70,35 @@ class Player extends BodyEntity {
     }
   }
 
+  synchronize(state: PlayerState) {
+    this.setPosition(state.x, state.y);
+    this.dashTimer = state.dashTimer;
+    this.canDash = state.canDash;
+    this.isDashing = state.isDashing;
+    if (state.isDashing) this.maxSpeed = DASH_SPEED;
+  }
+
   update(dt: number): void {
     super.update(dt);
 
+    // dash
     if (!this.canDash) {
-      this.dashStart += dt * 1000;
+      this.dashTimer += 1;
 
-      // end of dash
-      if (this.dashStart >= DASH_DURATION) {
+      // dash cooldown
+      if (this.dashTimer >= DASH_COOLDOWN) {
+        this.canDash = true;
+      }
+
+      // not dashing anymore
+      if (this.dashTimer >= DASH_DURATION) {
         this.isDashing = false;
         this.maxSpeed = MAX_SPEED;
       }
 
-      // cooldown
-      if (this.dashStart >= DASH_COOLDOWN) {
-        this.canDash = true;
+      // dashing
+      if (this.isDashing) {
+        this.setVelocity(this.dashForce.x, this.dashForce.y);
       }
     }
   }
