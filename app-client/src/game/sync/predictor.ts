@@ -4,7 +4,8 @@ import { BodyEntity } from "../../../../app-shared/game";
 import { GameState } from "../../../../app-shared/state/game-state";
 import { CBuffer, InputData, lerp } from "../../../../app-shared/utils";
 
-const MAX_RESIMU_STEP = 100;
+const MAX_RESIMU_STEP = 75;
+const MAX_NB_INPUTS = 1000;
 const PLAYER_BEND = 0.15;
 const DISC_BEND = 0.2;
 const OTHER_PLAYERS_BEND = 0.3;
@@ -47,7 +48,7 @@ class Predictor {
   constructor(gameEngine: DiscWarEngine, playerId: string) {
     this.gameEngine = gameEngine;
     this.playerId = playerId;
-    this.inputs = new CBuffer<InputData>(MAX_RESIMU_STEP);
+    this.inputs = new CBuffer<InputData>(MAX_NB_INPUTS);
   }
 
   /**
@@ -62,6 +63,7 @@ class Predictor {
    * Directly update the game after player input, regardless of server response
    */
   predict(dt: number) {
+    if (this.inputs.size() > MAX_RESIMU_STEP) return;
     this.gameEngine.fixedUpdate(dt);
   }
 
@@ -114,6 +116,10 @@ class Predictor {
     for (const data of this.inputs.toArray()) {
       if (data.time > start) {
         this.inputs.remove(i);
+        if (this.inputs.size() > MAX_RESIMU_STEP) {
+          this.inputs.remove(this.inputs.size() - MAX_RESIMU_STEP);
+          return;
+        }
 
         // re apply input and re simulate the game
         let last = data.time;
