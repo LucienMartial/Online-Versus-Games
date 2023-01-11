@@ -48,7 +48,8 @@ class GameScene extends Scene {
 
     // map
     const walls = this.gameEngine.get<BodyEntity>("walls");
-    const mapRender = new MapRender(walls);
+    const splitLine = this.gameEngine.getOne<BodyEntity>("splitLine");
+    const mapRender = new MapRender(walls, splitLine);
     this.add(mapRender);
 
     // init character

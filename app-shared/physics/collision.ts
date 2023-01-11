@@ -105,6 +105,29 @@ class LineShape extends CollisionShape {
   }
 }
 
+class PolylineShape extends CollisionShape {
+  p1: SAT.Vector;
+  p2: SAT.Vector;
+  thickness: number;
+
+  constructor(x1: number, y1: number, x2: number, y2: number, thickness: number) {
+    super(ShapeType.Polygon);
+    this.p1 = new SAT.Vector(x1, y1);
+    this.p2 = new SAT.Vector(x2, y2);
+    this.thickness = thickness;
+    let perpVector = new SAT.Vector(this.p2.y - this.p1.y, this.p1.x - this.p2.x);
+    perpVector.normalize();
+    perpVector.scale(thickness / 2);
+    const points = [
+      new SAT.Vector(this.p1.x + perpVector.x, this.p1.y + perpVector.y),
+      new SAT.Vector(this.p2.x + perpVector.x, this.p2.y + perpVector.y),
+      new SAT.Vector(this.p2.x - perpVector.x, this.p2.y - perpVector.y),
+      new SAT.Vector(this.p1.x - perpVector.x, this.p1.y - perpVector.y),
+    ];
+    this.shape = new SAT.Polygon(new SAT.Vector(), points);
+  }
+}
+
 /**
  * Circle collision shape
  */
@@ -118,4 +141,4 @@ class CircleShape extends CollisionShape {
   }
 }
 
-export { CollisionShape, BoxShape, LineShape, CircleShape };
+export { CollisionShape, BoxShape, LineShape, PolylineShape, CircleShape };
