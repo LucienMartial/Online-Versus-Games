@@ -2,7 +2,7 @@ import { Vector } from "sat";
 import { DiscWarEngine } from "../../../../app-shared/disc-war";
 import { BodyEntity } from "../../../../app-shared/game";
 import { GameState } from "../../../../app-shared/state/game-state";
-import { GAME_RATE, InputData, lerp } from "../../../../app-shared/utils";
+import { CBuffer, InputData, lerp } from "../../../../app-shared/utils";
 
 const MAX_RESIMU_STEP = 100;
 const PLAYER_BEND = 0.15;
@@ -42,12 +42,12 @@ class Shadow {
 class Predictor {
   gameEngine: DiscWarEngine;
   playerId: string;
-  inputs: InputData[];
+  inputs: CBuffer<InputData>;
 
   constructor(gameEngine: DiscWarEngine, playerId: string) {
     this.gameEngine = gameEngine;
     this.playerId = playerId;
-    this.inputs = [];
+    this.inputs = new CBuffer<InputData>(MAX_RESIMU_STEP);
   }
 
   /**
@@ -62,7 +62,6 @@ class Predictor {
    * Directly update the game after player input, regardless of server response
    */
   predict(dt: number) {
-    if (this.inputs.length > MAX_RESIMU_STEP) return;
     this.gameEngine.fixedUpdate(dt);
   }
 
@@ -112,17 +111,13 @@ class Predictor {
   reconciliate(start: number) {
     let i = 0;
     // console.log("reconciliate");
-    for (const data of this.inputs) {
+    for (const data of this.inputs.toArray()) {
       if (data.time > start) {
-        this.inputs.splice(0, i);
-        if (this.inputs.length > MAX_RESIMU_STEP) {
-          this.inputs.splice(0, this.inputs.length - MAX_RESIMU_STEP);
-          return;
-        }
+        this.inputs.remove(i);
 
         // re apply input and re simulate the game
         let last = data.time;
-        for (const input of this.inputs) {
+        for (const input of this.inputs.toArray()) {
           const now = input.time;
           let dt = (now - last) * 0.001;
           last = input.time;
