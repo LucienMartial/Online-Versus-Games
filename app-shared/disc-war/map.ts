@@ -1,6 +1,6 @@
 import SAT from "sat";
 import { BodyEntity } from "../game/index.js";
-import { PolylineShape } from "../physics/index.js";
+import { LineShape, PolylineShape } from "../physics/index.js";
 import { MIDDLE_LINE_ID } from "../utils/constants.js";
 
 const SIDE_WIDTH_RATIO = 0.8;
@@ -13,7 +13,9 @@ class Map {
 
   constructor(worldWidth: number, worldHeight: number) {
     this.walls = [];
-    this.splitLine = new BodyEntity(new PolylineShape(0, 0, 0, 0, LINE_THICKNESS));
+    this.splitLine = new BodyEntity(
+      new PolylineShape(0, 0, 0, 0, LINE_THICKNESS)
+    );
     const offsetX = 50;
     const offsetY = 30;
     const top = offsetY;
@@ -95,21 +97,34 @@ class Map {
       new SAT.Vector(worldWidth / 2, top),
       LINE_THICKNESS
     );
-      
   }
 
-  addWall(p1: SAT.Vector, p2: SAT.Vector, position: SAT.Vector, thickness: number = LINE_THICKNESS) {
-    const wall = new BodyEntity(new PolylineShape(p1.x, p1.y, p2.x, p2.y, thickness));
+  addWall(
+    p1: SAT.Vector,
+    p2: SAT.Vector,
+    position: SAT.Vector,
+    thickness: number = LINE_THICKNESS
+  ) {
+    // const wall = new BodyEntity(new PolylineShape(p1.x, p1.y, p2.x, p2.y, thickness));
+    const wall = new BodyEntity(new LineShape(p1.x, p1.y, p2.x, p2.y));
     wall.setPosition(position.x, position.y);
     this.walls.push(wall);
   }
 
-  addSplitLine(p1: SAT.Vector, p2: SAT.Vector, position: SAT.Vector, thickness: number) {
-    const splitLine = new BodyEntity(new PolylineShape(p1.x, p1.y, p2.x, p2.y, thickness), true, MIDDLE_LINE_ID);
+  addSplitLine(
+    p1: SAT.Vector,
+    p2: SAT.Vector,
+    position: SAT.Vector,
+    thickness: number
+  ) {
+    const splitLine = new BodyEntity(
+      new PolylineShape(p1.x, p1.y, p2.x, p2.y, thickness),
+      true,
+      MIDDLE_LINE_ID
+    );
     splitLine.setPosition(position.x, position.y);
     this.splitLine = splitLine;
   }
-
 }
 
 export { Map };

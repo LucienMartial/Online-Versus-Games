@@ -74,6 +74,7 @@ class DiscWarEngine extends GameEngine {
 
     // player in position
     this.respawnTimer.add(30, () => {
+      if (!player.isDead) return;
       player.isDead = false;
       disc.setVelocity(800, 100);
       this.respawnTimer.reset();

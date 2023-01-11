@@ -141,9 +141,9 @@ class GameScene extends Scene {
     console.log("new player has joined", id);
     const player = this.gameEngine.getPlayer(id);
     if (!player) {
-      const player = this.gameEngine.addPlayer(id);
-      const playerRender = new PlayerRender(player, id, 0x0099ff);
-      this.add(playerRender);
+      // const player = this.gameEngine.addPlayer(id);
+      // const playerRender = new PlayerRender(player, id, 0x0099ff);
+      // this.add(playerRender);
     }
   }
 
