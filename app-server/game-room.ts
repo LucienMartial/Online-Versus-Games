@@ -9,9 +9,12 @@ import {
   OnSyncCommand,
 } from "./commands/index.js";
 import { InputData } from "../app-shared/types/index.js";
+import { CBuffer } from "../app-shared/utils/cbuffer.js";
 
+// maximum number of inputs saved for each client
+const MAX_INPUTS = 600;
 interface UserData {
-  inputBuffer: InputData[];
+  inputBuffer: CBuffer<InputData>;
 }
 
 /**
@@ -53,6 +56,7 @@ class GameRoom extends Room<GameState> {
 
   onJoin(client: Client) {
     this.dispatcher.dispatch(new OnJoinCommand(), {
+      maxInputs: MAX_INPUTS,
       client: client,
       gameEngine: this.gameEngine,
     });

@@ -15,7 +15,7 @@ import {
 import { Predictor } from "./sync/predictor";
 import { MapRender } from "./renderer/map-render";
 
-const PLAYER_GHOST = false;
+const PLAYER_GHOST = true;
 const DISC_GHOST = false;
 
 /**
