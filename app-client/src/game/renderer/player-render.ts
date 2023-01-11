@@ -13,7 +13,6 @@ class PlayerRender extends RenderObject {
 
   constructor(player: Player, id: string, color = DEFAULT_COLOR) {
     super(id);
-
     const shape = player.collisionShape as BoxShape;
     this.player = player;
     this.display = Graphics.createRectangle(shape.width, shape.height, color);
