@@ -5,7 +5,7 @@ import { MIDDLE_LINE_ID } from "../utils/constants.js";
 
 const SIDE_WIDTH_RATIO = 0.8;
 const SIDE_HEIGHT_RATIO = 0.7;
-export const LINE_THICKNESS = 200;
+export const LINE_THICKNESS = 20;
 
 class Map {
   walls: BodyEntity[];

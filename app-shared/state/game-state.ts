@@ -45,7 +45,7 @@ class DiscState extends Schema {
  * Game data on the server, shared with each clients
  */
 class GameState extends Schema {
-  @type("number") respawnTimer: number;
+  @type("number") respawnTimer = 0;
   @type(DiscState) disc = new DiscState(0, 0, 0, 0);
   @type({ map: PlayerState }) players = new MapSchema<PlayerState>();
   @type({ map: "number" }) lastInputs = new MapSchema<number>();

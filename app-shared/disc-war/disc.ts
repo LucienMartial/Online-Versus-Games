@@ -5,7 +5,7 @@ import { MIDDLE_LINE_ID } from "../utils/constants.js";
 
 const FRICTION = 1;
 const RADIUS = 50;
-const MAX_SPEED = 5000; //2000;
+const MAX_SPEED = 3000;
 
 class Disc extends BodyEntity {
   constructor() {
@@ -21,6 +21,7 @@ class Disc extends BodyEntity {
   onCollision(response: SAT.Response, other: BodyEntity): void {
     if (!other.static || other.id === MIDDLE_LINE_ID) return;
     this.velocity.reflectN(response.overlapN.perp());
+    this.velocity.scale(1.01);
     this.position.sub(response.overlapV);
     super.onCollision(response, other);
   }

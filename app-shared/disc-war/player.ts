@@ -40,11 +40,13 @@ class Player extends BodyEntity {
     this.canDash = true;
     this.isDashing = false;
     this.dashForce = new SAT.Vector();
+
+    // timers
+    this.dashTimer = new Timer();
     this.registerTimer();
   }
 
   registerTimer() {
-    this.dashTimer = new Timer();
     // end of dash
     this.dashTimer.add(DASH_DURATION, () => {
       this.isDashing = false;

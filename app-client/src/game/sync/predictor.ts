@@ -7,7 +7,7 @@ import { CBuffer, InputData, lerp } from "../../../../app-shared/utils";
 const MAX_RESIMU_STEP = 75;
 const MAX_NB_INPUTS = 1000;
 const PLAYER_BEND = 0.15;
-const DISC_BEND = 0.2;
+const DISC_BEND = 0.15;
 const OTHER_PLAYERS_BEND = 0.3;
 
 /**
@@ -70,7 +70,7 @@ class Predictor {
   /**
    * Synchronize state with server, extrapolating using registered inputs
    */
-  synchronize(state: GameState) {
+  synchronize(state: GameState, now: number) {
     // Synchronize players
     for (const [id, playerState] of state.players.entries()) {
       if (id === this.playerId) continue;
@@ -103,8 +103,12 @@ class Predictor {
     if (!lastInputTime) return;
     this.reconciliate(lastInputTime);
 
+    // when ping is high, bend really fast to synchronized position
+    const delta = now - lastInputTime;
+    const multiplier = Math.max(1, delta * 0.005);
+
     // bending phase
-    discShadow.bend(disc.position, disc.velocity, DISC_BEND);
+    discShadow.bend(disc.position, disc.velocity, DISC_BEND * multiplier);
     playerShadow.bend(player.position, player.velocity, PLAYER_BEND);
   }
 

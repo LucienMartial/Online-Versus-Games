@@ -15,8 +15,8 @@ import {
 import { Predictor } from "./sync/predictor";
 import { MapRender } from "./renderer/map-render";
 
-const PLAYER_GHOST = false;
-const DISC_GHOST = false;
+const PLAYER_GHOST = true;
+const DISC_GHOST = true;
 
 /**
  * Game scene for the disc war game.
@@ -111,7 +111,7 @@ class GameScene extends Scene {
       if (DISC_GHOST) {
         discGhost.setPosition(state.disc.x, state.disc.y);
       }
-      this.predictor.synchronize(state);
+      this.predictor.synchronize(state, Date.now());
     });
   }
 
@@ -141,9 +141,9 @@ class GameScene extends Scene {
     console.log("new player has joined", id);
     const player = this.gameEngine.getPlayer(id);
     if (!player) {
-      // const player = this.gameEngine.addPlayer(id);
-      // const playerRender = new PlayerRender(player, id, 0x0099ff);
-      // this.add(playerRender);
+      const player = this.gameEngine.addPlayer(id);
+      const playerRender = new PlayerRender(player, id, 0x0099ff);
+      this.add(playerRender);
     }
   }
 
