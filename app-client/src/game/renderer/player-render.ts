@@ -9,7 +9,6 @@ const DEFAULT_COLOR = 0x990000;
 class PlayerRender extends RenderObject {
   player: Player;
   display: PIXI.Graphics;
-  deadHandled: boolean;
   deadWatcher: Watcher;
 
   constructor(player: Player, id: string, color = DEFAULT_COLOR) {
@@ -17,7 +16,6 @@ class PlayerRender extends RenderObject {
     const shape = player.collisionShape as BoxShape;
     this.player = player;
     this.display = Graphics.createRectangle(shape.width, shape.height, color);
-    this.deadHandled = false;
     this.addChild(this.display);
     this.setOffset(player.offset.x, player.offset.y);
 

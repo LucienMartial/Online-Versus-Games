@@ -1,5 +1,5 @@
+import React, { useState } from "react";
 import { useEffect, useRef } from "react";
-import React from "react";
 import { Application, Ticker } from "pixi.js";
 import { Viewport } from "pixi-viewport";
 import "./Game.css";
@@ -7,6 +7,7 @@ import { GameScene } from "../game/game";
 import { Client, Room } from "colyseus.js";
 import { GameState } from "../../../app-shared/state/game-state";
 import { WORLD_WIDTH, WORLD_HEIGHT } from "../../../app-shared/utils/constants";
+import GameUI from "./GameUI";
 
 export interface GameProps {
   client: Client;
@@ -16,6 +17,7 @@ export interface GameProps {
 function Game({ client, gameRoom }: GameProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const guiRef = useRef<HTMLDivElement>(null);
+  const [gameScene, setGameScene] = useState<GameScene | undefined>();
 
   useEffect(() => {
     const app = new Application({
@@ -36,6 +38,10 @@ function Game({ client, gameRoom }: GameProps) {
     viewport.moveCenter(WORLD_WIDTH / 2, WORLD_HEIGHT / 2);
     viewport.fit();
 
+    // create game
+    const gameScene = new GameScene(client, gameRoom);
+    setGameScene(gameScene);
+
     // run, smooth rendering over 10 frames
     const ticker = new Ticker();
     const smoothingFrames = 10;
@@ -49,8 +55,7 @@ function Game({ client, gameRoom }: GameProps) {
       gameScene.updateRenderables(smoothedFrameDuration * 0.001, now);
     });
 
-    // init scene
-    const gameScene = new GameScene(client, gameRoom);
+    // load scene
     gameScene.load().then(() => {
       viewport.addChild(gameScene.stage);
       // launch game
@@ -79,7 +84,11 @@ function Game({ client, gameRoom }: GameProps) {
     <main id="game">
       <React.StrictMode>
         <div id="gui" ref={guiRef}>
-          <p>Hello from GUI</p>
+          {gameScene && (
+            <>
+              <GameUI gameScene={gameScene}></GameUI>
+            </>
+          )}
         </div>
       </React.StrictMode>
       <canvas ref={canvasRef}></canvas>

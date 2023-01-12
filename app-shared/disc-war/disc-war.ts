@@ -18,7 +18,7 @@ const PLAYER_RIGHT_POS = new SAT.Vector(
 );
 
 // times
-const RESPAWN_DURATION = 1 * 60;
+const RESPAWN_DURATION = 2 * 60;
 
 /**
  * Game logic for disc war

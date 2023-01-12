@@ -166,10 +166,6 @@ class GameScene extends Scene {
     // base update
     super.update(dt, now);
 
-    if (this.gameEngine.respawnTimer.active) {
-      console.log(this.gameEngine.respawnTimer.ticks);
-    }
-
     // current inputs
     const inputs = this.inputManager.inputs;
     const inputData: InputData = {
