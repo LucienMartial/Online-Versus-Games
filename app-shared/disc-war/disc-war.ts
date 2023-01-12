@@ -69,6 +69,12 @@ class DiscWarEngine extends GameEngine {
     player.isLeft = isLeft;
     this.initPlayer(player);
     this.add("players", player);
+
+    // attach disc (test)
+    const disc = this.getOne<Disc>("disc");
+    disc.attach(player);
+    player.possesDisc = true;
+
     return player;
   }
 
@@ -116,9 +122,21 @@ class DiscWarEngine extends GameEngine {
     player.processInput(inputs);
   }
 
-  fixedUpdate(dt: number): void {
-    super.fixedUpdate(dt);
+  // custom step function
+  step(dt: number): void {
+    // timers
     this.respawnTimer.update();
+
+    for (const player of this.get<Player>("players")) {
+      player.update(dt);
+    }
+
+    // apply physics
+    this.physicEngine.step(dt);
+
+    // disc
+    const disc = this.getOne<Disc>("disc");
+    disc.update(dt);
   }
 }
 

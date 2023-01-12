@@ -66,16 +66,17 @@ class GameScene extends Scene {
     characterRender.update(0, 0);
     this.add(characterRender);
 
-    // disc render
-    const disc = this.gameEngine.getOne<BodyEntity>("disc");
-    const discRender = new DiscRender(disc);
-    this.add(discRender);
-
     // main player render
     const mainPlayer = this.gameEngine.addPlayer(this.id, true);
     const mainPlayerRender = new PlayerRender(mainPlayer, this.id);
     mainPlayerRender.container.zIndex = 5;
     this.add(mainPlayerRender);
+
+    // disc render
+    const disc = this.gameEngine.getOne<BodyEntity>("disc");
+    const discRender = new DiscRender(disc);
+    discRender.container.zIndex = 10;
+    this.add(discRender);
 
     // init game, add, remove players
     this.room.onStateChange.once((state) => {

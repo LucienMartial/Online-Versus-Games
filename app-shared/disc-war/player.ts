@@ -25,6 +25,7 @@ class Player extends BodyEntity {
   isLeft: boolean;
   dashTimer: SyncTimer;
   dashCooldownTimer: SyncTimer;
+  possesDisc: boolean;
 
   constructor(id: string, isPuppet: boolean, deadCallback: Function) {
     // default
@@ -40,6 +41,7 @@ class Player extends BodyEntity {
     this.maxSpeed = MAX_SPEED;
     this.deadCallback = deadCallback;
     this.dashForce = new SAT.Vector();
+    this.possesDisc = false;
 
     // timers
     this.dashTimer = new SyncTimer();
@@ -48,10 +50,13 @@ class Player extends BodyEntity {
 
   onCollision(response: SAT.Response, other: BodyEntity) {
     if (this.isPuppet) return;
-    // dynamic bodies
+
+    // collision with disc
     if (!other.static) {
-      if (!this.isDead) this.deadCallback(this);
-      this.isDead = true;
+      if (!this.possesDisc) {
+        if (!this.isDead) this.deadCallback(this);
+        this.isDead = true;
+      }
       return;
     }
     // static bodies

@@ -7,7 +7,7 @@ import { GAME_RATE } from "../utils/index.js";
  * Contain the game logic, used on server and client
  */
 class GameEngine {
-  private collections: CollectionManager;
+  protected collections: CollectionManager;
   physicEngine: PhysicEngine;
   accumulator: number;
 
