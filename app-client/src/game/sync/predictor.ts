@@ -7,7 +7,7 @@ import { CBuffer, InputData, lerp } from "../../../../app-shared/utils";
 const MAX_RESIMU_STEP = 75;
 const MAX_NB_INPUTS = 1000;
 const PLAYER_BEND = 0.15;
-const DISC_BEND = 0.15;
+const DISC_BEND = 0.1;
 const OTHER_PLAYERS_BEND = 0.3;
 
 /**
