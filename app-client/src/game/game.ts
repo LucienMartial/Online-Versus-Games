@@ -6,7 +6,7 @@ import { Scene } from "./scene";
 import { Graphics } from "./utils/graphics";
 import { DiscRender, PlayerRender, RenderObject } from "./renderer";
 import { Client, Room } from "colyseus.js";
-import { GameState } from "../../../app-shared/state/game-state";
+import { GameState, PlayerState } from "../../../app-shared/state/game-state";
 import {
   InputData,
   WORLD_HEIGHT,
@@ -15,8 +15,8 @@ import {
 import { Predictor } from "./sync/predictor";
 import { MapRender } from "./renderer/map-render";
 
-const PLAYER_GHOST = true;
-const DISC_GHOST = true;
+const PLAYER_GHOST = false;
+const DISC_GHOST = false;
 
 /**
  * Game scene for the disc war game.
@@ -32,10 +32,10 @@ class GameScene extends Scene {
 
   constructor(client: Client, room: Room<GameState>) {
     super();
-    this.gameEngine = new DiscWarEngine();
     this.client = client;
     this.room = room;
     this.id = this.room.sessionId;
+    this.gameEngine = new DiscWarEngine(false, this.id);
     this.predictor = new Predictor(this.gameEngine, this.id);
   }
 
@@ -72,7 +72,7 @@ class GameScene extends Scene {
     this.add(discRender);
 
     // main player render
-    const mainPlayer = this.gameEngine.addPlayer(this.id);
+    const mainPlayer = this.gameEngine.addPlayer(this.id, true);
     const mainPlayerRender = new PlayerRender(mainPlayer, this.id);
     mainPlayerRender.container.zIndex = 5;
     this.add(mainPlayerRender);
@@ -81,8 +81,8 @@ class GameScene extends Scene {
     this.room.onStateChange.once((state) => {
       this.initGame(state);
     });
-    this.room.state.players.onAdd = (_, id) => {
-      this.addPlayer(id);
+    this.room.state.players.onAdd = (state, id) => {
+      this.addPlayer(id, state);
     };
     this.room.state.players.onRemove = (_, id: string) => {
       this.removePlayer(id);
@@ -99,6 +99,7 @@ class GameScene extends Scene {
     if (PLAYER_GHOST) {
       playerGhost = new RenderObject();
       playerGhost.addChild(Graphics.createRectangle(80, 160, 0x0099ff));
+      playerGhost.setOffset(40, 80);
       this.add(playerGhost);
     }
 
@@ -127,21 +128,21 @@ class GameScene extends Scene {
    * Synchronize with the server state only one time at the beginning
    */
   initGame(state: GameState) {
-    for (const id of state.players.keys()) {
-      this.addPlayer(id);
+    for (const [id, playerState] of state.players.entries()) {
+      this.addPlayer(id, playerState);
     }
   }
 
   /**
    * Add a player it to the game engine and renderer when he joined
    */
-  addPlayer(id: string) {
+  addPlayer(id: string, state: PlayerState) {
     if (this.id === id) return;
     if (this.gameEngine.getById("players", id)) return;
     console.log("new player has joined", id);
     const player = this.gameEngine.getPlayer(id);
     if (!player) {
-      const player = this.gameEngine.addPlayer(id);
+      const player = this.gameEngine.addPlayer(id, state.isLeft);
       const playerRender = new PlayerRender(player, id, 0x0099ff);
       this.add(playerRender);
     }

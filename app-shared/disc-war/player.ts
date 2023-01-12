@@ -25,13 +25,18 @@ class Player extends BodyEntity {
   dashForce: SAT.Vector;
   isDead: boolean;
   deadCallback: Function;
+  isLeft: boolean;
+  private isPuppet: boolean;
 
-  constructor(id: string, deadCallback: Function) {
+  constructor(id: string, isPuppet: boolean, deadCallback: Function) {
     // default
     const collisionShape = new BoxShape(WIDTH, HEIGHT);
     super(collisionShape, false, id);
+    this.setOffset(WIDTH / 2, HEIGHT / 2);
 
     // custom
+    this.isPuppet = isPuppet;
+    this.isLeft = false;
     this.friction = new SAT.Vector(FRICTION, FRICTION);
     this.direction = new SAT.Vector();
     this.maxSpeed = MAX_SPEED;
@@ -59,6 +64,7 @@ class Player extends BodyEntity {
   }
 
   onCollision(response: SAT.Response, other: BodyEntity) {
+    if (this.isPuppet) return;
     // dynamic bodies
     if (!other.static) {
       if (!this.isDead) this.deadCallback(this);
@@ -71,6 +77,8 @@ class Player extends BodyEntity {
   }
 
   processInput(inputs: Record<Inputs, boolean>) {
+    if (this.isPuppet) return;
+
     // if dashing, do not move
     if (this.isDashing) return;
 
@@ -108,6 +116,7 @@ class Player extends BodyEntity {
   }
 
   update(dt: number): void {
+    if (this.isPuppet) return;
     super.update(dt);
 
     // dash

@@ -25,6 +25,7 @@ class OnSyncCommand extends Command<GameRoom, Data> {
       this.state.players.set(
         player.id,
         new PlayerState(
+          player.isLeft,
           player.isDead,
           player.position.x,
           player.position.y,

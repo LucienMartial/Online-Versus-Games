@@ -18,6 +18,7 @@ class PlayerRender extends RenderObject {
     this.display = Graphics.createRectangle(shape.width, shape.height, color);
     this.deadHandled = false;
     this.addChild(this.display);
+    this.setOffset(player.offset.x, player.offset.y);
   }
 
   update(dt: number, now: number) {

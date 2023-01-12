@@ -1,6 +1,7 @@
 import { Schema, MapSchema, type } from "@colyseus/schema";
 
 class PlayerState extends Schema {
+  @type("boolean") isLeft: boolean;
   @type("boolean") isDead: boolean;
   @type("number") x: number;
   @type("number") y: number;
@@ -9,6 +10,7 @@ class PlayerState extends Schema {
   @type("boolean") canDash: boolean;
 
   constructor(
+    isLeft: boolean,
     isDead: boolean,
     x: number,
     y: number,
@@ -17,6 +19,7 @@ class PlayerState extends Schema {
     canDash = true
   ) {
     super();
+    this.isLeft = isLeft;
     this.isDead = isDead;
     this.x = x;
     this.y = y;
