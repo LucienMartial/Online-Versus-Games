@@ -1,8 +1,8 @@
 import SAT from "sat";
 import { BodyEntity } from "../game/index.js";
 import { BoxShape } from "../physics/index.js";
-import { PlayerState } from "../state/game-state.js";
-import { Inputs, Timer } from "../utils/index.js";
+import { PlayerState } from "../state/index.js";
+import { Inputs, SyncTimer } from "../utils/index.js";
 
 // shape
 const WIDTH = 80;
@@ -18,15 +18,13 @@ const DASH_DURATION = 0.2 * 60;
 const DASH_COOLDOWN = 0.8 * 60;
 
 class Player extends BodyEntity {
+  private isPuppet: boolean;
   direction: SAT.Vector;
-  canDash: boolean;
-  isDashing: boolean;
-  dashTimer: Timer;
   dashForce: SAT.Vector;
-  isDead: boolean;
   deadCallback: Function;
   isLeft: boolean;
-  private isPuppet: boolean;
+  dashTimer: SyncTimer;
+  dashCooldownTimer: SyncTimer;
 
   constructor(id: string, isPuppet: boolean, deadCallback: Function) {
     // default
@@ -40,27 +38,12 @@ class Player extends BodyEntity {
     this.friction = new SAT.Vector(FRICTION, FRICTION);
     this.direction = new SAT.Vector();
     this.maxSpeed = MAX_SPEED;
-    this.isDead = false;
     this.deadCallback = deadCallback;
-    this.canDash = true;
-    this.isDashing = false;
     this.dashForce = new SAT.Vector();
 
     // timers
-    this.dashTimer = new Timer();
-    this.registerTimer();
-  }
-
-  registerTimer() {
-    // end of dash
-    this.dashTimer.add(DASH_DURATION, () => {
-      this.isDashing = false;
-      this.maxSpeed = MAX_SPEED;
-    });
-    // cooldown
-    this.dashTimer.add(DASH_COOLDOWN, () => {
-      this.canDash = true;
-    });
+    this.dashTimer = new SyncTimer();
+    this.dashCooldownTimer = new SyncTimer();
   }
 
   onCollision(response: SAT.Response, other: BodyEntity) {
@@ -78,9 +61,8 @@ class Player extends BodyEntity {
 
   processInput(inputs: Record<Inputs, boolean>) {
     if (this.isPuppet) return;
-
     // if dashing, do not move
-    if (this.isDashing) return;
+    if (this.dashTimer.active) return;
 
     // get direction
     this.direction = new SAT.Vector();
@@ -98,34 +80,33 @@ class Player extends BodyEntity {
     this.setVelocity(force.x, force.y);
 
     // apply dash
-    if (inputs.dash && this.canDash) {
-      this.dashTimer.reset();
-      this.canDash = false;
-      this.isDashing = true;
+    if (inputs.dash && !this.dashCooldownTimer.active) {
       this.maxSpeed = DASH_SPEED;
       this.dashForce = this.direction.clone().scale(DASH_SPEED);
+      this.dashTimer.timeout(DASH_DURATION, () => {
+        this.maxSpeed = MAX_SPEED;
+      });
+      this.dashCooldownTimer.timeout(DASH_COOLDOWN);
     }
   }
 
-  synchronize(state: PlayerState) {
+  sync(state: PlayerState) {
     this.setPosition(state.x, state.y);
-    this.canDash = state.dash.canDash;
-    this.isDashing = state.dash.isDashing;
-    this.dashTimer.sync(state.dash.timer);
-    if (this.isDashing) this.maxSpeed = DASH_SPEED;
+    this.dashTimer.sync(state.dashTimer);
+    this.dashCooldownTimer.sync(state.dashCooldownTimer);
+    if (this.dashTimer.active) this.maxSpeed = DASH_SPEED;
   }
 
   update(dt: number): void {
     if (this.isPuppet) return;
-    super.update(dt);
+
+    // timers
+    this.dashCooldownTimer.update();
+    this.dashTimer.update();
 
     // dash
-    if (!this.canDash) {
-      this.dashTimer.update();
-      // dashing
-      if (this.isDashing) {
-        this.setVelocity(this.dashForce.x, this.dashForce.y);
-      }
+    if (this.dashTimer.active) {
+      this.setVelocity(this.dashForce.x, this.dashForce.y);
     }
   }
 }

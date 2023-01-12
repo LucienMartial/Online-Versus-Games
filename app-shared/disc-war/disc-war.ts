@@ -1,7 +1,12 @@
 import SAT from "sat";
 import { GameEngine } from "../game/game-engine.js";
 import { GameState } from "../state/game-state.js";
-import { WORLD_HEIGHT, WORLD_WIDTH, Inputs, Timer } from "../utils/index.js";
+import {
+  WORLD_HEIGHT,
+  WORLD_WIDTH,
+  Inputs,
+  SyncTimer,
+} from "../utils/index.js";
 import { Map, Player, Disc } from "./index.js";
 
 const DISC_VELOCITY = new SAT.Vector(600, 600);
@@ -12,14 +17,16 @@ const PLAYER_RIGHT_POS = new SAT.Vector(
   WORLD_HEIGHT / 2
 );
 
+// times
+const RESPAWN_DURATION = 1 * 60;
+
 /**
  * Game logic for disc war
  */
 class DiscWarEngine extends GameEngine {
-  respawnTimer: Timer;
+  respawnTimer: SyncTimer;
   playerId: string;
   isServer: boolean;
-  isRespawning: boolean;
 
   constructor(isServer = false, playerId = "") {
     super();
@@ -38,18 +45,20 @@ class DiscWarEngine extends GameEngine {
     this.add("disc", disc);
 
     // timers
-    this.respawnTimer = new Timer();
+    this.respawnTimer = new SyncTimer();
   }
 
   sync(state: GameState) {
+    // timers
+    this.respawnTimer.sync(state.respawnTimer);
+
+    // players
     for (const [id, playerState] of state.players.entries()) {
       const player = this.getPlayer(id);
       if (!player) continue;
       player.isDead = playerState.isDead;
       player.isLeft = playerState.isLeft;
     }
-    this.respawnTimer.sync(state.respawnTimer);
-    this.isRespawning = state.isRespawning;
   }
 
   // Player
@@ -78,8 +87,6 @@ class DiscWarEngine extends GameEngine {
 
   async playerDie(player: Player) {
     // disc in center
-    this.respawnTimer.reset();
-    this.isRespawning = true;
     player.isDead = true;
     const disc = this.getOne<Disc>("disc");
     disc.setPosition(DISC_POSITION.x, DISC_POSITION.y);
@@ -90,10 +97,8 @@ class DiscWarEngine extends GameEngine {
       this.initPlayer(player);
     }
 
-    // player in position
-    this.respawnTimer.add(60, () => {
-      if (!this.isRespawning) return;
-      this.isRespawning = false;
+    // make player alive, launch ball
+    this.respawnTimer.timeout(RESPAWN_DURATION, () => {
       for (const player of this.get<Player>("players")) {
         player.isDead = false;
         this.initPlayer(player);
@@ -105,7 +110,7 @@ class DiscWarEngine extends GameEngine {
   // Input / update
 
   processInput(inputs: Record<Inputs, boolean>, id: string): void {
-    if (this.isRespawning) return;
+    if (this.respawnTimer.active) return;
     const player = this.getById<Player>("players", id);
     if (!player || player.isDead) return;
     player.processInput(inputs);

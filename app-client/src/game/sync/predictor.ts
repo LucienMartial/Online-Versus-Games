@@ -6,7 +6,7 @@ import { CBuffer, InputData, lerp } from "../../../../app-shared/utils";
 
 const MAX_RESIMU_STEP = 75;
 const MAX_NB_INPUTS = 1000;
-const PLAYER_BEND = 0.15;
+const PLAYER_BEND = 0.3;
 const DISC_BEND = 0.1;
 const OTHER_PLAYERS_BEND = 0.3;
 
@@ -56,7 +56,7 @@ class Predictor {
    */
   processInput(inputData: InputData) {
     this.inputs.push(structuredClone(inputData));
-    if (this.gameEngine.isRespawning) return;
+    if (this.gameEngine.respawnTimer.active) return;
     this.gameEngine.processInput(inputData.inputs, this.playerId);
   }
 
@@ -77,7 +77,7 @@ class Predictor {
       if (id === this.playerId) continue;
       const player = this.gameEngine.getPlayer(id);
       if (!player) continue;
-      // interpolation new position
+      // interpolate new position
       player.lerpTo(playerState.x, playerState.y, OTHER_PLAYERS_BEND);
     }
 
@@ -97,7 +97,7 @@ class Predictor {
     this.gameEngine.sync(state);
     disc.setPosition(state.disc.x, state.disc.y);
     disc.setVelocity(state.disc.vx, state.disc.vy);
-    player.synchronize(playerState);
+    player.sync(playerState);
 
     // re simulate (extrapolation)
     const lastInputTime = state.lastInputs.get(this.playerId);

@@ -6,7 +6,7 @@ import { Scene } from "./scene";
 import { Graphics } from "./utils/graphics";
 import { DiscRender, PlayerRender, RenderObject } from "./renderer";
 import { Client, Room } from "colyseus.js";
-import { GameState, PlayerState } from "../../../app-shared/state/game-state";
+import { GameState, PlayerState } from "../../../app-shared/state";
 import {
   InputData,
   WORLD_HEIGHT,
@@ -165,6 +165,10 @@ class GameScene extends Scene {
   update(dt: number, now: number) {
     // base update
     super.update(dt, now);
+
+    if (this.gameEngine.respawnTimer.active) {
+      console.log(this.gameEngine.respawnTimer.ticks);
+    }
 
     // current inputs
     const inputs = this.inputManager.inputs;

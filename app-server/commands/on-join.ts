@@ -1,6 +1,6 @@
 import { Command } from "@colyseus/command";
 import { GameRoom } from "../game-room.js";
-import { DashState, PlayerState } from "../../app-shared/state/index.js";
+import { PlayerState } from "../../app-shared/state/index.js";
 import { Client } from "colyseus";
 import { DiscWarEngine } from "../../app-shared/disc-war/index.js";
 import { CBuffer } from "../../app-shared/utils/cbuffer.js";
@@ -29,8 +29,7 @@ class OnJoinCommand extends Command<GameRoom, Data> {
         player.isLeft,
         player.isDead,
         player.position.x,
-        player.position.y,
-        new DashState()
+        player.position.y
       )
     );
   }
