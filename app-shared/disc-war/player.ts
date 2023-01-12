@@ -109,10 +109,10 @@ class Player extends BodyEntity {
 
   synchronize(state: PlayerState) {
     this.setPosition(state.x, state.y);
-    this.canDash = state.canDash;
-    this.isDashing = state.isDashing;
-    this.dashTimer.sync(state.dashTimer);
-    if (state.isDashing) this.maxSpeed = DASH_SPEED;
+    this.canDash = state.dash.canDash;
+    this.isDashing = state.dash.isDashing;
+    this.dashTimer.sync(state.dash.timer);
+    if (this.isDashing) this.maxSpeed = DASH_SPEED;
   }
 
   update(dt: number): void {

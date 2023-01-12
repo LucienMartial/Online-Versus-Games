@@ -56,6 +56,7 @@ class Predictor {
    */
   processInput(inputData: InputData) {
     this.inputs.push(structuredClone(inputData));
+    if (this.gameEngine.isRespawning) return;
     this.gameEngine.processInput(inputData.inputs, this.playerId);
   }
 

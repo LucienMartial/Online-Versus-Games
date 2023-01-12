@@ -7,11 +7,11 @@ interface Event {
  * Rollback oriented Timer that can be synchronized with server
  */
 class Timer {
-  timer: number;
+  ticks: number;
   events: Event[];
 
   constructor() {
-    this.timer = 0;
+    this.ticks = 0;
     this.events = [];
   }
 
@@ -24,17 +24,17 @@ class Timer {
   }
 
   reset() {
-    this.timer = 0;
+    this.ticks = 0;
   }
 
-  sync(timer: number) {
-    this.timer = timer;
+  sync(ticks: number) {
+    this.ticks = ticks;
   }
 
   update() {
-    this.timer += 1;
+    this.ticks += 1;
     for (const event of this.events) {
-      if (this.timer >= event.duration) event.callback();
+      if (this.ticks >= event.duration) event.callback();
     }
   }
 }

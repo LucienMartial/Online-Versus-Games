@@ -19,6 +19,7 @@ class DiscWarEngine extends GameEngine {
   respawnTimer: Timer;
   playerId: string;
   isServer: boolean;
+  isRespawning: boolean;
 
   constructor(isServer = false, playerId = "") {
     super();
@@ -48,6 +49,7 @@ class DiscWarEngine extends GameEngine {
       player.isLeft = playerState.isLeft;
     }
     this.respawnTimer.sync(state.respawnTimer);
+    this.isRespawning = state.isRespawning;
   }
 
   // Player
@@ -77,30 +79,33 @@ class DiscWarEngine extends GameEngine {
   async playerDie(player: Player) {
     // disc in center
     this.respawnTimer.reset();
+    this.isRespawning = true;
+    player.isDead = true;
     const disc = this.getOne<Disc>("disc");
     disc.setPosition(DISC_POSITION.x, DISC_POSITION.y);
     disc.setVelocity(0, 0);
 
     // reset players position
     for (const player of this.get<Player>("players")) {
-      player.isDead = true;
       this.initPlayer(player);
     }
 
     // player in position
-    this.respawnTimer.add(30, () => {
+    this.respawnTimer.add(60, () => {
+      if (!this.isRespawning) return;
+      this.isRespawning = false;
       for (const player of this.get<Player>("players")) {
-        if (!player.isDead) return;
         player.isDead = false;
+        this.initPlayer(player);
       }
       disc.setVelocity(DISC_VELOCITY.x, DISC_VELOCITY.y);
-      this.respawnTimer.reset();
     });
   }
 
   // Input / update
 
   processInput(inputs: Record<Inputs, boolean>, id: string): void {
+    if (this.isRespawning) return;
     const player = this.getById<Player>("players", id);
     if (!player || player.isDead) return;
     player.processInput(inputs);
