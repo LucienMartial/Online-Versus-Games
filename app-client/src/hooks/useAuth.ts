@@ -1,7 +1,7 @@
-import { useEffect, useState } from "react";
+import { DependencyList, useEffect, useState } from "react";
 import { Error } from "../../../app-shared/types";
 
-function useAuth() {
+function useAuth(dependencies: DependencyList) {
   const [isAuth, setIsAuth] = useState<boolean | null>(null);
 
   useEffect(() => {
@@ -16,7 +16,7 @@ function useAuth() {
       setIsAuth(false);
     };
     fetchStatus();
-  });
+  }, dependencies);
 
   return isAuth;
 }

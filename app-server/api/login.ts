@@ -8,14 +8,14 @@ router.post("/login", (req: Request, res: Response, next: NextFunction) => {
   // already connected
   if (req.session.authenticated) {
     res.statusMessage = "Already logged in";
-    res.status(200).end();
+    return res.status(200).end();
   }
 
   // check if login data is valid
   if (req.body.username === "john") {
     req.session.authenticated = true;
     res.statusMessage = "Logged in sucessfully";
-    res.status(200).end();
+    return res.status(200).end();
   }
 
   // login failed
@@ -27,7 +27,7 @@ router.get("/cookie-checker", (req: Request, res: Response) => {
 
   // already authentified
   if (req.session.authenticated) {
-    res.status(200).end();
+    return res.status(200).end();
   }
 
   // need login

@@ -31,8 +31,8 @@ function App() {
   const [loaded, setLoaded] = useState(false);
   const [started, setStarted] = useState(false); // dev: true
   const [gameData, setGameData] = useState<GameProps>();
-  const [, setLoggedIn] = useState(false);
-  const isAuth = useAuth();
+  const [isLoggedIn, setLoggedIn] = useState(false);
+  const isAuth = useAuth([isLoggedIn]);
 
   const fetchData = async () => {
     const res = await fetch("/api/");
