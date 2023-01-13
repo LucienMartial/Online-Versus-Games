@@ -63,6 +63,7 @@ class Disc extends BodyEntity {
 
   update(dt: number): void {
     if (this.isAttached) {
+      if (!this.attachedPlayer) return;
       if (this.attachedPlayer.isDead) return;
       this.velocity = new SAT.Vector(0, 0);
       const offset = this.attachedPlayer.isLeft ? RADIUS * 2 : -RADIUS * 2;

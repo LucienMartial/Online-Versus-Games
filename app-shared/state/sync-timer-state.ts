@@ -9,6 +9,7 @@ class SyncTimerState extends Schema {
   constructor() {
     super();
     this.ticks = 0;
+    this.duration = 0;
     this.active = false;
   }
 
