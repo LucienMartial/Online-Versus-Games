@@ -96,10 +96,7 @@ class DiscWarEngine extends GameEngine {
 
     // make player alive, launch ball
     this.respawnTimer.timeout(RESPAWN_DURATION, () => {
-      for (const player of this.get<Player>("players")) {
-        player.isDead = false;
-        this.initPlayer(player);
-      }
+      player.isDead = false;
       disc.setVelocity(DISC_VELOCITY.x, DISC_VELOCITY.y);
     });
   }

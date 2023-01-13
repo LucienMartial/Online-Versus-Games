@@ -19,20 +19,13 @@ class OnJoinCommand extends Command<GameRoom, Data> {
     client.userData = {
       inputBuffer: new CBuffer<InputData>(maxInputs),
     };
-
     const player = gameEngine.addPlayer(client.id, this.room.isLeft);
     this.room.isLeft = !this.room.isLeft;
 
-    this.state.players.set(
-      client.id,
-      new PlayerState(
-        player.isLeft,
-        player.isDead,
-        player.possesDisc,
-        player.position.x,
-        player.position.y
-      )
-    );
+    // player state
+    const playerState = new PlayerState();
+    playerState.sync(player);
+    this.state.players.set(client.id, playerState);
   }
 }
 

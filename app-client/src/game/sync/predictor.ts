@@ -95,8 +95,8 @@ class Predictor {
 
     // synchronize
     this.gameEngine.sync(state);
-    disc.sync(state.disc, this.gameEngine);
     player.sync(playerState);
+    disc.sync(state.disc, this.gameEngine);
 
     // re simulate (extrapolation)
     const lastInputTime = state.lastInputs.get(this.playerId);

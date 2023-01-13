@@ -1,4 +1,5 @@
 import { Schema, type } from "@colyseus/schema";
+import { Disc } from "../disc-war/disc.js";
 
 class DiscState extends Schema {
   @type("number") x: number;
@@ -16,6 +17,15 @@ class DiscState extends Schema {
     this.vy = 0;
     this.isAttached = false;
     this.attachedPlayer = "";
+  }
+
+  sync(disc: Disc) {
+    this.x = disc.position.x;
+    this.y = disc.position.y;
+    this.vx = disc.velocity.x;
+    this.vy = disc.velocity.y;
+    this.isAttached = disc.isAttached;
+    this.attachedPlayer = disc.attachedPlayer ? disc.attachedPlayer.id : "";
   }
 }
 
