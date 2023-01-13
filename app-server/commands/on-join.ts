@@ -28,6 +28,7 @@ class OnJoinCommand extends Command<GameRoom, Data> {
       new PlayerState(
         player.isLeft,
         player.isDead,
+        player.possesDisc,
         player.position.x,
         player.position.y
       )

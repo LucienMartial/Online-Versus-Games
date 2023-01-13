@@ -59,6 +59,7 @@ class Player extends BodyEntity {
       }
       return;
     }
+
     // static bodies
     this.move(-response.overlapV.x, -response.overlapV.y);
     super.onCollision(response, other);
@@ -96,6 +97,9 @@ class Player extends BodyEntity {
   }
 
   sync(state: PlayerState) {
+    this.isDead = state.isDead;
+    this.isLeft = state.isLeft;
+    this.possesDisc = state.possesDisc;
     this.setPosition(state.x, state.y);
     this.dashTimer.sync(state.dashTimer);
     this.dashCooldownTimer.sync(state.dashCooldownTimer);

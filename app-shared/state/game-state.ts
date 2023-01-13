@@ -8,7 +8,7 @@ import { SyncTimerState } from "./sync-timer-state.js";
  */
 class GameState extends Schema {
   @type(SyncTimerState) respawnTimer = new SyncTimerState();
-  @type(DiscState) disc = new DiscState(0, 0, 0, 0);
+  @type(DiscState) disc = new DiscState();
   @type({ map: PlayerState }) players = new MapSchema<PlayerState>();
   @type({ map: "number" }) lastInputs = new MapSchema<number>();
 }

@@ -1,5 +1,5 @@
 import { Vector } from "sat";
-import { DiscWarEngine } from "../../../../app-shared/disc-war";
+import { Disc, DiscWarEngine } from "../../../../app-shared/disc-war";
 import { BodyEntity } from "../../../../app-shared/game";
 import { GameState } from "../../../../app-shared/state/game-state";
 import { CBuffer, InputData, lerp } from "../../../../app-shared/utils";
@@ -89,14 +89,13 @@ class Predictor {
     if (!player || !playerState) return;
 
     // save shadows
-    const disc = this.gameEngine.getOne<BodyEntity>("disc");
+    const disc = this.gameEngine.getOne<Disc>("disc");
     const discShadow = new Shadow(disc.position, disc.velocity);
     const playerShadow = new Shadow(player.position, player.velocity);
 
     // synchronize
     this.gameEngine.sync(state);
-    disc.setPosition(state.disc.x, state.disc.y);
-    disc.setVelocity(state.disc.vx, state.disc.vy);
+    disc.sync(state.disc, this.gameEngine);
     player.sync(playerState);
 
     // re simulate (extrapolation)

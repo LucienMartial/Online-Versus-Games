@@ -1,6 +1,9 @@
 import { Command } from "@colyseus/command";
-import { DiscWarEngine, Player } from "../../app-shared/disc-war/index.js";
-import { BodyEntity } from "../../app-shared/game/body-entity.js";
+import {
+  Disc,
+  DiscWarEngine,
+  Player,
+} from "../../app-shared/disc-war/index.js";
 import { GameRoom } from "../game-room.js";
 
 interface Data {
@@ -12,11 +15,15 @@ class OnSyncCommand extends Command<GameRoom, Data> {
     this.state.respawnTimer.sync(gameEngine.respawnTimer);
 
     // disc
-    const disc = gameEngine.getOne<BodyEntity>("disc");
+    const disc = gameEngine.getOne<Disc>("disc");
     this.state.disc.x = disc.position.x;
     this.state.disc.y = disc.position.y;
     this.state.disc.vx = disc.velocity.x;
     this.state.disc.vy = disc.velocity.y;
+    this.state.disc.isAttached = disc.isAttached;
+    this.state.disc.attachedPlayer = disc.attachedPlayer
+      ? disc.attachedPlayer.id
+      : "";
 
     // players
     for (const player of gameEngine.get<Player>("players")) {
@@ -27,6 +34,7 @@ class OnSyncCommand extends Command<GameRoom, Data> {
       playerState.y = player.position.y;
       playerState.isLeft = player.isLeft;
       playerState.isDead = player.isDead;
+      playerState.possesDisc = player.possesDisc;
 
       // dash
       playerState.dashTimer.sync(player.dashTimer);

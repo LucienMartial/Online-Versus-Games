@@ -22,6 +22,7 @@ class SyncTimer {
   sync(state: SyncTimerState) {
     this.ticks = state.ticks;
     this.active = state.active;
+    this.duration = state.duration;
   }
 
   update() {

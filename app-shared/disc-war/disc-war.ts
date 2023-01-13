@@ -51,14 +51,6 @@ class DiscWarEngine extends GameEngine {
   sync(state: GameState) {
     // timers
     this.respawnTimer.sync(state.respawnTimer);
-
-    // players
-    for (const [id, playerState] of state.players.entries()) {
-      const player = this.getPlayer(id);
-      if (!player) continue;
-      player.isDead = playerState.isDead;
-      player.isLeft = playerState.isLeft;
-    }
   }
 
   // Player
@@ -73,7 +65,6 @@ class DiscWarEngine extends GameEngine {
     // attach disc (test)
     const disc = this.getOne<Disc>("disc");
     disc.attach(player);
-    player.possesDisc = true;
 
     return player;
   }

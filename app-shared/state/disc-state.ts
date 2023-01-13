@@ -5,13 +5,17 @@ class DiscState extends Schema {
   @type("number") y: number;
   @type("number") vx: number;
   @type("number") vy: number;
+  @type("boolean") isAttached: boolean;
+  @type("string") attachedPlayer: string;
 
-  constructor(x: number, y: number, vx: number, vy: number) {
+  constructor() {
     super();
-    this.x = x;
-    this.y = y;
-    this.vx = vx;
-    this.vy = vy;
+    this.x = 0;
+    this.y = 0;
+    this.vx = 0;
+    this.vy = 0;
+    this.isAttached = false;
+    this.attachedPlayer = "";
   }
 }
 

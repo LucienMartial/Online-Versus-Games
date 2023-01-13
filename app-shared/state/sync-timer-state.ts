@@ -3,6 +3,7 @@ import { Schema, type } from "@colyseus/schema";
 
 class SyncTimerState extends Schema {
   @type("number") ticks: number;
+  @type("number") duration: number;
   @type("boolean") active: boolean;
 
   constructor() {
@@ -14,6 +15,7 @@ class SyncTimerState extends Schema {
   sync(timer: SyncTimer) {
     this.ticks = timer.ticks;
     this.active = timer.active;
+    this.duration = timer.duration;
   }
 }
 
