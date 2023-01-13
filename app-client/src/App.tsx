@@ -5,6 +5,7 @@ import { Message } from "../../app-shared/types";
 import Game, { GameProps } from "./components/Game";
 import { Assets } from "@pixi/assets";
 import { Client, Room } from "colyseus.js";
+import Login from "./components/Login";
 
 // websocket endpoint
 const COLYSEUS_ENDPOINT =
@@ -29,6 +30,7 @@ function App() {
   const [loaded, setLoaded] = useState(false);
   const [started, setStarted] = useState(true); // dev: true
   const [gameData, setGameData] = useState<GameProps>();
+  const [userLoggedIn, setUserLoggedIn] = useState(false);
 
   const fetchData = async () => {
     const res = await fetch("/api");
@@ -58,6 +60,10 @@ function App() {
     }
   };
 
+  const login = () => {
+    setUserLoggedIn(true);
+  }
+
   useEffect(() => {
     fetchData();
     initClient();
@@ -66,6 +72,14 @@ function App() {
 
   if (!loaded) {
     return <p>Loading.. </p>;
+  }
+
+  if(!userLoggedIn) {
+    return <Login onLogin={login}/>
+  }
+
+  if(userLoggedIn && gameData) {
+    return <Game {...gameData} />;
   }
 
   if (started && gameData) {
