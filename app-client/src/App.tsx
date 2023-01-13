@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "./App.css";
 import { hello } from "../../app-shared/hello";
-import { Message } from "../../app-shared/types";
+import { Message, Checker } from "../../app-shared/types";
 import Game, { GameProps } from "./components/Game";
 import { Assets } from "@pixi/assets";
 import { Client, Room } from "colyseus.js";
@@ -33,10 +33,13 @@ function App() {
   const [userLoggedIn, setUserLoggedIn] = useState(false);
 
   const fetchData = async () => {
-    const res = await fetch("/api");
-    const msg: Message = await res.json();
+    const res0 = await fetch("/api");
+    const msg: Message = await res0.json();
     console.log(msg);
     console.log(hello());
+    const res1 = await fetch("/api/cookie-checker");
+    const msg1: Checker = await res1.json();
+    console.log(msg1);
   };
 
   const initAssetsManifest = async () => {

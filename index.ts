@@ -1,4 +1,5 @@
 import express from "express";
+import cookieSession from "cookie-session";
 import http from "http";
 import { Server } from "colyseus";
 import { WebSocketTransport } from "@colyseus/ws-transport";
@@ -11,6 +12,15 @@ const app = express();
 const port = process.env.PORT || 3000;
 const server = http.createServer(app);
 
+// app.set('trust proxy', 1);
+
+app.use(cookieSession({
+  name: 'session',
+  keys: ['key1', 'key2'],
+  maxAge: 10 * 60 * 1000, // 10 minutes
+}));
+
+app.use(express.json());
 app.use(express.static("dist"));
 app.get("/", (req, res) => {
   res.sendFile("index.html");

@@ -3,4 +3,13 @@ interface Message {
   date: string;
 }
 
-export type { Message };
+interface Login {
+  username: string;
+}
+
+interface Checker {
+  status: number;
+  message: string;
+}
+
+export type { Message, Login, Checker };
