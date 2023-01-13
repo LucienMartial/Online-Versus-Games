@@ -49,6 +49,19 @@ class DiscWarEngine extends GameEngine {
   }
 
   sync(state: GameState) {
+    // synchronize players
+    for (const [id, playerState] of state.players.entries()) {
+      if (id === this.playerId) continue;
+      const player = this.getPlayer(id);
+      if (!player) continue;
+      // interpolate new position
+      player.isDead = playerState.isDead;
+      player.isLeft = playerState.isLeft;
+      player.possesDisc = playerState.possesDisc;
+      if (player.isDead || this.respawnTimer.active) {
+        player.setPosition(playerState.x, playerState.y);
+      }
+    }
     // timers
     this.respawnTimer.sync(state.respawnTimer);
   }
@@ -61,11 +74,6 @@ class DiscWarEngine extends GameEngine {
     player.isLeft = isLeft;
     this.initPlayer(player);
     this.add("players", player);
-
-    // attach disc (test)
-    const disc = this.getOne<Disc>("disc");
-    disc.attach(player);
-
     return player;
   }
 
@@ -84,10 +92,13 @@ class DiscWarEngine extends GameEngine {
 
   async playerDie(player: Player) {
     // disc in center
-    player.isDead = true;
     const disc = this.getOne<Disc>("disc");
+    disc.detach();
     disc.setPosition(DISC_POSITION.x, DISC_POSITION.y);
     disc.setVelocity(0, 0);
+
+    // player
+    player.isDead = true;
 
     // reset players position
     for (const player of this.get<Player>("players")) {
@@ -97,6 +108,7 @@ class DiscWarEngine extends GameEngine {
     // make player alive, launch ball
     this.respawnTimer.timeout(RESPAWN_DURATION, () => {
       player.isDead = false;
+      disc.attach(player);
       disc.setVelocity(DISC_VELOCITY.x, DISC_VELOCITY.y);
     });
   }

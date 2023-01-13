@@ -72,13 +72,15 @@ class Predictor {
    * Synchronize state with server, extrapolating using registered inputs
    */
   synchronize(state: GameState, now: number) {
-    // Synchronize players
+    // Interpolate players
     for (const [id, playerState] of state.players.entries()) {
       if (id === this.playerId) continue;
       const player = this.gameEngine.getPlayer(id);
       if (!player) continue;
       // interpolate new position
       player.lerpTo(playerState.x, playerState.y, OTHER_PLAYERS_BEND);
+      player.possesDisc = playerState.possesDisc;
+      if (playerState.isDead) this.gameEngine.playerDie(player);
     }
 
     // Extrapolation with bending at the end
@@ -95,8 +97,8 @@ class Predictor {
 
     // synchronize
     this.gameEngine.sync(state);
-    player.sync(playerState);
     disc.sync(state.disc, this.gameEngine);
+    player.sync(playerState);
 
     // re simulate (extrapolation)
     const lastInputTime = state.lastInputs.get(this.playerId);

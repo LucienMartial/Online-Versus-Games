@@ -4,8 +4,6 @@ import { CircleShape } from "../physics/collision.js";
 import { DiscState } from "../state/disc-state.js";
 import { MIDDLE_LINE_ID } from "../utils/constants.js";
 import { Player } from "./player.js";
-import { MapSchema } from "@colyseus/schema";
-import { PlayerState } from "../state/player-state.js";
 import { DiscWarEngine } from "./index.js";
 
 const FRICTION = 1;
@@ -37,15 +35,20 @@ class Disc extends BodyEntity {
 
   attach(player: Player) {
     // last attached player
-    if (this.attachedPlayer) {
-      this.attachedPlayer.possesDisc = false;
-    }
+    this.detach();
 
     // new one
     this.attachedPlayer = player;
     this.attachedPlayer.possesDisc = true;
     this.isAttached = true;
     this.update(0);
+  }
+
+  detach() {
+    if (this.attachedPlayer) {
+      this.attachedPlayer.possesDisc = false;
+    }
+    this.isAttached = false;
   }
 
   sync(state: DiscState, engine: DiscWarEngine) {
@@ -60,6 +63,8 @@ class Disc extends BodyEntity {
 
   update(dt: number): void {
     if (this.isAttached) {
+      if (this.attachedPlayer.isDead) return;
+      this.velocity = new SAT.Vector(0, 0);
       const offset = this.attachedPlayer.isLeft ? RADIUS * 2 : -RADIUS * 2;
       this.position.x = this.attachedPlayer.position.x + offset;
       this.position.y = this.attachedPlayer.position.y;

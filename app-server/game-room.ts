@@ -12,7 +12,7 @@ import { InputData } from "../app-shared/types/index.js";
 import { CBuffer } from "../app-shared/utils/cbuffer.js";
 
 // maximum number of inputs saved for each client
-const MAX_INPUTS = 20;
+const MAX_INPUTS = 10;
 interface UserData {
   inputBuffer: CBuffer<InputData>;
 }
