@@ -63,9 +63,12 @@ function App() {
 
   useEffect(() => {
     fetchData();
-    initClient();
     initAssetsManifest();
   }, []);
+
+  useEffect(() => {
+    if (started) initClient();
+  }, [started]);
 
   // still loading
   if (!loaded || isAuth === null) {
