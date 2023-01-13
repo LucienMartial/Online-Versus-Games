@@ -13,32 +13,23 @@ router.get("/api", (req, res) => {
 });
 
 router.post("/api/login", (req, res) => {
-  const loginPayload: Login = req.body;
+  let loginChecker: Checker;
 
   if (req.session.authenticated) {
-    const loginChecker: Checker = {
-      status: 200,
-      message: "Already logged in"
-    };
-    res.json(loginChecker);
+    loginChecker.status = 200;
+    loginChecker.message = "Already logged in";
   } else {
     if (req.body.username === "john") {
       req.session.authenticated = true;
-      const loginChecker: Checker = {
-        status: 200,
-        message: "Login successful"
-      };
-      res.json(loginChecker);
+      loginChecker.status = 200;
+      loginChecker.message = "Login successful";
     } else {
-      const loginChecker: Checker = {
-        status: 400,
-        message: "Login failed"
-      };
-      res.json(loginChecker);
+      loginChecker.status = 400;
+      loginChecker.message = "Login failed";
     }
   }
 
-  res.json(loginPayload);
+  res.json(loginChecker);
 });
 
 router.get("/api/cookie-checker", (req, res) => {

@@ -8,12 +8,26 @@ interface LoginProps {
 function Login({onLogin}: LoginProps) {
   const usernameRef = React.useRef<HTMLInputElement>(null);
 
-  const login = (e: React.FormEvent) => {
+  const login = async (e: React.FormEvent) => {
     e.preventDefault();
     if (usernameRef.current?.value === "") {
       usernameRef.current?.focus();
       return;
     }
+    const res = await fetch("/api/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        username: usernameRef.current?.value,
+      }),
+    });
+
+    console.log(res);
+    const jsonres = await res.json();
+    console.log(jsonres);
+    
     onLogin();
   }
 
