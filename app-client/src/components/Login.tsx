@@ -15,7 +15,7 @@ function Login({onLogin}: { onLogin: () => void }) {
 
   return (
       <div className={"login"}>
-        <form action="">
+        <form action="" onSubmit={login}>
           <h1>WELCOME !</h1>
           <div className={"container"}>
           <input id="username" type="text" placeholder={" "} ref={usernameRef} autoFocus={true} autoComplete={"off"}/>
@@ -25,7 +25,7 @@ function Login({onLogin}: { onLogin: () => void }) {
           <input id="password" type="password" placeholder={" "}/>
           <label htmlFor="password" className={"movingLabel"}>Password</label>
         </div>
-        <button type="submit" onClick={login}>Login</button>
+        <button type="submit">Login</button>
         </form>
       </div>
   )
