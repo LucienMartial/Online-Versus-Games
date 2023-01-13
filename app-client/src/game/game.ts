@@ -85,7 +85,7 @@ class GameScene extends Scene {
     this.room.state.players.onAdd = (state, id) => {
       this.addPlayer(id, state);
     };
-    this.room.state.players.onRemove = (_, id: string) => {
+    this.room.state.players.onRemove = (state, id: string) => {
       this.removePlayer(id);
     };
 

@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
 import "./App.css";
 import { hello } from "../../app-shared/hello";
-import { Message, Checker } from "../../app-shared/types";
+import { Message } from "../../app-shared/types";
 import Game, { GameProps } from "./components/Game";
 import { Assets } from "@pixi/assets";
 import { Client, Room } from "colyseus.js";
 import Login from "./components/Login";
+import { useAuth } from "./hooks/useAuth";
 
 // websocket endpoint
 const COLYSEUS_ENDPOINT =
@@ -28,18 +29,16 @@ const manifest = {
 
 function App() {
   const [loaded, setLoaded] = useState(false);
-  const [started, setStarted] = useState(true); // dev: true
+  const [started, setStarted] = useState(false); // dev: true
   const [gameData, setGameData] = useState<GameProps>();
-  const [userLoggedIn, setUserLoggedIn] = useState(false);
+  const [, setLoggedIn] = useState(false);
+  const isAuth = useAuth();
 
   const fetchData = async () => {
-    const res0 = await fetch("/api");
-    const msg: Message = await res0.json();
+    const res = await fetch("/api/");
+    const msg: Message = await res.json();
     console.log(msg);
     console.log(hello());
-    const res1 = await fetch("/api/cookie-checker");
-    const msg1: Checker = await res1.json();
-    console.log(msg1);
   };
 
   const initAssetsManifest = async () => {
@@ -52,7 +51,6 @@ function App() {
 
   const initClient = async () => {
     client = new Client(COLYSEUS_ENDPOINT);
-
     // try to join a game room
     try {
       gameRoom = await client.joinOrCreate("game");
@@ -63,30 +61,25 @@ function App() {
     }
   };
 
-  const login = () => {
-    setUserLoggedIn(true);
-  }
-
   useEffect(() => {
     fetchData();
     initClient();
     initAssetsManifest();
   }, []);
 
-  if (!loaded) {
+  // still loading
+  if (!loaded || isAuth === null) {
     return <p>Loading.. </p>;
   }
 
-  if(!userLoggedIn) {
-    return <Login onLogin={login}/>
-  }
-
-  if(userLoggedIn && gameData) {
+  // authenticated? show game
+  if (isAuth && started && gameData) {
     return <Game {...gameData} />;
   }
 
-  if (started && gameData) {
-    return <Game {...gameData}></Game>;
+  // is not auth, show login page
+  if (!isAuth) {
+    return <Login setLoggedIn={setLoggedIn} />;
   }
 
   return (

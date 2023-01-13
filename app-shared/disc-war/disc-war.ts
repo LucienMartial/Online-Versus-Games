@@ -1,6 +1,7 @@
 import SAT from "sat";
 import { GameEngine } from "../game/game-engine.js";
 import { GameState } from "../state/game-state.js";
+import { PlayerState } from "../state/player-state.js";
 import {
   WORLD_HEIGHT,
   WORLD_WIDTH,
@@ -83,6 +84,14 @@ class DiscWarEngine extends GameEngine {
   }
 
   removePlayer(id: string) {
+    const player = this.getPlayer(id);
+    if (!player) return;
+    if (player.possesDisc) {
+      const disc = this.getOne<Disc>("disc");
+      disc.detach();
+      disc.setPosition(DISC_POSITION.x, DISC_POSITION.y);
+      disc.setVelocity(DISC_VELOCITY.x, DISC_VELOCITY.y);
+    }
     this.removeById("players", id);
   }
 

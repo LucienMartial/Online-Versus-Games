@@ -14,11 +14,13 @@ const server = http.createServer(app);
 
 // app.set('trust proxy', 1);
 
-app.use(cookieSession({
-  name: 'session',
-  keys: ['key1', 'key2'],
-  maxAge: 10 * 60 * 1000, // 10 minutes
-}));
+app.use(
+  cookieSession({
+    name: "session",
+    keys: ["key1", "key2"],
+    maxAge: 10 * 60 * 1000, // 10 minutes
+  })
+);
 
 app.use(express.json());
 app.use(express.static("dist"));
@@ -26,8 +28,8 @@ app.get("/", (req, res) => {
   res.sendFile("index.html");
 });
 
-import apiRouter from "./app-server/api.js";
-app.use(apiRouter);
+import apiRouter from "./app-server/api/api.js";
+app.use("/api", apiRouter);
 
 // game server
 const gameServer = new Server({
@@ -43,6 +45,7 @@ if (process.env.NODE_ENV !== "production") {
 
 // rooms
 import { GameRoom } from "./app-server/game-room.js";
+import { handleAppError } from "./app-server/utils/error.js";
 gameServer.define("game", GameRoom);
 
 server.listen(port, () => {

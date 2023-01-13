@@ -7,9 +7,8 @@ interface Login {
   username: string;
 }
 
-interface Checker {
-  status: number;
+interface Error {
   message: string;
 }
 
-export type { Message, Login, Checker };
+export type { Error, Message, Login };
