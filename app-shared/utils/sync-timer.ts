@@ -20,10 +20,15 @@ class SyncTimer {
     this.active = true;
   }
 
+  isFinished() {
+    return this.ticks >= this.duration;
+  }
+
   sync(state: SyncTimerState) {
     this.ticks = state.ticks;
-    this.active = state.active;
     this.duration = state.duration;
+    this.active = state.active;
+    if (!this.active) this.onInactive?.();
   }
 
   update() {

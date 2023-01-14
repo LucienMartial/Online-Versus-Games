@@ -71,7 +71,8 @@ class DiscWarEngine extends GameEngine {
 
   addPlayer(id: string, isLeft: boolean): Player {
     const isPuppet = !(this.isServer || id === this.playerId);
-    const player = new Player(id, isPuppet, this.playerDie.bind(this));
+    const disc = this.getOne<Disc>("disc");
+    const player = new Player(id, isPuppet, this.playerDie.bind(this), disc);
     player.isLeft = isLeft;
     this.initPlayer(player);
     this.add("players", player);
@@ -124,7 +125,7 @@ class DiscWarEngine extends GameEngine {
 
   // Input / update
 
-  processInput(inputs: Record<Inputs, boolean>, id: string): void {
+  processInput(inputs: Inputs, id: string): void {
     if (this.respawnTimer.active) return;
     const player = this.getById<Player>("players", id);
     if (!player || player.isDead) return;

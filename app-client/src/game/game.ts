@@ -8,7 +8,7 @@ import { DiscRender, PlayerRender, RenderObject } from "./renderer";
 import { Client, Room } from "colyseus.js";
 import { GameState, PlayerState } from "../../../app-shared/state";
 import {
-  InputData,
+  InputsData,
   WORLD_HEIGHT,
   WORLD_WIDTH,
 } from "../../../app-shared/utils";
@@ -169,7 +169,7 @@ class GameScene extends Scene {
 
     // current inputs
     const inputs = this.inputManager.inputs;
-    const inputData: InputData = {
+    const inputData: InputsData = {
       time: now,
       inputs: inputs,
     };

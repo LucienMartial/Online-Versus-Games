@@ -1,3 +1,3 @@
 export * from "./graphics";
-export * from "./input";
+export * from "./inputs";
 export * from "./watcher";

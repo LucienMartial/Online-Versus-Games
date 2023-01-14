@@ -8,13 +8,13 @@ import {
   OnInputCommand,
   OnSyncCommand,
 } from "./commands/index.js";
-import { InputData } from "../app-shared/types/index.js";
+import { InputsData } from "../app-shared/types/index.js";
 import { CBuffer } from "../app-shared/utils/cbuffer.js";
 
 // maximum number of inputs saved for each client
 const MAX_INPUTS = 50;
 interface UserData {
-  inputBuffer: CBuffer<InputData>;
+  inputBuffer: CBuffer<InputsData>;
 }
 
 /**

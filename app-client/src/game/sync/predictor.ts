@@ -1,9 +1,8 @@
 import { Room } from "colyseus.js";
 import { Vector } from "sat";
 import { Disc, DiscWarEngine } from "../../../../app-shared/disc-war";
-import { BodyEntity } from "../../../../app-shared/game";
 import { GameState } from "../../../../app-shared/state/game-state";
-import { CBuffer, InputData, lerp } from "../../../../app-shared/utils";
+import { CBuffer, InputsData, lerp } from "../../../../app-shared/utils";
 
 const MAX_RESIMU_STEP = 75;
 const MAX_DESYNC_DEVIATION = 100;
@@ -46,7 +45,7 @@ class Shadow {
 class Predictor {
   gameEngine: DiscWarEngine;
   playerId: string;
-  inputs: CBuffer<InputData>;
+  inputs: CBuffer<InputsData>;
   room: Room;
   delta: number;
   lastDelta: number;
@@ -55,7 +54,7 @@ class Predictor {
     this.gameEngine = gameEngine;
     this.playerId = playerId;
     this.room = room;
-    this.inputs = new CBuffer<InputData>(MAX_NB_INPUTS);
+    this.inputs = new CBuffer<InputsData>(MAX_NB_INPUTS);
     this.delta = 0;
     this.lastDelta = 0;
   }
@@ -63,7 +62,7 @@ class Predictor {
   /**
    * register inputs for future reconciliation, process it afterward
    */
-  processInput(inputData: InputData) {
+  processInput(inputData: InputsData) {
     this.room.send("input", inputData);
     if (this.gameEngine.respawnTimer.active) return;
     this.inputs.push(structuredClone(inputData));

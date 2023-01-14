@@ -1,6 +1,6 @@
 import { Container, DisplayObject } from "pixi.js";
 import { RenderObject } from "./renderer";
-import { InputManager } from "./utils/input";
+import { InputManager } from "./utils/inputs";
 
 /**
  * Abstract scene

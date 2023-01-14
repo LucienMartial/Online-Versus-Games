@@ -17,7 +17,7 @@ class GameEngine {
     this.accumulator = 0;
   }
 
-  processInput(inputs: Record<Inputs, boolean>, id: string) {}
+  processInput(inputs: Inputs, id: string) {}
 
   fixedUpdate(dt: number) {
     this.accumulator += Math.max(dt, GAME_RATE);
