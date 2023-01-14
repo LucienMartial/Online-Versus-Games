@@ -13,4 +13,4 @@ interface InputsData {
   inputs: Inputs;
 }
 
-export { KeyInputs, InputsData, Inputs };
+export type { KeyInputs, InputsData, Inputs };
