@@ -1,3 +1,4 @@
+import { Viewport } from "pixi-viewport";
 import { Container, DisplayObject } from "pixi.js";
 import { RenderObject } from "./renderer";
 import { InputManager } from "./utils/inputs";
@@ -9,11 +10,13 @@ abstract class Scene {
   renderables: Set<RenderObject>;
   stage: Container<DisplayObject>;
   inputManager: InputManager;
+  viewport: Viewport;
 
-  constructor() {
+  constructor(viewport: Viewport) {
+    this.viewport = viewport;
     this.stage = new Container();
     this.stage.sortableChildren = true;
-    this.inputManager = new InputManager();
+    this.inputManager = new InputManager(viewport);
     this.renderables = new Set<RenderObject>();
   }
 

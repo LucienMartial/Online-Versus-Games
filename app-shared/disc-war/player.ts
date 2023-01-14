@@ -80,8 +80,11 @@ class Player extends BodyEntity {
 
     // if shooting
     if (inputs.mouse && this.possesDisc) {
-      this.disc.shoot();
-      console.log("SHOOTING");
+      const dir = new SAT.Vector();
+      dir.x = inputs.mousePos.x - this.position.x;
+      dir.y = inputs.mousePos.y - this.position.y;
+      dir.normalize();
+      this.disc.shoot(dir);
     }
 
     // get direction

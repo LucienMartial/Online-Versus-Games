@@ -28,7 +28,7 @@ class SyncTimer {
     this.ticks = state.ticks;
     this.duration = state.duration;
     this.active = state.active;
-    if (!this.active) this.onInactive?.();
+    if (!state.active) this.onInactive?.();
   }
 
   update() {

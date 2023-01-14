@@ -14,6 +14,7 @@ import {
 } from "../../../app-shared/utils";
 import { Predictor } from "./sync/predictor";
 import { MapRender } from "./renderer/map-render";
+import { Viewport } from "pixi-viewport";
 
 const PLAYER_GHOST = false;
 const DISC_GHOST = false;
@@ -30,8 +31,8 @@ class GameScene extends Scene {
   room: Room<GameState>;
   id: string;
 
-  constructor(client: Client, room: Room<GameState>) {
-    super();
+  constructor(viewport: Viewport, client: Client, room: Room<GameState>) {
+    super(viewport);
     this.client = client;
     this.room = room;
     this.id = this.room.sessionId;

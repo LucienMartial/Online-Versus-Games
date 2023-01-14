@@ -1,4 +1,4 @@
-import SAT, { Vector } from "sat";
+import SAT from "sat";
 import { BodyEntity } from "../game/body-entity.js";
 import { CircleShape } from "../physics/collision.js";
 import { DiscState } from "../state/disc-state.js";
@@ -51,10 +51,10 @@ class Disc extends BodyEntity {
     this.isAttached = false;
   }
 
-  shoot() {
-    const side = this.attachedPlayer.isLeft ? 1 : -1;
+  shoot(direction: SAT.Vector) {
     this.detach();
-    this.setVelocity(1200 * side, 100);
+    const force = direction.scale(1200);
+    this.setVelocity(force.x, force.y);
   }
 
   sync(state: DiscState, engine: DiscWarEngine) {

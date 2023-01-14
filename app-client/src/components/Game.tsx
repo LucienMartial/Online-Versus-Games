@@ -39,7 +39,7 @@ function Game({ client, gameRoom }: GameProps) {
     viewport.fit();
 
     // create game
-    const gameScene = new GameScene(client, gameRoom);
+    const gameScene = new GameScene(viewport, client, gameRoom);
     setGameScene(gameScene);
 
     // run, smooth rendering over 10 frames

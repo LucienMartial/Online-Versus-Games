@@ -1,5 +1,6 @@
 import { Command } from "@colyseus/command";
 import { Client } from "colyseus";
+import SAT from "sat";
 import { InputsData } from "../../app-shared/types/inputs.js";
 import { GameRoom } from "../game-room.js";
 
