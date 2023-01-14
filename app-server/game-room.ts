@@ -12,7 +12,7 @@ import { InputData } from "../app-shared/types/index.js";
 import { CBuffer } from "../app-shared/utils/cbuffer.js";
 
 // maximum number of inputs saved for each client
-const MAX_INPUTS = 10;
+const MAX_INPUTS = 50;
 interface UserData {
   inputBuffer: CBuffer<InputData>;
 }
@@ -42,6 +42,10 @@ class GameRoom extends Room<GameState> {
       switch (type) {
         case "input":
           this.dispatcher.dispatch(new OnInputCommand(), baseData);
+          break;
+        // when client is desync, clear his input buffer
+        case "desync":
+          client.userData.inputBuffer.clear();
           break;
         default:
           console.log("invalid message");

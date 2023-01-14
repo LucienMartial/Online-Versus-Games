@@ -16,7 +16,10 @@ function GameUI({ gameScene }: GameUIProps) {
     if (ticks === duration / 4) setRespawnText("3");
     else if (ticks === (duration / 4) * 2) setRespawnText("2");
     else if (ticks === (duration / 4) * 3) setRespawnText("1");
-    else if (ticks === (duration / 4) * 4 - 1) setRespawnText(undefined);
+  };
+
+  gameScene.gameEngine.respawnTimer.onInactive = () => {
+    setRespawnText(undefined);
   };
 
   return (

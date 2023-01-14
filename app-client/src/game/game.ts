@@ -36,7 +36,7 @@ class GameScene extends Scene {
     this.room = room;
     this.id = this.room.sessionId;
     this.gameEngine = new DiscWarEngine(false, this.id);
-    this.predictor = new Predictor(this.gameEngine, this.id);
+    this.predictor = new Predictor(this.gameEngine, this.id, room);
   }
 
   /**
@@ -173,7 +173,6 @@ class GameScene extends Scene {
       time: now,
       inputs: inputs,
     };
-    this.room.send("input", inputData);
     this.predictor.processInput(inputData);
     this.predictor.predict(dt);
   }

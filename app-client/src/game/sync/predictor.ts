@@ -1,3 +1,4 @@
+import { Room } from "colyseus.js";
 import { Vector } from "sat";
 import { Disc, DiscWarEngine } from "../../../../app-shared/disc-war";
 import { BodyEntity } from "../../../../app-shared/game";
@@ -5,6 +6,7 @@ import { GameState } from "../../../../app-shared/state/game-state";
 import { CBuffer, InputData, lerp } from "../../../../app-shared/utils";
 
 const MAX_RESIMU_STEP = 75;
+const MAX_DESYNC_DEVIATION = 100;
 const MAX_NB_INPUTS = 1000;
 const PLAYER_BEND = 0.3;
 const DISC_BEND = 0.1;
@@ -30,6 +32,7 @@ class Shadow {
    * Interpolate between client predicted and server authorative data
    */
   bend(position: Vector, velocity: Vector, factor = 0.1) {
+    factor = Math.min(factor, 1);
     position.x = lerp(this.oPosition.x, position.x, factor);
     position.y = lerp(this.oPosition.y, position.y, factor);
     velocity.x = lerp(this.oVelocity.x, velocity.x, factor);
@@ -44,19 +47,26 @@ class Predictor {
   gameEngine: DiscWarEngine;
   playerId: string;
   inputs: CBuffer<InputData>;
+  room: Room;
+  delta: number;
+  lastDelta: number;
 
-  constructor(gameEngine: DiscWarEngine, playerId: string) {
+  constructor(gameEngine: DiscWarEngine, playerId: string, room: Room) {
     this.gameEngine = gameEngine;
     this.playerId = playerId;
+    this.room = room;
     this.inputs = new CBuffer<InputData>(MAX_NB_INPUTS);
+    this.delta = 0;
+    this.lastDelta = 0;
   }
 
   /**
    * register inputs for future reconciliation, process it afterward
    */
   processInput(inputData: InputData) {
-    this.inputs.push(structuredClone(inputData));
+    this.room.send("input", inputData);
     if (this.gameEngine.respawnTimer.active) return;
+    this.inputs.push(structuredClone(inputData));
     this.gameEngine.processInput(inputData.inputs, this.playerId);
   }
 
@@ -70,20 +80,11 @@ class Predictor {
 
   /**
    * Synchronize state with server, extrapolating using registered inputs
+   * and bending at the end
    */
   synchronize(state: GameState, now: number) {
-    // Interpolate players
-    for (const [id, playerState] of state.players.entries()) {
-      if (id === this.playerId) continue;
-      const player = this.gameEngine.getPlayer(id);
-      if (!player) continue;
-      // interpolate new position
-      player.lerpTo(playerState.x, playerState.y, OTHER_PLAYERS_BEND);
-      player.possesDisc = playerState.possesDisc;
-      if (playerState.isDead) this.gameEngine.playerDie(player);
-    }
-
-    // Extrapolation with bending at the end
+    // other players
+    this.syncOtherPlayers(state);
 
     // get main player
     const player = this.gameEngine.getPlayer(this.playerId);
@@ -105,13 +106,42 @@ class Predictor {
     if (!lastInputTime) return;
     this.reconciliate(lastInputTime);
 
-    // when ping is high, bend really fast to synchronized position
-    const delta = now - lastInputTime;
-    const multiplier = Math.max(1, delta * 0.005);
+    // check ping time
+    this.delta = now - lastInputTime;
+    this.handleDesync();
 
-    // bending phase
-    discShadow.bend(disc.position, disc.velocity, DISC_BEND * multiplier);
+    // bending phase, when ping is high, bend really fast
+    const mult = Math.max(1, this.delta * 0.005);
+    discShadow.bend(disc.position, disc.velocity, DISC_BEND * mult);
     playerShadow.bend(player.position, player.velocity, PLAYER_BEND);
+  }
+
+  /**
+   * Sync the other players "puppet", here we interpolate
+   * the position and sync important game data
+   */
+  syncOtherPlayers(state: GameState) {
+    for (const [id, playerState] of state.players.entries()) {
+      if (id === this.playerId) continue;
+      const player = this.gameEngine.getPlayer(id);
+      if (!player) continue;
+      // interpolate new position
+      player.lerpTo(playerState.x, playerState.y, OTHER_PLAYERS_BEND);
+      // sync important data
+      player.possesDisc = playerState.possesDisc;
+      if (playerState.isDead) this.gameEngine.playerDie(player);
+    }
+  }
+
+  /**
+   * When the ping deviation is high, that mean we have a big desync.
+   * Send a message to the server, telling that we are desync
+   */
+  handleDesync() {
+    if (this.lastDelta - this.delta > MAX_DESYNC_DEVIATION) {
+      this.room.send("desync");
+    }
+    this.lastDelta = this.delta;
   }
 
   /**

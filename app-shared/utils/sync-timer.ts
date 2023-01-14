@@ -6,6 +6,7 @@ class SyncTimer {
   duration: number;
   callback?: Function;
   onActive?: { (ticks: number, duration: number): void };
+  onInactive?: { (): void };
 
   constructor() {
     this.ticks = 0;
@@ -31,6 +32,7 @@ class SyncTimer {
     this.ticks += 1;
     if (this.ticks >= this.duration) {
       this.callback?.();
+      this.onInactive?.();
       this.ticks = 0;
       this.active = false;
     }
