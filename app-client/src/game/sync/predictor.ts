@@ -127,6 +127,7 @@ class Predictor {
       player.lerpTo(playerState.x, playerState.y, OTHER_PLAYERS_BEND);
       // sync important data
       player.possesDisc = playerState.possesDisc;
+      player.counterTimer.active = playerState.counterTimer.active;
       if (playerState.isDead) this.gameEngine.playerDie(player);
     }
   }
