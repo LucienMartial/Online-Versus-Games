@@ -10,6 +10,8 @@ class PlayerRender extends RenderObject {
   player: Player;
   display: PIXI.Graphics;
   deadWatcher: Watcher;
+  shieldWatcher: Watcher;
+  shield: PIXI.Graphics;
 
   constructor(player: Player, id: string, color = DEFAULT_COLOR) {
     super(id);
@@ -19,7 +21,23 @@ class PlayerRender extends RenderObject {
     this.addChild(this.display);
     this.setOffset(player.offset.x, player.offset.y);
 
-    // watcher
+    // shield
+    const radius = shape.height / 2 + 15;
+    this.shield = Graphics.createCircle(radius, 0x005599);
+    this.shield.pivot.set(-player.offset.x, -player.offset.y);
+    this.shield.alpha = 0;
+    this.addChild(this.shield);
+
+    // shield watcher
+    this.shieldWatcher = new Watcher();
+    this.shieldWatcher.onActive = () => {
+      this.shield.alpha = 0.4;
+    };
+    this.shieldWatcher.onInactive = () => {
+      this.shield.alpha = 0;
+    };
+
+    // dead watcher
     this.deadWatcher = new Watcher();
     this.deadWatcher.onActive = () => {
       this.display.alpha = 0.5;
@@ -31,12 +49,11 @@ class PlayerRender extends RenderObject {
 
   update(dt: number, now: number) {
     super.update(dt, now);
-
     // watchers
     this.deadWatcher.watch(this.player.isDead);
-
-    // if (this.player.isDead) return;
+    this.shieldWatcher.watch(this.player.counterTimer.active);
     this.position.set(this.player.position.x, this.player.position.y);
+    this.shield.position = this.display.position.clone();
   }
 }
 

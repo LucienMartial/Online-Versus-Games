@@ -18,6 +18,10 @@ const DASH_SPEED = 1200;
 const DASH_DURATION = 0.2 * 60;
 const DASH_COOLDOWN = 0.8 * 60;
 
+// counter
+const COUNTER_DURATION = 0.4 * 60;
+const COUNTER_COOLDOWN = 3 * 60;
+
 class Player extends BodyEntity {
   private isPuppet: boolean;
   disc: Disc;
@@ -25,9 +29,11 @@ class Player extends BodyEntity {
   dashForce: SAT.Vector;
   deadCallback: Function;
   isLeft: boolean;
+  possesDisc: boolean;
   dashTimer: SyncTimer;
   dashCooldownTimer: SyncTimer;
-  possesDisc: boolean;
+  counterTimer: SyncTimer;
+  counterCooldownTimer: SyncTimer;
 
   constructor(
     id: string,
@@ -54,6 +60,22 @@ class Player extends BodyEntity {
     // timers
     this.dashTimer = new SyncTimer();
     this.dashCooldownTimer = new SyncTimer();
+    this.counterTimer = new SyncTimer();
+    this.counterCooldownTimer = new SyncTimer();
+  }
+
+  sync(state: PlayerState) {
+    this.isDead = state.isDead;
+    this.isLeft = state.isLeft;
+    this.possesDisc = state.possesDisc;
+    this.setPosition(state.x, state.y);
+    // dash
+    this.dashTimer.sync(state.dashTimer);
+    this.dashCooldownTimer.sync(state.dashCooldownTimer);
+    if (this.dashTimer.active) this.maxSpeed = DASH_SPEED;
+    // counter
+    this.counterTimer.sync(state.counterTimer);
+    this.counterCooldownTimer.sync(state.counterCooldownTimer);
   }
 
   onCollision(response: SAT.Response, other: BodyEntity) {
@@ -61,6 +83,12 @@ class Player extends BodyEntity {
 
     // collision with disc
     if (!other.static) {
+      // did try to counter
+      if (this.counterTimer.active) {
+        this.disc.attach(this);
+      }
+
+      // do not posses disc, did not counter
       if (!this.possesDisc) {
         if (!this.isDead) this.deadCallback(this);
         this.isDead = true;
@@ -74,18 +102,31 @@ class Player extends BodyEntity {
   }
 
   processInput(inputs: Inputs) {
-    if (this.isPuppet) return;
-    // if dashing, do not move
-    if (this.dashTimer.active) return;
+    if (this.isPuppet || this.isDead) return;
 
-    // if shooting
+    // counter ability
+    if (
+      inputs.keys.counter &&
+      !this.counterCooldownTimer.active &&
+      !this.possesDisc
+    ) {
+      this.counterTimer.timeout(COUNTER_DURATION);
+      this.counterCooldownTimer.timeout(COUNTER_COOLDOWN);
+    }
+
+    // shoot ability
     if (inputs.mouse && this.possesDisc) {
+      // if shooting
       const dir = new SAT.Vector();
       dir.x = inputs.mousePos.x - this.position.x;
       dir.y = inputs.mousePos.y - this.position.y;
       dir.normalize();
       this.disc.shoot(dir);
     }
+
+    // movements
+    // if dashing, do not move
+    if (this.dashTimer.active) return;
 
     // get direction
     this.direction = new SAT.Vector();
@@ -102,7 +143,7 @@ class Player extends BodyEntity {
     const force = this.direction.clone().scale(MAX_SPEED);
     this.setVelocity(force.x, force.y);
 
-    // apply dash
+    // dash ability
     if (inputs.keys.dash && !this.dashCooldownTimer.active) {
       this.maxSpeed = DASH_SPEED;
       this.dashForce = this.direction.clone().scale(DASH_SPEED);
@@ -113,22 +154,14 @@ class Player extends BodyEntity {
     }
   }
 
-  sync(state: PlayerState) {
-    this.isDead = state.isDead;
-    this.isLeft = state.isLeft;
-    this.possesDisc = state.possesDisc;
-    this.setPosition(state.x, state.y);
-    this.dashTimer.sync(state.dashTimer);
-    this.dashCooldownTimer.sync(state.dashCooldownTimer);
-    if (this.dashTimer.active) this.maxSpeed = DASH_SPEED;
-  }
-
   update(dt: number): void {
     if (this.isPuppet) return;
 
     // timers
     this.dashCooldownTimer.update();
     this.dashTimer.update();
+    this.counterTimer.update();
+    this.counterCooldownTimer.update();
 
     // dash
     if (this.dashTimer.active) {

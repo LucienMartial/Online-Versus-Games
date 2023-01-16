@@ -4,11 +4,12 @@ import SAT, { Vector } from "sat";
 import type { Inputs, KeyInputs } from "../../../../app-shared/utils";
 
 const KeyBind: Record<KeyInputs, string[]> = {
-  left: ["q", "a", "ArrowLeft"],
-  right: ["d", "ArrowRight"],
-  up: ["z", "w", "ArrowUp"],
-  down: ["s", "ArrowDown"],
-  dash: [" "],
+  left: ["KeyQ", "KeyA", "ArrowLeft"],
+  right: ["KeyD", "ArrowRight"],
+  up: ["KeyW", "KeyZ", "ArrowUp"],
+  down: ["KeyS", "ArrowDown"],
+  dash: ["Space"],
+  counter: ["ShiftLeft"],
 };
 
 class InputManager {
@@ -24,6 +25,7 @@ class InputManager {
       up: false,
       down: false,
       dash: false,
+      counter: false,
     };
 
     this.inputs = {
@@ -39,15 +41,20 @@ class InputManager {
   }
 
   handleMouse(e: MouseEvent) {
-    this.inputs.mouse = e.type === "mousedown";
+    e = e || window.event;
+    // left click
+    if (e.button === 0) {
+      this.inputs.mouse = e.type === "mousedown";
+    }
     const mousePos = this.viewport.toWorld(e.x, e.y);
     this.inputs.mousePos = new Vector(mousePos.x, mousePos.y);
   }
 
   handleKey(e: KeyboardEvent) {
+    e = e || window.event;
     const state = e.type === "keydown";
     for (const key in this.keyInputs) {
-      if (KeyBind[key as KeyInputs].includes(e.key)) {
+      if (KeyBind[key as KeyInputs].includes(e.code)) {
         this.keyInputs[key as KeyInputs] = state;
       }
     }

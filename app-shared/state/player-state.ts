@@ -10,6 +10,8 @@ class PlayerState extends Schema {
   @type("number") y: number;
   @type(SyncTimerState) dashTimer = new SyncTimerState();
   @type(SyncTimerState) dashCooldownTimer = new SyncTimerState();
+  @type(SyncTimerState) counterTimer = new SyncTimerState();
+  @type(SyncTimerState) counterCooldownTimer = new SyncTimerState();
 
   constructor() {
     super();
@@ -26,8 +28,12 @@ class PlayerState extends Schema {
     this.isLeft = player.isLeft;
     this.isDead = player.isDead;
     this.possesDisc = player.possesDisc;
+    // dash
     this.dashTimer.sync(player.dashTimer);
     this.dashCooldownTimer.sync(player.dashCooldownTimer);
+    // counter
+    this.counterTimer.sync(player.counterTimer);
+    this.counterCooldownTimer.sync(player.counterCooldownTimer);
   }
 }
 

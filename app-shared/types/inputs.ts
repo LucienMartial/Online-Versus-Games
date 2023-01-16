@@ -1,6 +1,6 @@
 import SAT from "sat";
 
-type KeyInputs = "left" | "right" | "up" | "down" | "dash";
+type KeyInputs = "left" | "right" | "up" | "down" | "dash" | "counter";
 
 interface Inputs {
   keys: Record<KeyInputs, boolean>;
