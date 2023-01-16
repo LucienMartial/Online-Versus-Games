@@ -19,8 +19,13 @@ class OnJoinCommand extends Command<GameRoom, Data> {
     client.userData = {
       inputBuffer: new CBuffer<InputsData>(maxInputs),
     };
-    const player = gameEngine.addPlayer(client.id, this.room.isLeft);
-    this.room.isLeft = !this.room.isLeft;
+
+    // already on player left
+    const isLeft = this.room.leftId === null;
+    console.log(this.room.leftId, this.room.rightId, isLeft);
+    const player = gameEngine.addPlayer(client.id, isLeft);
+    if (isLeft) this.room.leftId = client.id;
+    else this.room.rightId = client.id;
 
     // player state
     const playerState = new PlayerState();

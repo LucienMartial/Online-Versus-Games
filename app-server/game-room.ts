@@ -23,14 +23,17 @@ interface UserData {
 class GameRoom extends Room<GameState> {
   dispatcher = new Dispatcher(this);
   gameEngine: DiscWarEngine;
-  isLeft: boolean;
+  leftId: string | null;
+  rightId: string | null;
 
   onCreate() {
+    this.maxClients = 2;
+    this.leftId = null;
+    this.rightId = null;
     this.setState(new GameState());
     this.gameEngine = new DiscWarEngine(true);
     this.setSimulationInterval((dt: number) => this.update(dt), 1000 / 60);
     this.setPatchRate(20);
-    this.isLeft = true;
 
     // register event
     this.onMessage("*", (client, type, message) => {

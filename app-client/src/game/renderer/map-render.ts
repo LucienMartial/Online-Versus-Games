@@ -7,18 +7,21 @@ import * as PIXI from "pixi.js";
 import { PERSPECTIVE_OFFSET } from "../../../../app-shared/disc-war";
 import { Vector } from "sat";
 
-// size
+// walls
 const TOP_WALL_HEIGHT = 138;
 const TOP_WALL_BOTTOM_HEIGHT = 5;
 const TOP_WALL_OFFSET = 4;
-
-// colors
 const WALL_COLOR = 0xaaaaaa;
 const TOP_WALL_COLOR = 0x666666;
 const TOP_WALL_SIDE_COLOR = 0x555555;
 const TOP_WALL_BOTTOM_COLOR = 0x333333;
+
+// floor
 const FLOOR_COLOR = 0x994433;
-const SPLIT_LINE_COLOR = 0x00ff00;
+
+// split line
+const SPLIT_LINE_COLOR = 0xaaaaaa;
+const SPLIT_LINE_ALPHA = 0.5;
 
 class MapRender extends RenderObject {
   constructor(engine: DiscWarEngine) {
@@ -55,7 +58,7 @@ class MapRender extends RenderObject {
     );
 
     // split line
-    this.renderWall(map.splitLine, 0, SPLIT_LINE_COLOR);
+    this.renderSplitLine(map.splitLine);
 
     // normal walls
     for (const wall of map.walls) {
@@ -66,6 +69,21 @@ class MapRender extends RenderObject {
     this.renderWall(map.topLeftWall, -PERSPECTIVE_OFFSET);
     this.renderWall(map.topRightWall, -PERSPECTIVE_OFFSET);
     this.renderWall(map.topMiddleWall, -PERSPECTIVE_OFFSET);
+  }
+
+  renderSplitLine(splitLine: BodyEntity) {
+    const shape = splitLine.collisionShape as PolylineShape;
+    const displayLine = Graphics.createLine(
+      shape.p1.x,
+      shape.p1.y,
+      shape.p2.x,
+      shape.p2.y,
+      shape.thickness,
+      SPLIT_LINE_COLOR
+    );
+    displayLine.alpha = SPLIT_LINE_ALPHA;
+    displayLine.position.set(splitLine.position.x, splitLine.position.y);
+    this.addChild(displayLine);
   }
 
   renderFloor(floor: Vector[]) {
@@ -119,7 +137,7 @@ class MapRender extends RenderObject {
     this.addChild(innerWall);
   }
 
-  renderWall(wall: BodyEntity, offset = 0, color = WALL_COLOR) {
+  renderWall(wall: BodyEntity, offset = 0) {
     const shape = wall.collisionShape as PolylineShape;
     const displayLine = Graphics.createLine(
       shape.p1.x,
@@ -127,7 +145,7 @@ class MapRender extends RenderObject {
       shape.p2.x,
       shape.p2.y + offset,
       shape.thickness,
-      color
+      WALL_COLOR
     );
     displayLine.position.set(wall.position.x, wall.position.y);
     this.addChild(displayLine);
