@@ -1,3 +1,4 @@
+import { Container, DisplayObject } from "pixi.js";
 import { BodyEntity } from "../../../../app-shared/game";
 import { CircleShape } from "../../../../app-shared/physics";
 import { Graphics } from "../utils/graphics";
@@ -7,6 +8,7 @@ const COLOR = 0x00ffdd;
 
 class DiscRender extends RenderObject {
   disc: BodyEntity;
+  mirror: DisplayObject;
 
   constructor(disc: BodyEntity) {
     super();
@@ -21,13 +23,14 @@ class DiscRender extends RenderObject {
     this.setOffset(disc.offset.x, disc.offset.y);
 
     // reflection
-    const mirror = Graphics.createMirror(display, shape.radius * 1.5, false);
-    this.addChild(mirror);
+    this.mirror = Graphics.createMirror(display, shape.radius * 1.5, false);
+    this.mirror.position = this.position.clone();
   }
 
   update(dt: number, now: number) {
     super.update(dt, now);
     this.position.set(this.disc.position.x, this.disc.position.y);
+    this.mirror.position = this.position.clone();
   }
 }
 

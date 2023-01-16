@@ -65,7 +65,7 @@ class Graphics {
     const mirror = object.clone();
     mirror.scale.y = -1;
     mirror.tint = 0x555555;
-    mirror.position.y = height;
+    mirror.pivot.y = height;
     mirror.alpha = 0.3;
     mirror.zIndex = -1;
     if (add) object.addChild(mirror);

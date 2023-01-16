@@ -60,6 +60,7 @@ class GameScene extends Scene {
 
     // player are displayed inside the map
     this.mapFiltered = new Container();
+    this.mapFiltered.sortableChildren = true;
     this.mapFiltered.mask = mapRender.floorMask;
     this.mapFiltered.addChild(mapRender.floorMask);
     this.stage.addChild(this.mapFiltered);
@@ -80,7 +81,7 @@ class GameScene extends Scene {
 
     // main player render
     const mainPlayerRender = new PlayerRender(this.mainPlayer, this.id);
-    mainPlayerRender.container.zIndex = 5;
+    mainPlayerRender.container.zIndex = 10;
     this.add(mainPlayerRender, false);
     this.mapFiltered.addChild(mainPlayerRender.container);
 
@@ -89,6 +90,8 @@ class GameScene extends Scene {
     const discRender = new DiscRender(disc);
     discRender.container.zIndex = 10;
     this.add(discRender, false);
+    discRender.mirror.zIndex = -10;
+    this.mapFiltered.addChild(discRender.mirror);
     this.mapFiltered.addChild(discRender.container);
 
     // init game, add, remove players
