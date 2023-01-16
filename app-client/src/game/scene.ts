@@ -48,10 +48,10 @@ abstract class Scene {
 
   // useful functions
 
-  add(object: RenderObject) {
+  add(object: RenderObject, addContainer = true) {
     object.update(0, 0);
     this.renderables.add(object);
-    this.stage.addChild(object.container);
+    if (addContainer) this.stage.addChild(object.container);
   }
 
   remove(object: RenderObject) {

@@ -11,6 +11,7 @@ class DiscRender extends RenderObject {
   constructor(disc: BodyEntity) {
     super();
 
+    this.container.sortableChildren = true;
     const shape = disc.collisionShape as CircleShape;
     const display = Graphics.createCircle(shape.radius, COLOR);
     this.addChild(display);
@@ -18,6 +19,10 @@ class DiscRender extends RenderObject {
     // custom
     this.disc = disc;
     this.setOffset(disc.offset.x, disc.offset.y);
+
+    // reflection
+    const mirror = Graphics.createMirror(display, shape.radius * 1.5, false);
+    this.addChild(mirror);
   }
 
   update(dt: number, now: number) {

@@ -60,6 +60,17 @@ class Graphics {
     obj.lineTo(x2, y2);
     return obj;
   }
+
+  static createMirror(object: PIXI.Graphics, height: number, add = true) {
+    const mirror = object.clone();
+    mirror.scale.y = -1;
+    mirror.tint = 0x555555;
+    mirror.position.y = height;
+    mirror.alpha = 0.3;
+    mirror.zIndex = -1;
+    if (add) object.addChild(mirror);
+    return mirror;
+  }
 }
 
 export { Graphics };

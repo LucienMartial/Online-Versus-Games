@@ -6,31 +6,36 @@ import { DiscWarEngine, Map } from "../../../../app-shared/disc-war";
 import * as PIXI from "pixi.js";
 import { PERSPECTIVE_OFFSET } from "../../../../app-shared/disc-war";
 import { Vector } from "sat";
+import { Container } from "pixi.js";
 
 // walls
 const TOP_WALL_HEIGHT = 138;
-const TOP_WALL_BOTTOM_HEIGHT = 5;
 const TOP_WALL_OFFSET = 4;
-const WALL_COLOR = 0xaaaaaa;
-const TOP_WALL_COLOR = 0x666666;
-const TOP_WALL_SIDE_COLOR = 0x555555;
-const TOP_WALL_BOTTOM_COLOR = 0x333333;
+const WALL_COLOR = 0x488cb5;
+const TOP_WALL_COLOR = 0x092335;
+const TOP_WALL_SIDE_COLOR = 0x05151f;
+const TOP_WALL_REFLECTION = 0.3;
 
 // floor
-const FLOOR_COLOR = 0x994433;
+// const FLOOR_COLOR = 0x994433;
+const FLOOR_COLOR = 0x222222;
 
 // split line
-const SPLIT_LINE_COLOR = 0xaaaaaa;
-const SPLIT_LINE_ALPHA = 0.5;
+const SPLIT_LINE_COLOR = 0xa3c5da;
+const SPLIT_LINE_ALPHA = 0.6;
 
 class MapRender extends RenderObject {
+  floorMask: PIXI.Graphics;
+  wallsContainer: Container;
+
   constructor(engine: DiscWarEngine) {
     super();
+    this.wallsContainer = new Container();
     const map = engine.getOne<Map>("map");
 
     // floor
     const floor = structuredClone(map.floor);
-    this.renderFloor(floor);
+    this.floorMask = this.renderFloor(floor).clone();
 
     // top left
     this.renderTopWall(
@@ -94,8 +99,9 @@ class MapRender extends RenderObject {
     for (const point of floor) {
       obj.lineTo(point.x, point.y);
     }
-    obj.endFill;
+    obj.endFill();
     this.addChild(obj);
+    return obj;
   }
 
   // height = 100, thickness = 20, color 0xff0000
@@ -114,26 +120,21 @@ class MapRender extends RenderObject {
       p1.y,
       p2.x - widthOffset,
       p2.y,
-      height - TOP_WALL_BOTTOM_HEIGHT,
+      height,
       color
-    );
-    const bottomWall = Graphics.createAlignedPolygon(
-      p1.x + widthOffset,
-      p1.y,
-      p2.x - widthOffset,
-      p2.y,
-      TOP_WALL_BOTTOM_HEIGHT,
-      TOP_WALL_BOTTOM_COLOR
     );
     innerWall.position.set(
       wall.position.x + offset,
       wall.position.y - PERSPECTIVE_OFFSET
     );
-    bottomWall.position.set(
-      wall.position.x + offset,
-      wall.position.y - PERSPECTIVE_OFFSET + height - TOP_WALL_BOTTOM_HEIGHT
-    );
-    this.addChild(bottomWall);
+
+    // reflection
+    const mirror = innerWall.clone();
+    mirror.position.y += height;
+    mirror.alpha = TOP_WALL_REFLECTION;
+    mirror.tint = 0x777777;
+    innerWall.addChild(mirror);
+
     this.addChild(innerWall);
   }
 
@@ -148,7 +149,7 @@ class MapRender extends RenderObject {
       WALL_COLOR
     );
     displayLine.position.set(wall.position.x, wall.position.y);
-    this.addChild(displayLine);
+    this.wallsContainer.addChild(displayLine);
   }
 }
 

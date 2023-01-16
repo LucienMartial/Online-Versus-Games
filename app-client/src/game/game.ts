@@ -1,5 +1,5 @@
 import { Assets } from "@pixi/assets";
-import { Sprite } from "pixi.js";
+import { Container, Sprite } from "pixi.js";
 import { DiscWarEngine } from "../../../app-shared/disc-war/disc-war";
 import { BodyEntity } from "../../../app-shared/game";
 import { Scene } from "./scene";
@@ -32,6 +32,7 @@ class GameScene extends Scene {
   client: Client;
   room: Room<GameState>;
   id: string;
+  mapFiltered: Container;
 
   constructor(viewport: Viewport, client: Client, room: Room<GameState>) {
     super(viewport);
@@ -41,6 +42,7 @@ class GameScene extends Scene {
     this.gameEngine = new DiscWarEngine(false, this.id);
     this.predictor = new Predictor(this.gameEngine, this.id, room);
     this.mainPlayer = this.gameEngine.addPlayer(this.id, true);
+    this.mapFiltered = new Container();
   }
 
   /**
@@ -52,7 +54,15 @@ class GameScene extends Scene {
 
     // map
     const mapRender = new MapRender(this.gameEngine);
+    mapRender.wallsContainer.zIndex = 20;
+    this.stage.addChild(mapRender.wallsContainer);
     this.add(mapRender);
+
+    // player are displayed inside the map
+    this.mapFiltered = new Container();
+    this.mapFiltered.mask = mapRender.floorMask;
+    this.mapFiltered.addChild(mapRender.floorMask);
+    this.stage.addChild(this.mapFiltered);
 
     // init character
     const characterRender = new RenderObject();
@@ -66,18 +76,20 @@ class GameScene extends Scene {
       );
     };
     characterRender.update(0, 0);
-    this.add(characterRender);
+    this.add(characterRender, false);
 
     // main player render
     const mainPlayerRender = new PlayerRender(this.mainPlayer, this.id);
     mainPlayerRender.container.zIndex = 5;
-    this.add(mainPlayerRender);
+    this.add(mainPlayerRender, false);
+    this.mapFiltered.addChild(mainPlayerRender.container);
 
     // disc render
     const disc = this.gameEngine.getOne<BodyEntity>("disc");
     const discRender = new DiscRender(disc);
     discRender.container.zIndex = 10;
-    this.add(discRender);
+    this.add(discRender, false);
+    this.mapFiltered.addChild(discRender.container);
 
     // init game, add, remove players
     this.room.onStateChange.once((state) => {
@@ -146,7 +158,8 @@ class GameScene extends Scene {
     if (!player) {
       const player = this.gameEngine.addPlayer(id, state.isLeft);
       const playerRender = new PlayerRender(player, id, 0x0099ff);
-      this.add(playerRender);
+      this.add(playerRender, false);
+      this.mapFiltered.addChild(playerRender.container);
     }
   }
 
@@ -157,7 +170,10 @@ class GameScene extends Scene {
     if (this.id === id) return;
     console.log("player with id", id, "leaved the game");
     this.gameEngine.removePlayer(id);
-    this.removeById(id);
+    const object = this.getById(id);
+    if (!object) return;
+    this.remove(object);
+    this.mapFiltered.removeChild(object.container);
   }
 
   /**

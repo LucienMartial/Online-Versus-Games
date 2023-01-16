@@ -20,6 +20,7 @@ class PlayerRender extends RenderObject {
     this.display = Graphics.createRectangle(shape.width, shape.height, color);
     this.addChild(this.display);
     this.setOffset(player.offset.x, player.offset.y);
+    this.container.sortableChildren = true;
 
     // shield
     const radius = shape.height / 2 + 15;
@@ -27,6 +28,10 @@ class PlayerRender extends RenderObject {
     this.shield.pivot.set(-player.offset.x, -player.offset.y);
     this.shield.alpha = 0;
     this.addChild(this.shield);
+
+    // reflection
+    Graphics.createMirror(this.display, shape.height * 2);
+    Graphics.createMirror(this.shield, shape.height);
 
     // shield watcher
     this.shieldWatcher = new Watcher();

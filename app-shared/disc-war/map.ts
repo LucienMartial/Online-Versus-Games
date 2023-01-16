@@ -3,7 +3,7 @@ import { BodyEntity, Entity } from "../game/index.js";
 import { PolylineShape } from "../physics/index.js";
 import { MIDDLE_LINE_ID } from "../utils/constants.js";
 
-const SIDE_WIDTH_RATIO = 0.75;
+const SIDE_WIDTH_RATIO = 0.71;
 const SIDE_HEIGHT_RATIO = 0.6;
 export const LINE_THICKNESS = 20;
 export const PERSPECTIVE_OFFSET = 50;
@@ -102,13 +102,28 @@ class Map extends Entity {
     this.walls.push(leftWall);
 
     // add floor
-    this.pushFloor(botLeftWall);
-    this.pushFloor(botMiddleWall);
-    this.pushFloor(botRightWall);
-    this.pushFloor(rightWall);
-    this.pushFloor(this.topRightWall);
-    this.pushFloor(this.topMiddleWall);
-    this.pushFloor(this.topLeftWall);
+    const offset = 8;
+    this.pushFloor(
+      botLeftWall,
+      LINE_THICKNESS / 2 - offset,
+      -LINE_THICKNESS / 2
+    );
+    this.pushFloor(
+      botRightWall,
+      -LINE_THICKNESS / 2 + offset,
+      -LINE_THICKNESS / 2
+    );
+    this.pushFloor(
+      this.topRightWall,
+      -LINE_THICKNESS / 2 + offset,
+      LINE_THICKNESS / 2
+    );
+    this.pushFloor(
+      this.topLeftWall,
+      LINE_THICKNESS / 2 - offset,
+      LINE_THICKNESS / 2
+    );
+    console.log(this.floor);
 
     // split line
     this.addSplitLine(
@@ -119,10 +134,16 @@ class Map extends Entity {
     );
   }
 
-  pushFloor(wall: BodyEntity) {
+  pushFloor(wall: BodyEntity, offsetX = 0, offsetY = 0) {
     const shape = wall.collisionShape as PolylineShape;
-    const p1 = shape.p1.clone().add(wall.position);
-    const p2 = shape.p2.clone().add(wall.position);
+    const p1 = shape.p1
+      .clone()
+      .add(wall.position)
+      .add(new SAT.Vector(offsetX, offsetY));
+    const p2 = shape.p2
+      .clone()
+      .add(wall.position)
+      .add(new SAT.Vector(offsetX, offsetY));
     this.floor.push(p1);
     this.floor.push(p2);
   }
