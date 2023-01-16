@@ -110,8 +110,9 @@ class Player extends BodyEntity {
       !this.counterCooldownTimer.active &&
       !this.possesDisc
     ) {
-      this.counterTimer.timeout(COUNTER_DURATION);
-      this.counterCooldownTimer.timeout(COUNTER_COOLDOWN);
+      this.counterTimer.timeout(COUNTER_DURATION, () => {
+        this.counterCooldownTimer.timeout(COUNTER_COOLDOWN);
+      });
     }
 
     // shoot ability
@@ -149,8 +150,8 @@ class Player extends BodyEntity {
       this.dashForce = this.direction.clone().scale(DASH_SPEED);
       this.dashTimer.timeout(DASH_DURATION, () => {
         this.maxSpeed = MAX_SPEED;
+        this.dashCooldownTimer.timeout(DASH_COOLDOWN);
       });
-      this.dashCooldownTimer.timeout(DASH_COOLDOWN);
     }
   }
 

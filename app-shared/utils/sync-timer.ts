@@ -9,7 +9,9 @@ class SyncTimer {
   onInactive?: { (): void };
 
   constructor() {
-    this.reset();
+    this.ticks = 0;
+    this.duration = 0;
+    this.active = false;
   }
 
   reset() {
