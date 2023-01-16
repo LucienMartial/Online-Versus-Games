@@ -15,7 +15,6 @@ interface Data {
 class OnJoinCommand extends Command<GameRoom, Data> {
   execute({ maxInputs, client, gameEngine } = this.payload) {
     console.log("client joined", client.id);
-
     client.userData = {
       inputBuffer: new CBuffer<InputsData>(maxInputs),
     };

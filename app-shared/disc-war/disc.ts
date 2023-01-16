@@ -8,7 +8,8 @@ import { DiscWarEngine } from "./index.js";
 
 const FRICTION = 1;
 const RADIUS = 42;
-const MAX_SPEED = 3000;
+const MAX_SPEED = 1700;
+const SHOOT_FORCE = 1200;
 
 class Disc extends BodyEntity {
   isAttached: boolean;
@@ -53,7 +54,7 @@ class Disc extends BodyEntity {
 
   shoot(direction: SAT.Vector) {
     this.detach();
-    const force = direction.scale(1200);
+    const force = direction.scale(SHOOT_FORCE);
     this.setVelocity(force.x, force.y);
   }
 
