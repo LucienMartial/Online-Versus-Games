@@ -9,9 +9,14 @@ class SyncTimer {
   onInactive?: { (): void };
 
   constructor() {
+    this.reset();
+  }
+
+  reset() {
+    this.callback = undefined;
     this.ticks = 0;
-    this.active = false;
     this.duration = 0;
+    this.active = false;
   }
 
   timeout(duration: number, callback: Function | undefined = undefined) {

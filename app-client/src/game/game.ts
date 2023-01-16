@@ -15,6 +15,7 @@ import {
 import { Predictor } from "./sync/predictor";
 import { MapRender } from "./renderer/map-render";
 import { Viewport } from "pixi-viewport";
+import { Player } from "../../../app-shared/disc-war";
 
 const PLAYER_GHOST = false;
 const DISC_GHOST = false;
@@ -26,6 +27,7 @@ const DISC_GHOST = false;
  */
 class GameScene extends Scene {
   gameEngine: DiscWarEngine;
+  mainPlayer: Player;
   predictor: Predictor;
   client: Client;
   room: Room<GameState>;
@@ -38,6 +40,7 @@ class GameScene extends Scene {
     this.id = this.room.sessionId;
     this.gameEngine = new DiscWarEngine(false, this.id);
     this.predictor = new Predictor(this.gameEngine, this.id, room);
+    this.mainPlayer = this.gameEngine.addPlayer(this.id, true);
   }
 
   /**
@@ -66,8 +69,7 @@ class GameScene extends Scene {
     this.add(characterRender);
 
     // main player render
-    const mainPlayer = this.gameEngine.addPlayer(this.id, true);
-    const mainPlayerRender = new PlayerRender(mainPlayer, this.id);
+    const mainPlayerRender = new PlayerRender(this.mainPlayer, this.id);
     mainPlayerRender.container.zIndex = 5;
     this.add(mainPlayerRender);
 

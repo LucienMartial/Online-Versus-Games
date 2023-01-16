@@ -117,6 +117,8 @@ class DiscWarEngine extends GameEngine {
     // reset players position
     for (const player of this.get<Player>("players")) {
       this.initPlayer(player);
+      player.counterCooldownTimer.reset();
+      player.counterTimer.reset();
     }
 
     // make player alive, launch ball

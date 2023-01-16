@@ -21,6 +21,15 @@
     Custom
 */
 
+#counter {
+  position: absolute;
+  background-color: slategray;
+  transform: translate(-50%, -50%);
+  padding: 0.2em;
+  left: 20%;
+  top: 10%;
+}
+
 #respawn {
   position: absolute;
   background-color: slateblue;
