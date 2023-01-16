@@ -18,22 +18,26 @@ async function postLogin(username: string) {
     }),
   });
   // success
-  if (res.status === 200) return true;
+  if (res.status === 200) return { success: true };
   // error
-  console.log(await res.json());
-  return false;
+  return { success: false , message: await res.json().then((data) => data.message)};
 }
 
 function Login({setLoggedIn, createAccountOnClick}: LoginProps) {
   const [username, setUsername] = React.useState("");
   const [password, setPassword] = React.useState("");
+  const [errorMessage, setErrorMessage] = React.useState("");
 
   const login = async (e: React.FormEvent) => {
     e.preventDefault();
 
     // login
-    const isLoggedIn = await postLogin(username);
-    setLoggedIn(isLoggedIn);
+    const res = await postLogin(username);
+    if (res.success) {
+        setLoggedIn(true);
+    } else {
+        setErrorMessage(res.message);
+    }
   };
 
   return (
@@ -44,6 +48,7 @@ function Login({setLoggedIn, createAccountOnClick}: LoginProps) {
                          onChange={(e) => setUsername(e.target.value)}/>
           <AnimatedInput type={"password"} label={"Password"} id={"password"} autofocus={false} required={false}
                          onChange={(e) => setPassword(e.target.value)}/>
+            {errorMessage && <p className={"error"}>{errorMessage}</p>}
           <button type="submit">Login</button>
           <p>No account yet ? <span className={"link"} onClick={createAccountOnClick}>Create an account</span></p>
         </form>
