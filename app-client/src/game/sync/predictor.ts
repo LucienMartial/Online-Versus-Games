@@ -8,7 +8,7 @@ const MAX_RESIMU_STEP = 75;
 const MAX_DESYNC_DEVIATION = 100;
 const MAX_NB_INPUTS = 1000;
 const PLAYER_BEND = 0.3;
-const DISC_BEND = 0.1;
+const DISC_BEND = 0.8;
 const OTHER_PLAYERS_BEND = 0.3;
 
 /**
@@ -109,9 +109,8 @@ class Predictor {
     this.delta = now - lastInputTime;
     this.handleDesync();
 
-    // bending phase, when ping is high, bend really fast
-    const mult = Math.max(1, this.delta * 0.005);
-    discShadow.bend(disc.position, disc.velocity, DISC_BEND * mult);
+    // bending phase
+    discShadow.bend(disc.position, disc.velocity, DISC_BEND);
     playerShadow.bend(player.position, player.velocity, PLAYER_BEND);
   }
 

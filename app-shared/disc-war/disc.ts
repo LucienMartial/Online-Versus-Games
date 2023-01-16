@@ -7,7 +7,7 @@ import { Player } from "./player.js";
 import { DiscWarEngine } from "./index.js";
 
 const FRICTION = 1;
-const RADIUS = 50;
+const RADIUS = 42;
 const MAX_SPEED = 3000;
 
 class Disc extends BodyEntity {

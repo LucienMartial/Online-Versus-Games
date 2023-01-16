@@ -6,13 +6,13 @@ import { Inputs, SyncTimer } from "../utils/index.js";
 import { Disc } from "./index.js";
 
 // shape
-const WIDTH = 80;
-const HEIGHT = 160;
+const WIDTH = 60;
+const HEIGHT = 110;
 
 // movement. 0 friction mean full determinism
 const FRICTION = 0;
-const MAX_SPEED = 800;
-const DASH_SPEED = 2200;
+const MAX_SPEED = 400;
+const DASH_SPEED = 1200;
 
 // 1 second = 60 ticks
 const DASH_DURATION = 0.2 * 60;

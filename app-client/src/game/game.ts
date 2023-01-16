@@ -48,9 +48,7 @@ class GameScene extends Scene {
     const assets = await Assets.loadBundle("basic");
 
     // map
-    const walls = this.gameEngine.get<BodyEntity>("walls");
-    const splitLine = this.gameEngine.getOne<BodyEntity>("splitLine");
-    const mapRender = new MapRender(walls, splitLine);
+    const mapRender = new MapRender(this.gameEngine);
     this.add(mapRender);
 
     // init character

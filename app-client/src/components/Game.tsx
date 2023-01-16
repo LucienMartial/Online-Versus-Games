@@ -42,17 +42,6 @@ function Game({ client, gameRoom }: GameProps) {
     const gameScene = new GameScene(viewport, client, gameRoom);
     setGameScene(gameScene);
 
-    // scheduler
-    let last = Date.now();
-    function schedule() {
-      const now = Date.now();
-      const dt = (now - last) * 0.001;
-      last = now;
-      gameScene.update(dt, now);
-      gameScene.updateRenderables(dt, now);
-      window.requestAnimationFrame(schedule);
-    }
-
     // run, smooth rendering over 10 frames
     const ticker = new Ticker();
     const smoothingFrames = 10;
@@ -71,8 +60,7 @@ function Game({ client, gameRoom }: GameProps) {
     gameScene.load().then(() => {
       viewport.addChild(gameScene.stage);
       // launch game
-      window.requestAnimationFrame(schedule);
-      // ticker.start();
+      ticker.start();
     });
 
     // resize
