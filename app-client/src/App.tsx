@@ -7,6 +7,7 @@ import { Assets } from "@pixi/assets";
 import { Client, Room } from "colyseus.js";
 import Login from "./components/Login";
 import { useAuth } from "./hooks/useAuth";
+import Register from "./components/Register";
 
 // websocket endpoint
 const COLYSEUS_ENDPOINT =
@@ -33,6 +34,7 @@ function App() {
   const [gameData, setGameData] = useState<GameProps>();
   const [isLoggedIn, setLoggedIn] = useState(false);
   const isAuth = useAuth([isLoggedIn]);
+  const [showRegister, setShowRegister] = useState(false);
 
   const fetchData = async () => {
     const res = await fetch("/api/");
@@ -82,7 +84,10 @@ function App() {
 
   // is not auth, show login page
   if (!isAuth) {
-    return <Login setLoggedIn={setLoggedIn} />;
+    if (showRegister) {
+      return <Register loginOnClick={()=>setShowRegister(false)} />;
+    }
+    return <Login setLoggedIn={setLoggedIn} createAccountOnClick={()=>setShowRegister(true)} />;
   }
 
   return (
