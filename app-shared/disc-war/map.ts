@@ -3,7 +3,7 @@ import { BodyEntity, Entity } from "../game/index.js";
 import { PolylineShape } from "../physics/index.js";
 import { MIDDLE_LINE_ID } from "../utils/constants.js";
 
-const SIDE_WIDTH_RATIO = 0.8;
+const SIDE_WIDTH_RATIO = 0.75;
 const SIDE_HEIGHT_RATIO = 0.6;
 export const LINE_THICKNESS = 20;
 export const PERSPECTIVE_OFFSET = 50;
