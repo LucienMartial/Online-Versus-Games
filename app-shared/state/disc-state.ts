@@ -6,6 +6,7 @@ class DiscState extends Schema {
   @type("number") y: number;
   @type("number") vx: number;
   @type("number") vy: number;
+  @type("number") lastSpeed: number;
   @type("boolean") isAttached: boolean;
   @type("string") attachedPlayer: string;
 
@@ -15,6 +16,7 @@ class DiscState extends Schema {
     this.y = 0;
     this.vx = 0;
     this.vy = 0;
+    this.lastSpeed = 0;
     this.isAttached = false;
     this.attachedPlayer = "";
   }
@@ -24,6 +26,7 @@ class DiscState extends Schema {
     this.y = disc.position.y;
     this.vx = disc.velocity.x;
     this.vy = disc.velocity.y;
+    this.lastSpeed = disc.lastSpeed;
     this.isAttached = disc.isAttached;
     this.attachedPlayer = disc.attachedPlayer ? disc.attachedPlayer.id : "";
   }

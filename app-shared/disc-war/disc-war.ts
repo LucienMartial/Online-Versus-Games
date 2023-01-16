@@ -1,7 +1,6 @@
 import SAT from "sat";
 import { GameEngine } from "../game/game-engine.js";
 import { GameState } from "../state/game-state.js";
-import { PlayerState } from "../state/player-state.js";
 import {
   WORLD_HEIGHT,
   WORLD_WIDTH,
@@ -10,7 +9,7 @@ import {
 } from "../utils/index.js";
 import { Map, Player, Disc } from "./index.js";
 
-const DISC_VELOCITY = new SAT.Vector(600, 600);
+const DISC_VELOCITY = new SAT.Vector(700, 700);
 const DISC_POSITION = new SAT.Vector(WORLD_WIDTH / 2, WORLD_HEIGHT / 2);
 const PLAYER_LEFT_POS = new SAT.Vector(WORLD_WIDTH / 4, WORLD_HEIGHT / 2);
 const PLAYER_RIGHT_POS = new SAT.Vector(

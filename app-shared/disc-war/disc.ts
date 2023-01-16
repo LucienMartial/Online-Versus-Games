@@ -8,12 +8,12 @@ import { DiscWarEngine } from "./index.js";
 
 const FRICTION = 1;
 const RADIUS = 42;
-const MAX_SPEED = 1700;
-const SHOOT_FORCE = 1200;
+const MAX_SPEED = 1800;
 
 class Disc extends BodyEntity {
   isAttached: boolean;
   attachedPlayer?: Player;
+  lastSpeed: number;
 
   constructor() {
     // default
@@ -24,12 +24,21 @@ class Disc extends BodyEntity {
     this.friction = new SAT.Vector(FRICTION, FRICTION);
     this.maxSpeed = MAX_SPEED;
     this.isAttached = false;
+    this.lastSpeed = 0;
+  }
+
+  setVelocity(x: number, y: number): void {
+    super.setVelocity(x, y);
+    const len = this.velocity.len();
+    if (len > 0) this.lastSpeed = len;
   }
 
   onCollision(response: SAT.Response, other: BodyEntity): void {
     if (!other.static || other.id === MIDDLE_LINE_ID || this.isAttached) return;
     this.velocity.reflectN(response.overlapN.perp());
     this.velocity.scale(1.01);
+    const len = this.velocity.len();
+    if (len > 0) this.lastSpeed = len;
     this.position.sub(response.overlapV);
     super.onCollision(response, other);
   }
@@ -54,13 +63,14 @@ class Disc extends BodyEntity {
 
   shoot(direction: SAT.Vector) {
     this.detach();
-    const force = direction.scale(SHOOT_FORCE);
+    const force = direction.scale(this.lastSpeed);
     this.setVelocity(force.x, force.y);
   }
 
   sync(state: DiscState, engine: DiscWarEngine) {
     this.setPosition(state.x, state.y);
     this.setVelocity(state.vx, state.vy);
+    this.lastSpeed = state.lastSpeed;
     this.isAttached = state.isAttached;
     if (this.isAttached) {
       const attachedPlayer = engine.getPlayer(state.attachedPlayer);
