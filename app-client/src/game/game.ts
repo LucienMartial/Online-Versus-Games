@@ -15,7 +15,7 @@ import {
 import { Predictor } from "./sync/predictor";
 import { MapRender } from "./renderer/map-render";
 import { Viewport } from "pixi-viewport";
-import { Player } from "../../../app-shared/disc-war";
+import { Disc, Player } from "../../../app-shared/disc-war";
 import { AdvancedBloomFilter } from "@pixi/filter-advanced-bloom";
 
 const PLAYER_GHOST = false;
@@ -35,8 +35,13 @@ class GameScene extends Scene {
   id: string;
   mapFiltered: Container;
 
-  constructor(viewport: Viewport, client: Client, room: Room<GameState>) {
-    super(viewport);
+  constructor(
+    viewport: Viewport,
+    sceneElement: HTMLElement,
+    client: Client,
+    room: Room<GameState>
+  ) {
+    super(viewport, sceneElement);
     this.client = client;
     this.room = room;
     this.id = this.room.sessionId;
@@ -116,7 +121,7 @@ class GameScene extends Scene {
     this.mapFiltered.addChild(mainPlayerRender.container);
 
     // disc render
-    const disc = this.gameEngine.getOne<BodyEntity>("disc");
+    const disc = this.gameEngine.getOne<Disc>("disc");
     const discRender = new DiscRender(disc);
     discRender.container.zIndex = 10;
     this.add(discRender, false);

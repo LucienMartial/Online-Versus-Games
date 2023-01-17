@@ -37,7 +37,12 @@ function Game({ client, gameRoom }: GameProps) {
     app.stage.addChild(viewport);
 
     // create game
-    const gameScene = new GameScene(viewport, client, gameRoom);
+    const gameScene = new GameScene(
+      viewport,
+      canvasRef.current!,
+      client,
+      gameRoom
+    );
     setGameScene(gameScene);
 
     // run, smooth rendering over 10 frames

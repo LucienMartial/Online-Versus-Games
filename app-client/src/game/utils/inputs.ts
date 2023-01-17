@@ -17,7 +17,7 @@ class InputManager {
   keyInputs: Record<KeyInputs, boolean>;
   viewport: Viewport;
 
-  constructor(viewport: Viewport) {
+  constructor(viewport: Viewport, gameElememt: HTMLElement) {
     this.viewport = viewport;
     this.keyInputs = {
       left: false,
@@ -30,7 +30,8 @@ class InputManager {
 
     this.inputs = {
       keys: this.keyInputs,
-      mouse: false,
+      mouseLeft: false,
+      mouseRight: false,
       mousePos: new SAT.Vector(0, 0),
     };
 
@@ -38,13 +39,16 @@ class InputManager {
     document.body.onkeyup = this.handleKey.bind(this);
     document.body.onmousedown = this.handleMouse.bind(this);
     document.body.onmouseup = this.handleMouse.bind(this);
+    gameElememt.oncontextmenu = (e) => e.preventDefault();
   }
 
   handleMouse(e: MouseEvent) {
     e = e || window.event;
     // left click
     if (e.button === 0) {
-      this.inputs.mouse = e.type === "mousedown";
+      this.inputs.mouseLeft = e.type === "mousedown";
+    } else if (e.button === 2) {
+      this.inputs.mouseRight = e.type === "mousedown";
     }
     const mousePos = this.viewport.toWorld(e.x, e.y);
     this.inputs.mousePos = new Vector(mousePos.x, mousePos.y);

@@ -118,13 +118,13 @@ class Player extends BodyEntity {
     }
 
     // shoot ability
-    if (inputs.mouse && this.possesDisc) {
+    if ((inputs.mouseLeft || inputs.mouseRight) && this.possesDisc) {
       // if shooting
       const dir = new SAT.Vector();
       dir.x = inputs.mousePos.x - this.position.x;
       dir.y = inputs.mousePos.y - this.position.y;
       dir.normalize();
-      this.disc.shoot(dir);
+      this.disc.shoot(dir, inputs.mouseRight);
     }
 
     // movements

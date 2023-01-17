@@ -16,7 +16,7 @@ class DiscRender extends RenderObject {
 
     this.container.sortableChildren = true;
     const shape = disc.collisionShape as CircleShape;
-    this.display = Graphics.createCircle(shape.radius, COLOR);
+    this.display = Graphics.createHollowCircle(shape.radius, 16, COLOR);
     this.addChild(this.display);
 
     // custom

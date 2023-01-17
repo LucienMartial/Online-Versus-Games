@@ -12,11 +12,11 @@ abstract class Scene {
   inputManager: InputManager;
   viewport: Viewport;
 
-  constructor(viewport: Viewport) {
+  constructor(viewport: Viewport, sceneElement: HTMLElement) {
     this.viewport = viewport;
     this.stage = new Container();
     this.stage.sortableChildren = true;
-    this.inputManager = new InputManager(viewport);
+    this.inputManager = new InputManager(viewport, sceneElement);
     this.renderables = new Set<RenderObject>();
   }
 

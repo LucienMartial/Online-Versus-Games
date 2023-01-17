@@ -4,7 +4,8 @@ type KeyInputs = "left" | "right" | "up" | "down" | "dash" | "counter";
 
 interface Inputs {
   keys: Record<KeyInputs, boolean>;
-  mouse: boolean;
+  mouseLeft: boolean;
+  mouseRight: boolean;
   mousePos: SAT.Vector;
 }
 

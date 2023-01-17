@@ -8,7 +8,7 @@ import { DiscWarEngine } from "./index.js";
 import { SyncTimer } from "../utils/sync-timer.js";
 
 const FRICTION = 1;
-const RADIUS = 42;
+const RADIUS = 38;
 const MAX_SPEED = 1800;
 
 // slow motion at the beginning of shoot
@@ -91,21 +91,24 @@ class Disc extends BodyEntity {
     this.isAttached = false;
   }
 
-  shoot(direction: SAT.Vector) {
+  shoot(direction: SAT.Vector, isCurved = false) {
     this.detach();
     if (this.attachedPlayer) {
       this.attachedPlayer.friendlyDisc = true;
     }
     this.shootForce = direction.scale(this.lastSpeed);
-    this.shootForce.y += 1000;
 
     // give players reaction time
     this.maxSpeed = 100;
     this.setVelocity(this.shootForce.x, this.shootForce.y);
     this.slowTimer.timeout(SLOW_MOTION_TIME);
 
-    // apply curve disc
-    this.curveTimer.timeout(38 + SLOW_MOTION_TIME);
+    // curve shot
+    if (isCurved) {
+      if (this.shootForce.y > 0) this.shootForce.y += 800;
+      else this.shootForce.y -= 800;
+      this.curveTimer.timeout(38 + SLOW_MOTION_TIME);
+    }
   }
 
   sync(state: DiscState, engine: DiscWarEngine) {
@@ -132,7 +135,8 @@ class Disc extends BodyEntity {
     this.slowTimer.update();
 
     if (this.curveTimer.active && !this.slowTimer.active) {
-      this.velocity.y -= 38;
+      if (this.shootForce.y > 0) this.velocity.y -= 35;
+      else this.velocity.y += 35;
     }
 
     if (this.isAttached) {

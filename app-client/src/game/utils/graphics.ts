@@ -13,6 +13,7 @@ class Graphics {
     const obj = new PIXI.Graphics();
     obj.beginFill(color);
     obj.drawRect(0, 0, width, height);
+    obj.endFill();
     return obj;
   }
 
@@ -20,6 +21,19 @@ class Graphics {
     const obj = new PIXI.Graphics();
     obj.beginFill(color);
     obj.drawCircle(0, 0, radius);
+    obj.endFill();
+    return obj;
+  }
+
+  static createHollowCircle(
+    radius = 100,
+    outline = 10,
+    color = 0x990000
+  ): PIXI.Graphics {
+    const obj = new PIXI.Graphics();
+    obj.lineStyle(outline, color, 1, 0);
+    obj.drawCircle(0, 0, radius);
+    obj.endFill();
     return obj;
   }
 
@@ -58,6 +72,7 @@ class Graphics {
     });
     obj.moveTo(x1, y1);
     obj.lineTo(x2, y2);
+    obj.endFill();
     return obj;
   }
 
