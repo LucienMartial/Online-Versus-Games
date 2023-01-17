@@ -1,6 +1,7 @@
 import { SyncTimerState } from "../state/sync-timer-state.js";
 
 class SyncTimer {
+  keepCallback: boolean;
   ticks: number;
   active: boolean;
   duration: number;
@@ -8,21 +9,22 @@ class SyncTimer {
   onActive?: { (ticks: number, duration: number): void };
   onInactive?: { (): void };
 
-  constructor() {
+  constructor(keepCallback = false) {
     this.ticks = 0;
     this.duration = 0;
     this.active = false;
+    this.keepCallback = keepCallback;
   }
 
   reset() {
-    this.callback = undefined;
+    if (!this.keepCallback) this.callback = undefined;
     this.ticks = 0;
     this.duration = 0;
     this.active = false;
   }
 
   timeout(duration: number, callback: Function | undefined = undefined) {
-    this.callback = callback;
+    if (!this.keepCallback) this.callback = callback;
     this.duration = duration;
     this.active = true;
   }

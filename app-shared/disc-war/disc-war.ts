@@ -106,7 +106,7 @@ class DiscWarEngine extends GameEngine {
   async playerDie(player: Player) {
     // disc in center
     const disc = this.getOne<Disc>("disc");
-    disc.detach();
+    disc.reset();
     disc.setPosition(DISC_POSITION.x, DISC_POSITION.y);
     disc.setVelocity(0, 0);
 

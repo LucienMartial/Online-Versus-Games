@@ -11,11 +11,17 @@ const FRICTION = 1;
 const RADIUS = 42;
 const MAX_SPEED = 1800;
 
+// slow motion at the beginning of shoot
+// to give players reaction time
+const SLOW_MOTION_TIME = 20;
+
 class Disc extends BodyEntity {
   isAttached: boolean;
   attachedPlayer?: Player;
   lastSpeed: number;
+  slowTimer: SyncTimer;
   curveTimer: SyncTimer;
+  shootForce: SAT.Vector;
 
   constructor() {
     // default
@@ -27,8 +33,14 @@ class Disc extends BodyEntity {
     this.maxSpeed = MAX_SPEED;
     this.isAttached = false;
     this.lastSpeed = 0;
+    this.shootForce = new SAT.Vector();
 
     // timers
+    this.slowTimer = new SyncTimer(true);
+    this.slowTimer.callback = () => {
+      this.maxSpeed = MAX_SPEED;
+      this.setVelocity(this.shootForce.x, this.shootForce.y);
+    };
     this.curveTimer = new SyncTimer();
   }
 
@@ -38,8 +50,16 @@ class Disc extends BodyEntity {
     if (len > 0) this.lastSpeed = len;
   }
 
+  reset() {
+    this.detach();
+    this.slowTimer.reset();
+    this.curveTimer.reset();
+    this.maxSpeed = MAX_SPEED;
+  }
+
   onCollision(response: SAT.Response, other: BodyEntity): void {
     if (!other.static || other.id === MIDDLE_LINE_ID || this.isAttached) return;
+    this.curveTimer.reset();
     this.velocity.reflectN(response.overlapN.perp());
     this.velocity.scale(1.01);
     const len = this.velocity.len();
@@ -68,15 +88,23 @@ class Disc extends BodyEntity {
 
   shoot(direction: SAT.Vector) {
     this.detach();
-    const force = direction.scale(this.lastSpeed);
-    force.y += 900;
-    this.curveTimer.timeout(38);
-    this.setVelocity(force.x, force.y);
+    this.shootForce = direction.scale(this.lastSpeed);
+    this.shootForce.y += 1000;
+
+    // give players reaction time
+    this.maxSpeed = 100;
+    this.setVelocity(this.shootForce.x, this.shootForce.y);
+    this.slowTimer.timeout(SLOW_MOTION_TIME);
+
+    // apply curve disc
+    this.curveTimer.timeout(38 + SLOW_MOTION_TIME);
   }
 
   sync(state: DiscState, engine: DiscWarEngine) {
     this.setPosition(state.x, state.y);
     this.setVelocity(state.vx, state.vy);
+    this.shootForce.x = state.shootx;
+    this.shootForce.y = state.shooty;
     this.lastSpeed = state.lastSpeed;
 
     // attached
@@ -86,15 +114,17 @@ class Disc extends BodyEntity {
       if (attachedPlayer) this.attachedPlayer = attachedPlayer;
     }
 
-    // timer
+    // timers
+    this.slowTimer.sync(state.slowTimer);
     this.curveTimer.sync(state.curveTimer);
   }
 
   update(dt: number): void {
     this.curveTimer.update();
+    this.slowTimer.update();
 
-    if (this.curveTimer.active) {
-      this.velocity.y -= 40;
+    if (this.curveTimer.active && !this.slowTimer.active) {
+      this.velocity.y -= 38;
     }
 
     if (this.isAttached) {

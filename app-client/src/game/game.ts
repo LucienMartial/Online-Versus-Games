@@ -175,7 +175,7 @@ class GameScene extends Scene {
     const player = this.gameEngine.getPlayer(id);
     if (!player) {
       const player = this.gameEngine.addPlayer(id, state.isLeft);
-      const playerRender = new PlayerRender(player, id, 0x0099ff);
+      const playerRender = new PlayerRender(player, id, 0x0099cc);
       this.add(playerRender, false);
       this.mapFiltered.addChild(playerRender.container);
     }
