@@ -1,5 +1,5 @@
-import { Container, DisplayObject } from "pixi.js";
-import { BodyEntity } from "../../../../app-shared/game";
+import * as PIXI from "pixi.js";
+import { Disc } from "../../../../app-shared/disc-war";
 import { CircleShape } from "../../../../app-shared/physics";
 import { Graphics } from "../utils/graphics";
 import { RenderObject } from "./render-object";
@@ -7,23 +7,28 @@ import { RenderObject } from "./render-object";
 const COLOR = 0x00ffdd;
 
 class DiscRender extends RenderObject {
-  disc: BodyEntity;
-  mirror: DisplayObject;
+  disc: Disc;
+  display: PIXI.Graphics;
+  mirror: PIXI.DisplayObject;
 
-  constructor(disc: BodyEntity) {
+  constructor(disc: Disc) {
     super();
 
     this.container.sortableChildren = true;
     const shape = disc.collisionShape as CircleShape;
-    const display = Graphics.createCircle(shape.radius, COLOR);
-    this.addChild(display);
+    this.display = Graphics.createCircle(shape.radius, COLOR);
+    this.addChild(this.display);
 
     // custom
     this.disc = disc;
     this.setOffset(disc.offset.x, disc.offset.y);
 
     // reflection
-    this.mirror = Graphics.createMirror(display, shape.radius * 1.5, false);
+    this.mirror = Graphics.createMirror(
+      this.display,
+      shape.radius * 1.5,
+      false
+    );
     this.mirror.position = this.position.clone();
   }
 
@@ -31,6 +36,13 @@ class DiscRender extends RenderObject {
     super.update(dt, now);
     this.position.set(this.disc.position.x, this.disc.position.y);
     this.mirror.position = this.position.clone();
+
+    if (!this.disc.attachedPlayer) return;
+    if (this.disc.isAttached || this.disc.attachedPlayer.friendlyDisc) {
+      this.display.tint = 0x00dd88;
+    } else {
+      this.display.tint = 0xffffff;
+    }
   }
 }
 
