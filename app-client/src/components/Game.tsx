@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useEffect, useRef } from "react";
-import { Application, Ticker } from "pixi.js";
+import { Application, Rectangle, Ticker } from "pixi.js";
 import { Viewport } from "pixi-viewport";
 import "./Game.css";
 import { GameScene } from "../game/game";
@@ -24,7 +24,7 @@ function Game({ client, gameRoom }: GameProps) {
       view: canvasRef.current!,
       resolution: window.devicePixelRatio || 1,
       autoDensity: true,
-      backgroundColor: 0x000011,
+      backgroundColor: 0x000011, //0x000011,
     });
 
     // set viewport
@@ -35,8 +35,6 @@ function Game({ client, gameRoom }: GameProps) {
     });
 
     app.stage.addChild(viewport);
-    viewport.moveCenter(WORLD_WIDTH / 2, WORLD_HEIGHT / 2);
-    viewport.fit();
 
     // create game
     const gameScene = new GameScene(viewport, client, gameRoom);
@@ -69,6 +67,12 @@ function Game({ client, gameRoom }: GameProps) {
       viewport.resize(window.innerWidth, window.innerHeight);
       viewport.fit();
       viewport.moveCenter(WORLD_WIDTH / 2, WORLD_HEIGHT / 2);
+      gameScene.stage.filterArea = new Rectangle(
+        0,
+        0,
+        window.innerWidth,
+        window.innerHeight
+      );
     };
     resize();
     window.addEventListener("resize", resize);

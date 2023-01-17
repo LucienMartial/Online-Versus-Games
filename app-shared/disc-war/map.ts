@@ -116,12 +116,12 @@ class Map extends Entity {
     this.pushFloor(
       this.topRightWall,
       -LINE_THICKNESS / 2 + offset,
-      LINE_THICKNESS / 2
+      LINE_THICKNESS / 2 - PERSPECTIVE_OFFSET
     );
     this.pushFloor(
       this.topLeftWall,
       LINE_THICKNESS / 2 - offset,
-      LINE_THICKNESS / 2
+      LINE_THICKNESS / 2 - PERSPECTIVE_OFFSET
     );
     console.log(this.floor);
 

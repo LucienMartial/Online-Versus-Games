@@ -27,10 +27,12 @@ const SPLIT_LINE_ALPHA = 0.6;
 class MapRender extends RenderObject {
   floorMask: PIXI.Graphics;
   wallsContainer: Container;
+  splitLineContainer: Container;
 
   constructor(engine: DiscWarEngine) {
     super();
     this.wallsContainer = new Container();
+    this.splitLineContainer = new Container();
     const map = engine.getOne<Map>("map");
 
     // floor
@@ -88,7 +90,7 @@ class MapRender extends RenderObject {
     );
     displayLine.alpha = SPLIT_LINE_ALPHA;
     displayLine.position.set(splitLine.position.x, splitLine.position.y);
-    this.addChild(displayLine);
+    this.splitLineContainer.addChild(displayLine);
   }
 
   renderFloor(floor: Vector[]) {

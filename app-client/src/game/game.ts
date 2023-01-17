@@ -16,6 +16,7 @@ import { Predictor } from "./sync/predictor";
 import { MapRender } from "./renderer/map-render";
 import { Viewport } from "pixi-viewport";
 import { Player } from "../../../app-shared/disc-war";
+import { AdvancedBloomFilter } from "@pixi/filter-advanced-bloom";
 
 const PLAYER_GHOST = false;
 const DISC_GHOST = false;
@@ -52,15 +53,26 @@ class GameScene extends Scene {
   async load(): Promise<void> {
     const assets = await Assets.loadBundle("basic");
 
+    // filter
+    this.stage.filters = [
+      new AdvancedBloomFilter({
+        threshold: 0.4,
+        quality: 4,
+        blur: 4,
+      }),
+    ];
+    this.mapFiltered = new Container();
+    this.mapFiltered.sortableChildren = true;
+
     // map
     const mapRender = new MapRender(this.gameEngine);
     mapRender.wallsContainer.zIndex = 20;
     this.stage.addChild(mapRender.wallsContainer);
     this.add(mapRender);
+    mapRender.splitLineContainer.zIndex = 5;
+    this.mapFiltered.addChild(mapRender.splitLineContainer);
 
     // player are displayed inside the map
-    this.mapFiltered = new Container();
-    this.mapFiltered.sortableChildren = true;
     this.mapFiltered.mask = mapRender.floorMask;
     this.mapFiltered.addChild(mapRender.floorMask);
     this.stage.addChild(this.mapFiltered);
@@ -73,11 +85,12 @@ class GameScene extends Scene {
       characterRender.rotate(-2.5 * dt);
       characterRender.setPosition(
         WORLD_WIDTH * 0.8,
-        WORLD_HEIGHT / 2 + Math.cos(now * 0.001) * 300
+        WORLD_HEIGHT / 2 + Math.cos(now * 0.001) * 800
       );
     };
     characterRender.update(0, 0);
     this.add(characterRender, false);
+    // this.stage.addChild(characterRender.container);
 
     // main player render
     const mainPlayerRender = new PlayerRender(this.mainPlayer, this.id);
@@ -90,7 +103,7 @@ class GameScene extends Scene {
     const discRender = new DiscRender(disc);
     discRender.container.zIndex = 10;
     this.add(discRender, false);
-    discRender.mirror.zIndex = -10;
+    discRender.mirror.zIndex = 0;
     this.mapFiltered.addChild(discRender.mirror);
     this.mapFiltered.addChild(discRender.container);
 
