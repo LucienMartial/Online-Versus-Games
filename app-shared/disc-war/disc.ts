@@ -5,6 +5,7 @@ import { DiscState } from "../state/disc-state.js";
 import { MIDDLE_LINE_ID } from "../utils/constants.js";
 import { Player } from "./player.js";
 import { DiscWarEngine } from "./index.js";
+import { SyncTimer } from "../utils/sync-timer.js";
 
 const FRICTION = 1;
 const RADIUS = 42;
@@ -14,6 +15,7 @@ class Disc extends BodyEntity {
   isAttached: boolean;
   attachedPlayer?: Player;
   lastSpeed: number;
+  curveTimer: SyncTimer;
 
   constructor() {
     // default
@@ -25,6 +27,9 @@ class Disc extends BodyEntity {
     this.maxSpeed = MAX_SPEED;
     this.isAttached = false;
     this.lastSpeed = 0;
+
+    // timers
+    this.curveTimer = new SyncTimer();
   }
 
   setVelocity(x: number, y: number): void {
@@ -64,6 +69,8 @@ class Disc extends BodyEntity {
   shoot(direction: SAT.Vector) {
     this.detach();
     const force = direction.scale(this.lastSpeed);
+    force.y += 900;
+    this.curveTimer.timeout(38);
     this.setVelocity(force.x, force.y);
   }
 
@@ -71,14 +78,25 @@ class Disc extends BodyEntity {
     this.setPosition(state.x, state.y);
     this.setVelocity(state.vx, state.vy);
     this.lastSpeed = state.lastSpeed;
+
+    // attached
     this.isAttached = state.isAttached;
     if (this.isAttached) {
       const attachedPlayer = engine.getPlayer(state.attachedPlayer);
       if (attachedPlayer) this.attachedPlayer = attachedPlayer;
     }
+
+    // timer
+    this.curveTimer.sync(state.curveTimer);
   }
 
   update(dt: number): void {
+    this.curveTimer.update();
+
+    if (this.curveTimer.active) {
+      this.velocity.y -= 40;
+    }
+
     if (this.isAttached) {
       if (!this.attachedPlayer) return;
       if (this.attachedPlayer.isDead) return;

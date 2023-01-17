@@ -92,6 +92,23 @@ class GameScene extends Scene {
     this.add(characterRender, false);
     // this.stage.addChild(characterRender.container);
 
+    // ghosts
+    let discGhost: RenderObject;
+    let playerGhost: RenderObject;
+    if (DISC_GHOST) {
+      discGhost = new RenderObject();
+      discGhost.addChild(Graphics.createCircle(50, 0x0099ff));
+      this.add(discGhost, false);
+      this.mapFiltered.addChild(discGhost.container);
+    }
+    if (PLAYER_GHOST) {
+      playerGhost = new RenderObject();
+      playerGhost.addChild(Graphics.createRectangle(80, 160, 0x0099ff));
+      playerGhost.setOffset(40, 80);
+      this.add(playerGhost, false);
+      this.mapFiltered.addChild(playerGhost.container);
+    }
+
     // main player render
     const mainPlayerRender = new PlayerRender(this.mainPlayer, this.id);
     mainPlayerRender.container.zIndex = 10;
@@ -117,21 +134,6 @@ class GameScene extends Scene {
     this.room.state.players.onRemove = (state, id: string) => {
       this.removePlayer(id);
     };
-
-    // ghosts
-    let discGhost: RenderObject;
-    let playerGhost: RenderObject;
-    if (DISC_GHOST) {
-      discGhost = new RenderObject();
-      discGhost.addChild(Graphics.createCircle(50, 0x0099ff));
-      this.add(discGhost);
-    }
-    if (PLAYER_GHOST) {
-      playerGhost = new RenderObject();
-      playerGhost.addChild(Graphics.createRectangle(80, 160, 0x0099ff));
-      playerGhost.setOffset(40, 80);
-      this.add(playerGhost);
-    }
 
     // synchronization
     this.room.onStateChange((state: GameState) => {

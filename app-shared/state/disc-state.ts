@@ -1,5 +1,6 @@
 import { Schema, type } from "@colyseus/schema";
 import { Disc } from "../disc-war/disc.js";
+import { SyncTimerState } from "./sync-timer-state.js";
 
 class DiscState extends Schema {
   @type("number") x: number;
@@ -9,6 +10,7 @@ class DiscState extends Schema {
   @type("number") lastSpeed: number;
   @type("boolean") isAttached: boolean;
   @type("string") attachedPlayer: string;
+  @type(SyncTimerState) curveTimer: SyncTimerState;
 
   constructor() {
     super();
@@ -19,6 +21,7 @@ class DiscState extends Schema {
     this.lastSpeed = 0;
     this.isAttached = false;
     this.attachedPlayer = "";
+    this.curveTimer = new SyncTimerState();
   }
 
   sync(disc: Disc) {
@@ -29,6 +32,8 @@ class DiscState extends Schema {
     this.lastSpeed = disc.lastSpeed;
     this.isAttached = disc.isAttached;
     this.attachedPlayer = disc.attachedPlayer ? disc.attachedPlayer.id : "";
+    // timers
+    this.curveTimer.sync(disc.curveTimer);
   }
 }
 
