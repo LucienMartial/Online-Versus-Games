@@ -58,6 +58,11 @@ class Disc extends BodyEntity {
   }
 
   onCollision(response: SAT.Response, other: BodyEntity): void {
+    if (other.id === MIDDLE_LINE_ID) {
+      if (this.attachedPlayer && this.attachedPlayer.friendlyDisc) {
+        this.attachedPlayer.friendlyDisc = false;
+      }
+    }
     if (!other.static || other.id === MIDDLE_LINE_ID || this.isAttached) return;
     this.curveTimer.reset();
     this.velocity.reflectN(response.overlapN.perp());
@@ -88,6 +93,9 @@ class Disc extends BodyEntity {
 
   shoot(direction: SAT.Vector) {
     this.detach();
+    if (this.attachedPlayer) {
+      this.attachedPlayer.friendlyDisc = true;
+    }
     this.shootForce = direction.scale(this.lastSpeed);
     this.shootForce.y += 1000;
 

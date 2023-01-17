@@ -34,6 +34,7 @@ class Player extends BodyEntity {
   dashCooldownTimer: SyncTimer;
   counterTimer: SyncTimer;
   counterCooldownTimer: SyncTimer;
+  friendlyDisc: boolean;
 
   constructor(
     id: string,
@@ -56,6 +57,7 @@ class Player extends BodyEntity {
     this.deadCallback = deadCallback;
     this.dashForce = new SAT.Vector();
     this.possesDisc = false;
+    this.friendlyDisc = false;
 
     // timers
     this.dashTimer = new SyncTimer();
@@ -88,8 +90,8 @@ class Player extends BodyEntity {
         this.disc.attach(this);
       }
 
-      // do not posses disc, did not counter
-      if (!this.possesDisc) {
+      // do not posses disc, did not counter, enemy disc
+      if (!this.possesDisc && !this.friendlyDisc) {
         if (!this.isDead) this.deadCallback(this);
         this.isDead = true;
       }
