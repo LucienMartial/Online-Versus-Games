@@ -50,4 +50,14 @@ server.listen(port, () => {
   console.log(`local: http://localhost:${port}`);
 });
 
-export { app };
+// database
+import {Database} from "./app-server/database/database.js";
+
+const db = new Database();
+db.connect().then(() => console.log("connected to database"));
+
+process.on("exit", () => {
+  db.close().then(() => console.log("disconnected from database"));
+});
+
+export {app, db};

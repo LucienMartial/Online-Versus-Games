@@ -7,7 +7,7 @@ interface LoginProps {
   createAccountOnClick: () => void;
 }
 
-async function postLogin(username: string) {
+async function postLogin(username: string, password: string) {
   const res = await fetch("/api/login", {
     method: "POST",
     headers: {
@@ -15,6 +15,7 @@ async function postLogin(username: string) {
     },
     body: JSON.stringify({
       username: username,
+      password: password,
     }),
   });
   // success
@@ -32,7 +33,7 @@ function Login({setLoggedIn, createAccountOnClick}: LoginProps) {
     e.preventDefault();
 
     // login
-    const res = await postLogin(username);
+    const res = await postLogin(username, password);
     if (res.success) {
         setLoggedIn(true);
     } else {
