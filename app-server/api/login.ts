@@ -50,13 +50,14 @@ router.get("/cookie-checker", (req: Request, res: Response) => {
 router.post("/register", (req: Request, res: Response) => {
   console.log("register request");
   db.createUser(req.body.username, req.body.password).then(r => {
-    console.log(r);
     if (r.acknowledged) {
       res.statusMessage = "User created";
       return res.status(200).end();
     } else {
       // register failed
-      throw new AppError(400, "Register failed");
+      //throw new AppError(400, "Register failed"); //TODO : use this instead of the following
+      res.statusMessage = "Register failed";
+      return res.status(400).end();
     }
   });
 });

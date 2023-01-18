@@ -39,7 +39,7 @@ export default function Register({loginOnClick}: RegisterProps) {
     if (res.success) {
       loginOnClick();
     } else {
-      setRegisterError(res.message);
+      setRegisterError("Register failed"); //TODO : display error message
     }
   };
 
@@ -55,7 +55,7 @@ export default function Register({loginOnClick}: RegisterProps) {
                          required={false}
                          onChange={(e) => setPassword2(e.target.value)}/>
           {invalidPassword && <p className={"error"}>Passwords must match</p>}
-            {registerError && <p className={"error"}>{registerError}</p>}
+          {registerError && <p className={"error"}>{registerError}</p>}
           <button type="submit">Register</button>
           <p>Already have an account ? <span className={"link"} onClick={loginOnClick}>Login</span></p>
         </form>

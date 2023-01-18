@@ -42,7 +42,8 @@ class Database {
       const user = {name: username, password: hash};
       return await this.users.insertOne(user);
     } catch (err: any) {
-      console.log(err.stack);
+      // user already exists
+      return {acknowledged: false};
     }
   }
 
