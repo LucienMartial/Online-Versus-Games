@@ -43,3 +43,31 @@
   backdrop-filter: blur(10px);
   border-radius: 10px;
 }
+
+/*
+ * Score
+*/
+
+/* .score-wrapper {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  top: 15%;
+  left: 50%;
+  display: flex;
+  gap: 1.5em;
+}
+
+.score {
+  background-color: red;
+  padding: 0.8em;
+  border-radius: 10px;
+  font-size: 1.2em;
+}
+
+#score-left {
+  transform: perspective(2em) rotateY(-5deg);
+}
+
+#score-right {
+  transform: perspective(2em) rotateY(5deg);
+} */

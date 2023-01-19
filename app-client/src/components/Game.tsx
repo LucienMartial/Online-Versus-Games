@@ -69,15 +69,10 @@ function Game({ client, gameRoom }: GameProps) {
     // resize
     const resize = () => {
       app.renderer.resize(window.innerWidth, window.innerHeight);
+      gameScene.stage.filterArea = app.renderer.screen;
       viewport.resize(window.innerWidth, window.innerHeight);
       viewport.fit();
       viewport.moveCenter(WORLD_WIDTH / 2, WORLD_HEIGHT / 2);
-      gameScene.stage.filterArea = new Rectangle(
-        0,
-        0,
-        window.innerWidth,
-        window.innerHeight
-      );
     };
     resize();
     window.addEventListener("resize", resize);

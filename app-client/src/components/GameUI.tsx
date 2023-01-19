@@ -1,7 +1,5 @@
 import { useEffect, useState } from "react";
-import { Player } from "../../../app-shared/disc-war";
 import { GameScene } from "../game/game";
-import { Watcher } from "../game/utils";
 import "./GameUI.css";
 
 interface GameUIProps {
@@ -54,9 +52,15 @@ function GameUI({ gameScene }: GameUIProps) {
       {respawnText && <h2 id="respawn">{respawnText}</h2>}
       {shieldText && <p id="counter">Shield in {shieldText}</p>}
       {!isRespawning && (
-        <p>
-          {score[0]} / {score[1]}
-        </p>
+        <div className="score-wrapper">
+          <p className="score" id="score-left">
+            {score[0]}
+          </p>
+          <p className="score" id="score-right">
+            {" "}
+            {score[1]}
+          </p>
+        </div>
       )}
       {/* <p id="test">Hello from GUI</p> */}
     </>
