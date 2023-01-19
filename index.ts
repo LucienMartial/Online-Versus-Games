@@ -4,6 +4,10 @@ import http from "http";
 import { Server } from "colyseus";
 import { WebSocketTransport } from "@colyseus/ws-transport";
 
+// environment
+import * as dotenv from "dotenv";
+dotenv.config();
+
 import { hello } from "./app-shared/hello.js";
 hello();
 
