@@ -25,9 +25,9 @@ class DiscRender extends RenderObject {
     this.setOffset(disc.offset.x, disc.offset.y);
 
     // wall collision
-    this.disc.onWallCallback = (position: Vector) => {
-      console.log("collision with walls", position);
-    };
+    // this.disc.onWallCallback = (position: Vector) => {
+    //   console.log("collision with walls", position);
+    // };
 
     // reflection
     this.mirror = Graphics.createMirror(

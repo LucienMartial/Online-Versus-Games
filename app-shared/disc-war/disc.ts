@@ -72,7 +72,7 @@ class Disc extends BodyEntity {
     if (len > 0) this.lastSpeed = len;
     this.position.sub(response.overlapV);
     super.onCollision(response, other);
-    this.onWallCallback(this.position.clone());
+    this.onWallCallback?.(this.position.clone());
   }
 
   attach(player: Player) {
