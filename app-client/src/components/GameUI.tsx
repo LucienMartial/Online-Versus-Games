@@ -11,7 +11,7 @@ interface GameUIProps {
 function GameUI({ gameScene }: GameUIProps) {
   const [respawnText, setRespawnText] = useState<string | undefined>();
   const [shieldText, setShieldText] = useState<string | undefined>();
-  const [isRespawning, setIsRespawning] = useState(false);
+  const [isRespawning, setIsRespawning] = useState(true);
   const [score, setScore] = useState([0, 0]);
 
   // respawn
@@ -53,12 +53,12 @@ function GameUI({ gameScene }: GameUIProps) {
     <>
       {respawnText && <h2 id="respawn">{respawnText}</h2>}
       {shieldText && <p id="counter">Shield in {shieldText}</p>}
-      {isRespawning && (
+      {!isRespawning && (
         <p>
           {score[0]} / {score[1]}
         </p>
       )}
-      <p id="test">Hello from GUI</p>
+      {/* <p id="test">Hello from GUI</p> */}
     </>
   );
 }

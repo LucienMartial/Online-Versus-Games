@@ -12,8 +12,6 @@ router.post("/login", (req: Request, res: Response, next: NextFunction) => {
     return res.status(200).end();
   }
   if (!req.body.username || !req.body.password) {
-    // res.statusMessage = "Missing username or password";
-    // return res.status(400).end();
     throw new AppError(400, "Missing username or password");
   }
   db.matchPassword(req.body.username, req.body.password)
@@ -59,16 +57,14 @@ router.post("/register", (req: Request, res: Response) => {
   if (!req.body.username || !req.body.password) {
     throw new AppError(400, "Missing username or password");
   }
+
   db.createUser(req.body.username, req.body.password).then((r) => {
     if (r.acknowledged) {
       res.statusMessage = "User created";
       return res.status(200).end();
-    } else {
-      // register failed
-      //throw new AppError(400, "Register failed"); //TODO : use this instead of the following
-      res.statusMessage = "Register failed";
-      return res.status(400).end();
     }
+    // register failed
+    throw new AppError(400, "Registration failed");
   });
 });
 
