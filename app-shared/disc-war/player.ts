@@ -19,7 +19,7 @@ const DASH_DURATION = 0.2 * 60;
 const DASH_COOLDOWN = 0.8 * 60;
 
 // counter
-const COUNTER_DURATION = 0.4 * 60;
+const COUNTER_DURATION = 0.5 * 60;
 const COUNTER_COOLDOWN = 3 * 60;
 
 class Player extends BodyEntity {
