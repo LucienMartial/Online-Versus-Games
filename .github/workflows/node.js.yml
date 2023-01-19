@@ -20,4 +20,7 @@ jobs:
           node-version: 18.x
           cache: "npm"
       - run: npm run deploy
-      - run: npm test
+      - name: tests
+        env:
+          MONGODB_URL: ${{ secrets.MONGODB_URL }}
+        run: npm test
