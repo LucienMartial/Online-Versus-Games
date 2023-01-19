@@ -3,16 +3,20 @@ import { Disc } from "../../../../app-shared/disc-war";
 import { CircleShape } from "../../../../app-shared/physics";
 import { Graphics } from "../utils/graphics";
 import { RenderObject } from "./render-object";
+import { Viewport } from "pixi-viewport";
+import { ShockwaveManager } from "../effects/shockwave-manager";
 
 const COLOR = 0x00ffdd;
+const MAX_TIME_SHOCKWAVE = 2.5;
 
 class DiscRender extends RenderObject {
   disc: Disc;
   display: PIXI.Graphics;
   mirror: PIXI.DisplayObject;
-  shockwave: PIXI.Filter;
+  viewports: Viewport;
+  shockwaves: ShockwaveManager;
 
-  constructor(disc: Disc, shockwave: PIXI.Filter) {
+  constructor(disc: Disc, shockwaves: ShockwaveManager, viewports: Viewport) {
     super();
 
     this.container.sortableChildren = true;
@@ -32,12 +36,15 @@ class DiscRender extends RenderObject {
     );
     this.mirror.position = this.position.clone();
 
+    // viewports
+    this.viewports = viewports;
+
     // shockwave
-    this.shockwave = shockwave;
+    this.shockwaves = shockwaves;
     disc.onWallCollision = (posX: number, posY: number) => {
-      this.shockwave.uniforms.center = [posX, posY];
-      this.shockwave.uniforms.time = 0;
-    };
+      const translatedPos = this.viewports.toScreen(posX, posY);
+      this.shockwaves.newShockwave(translatedPos.x, translatedPos.y);
+    }
   }
 
   update(dt: number, now: number) {
@@ -45,9 +52,7 @@ class DiscRender extends RenderObject {
     this.position.set(this.disc.position.x, this.disc.position.y);
     this.mirror.position = this.position.clone();
 
-    if (this.shockwave.uniforms.time >= 2.5) {
-      this.shockwave.uniforms.time = 2.5;
-    }
+    this.shockwaves.update(dt);
 
     if (!this.disc.attachedPlayer) return;
     if (this.disc.isAttached || this.disc.attachedPlayer.friendlyDisc) {

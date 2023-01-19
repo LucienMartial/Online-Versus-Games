@@ -17,6 +17,7 @@ import { Viewport } from "pixi-viewport";
 import { Disc, Player } from "../../../app-shared/disc-war";
 import { AdvancedBloomFilter } from "@pixi/filter-advanced-bloom";
 import { ShockwaveFilter } from "@pixi/filter-shockwave";
+import { ShockwaveManager } from "./effects/shockwave-manager";
 
 const PLAYER_GHOST = false;
 const DISC_GHOST = false;
@@ -59,17 +60,24 @@ class GameScene extends Scene {
   async load(): Promise<void> {
     const assets = await Assets.loadBundle("basic");
 
-    const shockWaveFilter = new ShockwaveFilter();
-
+    const shockwaveManager = new ShockwaveManager();
+    const shockWaveFilter = shockwaveManager.exportShockwaves();
+    
     // filter
     this.stage.filters = [
       new AdvancedBloomFilter({
         threshold: 0.4,
         quality: 4,
         blur: 4,
-      }),
-      shockWaveFilter,
+      })
     ];
+    
+    for (const filter of shockWaveFilter) {
+      this.stage.filters.push(filter);
+    }
+
+    console.log("Shockwaves: ", this.stage.filters);
+
     this.mapFiltered = new Container();
     this.mapFiltered.sortableChildren = true;
 
@@ -126,7 +134,7 @@ class GameScene extends Scene {
 
     // disc render
     const disc = this.gameEngine.getOne<Disc>("disc");
-    const discRender = new DiscRender(disc, shockWaveFilter);
+    const discRender = new DiscRender(disc, shockwaveManager, this.viewport);
     discRender.container.zIndex = 10;
     this.add(discRender, false);
     discRender.mirror.zIndex = 0;
