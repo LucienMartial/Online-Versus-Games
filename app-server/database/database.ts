@@ -1,6 +1,5 @@
-import {Collection, Db, MongoClient} from "mongodb";
+import { Collection, Db, MongoClient } from "mongodb";
 import bcrypt from "bcryptjs";
-import DatabaseInfos from "../../private/databaseInfos.js";
 
 const saltRounds = 10;
 
@@ -10,8 +9,8 @@ class Database {
   private users: Collection;
 
   constructor() {
-    const dbUrl = DatabaseInfos.url;
-    this.client = new MongoClient(dbUrl);
+    const url = process.env.MONGODB_URL;
+    this.client = new MongoClient(url);
   }
 
   async connect() {
@@ -26,7 +25,7 @@ class Database {
 
   private async searchUser(username: string) {
     try {
-      const query = {name: username};
+      const query = { name: username };
       const user = await this.users.findOne(query);
       console.log(user);
       return user;
@@ -39,11 +38,11 @@ class Database {
     try {
       const salt = await bcrypt.genSalt(saltRounds);
       const hash = await bcrypt.hash(password, salt);
-      const user = {name: username, password: hash};
+      const user = { name: username, password: hash };
       return await this.users.insertOne(user);
     } catch (err: any) {
       // user already exists
-      return {acknowledged: false};
+      return { acknowledged: false };
     }
   }
 
@@ -65,4 +64,4 @@ class Database {
   }
 }
 
-export {Database};
+export { Database };

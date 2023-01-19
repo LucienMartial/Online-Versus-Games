@@ -43,7 +43,6 @@ if (process.env.NODE_ENV !== "production") {
 
 // rooms
 import { GameRoom } from "./app-server/game-room.js";
-import { handleAppError } from "./app-server/utils/error.js";
 gameServer.define("game", GameRoom);
 
 server.listen(port, () => {
@@ -51,7 +50,7 @@ server.listen(port, () => {
 });
 
 // database
-import {Database} from "./app-server/database/database.js";
+import { Database } from "./app-server/database/database.js";
 
 const db = new Database();
 db.connect().then(() => console.log("connected to database"));
@@ -60,4 +59,4 @@ process.on("exit", () => {
   db.close().then(() => console.log("disconnected from database"));
 });
 
-export {app, db};
+export { app, db };

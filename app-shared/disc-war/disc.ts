@@ -13,7 +13,7 @@ const MAX_SPEED = 1800;
 
 // slow motion at the beginning of shoot
 // to give players reaction time
-const SLOW_MOTION_TIME = 20;
+const SLOW_MOTION_TIME = 25;
 
 class Disc extends BodyEntity {
   isAttached: boolean;
@@ -22,6 +22,7 @@ class Disc extends BodyEntity {
   slowTimer: SyncTimer;
   curveTimer: SyncTimer;
   shootForce: SAT.Vector;
+  onWallCallback?: { (position: SAT.Vector): void };
 
   constructor() {
     // default
@@ -71,6 +72,7 @@ class Disc extends BodyEntity {
     if (len > 0) this.lastSpeed = len;
     this.position.sub(response.overlapV);
     super.onCollision(response, other);
+    this.onWallCallback(this.position.clone());
   }
 
   attach(player: Player) {

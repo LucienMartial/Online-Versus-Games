@@ -11,13 +11,13 @@ import { Container } from "pixi.js";
 // walls
 const TOP_WALL_HEIGHT = 138;
 const TOP_WALL_OFFSET = 4;
-const WALL_COLOR = 0x488cb5;
+// const WALL_COLOR = 0x488cb5;
+const WALL_COLOR = 0x377ba4;
 const TOP_WALL_COLOR = 0x092335;
 const TOP_WALL_SIDE_COLOR = 0x05151f;
 const TOP_WALL_REFLECTION = 0.3;
 
 // floor
-// const FLOOR_COLOR = 0x994433;
 const FLOOR_COLOR = 0x222222;
 
 // split line

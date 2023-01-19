@@ -27,11 +27,15 @@ class DiscWarEngine extends GameEngine {
   respawnTimer: SyncTimer;
   playerId: string;
   isServer: boolean;
+  leftScore: number;
+  rightScore: number;
 
   constructor(isServer = false, playerId = "") {
     super();
     this.playerId = playerId;
     this.isServer = isServer;
+    this.leftScore = 0;
+    this.rightScore = 0;
 
     // map
     const map = new Map(WORLD_WIDTH, WORLD_HEIGHT);
@@ -53,6 +57,11 @@ class DiscWarEngine extends GameEngine {
   }
 
   sync(state: GameState) {
+    // scores
+    this.leftScore = state.leftScore;
+    this.rightScore = state.rigthScore;
+    // timers
+    this.respawnTimer.sync(state.respawnTimer);
     // synchronize players
     for (const [id, playerState] of state.players.entries()) {
       if (id === this.playerId) continue;
@@ -62,12 +71,11 @@ class DiscWarEngine extends GameEngine {
       player.isDead = playerState.isDead;
       player.isLeft = playerState.isLeft;
       player.possesDisc = playerState.possesDisc;
+      player.counterTimer.active = playerState.counterTimer.active;
       if (player.isDead || this.respawnTimer.active) {
         player.setPosition(playerState.x, playerState.y);
       }
     }
-    // timers
-    this.respawnTimer.sync(state.respawnTimer);
   }
 
   // Player
@@ -77,6 +85,7 @@ class DiscWarEngine extends GameEngine {
     const disc = this.getOne<Disc>("disc");
     const player = new Player(id, isPuppet, this.playerDie.bind(this), disc);
     player.isLeft = isLeft;
+
     this.initPlayer(player);
     this.add("players", player);
     return player;
@@ -112,6 +121,8 @@ class DiscWarEngine extends GameEngine {
 
     // player
     player.isDead = true;
+    if (player.isLeft) this.leftScore += 1;
+    else this.rightScore += 1;
 
     // reset players position
     for (const player of this.get<Player>("players")) {
