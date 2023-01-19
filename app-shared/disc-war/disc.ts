@@ -22,7 +22,7 @@ class Disc extends BodyEntity {
   slowTimer: SyncTimer;
   curveTimer: SyncTimer;
   shootForce: SAT.Vector;
-  onWallCallback?: { (position: SAT.Vector): void };
+  onWallCollision?: { (posX: number, posY: number): void };
 
   constructor() {
     // default
@@ -72,7 +72,7 @@ class Disc extends BodyEntity {
     if (len > 0) this.lastSpeed = len;
     this.position.sub(response.overlapV);
     super.onCollision(response, other);
-    this.onWallCallback(this.position.clone());
+    this.onWallCollision?.(this.position.x, this.position.y);
   }
 
   attach(player: Player) {

@@ -10,6 +10,7 @@
   "dependencies": {
     "@pixi/assets": "^6.5.8",
     "@pixi/filter-advanced-bloom": "^4.1.5",
+    "@pixi/filter-shockwave": "^4.1.5",
     "colyseus.js": "^0.14.13",
     "pixi-viewport": "^4.38.0",
     "pixi.js": "^6.5.8",
