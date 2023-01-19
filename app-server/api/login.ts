@@ -11,6 +11,10 @@ router.post("/login", (req: Request, res: Response, next: NextFunction) => {
     res.statusMessage = "Already logged in";
     return res.status(200).end();
   }
+  if (!req.body.username || !req.body.password) {
+    res.statusMessage = "Missing username or password";
+    return res.status(400).end();
+  }
   db.matchPassword(req.body.username, req.body.password).then((match) => {
     if (match) {
       req.session.authenticated = true;
@@ -49,6 +53,10 @@ router.get("/cookie-checker", (req: Request, res: Response) => {
 
 router.post("/register", (req: Request, res: Response) => {
   console.log("register request");
+  if (!req.body.username || !req.body.password) {
+    res.statusMessage = "Missing username or password";
+    return res.status(400).end();
+  }
   db.createUser(req.body.username, req.body.password).then(r => {
     if (r.acknowledged) {
       res.statusMessage = "User created";
