@@ -10,8 +10,9 @@ class DiscRender extends RenderObject {
   disc: Disc;
   display: PIXI.Graphics;
   mirror: PIXI.DisplayObject;
+  shockwave: PIXI.Filter;
 
-  constructor(disc: Disc) {
+  constructor(disc: Disc, shockwave: PIXI.Filter) {
     super();
 
     this.container.sortableChildren = true;
@@ -30,12 +31,25 @@ class DiscRender extends RenderObject {
       false
     );
     this.mirror.position = this.position.clone();
+
+    // shockwave
+    this.shockwave = shockwave;
+    disc.onWallCollision = (posX: number, posY: number) => {
+      this.shockwave.uniforms.center = [posX, posY];
+      this.shockwave.uniforms.time = 0;
+    }
   }
 
   update(dt: number, now: number) {
     super.update(dt, now);
     this.position.set(this.disc.position.x, this.disc.position.y);
     this.mirror.position = this.position.clone();
+
+  
+    if (this.shockwave.uniforms.time >= 2.5) {
+      this.shockwave.uniforms.time = 2.5;
+    }
+
 
     if (!this.disc.attachedPlayer) return;
     if (this.disc.isAttached || this.disc.attachedPlayer.friendlyDisc) {
