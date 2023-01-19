@@ -49,9 +49,9 @@ export default function Register({loginOnClick}: RegisterProps) {
           <h1>Create an account</h1>
           <AnimatedInput type={"text"} id={"username"} label={"Username"} autofocus={true} required={true}
                          onChange={(e) => setUsername(e.target.value)}/>
-          <AnimatedInput type={"password"} label={"Password"} id={"password"} autofocus={false} required={false}
+          <AnimatedInput type={"password"} label={"Password"} id={"password"} autofocus={false} required={true}
                          onChange={(e) => setPassword(e.target.value)}/>
-          <AnimatedInput type={"password"} label={"Confirm your password"} id={"password2"} autofocus={false}
+          <AnimatedInput type={"password"} label={"Confirm your password"} id={"password2"} autofocus={true}
                          required={false}
                          onChange={(e) => setPassword2(e.target.value)}/>
           {invalidPassword && <p className={"error"}>Passwords must match</p>}

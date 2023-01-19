@@ -47,7 +47,7 @@ function Login({setLoggedIn, createAccountOnClick}: LoginProps) {
           <h1>WELCOME !</h1>
           <AnimatedInput type={"text"} id={"username"} label={"Username"} autofocus={true} required={true}
                          onChange={(e) => setUsername(e.target.value)}/>
-          <AnimatedInput type={"password"} label={"Password"} id={"password"} autofocus={false} required={false}
+          <AnimatedInput type={"password"} label={"Password"} id={"password"} autofocus={false} required={true}
                          onChange={(e) => setPassword(e.target.value)}/>
             {errorMessage && <p className={"error"}>{errorMessage}</p>}
           <button type="submit">Login</button>
