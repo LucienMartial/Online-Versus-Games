@@ -27,15 +27,6 @@
   top: 10%;
 }
 
-#respawn {
-  position: absolute;
-  background-color: slateblue;
-  padding: 0.8em;
-  transform: translate(-50%, -50%);
-  left: 50%;
-  top: 10%;
-}
-
 #test {
   pointer-events: all;
   background-color: rgba(154, 50, 151, 0.264);
@@ -48,17 +39,25 @@
  * Score
 */
 
-/* .score-wrapper {
+#respawn {
+  background-color: rgba(0, 0, 0, 0.561);
+  backdrop-filter: blur(1rem);
+  padding: 1em;
+  font-size: 1em;
+  width: 1.2em;
+}
+
+.score-wrapper {
   position: absolute;
   transform: translate(-50%, -50%);
-  top: 15%;
+  top: 12%;
   left: 50%;
   display: flex;
-  gap: 1.5em;
+  align-items: center;
 }
 
 .score {
-  background-color: red;
+  background-color: rgba(101, 235, 250, 0.4);
   padding: 0.8em;
   border-radius: 10px;
   font-size: 1.2em;
@@ -70,4 +69,4 @@
 
 #score-right {
   transform: perspective(2em) rotateY(5deg);
-} */
+}

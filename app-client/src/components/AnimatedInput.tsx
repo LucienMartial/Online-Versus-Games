@@ -1,4 +1,4 @@
-import React, {HTMLInputTypeAttribute} from "react";
+import React, { HTMLInputTypeAttribute } from "react";
 import "./AnimatedInput.scss";
 
 interface AnimatedInputProps {
@@ -10,11 +10,30 @@ interface AnimatedInputProps {
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
-export default function AnimatedInput({type, label, id, autofocus, required, onChange}: AnimatedInputProps) {
+export default function AnimatedInput({
+  type,
+  label,
+  id,
+  autofocus,
+  required,
+  onChange,
+}: AnimatedInputProps) {
   return (
+    <React.StrictMode>
       <div className={"container"}>
-        <input id={id} type={type} placeholder={" "} autoFocus={autofocus} autoComplete={"off"} required={required} onChange={onChange} />
-        <label htmlFor={id} className={"movingLabel"}>{label}</label>
+        <input
+          id={id}
+          type={type}
+          placeholder={" "}
+          autoFocus={autofocus}
+          autoComplete={"off"}
+          required={required}
+          onChange={onChange}
+        />
+        <label htmlFor={id} className={"movingLabel"}>
+          {label}
+        </label>
       </div>
-  )
+    </React.StrictMode>
+  );
 }

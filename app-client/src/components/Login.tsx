@@ -1,7 +1,7 @@
 import React from "react";
 import "./Login.scss";
 import AnimatedInput from "./AnimatedInput";
-import {Link} from "react-router-dom";
+import { Link } from "react-router-dom";
 
 interface LoginProps {
   setLoggedIn: (isLoggedIn: boolean) => void;
@@ -21,10 +21,13 @@ async function postLogin(username: string, password: string) {
   // success
   if (res.status === 200) return { success: true };
   // error
-  return { success: false , message: await res.json().then((data) => data.message)};
+  return {
+    success: false,
+    message: await res.json().then((data) => data.message),
+  };
 }
 
-function Login({setLoggedIn}: LoginProps) {
+function Login({ setLoggedIn }: LoginProps) {
   const [username, setUsername] = React.useState("");
   const [password, setPassword] = React.useState("");
   const [errorMessage, setErrorMessage] = React.useState("");
@@ -35,25 +38,44 @@ function Login({setLoggedIn}: LoginProps) {
     // login
     const res = await postLogin(username, password);
     if (res.success) {
-        setLoggedIn(true);
+      setLoggedIn(true);
     } else {
-        setErrorMessage(res.message);
+      setErrorMessage(res.message);
     }
   };
 
   return (
+    <React.StrictMode>
       <div className={"login"}>
         <form action="" onSubmit={login}>
           <h1>WELCOME !</h1>
-          <AnimatedInput type={"text"} id={"username"} label={"Username"} autofocus={true} required={true}
-                         onChange={(e) => setUsername(e.target.value)}/>
-          <AnimatedInput type={"password"} label={"Password"} id={"password"} autofocus={false} required={true}
-                         onChange={(e) => setPassword(e.target.value)}/>
-            {errorMessage && <p className={"error"}>{errorMessage}</p>}
+          <AnimatedInput
+            type={"text"}
+            id={"username"}
+            label={"Username"}
+            autofocus={true}
+            required={true}
+            onChange={(e) => setUsername(e.target.value)}
+          />
+          <AnimatedInput
+            type={"password"}
+            label={"Password"}
+            id={"password"}
+            autofocus={false}
+            required={true}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+          {errorMessage && <p className={"error"}>{errorMessage}</p>}
           <button type="submit">Login</button>
-          <p>No account yet ? <Link to={"/register"} className={"link"}>Create an account</Link></p>
+          <p>
+            No account yet ?{" "}
+            <Link to={"/register"} className={"link"}>
+              Create an account
+            </Link>
+          </p>
         </form>
       </div>
+    </React.StrictMode>
   );
 }
 

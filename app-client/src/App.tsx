@@ -1,21 +1,25 @@
-import React, {useEffect, useState, Suspense, lazy} from "react";
-import {BrowserRouter as Router, Routes, Route, Navigate} from 'react-router-dom';
+import React, { useEffect, useState, Suspense, lazy } from "react";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
 import "./App.css";
-import {hello} from "../../app-shared/hello";
-import {Message} from "../../app-shared/types";
-import {GameProps} from "./components/Game";
-import {Assets} from "@pixi/assets";
-import {Client, Room} from "colyseus.js";
-import {useAuth} from "./hooks/useAuth";
+import { hello } from "../../app-shared/hello";
+import { Message } from "../../app-shared/types";
+import { GameProps } from "./components/Game";
+import { Assets } from "@pixi/assets";
+import { Client, Room } from "colyseus.js";
+import { useAuth } from "./hooks/useAuth";
 
 const Game = lazy(() => import("./components/Game"));
 const Login = lazy(() => import("./components/Login"));
 const Register = lazy(() => import("./components/Register"));
 
-
 // websocket endpoint
 const COLYSEUS_ENDPOINT =
-    process.env.NODE_ENV === "development" ? "ws://localhost:3000" : undefined;
+  process.env.NODE_ENV === "development" ? "ws://localhost:3000" : undefined;
 
 // assets information
 const manifest = {
@@ -47,7 +51,7 @@ function App() {
   };
 
   const initAssetsManifest = async () => {
-    await Assets.init({manifest: manifest});
+    await Assets.init({ manifest: manifest });
     setLoaded(true);
   };
 
@@ -59,7 +63,7 @@ function App() {
     // try to join a game room
     try {
       gameRoom = await client.joinOrCreate("game");
-      setGameData({client: client, gameRoom: gameRoom});
+      setGameData({ client: client, gameRoom: gameRoom });
       console.log("joined a game successfully");
     } catch (e) {
       console.error("join error", e);
@@ -82,42 +86,40 @@ function App() {
 
   const renderDefault = () => {
     if (!isAuth) {
-      return <Navigate to={"/login"} />
+      return <Navigate to={"/login"} />;
     }
-    return <Navigate to={"/game"} />
-  }
+    return <Navigate to={"/game"} />;
+  };
 
   const renderLogin = () => {
     if (isAuth) {
-      return <Navigate to={"/"} />
+      return <Navigate to={"/"} />;
     }
-    return <Login setLoggedIn={setLoggedIn} />
-  }
+    return <Login setLoggedIn={setLoggedIn} />;
+  };
 
   const renderGame = () => {
     console.log(isAuth);
     if (!isAuth) {
-      return <Navigate to={"/login"} />
+      return <Navigate to={"/login"} />;
     }
-    if (gameData){
-      return <Game {...gameData} />
+    if (gameData) {
+      return <Game {...gameData} />;
     }
-  }
+  };
 
   return (
-      <React.StrictMode>
-        <Router>
-            <Suspense fallback={<p>Loading.. </p>}>
-          <Routes>
-            <Route path="/" element={renderDefault()} />
-            <Route path="/login" element={renderLogin()}/>
-            <Route path="/register" element={<Register />}/>
-            <Route path="/game" element={renderGame()} />
-            <Route path="*" element={<Navigate to={"/"} />} />
-          </Routes>
-            </Suspense>
-        </Router>
-      </React.StrictMode>
+    <Router>
+      <Suspense fallback={<p>Loading.. </p>}>
+        <Routes>
+          <Route path="/" element={renderDefault()} />
+          <Route path="/login" element={renderLogin()} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/game" element={renderGame()} />
+          <Route path="*" element={<Navigate to={"/"} />} />
+        </Routes>
+      </Suspense>
+    </Router>
   );
 }
 

@@ -10,11 +10,13 @@ class GameEngine {
   protected collections: CollectionManager;
   physicEngine: PhysicEngine;
   accumulator: number;
+  reenact: boolean;
 
   constructor() {
     this.physicEngine = new PhysicEngine();
     this.collections = new CollectionManager();
     this.accumulator = 0;
+    this.reenact = false;
   }
 
   processInput(inputs: Inputs, id: string) {}

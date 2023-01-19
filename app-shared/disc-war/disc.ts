@@ -9,7 +9,7 @@ import { SyncTimer } from "../utils/sync-timer.js";
 
 const FRICTION = 1;
 const RADIUS = 38;
-const MAX_SPEED = 1800;
+const MAX_SPEED = 1700;
 
 // slow motion at the beginning of shoot
 // to give players reaction time

@@ -63,7 +63,7 @@ class ShockwaveManager {
     amplitude: number = DEFAULT_WAVE_PARAMS.AMPLITUDE,
     brightness: number = DEFAULT_WAVE_PARAMS.BRIGHTNESS
   ) {
-    if (this.engine.reenact) return;
+    if (!this.starter) return;
     const shockwave = this.inactiveShockWaves.pop();
 
     if (shockwave) {
@@ -76,6 +76,11 @@ class ShockwaveManager {
       shockwave.brightness = brightness;
       this.activeShockwaves.push(shockwave);
     }
+
+    this.starter = false;
+    setTimeout(() => {
+      this.starter = true;
+    }, 300);
   }
 
   update(dt: number) {
@@ -83,6 +88,7 @@ class ShockwaveManager {
       const shockwave = this.activeShockwaves[i];
 
       if (shockwave.time >= MAX_TIME_SHOCKWAVE) {
+        shockwave.time = 4;
         shockwave.enabled = false;
         this.inactiveShockWaves.push(shockwave);
         this.activeShockwaves.splice(i, 1);
