@@ -1,7 +1,6 @@
 import { Assets } from "@pixi/assets";
-import { Container, Sprite } from "pixi.js";
+import { Container, filters, Sprite } from "pixi.js";
 import { DiscWarEngine } from "../../../app-shared/disc-war/disc-war";
-import { BodyEntity } from "../../../app-shared/game";
 import { Scene } from "./scene";
 import { Graphics } from "./utils/graphics";
 import { DiscRender, PlayerRender, RenderObject } from "./renderer";
@@ -35,6 +34,7 @@ class GameScene extends Scene {
   room: Room<GameState>;
   id: string;
   mapFiltered: Container;
+  lastState?: GameState;
 
   constructor(
     viewport: Viewport,
@@ -135,6 +135,7 @@ class GameScene extends Scene {
 
     // init game, add, remove players
     this.room.onStateChange.once((state) => {
+      this.lastState = state;
       this.initGame(state);
     });
     this.room.state.players.onAdd = (state, id) => {
@@ -146,6 +147,7 @@ class GameScene extends Scene {
 
     // synchronization
     this.room.onStateChange((state: GameState) => {
+      this.lastState = state;
       if (PLAYER_GHOST) {
         const player = state.players.get(this.id);
         if (player) playerGhost.setPosition(player.x, player.y);

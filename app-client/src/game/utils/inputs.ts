@@ -1,5 +1,4 @@
 import { Viewport } from "pixi-viewport";
-import { Point } from "pixi.js";
 import SAT, { Vector } from "sat";
 import type { Inputs, KeyInputs } from "../../../../app-shared/utils";
 

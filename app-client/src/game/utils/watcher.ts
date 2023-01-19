@@ -10,7 +10,7 @@ class Watcher {
     this.triggered = false;
   }
 
-  watch(value: boolean) {
+  watch(value: boolean | undefined) {
     if (value && !this.triggered) {
       this.triggered = true;
       this.onActive?.();

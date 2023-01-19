@@ -1,3 +1,6 @@
+# env
+.env
+
 # Logs
 logs
 *.log
@@ -24,5 +27,3 @@ coverage
 *.njsproj
 *.sln
 *.sw?
-
-private

@@ -12,7 +12,8 @@ interface Data {
 
 class OnSyncCommand extends Command<GameRoom, Data> {
   execute({ gameEngine } = this.payload) {
-    this.state.respawnTimer.sync(gameEngine.respawnTimer);
+    // engine
+    this.state.sync(gameEngine);
 
     // disc
     const disc = gameEngine.getOne<Disc>("disc");

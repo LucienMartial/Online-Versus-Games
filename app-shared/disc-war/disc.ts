@@ -13,7 +13,7 @@ const MAX_SPEED = 1800;
 
 // slow motion at the beginning of shoot
 // to give players reaction time
-const SLOW_MOTION_TIME = 20;
+const SLOW_MOTION_TIME = 25;
 
 class Disc extends BodyEntity {
   isAttached: boolean;

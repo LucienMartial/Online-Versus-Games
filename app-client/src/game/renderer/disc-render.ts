@@ -1,4 +1,5 @@
 import * as PIXI from "pixi.js";
+import { Vector } from "sat";
 import { Disc } from "../../../../app-shared/disc-war";
 import { CircleShape } from "../../../../app-shared/physics";
 import { Graphics } from "../utils/graphics";
@@ -23,6 +24,11 @@ class DiscRender extends RenderObject {
     // custom
     this.disc = disc;
     this.setOffset(disc.offset.x, disc.offset.y);
+
+    // wall collision
+    // this.disc.onWallCallback = (position: Vector) => {
+    //   console.log("collision with walls", position);
+    // };
 
     // reflection
     this.mirror = Graphics.createMirror(

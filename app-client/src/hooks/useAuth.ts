@@ -11,6 +11,7 @@ function useAuth(dependencies: DependencyList) {
         setIsAuth(true);
         return;
       }
+      console.log("ERROR");
       const error: Error = await res.json();
       console.error("Could not autheticate with cookie:", error.message);
       setIsAuth(false);

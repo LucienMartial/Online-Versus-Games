@@ -115,8 +115,7 @@ class Predictor {
   }
 
   /**
-   * Sync the other players "puppet", here we interpolate
-   * the position and sync important game data
+   * Sync the other players "puppet", here we interpolate the position
    */
   syncOtherPlayers(state: GameState) {
     for (const [id, playerState] of state.players.entries()) {
@@ -125,10 +124,6 @@ class Predictor {
       if (!player) continue;
       // interpolate new position
       player.lerpTo(playerState.x, playerState.y, OTHER_PLAYERS_BEND);
-      // sync important data
-      player.possesDisc = playerState.possesDisc;
-      player.counterTimer.active = playerState.counterTimer.active;
-      if (playerState.isDead) this.gameEngine.playerDie(player);
     }
   }
 
