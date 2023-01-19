@@ -57,7 +57,8 @@
 }
 
 .score {
-  background-color: rgba(101, 235, 250, 0.4);
+  background-color: rgba(101, 235, 250, 0.3);
+  backdrop-filter: blur(1rem);
   padding: 0.8em;
   border-radius: 10px;
   font-size: 1.2em;

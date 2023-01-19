@@ -24,7 +24,7 @@ class PlayerRender extends RenderObject {
 
     // shield
     const radius = shape.height / 2 + 15;
-    this.shield = Graphics.createCircle(radius, 0x005599);
+    this.shield = Graphics.createCircle(radius, 0x44aadd);
     this.shield.pivot.set(-player.offset.x, -player.offset.y);
     this.shield.alpha = 0;
     this.addChild(this.shield);
@@ -36,7 +36,7 @@ class PlayerRender extends RenderObject {
     // shield watcher
     this.shieldWatcher = new Watcher();
     this.shieldWatcher.onActive = () => {
-      this.shield.alpha = 0.4;
+      this.shield.alpha = 0.2;
     };
     this.shieldWatcher.onInactive = () => {
       this.shield.alpha = 0;
