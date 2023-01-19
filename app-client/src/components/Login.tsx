@@ -1,10 +1,10 @@
 import React from "react";
 import "./Login.scss";
 import AnimatedInput from "./AnimatedInput";
+import {Link} from "react-router-dom";
 
 interface LoginProps {
   setLoggedIn: (isLoggedIn: boolean) => void;
-  createAccountOnClick: () => void;
 }
 
 async function postLogin(username: string, password: string) {
@@ -24,7 +24,7 @@ async function postLogin(username: string, password: string) {
   return { success: false , message: await res.json().then((data) => data.message)};
 }
 
-function Login({setLoggedIn, createAccountOnClick}: LoginProps) {
+function Login({setLoggedIn}: LoginProps) {
   const [username, setUsername] = React.useState("");
   const [password, setPassword] = React.useState("");
   const [errorMessage, setErrorMessage] = React.useState("");
@@ -51,7 +51,7 @@ function Login({setLoggedIn, createAccountOnClick}: LoginProps) {
                          onChange={(e) => setPassword(e.target.value)}/>
             {errorMessage && <p className={"error"}>{errorMessage}</p>}
           <button type="submit">Login</button>
-          <p>No account yet ? <span className={"link"} onClick={createAccountOnClick}>Create an account</span></p>
+          <p>No account yet ? <Link to={"/register"} className={"link"}>Create an account</Link></p>
         </form>
       </div>
   );

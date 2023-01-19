@@ -11,6 +11,12 @@ dotenv.config();
 import { hello } from "./app-shared/hello.js";
 hello();
 
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
 // express app
 const app = express();
 const port = process.env.PORT || 3000;
@@ -26,12 +32,12 @@ app.use(
 
 app.use(express.json());
 app.use(express.static("dist"));
-app.get("/", (req, res) => {
-  res.sendFile("index.html");
-});
-
 import apiRouter from "./app-server/api/api.js";
 app.use("/api", apiRouter);
+
+app.get("/*", (req, res) => {
+  res.sendFile(__dirname + "/index.html");
+});
 
 // game server
 const gameServer = new Server({

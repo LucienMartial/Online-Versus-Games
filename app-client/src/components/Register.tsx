@@ -1,10 +1,7 @@
 import React from "react";
 import AnimatedInput from "./AnimatedInput";
 import "./Login.scss";
-
-interface RegisterProps {
-  loginOnClick: () => void;
-}
+import {Link, Navigate} from "react-router-dom";
 
 async function postRegister(username: string, password: string) {
   const res = await fetch("/api/register", {
@@ -25,12 +22,13 @@ async function postRegister(username: string, password: string) {
   return { success: false, message: error.message };
 }
 
-export default function Register({ loginOnClick }: RegisterProps) {
+export default function Register() {
   const [username, setUsername] = React.useState("");
   const [password, setPassword] = React.useState("");
   const [password2, setPassword2] = React.useState("");
   const [invalidPassword, setInvalidPassword] = React.useState(false);
   const [registerError, setRegisterError] = React.useState("");
+  const [registerSuccess, setRegisterSuccess] = React.useState(false);
   const register = async (e: React.FormEvent) => {
     e.preventDefault();
     if (password !== password2) {
@@ -39,13 +37,15 @@ export default function Register({ loginOnClick }: RegisterProps) {
     }
     const res = await postRegister(username, password);
     if (res.success) {
-      loginOnClick();
+        setRegisterSuccess(true);
     } else {
       setRegisterError("Register failed"); //TODO : display error message
     }
   };
 
   return (
+      <>
+        {registerSuccess && <Navigate to={"/login"} />}
     <div className={"register"}>
       <form action="" onSubmit={register}>
         <h1>Create an account</h1>
@@ -78,11 +78,12 @@ export default function Register({ loginOnClick }: RegisterProps) {
         <button type="submit">Register</button>
         <p>
           Already have an account ?{" "}
-          <span className={"link"} onClick={loginOnClick}>
+          <Link to={"/login"} className={"link"}>
             Login
-          </span>
+          </Link>
         </p>
       </form>
     </div>
+      </>
   );
 }
