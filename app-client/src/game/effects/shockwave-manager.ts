@@ -3,14 +3,14 @@ import { Vector } from "sat";
 import { Disc, DiscWarEngine } from "../../../../app-shared/disc-war";
 
 const DEFAULT_MIN_EFFECTS = 7;
-const MAX_TIME_SHOCKWAVE = 2;
-const SHOCKWAVE_SPEED = 10;
+const MAX_TIME_SHOCKWAVE = 1.2;
+const SHOCKWAVE_SPEED = 8;
 
 const DEFAULT_WAVE_PARAMS = {
   RADIUS: 100,
   WAVELENGTH: 200,
-  AMPLITUDE: 20,
-  BRIGHTNESS: 1,
+  AMPLITUDE: 25,
+  BRIGHTNESS: 1.2,
 };
 
 class ShockwaveManager {
@@ -80,10 +80,10 @@ class ShockwaveManager {
     this.starter = false;
     setTimeout(() => {
       this.starter = true;
-    }, 300);
+    }, 250);
   }
 
-  update(dt: number) {
+  update(dt: number) { 
     for (let i = 0; i < this.activeShockwaves.length; i++) {
       const shockwave = this.activeShockwaves[i];
 

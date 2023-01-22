@@ -35,6 +35,7 @@ class Player extends BodyEntity {
   counterTimer: SyncTimer;
   counterCooldownTimer: SyncTimer;
   friendlyDisc: boolean;
+  onDash?: { (posX: number, posY: number): void };
 
   constructor(
     id: string,
@@ -150,6 +151,7 @@ class Player extends BodyEntity {
     if (inputs.keys.dash && !this.dashCooldownTimer.active) {
       this.maxSpeed = DASH_SPEED;
       this.dashForce = this.direction.clone().scale(DASH_SPEED);
+      this.onDash?.(this.position.x, this.position.y);
       this.dashTimer.timeout(DASH_DURATION, () => {
         this.maxSpeed = MAX_SPEED;
         this.dashCooldownTimer.timeout(DASH_COOLDOWN);

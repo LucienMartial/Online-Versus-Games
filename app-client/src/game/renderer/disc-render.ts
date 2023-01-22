@@ -43,8 +43,8 @@ class DiscRender extends RenderObject {
     // shockwave
     this.shockwaves = shockwaves;
     disc.onWallCollision = (posX: number, posY: number) => {
-      // const translatedPos = this.viewports.toScreen(posX, posY);
-      // this.shockwaves.newShockwave(translatedPos.x, translatedPos.y);
+      const translatedPos = this.viewports.toScreen(posX, posY);
+      this.shockwaves.newShockwave(translatedPos.x, translatedPos.y);
     };
   }
 
