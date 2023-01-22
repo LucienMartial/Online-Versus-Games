@@ -1,5 +1,5 @@
 import { Assets } from "@pixi/assets";
-import { Container, filters, ParticleContainer, Sprite, Texture } from "pixi.js";
+import { Container, Sprite, Texture } from "pixi.js";
 import { DiscWarEngine } from "../../../app-shared/disc-war/disc-war";
 import { Scene } from "./scene";
 import { Graphics } from "./utils/graphics";
@@ -55,7 +55,14 @@ class GameScene extends Scene {
     this.predictor = new Predictor(this.gameEngine, this.id, room);
     this.mainPlayer = this.gameEngine.addPlayer(this.id, true);
     this.mapFiltered = new Container();
-    this.dashAnimManager = new DashAnimManager(this.gameEngine, new Emitter(new Container(), Texture.from(ANIMATION_ASSETS_PATH + "bubble.png"), DASH_ANIMATION.CONFIG_1));
+    this.dashAnimManager = new DashAnimManager(
+      this.gameEngine,
+      new Emitter(
+        new Container(),
+        Texture.from(ANIMATION_ASSETS_PATH + "bubble.png"),
+        DASH_ANIMATION.CONFIG_1
+      )
+    );
   }
 
   /**
@@ -66,7 +73,7 @@ class GameScene extends Scene {
     const assets = await Assets.loadBundle("basic");
 
     // filters
-    const shockwaveManager = new ShockwaveManager(8, this.gameEngine);
+    const shockwaveManager = new ShockwaveManager(15, this.gameEngine);
     const shockWaveFilters = shockwaveManager.exportShockwaves();
 
     this.stage.filters = [
@@ -90,7 +97,11 @@ class GameScene extends Scene {
     const dashAnimContainer = new Container();
     this.mapFiltered.addChild(dashAnimContainer);
     const bubbleTexture = Texture.from(ANIMATION_ASSETS_PATH + "bubble.png");
-    const dashEmitter = new Emitter(dashAnimContainer, bubbleTexture, DASH_ANIMATION.CONFIG_3);
+    const dashEmitter = new Emitter(
+      dashAnimContainer,
+      bubbleTexture,
+      DASH_ANIMATION.CONFIG_3
+    );
     this.dashAnimManager = new DashAnimManager(this.gameEngine, dashEmitter);
 
     // map
@@ -139,7 +150,12 @@ class GameScene extends Scene {
     }
 
     // main player render
-    const mainPlayerRender = new PlayerRender(this.mainPlayer, this.id, this.dashAnimManager, this.viewport);
+    const mainPlayerRender = new PlayerRender(
+      this.mainPlayer,
+      this.id,
+      this.dashAnimManager,
+      this.viewport
+    );
     mainPlayerRender.container.zIndex = 10;
     this.add(mainPlayerRender, false);
     this.mapFiltered.addChild(mainPlayerRender.container);
@@ -206,7 +222,13 @@ class GameScene extends Scene {
     const player = this.gameEngine.getPlayer(id);
     if (!player) {
       const player = this.gameEngine.addPlayer(id, state.isLeft);
-      const playerRender = new PlayerRender(player, id, this.dashAnimManager, this.viewport, 0x0099cc);
+      const playerRender = new PlayerRender(
+        player,
+        id,
+        this.dashAnimManager,
+        this.viewport,
+        0x0099cc
+      );
       this.add(playerRender, false);
       this.mapFiltered.addChild(playerRender.container);
     }

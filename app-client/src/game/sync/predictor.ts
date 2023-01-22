@@ -2,7 +2,12 @@ import { Room } from "colyseus.js";
 import { Vector } from "sat";
 import { Disc, DiscWarEngine } from "../../../../app-shared/disc-war";
 import { GameState } from "../../../../app-shared/state/game-state";
-import { CBuffer, InputsData, lerp } from "../../../../app-shared/utils";
+import {
+  CBuffer,
+  GAME_RATE,
+  InputsData,
+  lerp,
+} from "../../../../app-shared/utils";
 
 const MAX_RESIMU_STEP = 75;
 const MAX_DESYNC_DEVIATION = 100;
@@ -96,9 +101,9 @@ class Predictor {
     const playerShadow = new Shadow(player.position, player.velocity);
 
     // synchronize
-    this.gameEngine.sync(state);
     disc.sync(state.disc, this.gameEngine);
     player.sync(playerState);
+    this.gameEngine.sync(state);
 
     // re simulate (extrapolation)
     const lastInputTime = state.lastInputs.get(this.playerId);
@@ -153,6 +158,7 @@ class Predictor {
 
         // re apply input and re simulate the game
         this.gameEngine.reenact = true;
+
         let last = data.time;
         for (const input of this.inputs.toArray()) {
           const now = input.time;
@@ -161,6 +167,8 @@ class Predictor {
           this.gameEngine.processInput(input.inputs, this.playerId);
           this.gameEngine.fixedUpdate(dt);
         }
+
+        this.gameEngine.physicEngine.handleCollision();
         this.gameEngine.reenact = false;
 
         break;

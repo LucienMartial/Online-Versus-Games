@@ -1,6 +1,6 @@
 import { ShockwaveFilter } from "@pixi/filter-shockwave";
 import { Vector } from "sat";
-import { Disc, DiscWarEngine } from "../../../../app-shared/disc-war";
+import { DiscWarEngine } from "../../../../app-shared/disc-war";
 
 const DEFAULT_MIN_EFFECTS = 7;
 const MAX_TIME_SHOCKWAVE = 1.2;
@@ -63,8 +63,9 @@ class ShockwaveManager {
     amplitude: number = DEFAULT_WAVE_PARAMS.AMPLITUDE,
     brightness: number = DEFAULT_WAVE_PARAMS.BRIGHTNESS
   ) {
-    if (!this.starter || this.engine.reenact) return;
+    if (this.engine.reenact) return;
     const shockwave = this.inactiveShockWaves.pop();
+    console.log("new shockwave", posX, posY);
 
     if (shockwave) {
       shockwave.enabled = true;
@@ -83,7 +84,7 @@ class ShockwaveManager {
     // }, 250);
   }
 
-  update(dt: number) { 
+  update(dt: number) {
     for (let i = 0; i < this.activeShockwaves.length; i++) {
       const shockwave = this.activeShockwaves[i];
 

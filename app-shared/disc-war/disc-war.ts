@@ -6,6 +6,7 @@ import {
   WORLD_WIDTH,
   Inputs,
   SyncTimer,
+  GAME_RATE,
 } from "../utils/index.js";
 import { Map, Player, Disc } from "./index.js";
 

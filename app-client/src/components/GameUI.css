@@ -44,7 +44,7 @@
   backdrop-filter: blur(1rem);
   padding: 1em;
   font-size: 1em;
-  width: 1.2em;
+  /* text-align: center; */
 }
 
 .score-wrapper {

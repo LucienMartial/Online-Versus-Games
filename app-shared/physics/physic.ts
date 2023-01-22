@@ -32,10 +32,8 @@ class PhysicEngine {
    * @param dt
    */
   step(dt: number) {
-    const entities = this._world;
-
     // update position and velocity
-    for (const entity of entities) {
+    for (const entity of this._world) {
       if (entity.static || entity.isDead) continue;
       // magnitude
       const magnitude = entity.velocity.len();
@@ -50,10 +48,14 @@ class PhysicEngine {
     }
 
     // handle collisions
+    this.handleCollision();
+  }
+
+  handleCollision() {
     const response = new SAT.Response();
-    for (const entity of entities) {
+    for (const entity of this._world) {
       if (entity.static || entity.isDead) continue;
-      for (const collidable of entities) {
+      for (const collidable of this._world) {
         if (collidable === entity) continue;
 
         // check collision

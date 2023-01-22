@@ -24,13 +24,16 @@ function GameUI({ gameScene }: GameUIProps) {
   };
 
   gameScene.gameEngine.respawnTimer.onInactive = (ticks: number) => {
-    setRespawnText(undefined);
     if (!gameScene.lastState?.respawnTimer.active) setIsRespawning(false);
   };
 
   // when respawning, show score
   useEffect(() => {
-    if (!isRespawning) return;
+    // end of respawn
+    if (!isRespawning) {
+      setRespawnText(undefined);
+      return;
+    }
     setRespawnText("3");
     setScore([gameScene.gameEngine.leftScore, gameScene.gameEngine.rightScore]);
   }, [isRespawning]);
