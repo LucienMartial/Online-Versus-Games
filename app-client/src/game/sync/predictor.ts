@@ -152,7 +152,7 @@ class Predictor {
         }
 
         // re apply input and re simulate the game
-        // this.gameEngine.reenact = true;
+        this.gameEngine.reenact = true;
         let last = data.time;
         for (const input of this.inputs.toArray()) {
           const now = input.time;
@@ -161,7 +161,7 @@ class Predictor {
           this.gameEngine.processInput(input.inputs, this.playerId);
           this.gameEngine.fixedUpdate(dt);
         }
-        // this.gameEngine.reenact = false;
+        this.gameEngine.reenact = false;
 
         break;
       }
