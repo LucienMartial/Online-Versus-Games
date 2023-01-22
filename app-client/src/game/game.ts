@@ -1,5 +1,5 @@
 import { Assets } from "@pixi/assets";
-import { Container, filters, Sprite } from "pixi.js";
+import { Container, filters, ParticleContainer, Sprite, Texture } from "pixi.js";
 import { DiscWarEngine } from "../../../app-shared/disc-war/disc-war";
 import { Scene } from "./scene";
 import { Graphics } from "./utils/graphics";
@@ -17,9 +17,13 @@ import { Viewport } from "pixi-viewport";
 import { Disc, Player } from "../../../app-shared/disc-war";
 import { AdvancedBloomFilter } from "@pixi/filter-advanced-bloom";
 import { ShockwaveManager } from "./effects/shockwave-manager";
+import { DashAnimManager } from "./effects/dash-anim-manager";
+import { Emitter } from "pixi-particles";
+import { DASH_ANIMATION } from "./effects/configs/dashAnimationConfig";
 
 const PLAYER_GHOST = false;
 const DISC_GHOST = false;
+const ANIMATION_ASSETS_PATH = "../assets/animations/";
 
 /**
  * Game scene for the disc war game.
@@ -35,6 +39,7 @@ class GameScene extends Scene {
   id: string;
   mapFiltered: Container;
   lastState?: GameState;
+  dashAnimManager: DashAnimManager;
 
   constructor(
     viewport: Viewport,
@@ -50,6 +55,7 @@ class GameScene extends Scene {
     this.predictor = new Predictor(this.gameEngine, this.id, room);
     this.mainPlayer = this.gameEngine.addPlayer(this.id, true);
     this.mapFiltered = new Container();
+    this.dashAnimManager = new DashAnimManager(this.gameEngine, new Emitter(new Container(), Texture.from(ANIMATION_ASSETS_PATH + "bubble.png"), DASH_ANIMATION.CONFIG_1));
   }
 
   /**
@@ -59,10 +65,10 @@ class GameScene extends Scene {
   async load(): Promise<void> {
     const assets = await Assets.loadBundle("basic");
 
-    const shockwaveManager = new ShockwaveManager(5, this.gameEngine);
+    // filters
+    const shockwaveManager = new ShockwaveManager(8, this.gameEngine);
     const shockWaveFilters = shockwaveManager.exportShockwaves();
 
-    // filter
     this.stage.filters = [
       new AdvancedBloomFilter({
         threshold: 0.4,
@@ -77,6 +83,15 @@ class GameScene extends Scene {
 
     this.mapFiltered = new Container();
     this.mapFiltered.sortableChildren = true;
+
+    // particles
+    // dash animation
+
+    const dashAnimContainer = new Container();
+    this.mapFiltered.addChild(dashAnimContainer);
+    const bubbleTexture = Texture.from(ANIMATION_ASSETS_PATH + "bubble.png");
+    const dashEmitter = new Emitter(dashAnimContainer, bubbleTexture, DASH_ANIMATION.CONFIG_3);
+    this.dashAnimManager = new DashAnimManager(this.gameEngine, dashEmitter);
 
     // map
     const mapRender = new MapRender(this.gameEngine);
@@ -124,7 +139,7 @@ class GameScene extends Scene {
     }
 
     // main player render
-    const mainPlayerRender = new PlayerRender(this.mainPlayer, this.id);
+    const mainPlayerRender = new PlayerRender(this.mainPlayer, this.id, this.dashAnimManager, this.viewport);
     mainPlayerRender.container.zIndex = 10;
     this.add(mainPlayerRender, false);
     this.mapFiltered.addChild(mainPlayerRender.container);
@@ -191,7 +206,7 @@ class GameScene extends Scene {
     const player = this.gameEngine.getPlayer(id);
     if (!player) {
       const player = this.gameEngine.addPlayer(id, state.isLeft);
-      const playerRender = new PlayerRender(player, id, 0x0099cc);
+      const playerRender = new PlayerRender(player, id, this.dashAnimManager, this.viewport, 0x0099cc);
       this.add(playerRender, false);
       this.mapFiltered.addChild(playerRender.container);
     }

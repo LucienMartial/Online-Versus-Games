@@ -12,10 +12,12 @@ import { GameProps } from "./components/Game";
 import { Assets } from "@pixi/assets";
 import { Client, Room } from "colyseus.js";
 import { useAuth } from "./hooks/useAuth";
+import LoadingPage from "./components/LoadingPage";
 
 const Game = lazy(() => import("./components/Game"));
 const Login = lazy(() => import("./components/Login"));
 const Register = lazy(() => import("./components/Register"));
+const Page404 = lazy(() => import("./components/Page404"));
 
 // websocket endpoint
 const COLYSEUS_ENDPOINT =
@@ -81,7 +83,7 @@ function App() {
 
   // still loading
   if (!loaded || isAuth === null) {
-    return <p>Loading.. </p>;
+    return <LoadingPage />;
   }
 
   const renderDefault = () => {
@@ -110,13 +112,13 @@ function App() {
 
   return (
     <Router>
-      <Suspense fallback={<p>Loading.. </p>}>
+      <Suspense fallback={<LoadingPage />}>
         <Routes>
           <Route path="/" element={renderDefault()} />
           <Route path="/login" element={renderLogin()} />
           <Route path="/register" element={<Register />} />
           <Route path="/game" element={renderGame()} />
-          <Route path="*" element={<Navigate to={"/"} />} />
+          <Route path="*" element={<Page404 />} />
         </Routes>
       </Suspense>
     </Router>

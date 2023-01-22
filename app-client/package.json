@@ -15,6 +15,7 @@
     "framer-motion": "^8.5.0",
     "i": "^0.3.7",
     "npm": "^9.3.1",
+    "pixi-particles": "^4.3.1",
     "pixi-viewport": "^4.38.0",
     "pixi.js": "^6.5.8",
     "react": "^18.2.0",
