@@ -15,6 +15,10 @@ router.get("/", (req: Request, res: Response) => {
   res.json(msg);
 });
 
+router.get("/game-info", (req: Request, res: Response) => {
+  console.log("request received for game info");
+});
+
 router.use(handleAppError);
 
 export default router;

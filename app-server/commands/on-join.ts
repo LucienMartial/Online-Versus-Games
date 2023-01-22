@@ -14,6 +14,8 @@ interface Data {
 
 class OnJoinCommand extends Command<GameRoom, Data> {
   execute({ maxInputs, client, gameEngine } = this.payload) {
+    // new client joined
+    this.room.nbClient += 1;
     console.log("client joined", client.id);
     client.userData = {
       inputBuffer: new CBuffer<InputsData>(maxInputs),
@@ -30,6 +32,14 @@ class OnJoinCommand extends Command<GameRoom, Data> {
     const playerState = new PlayerState();
     playerState.sync(player);
     this.state.players.set(client.id, playerState);
+
+    // check if game can start
+    if (this.room.nbClient < this.room.maxClients) return;
+
+    // start game
+    this.clock.setTimeout(() => {
+      this.room.gameEngine.startGame();
+    }, 2000);
   }
 }
 

@@ -8,6 +8,7 @@ import { SyncTimerState } from "./sync-timer-state.js";
  * Game data on the server, shared with each clients
  */
 class GameState extends Schema {
+  @type("boolean") paused = true;
   @type("number") leftScore = 0;
   @type("number") rigthScore = 0;
   @type(SyncTimerState) respawnTimer = new SyncTimerState();
@@ -16,6 +17,7 @@ class GameState extends Schema {
   @type({ map: "number" }) lastInputs = new MapSchema<number>();
 
   sync(engine: DiscWarEngine) {
+    this.paused = engine.paused;
     this.leftScore = engine.leftScore;
     this.rigthScore = engine.rightScore;
     this.respawnTimer.sync(engine.respawnTimer);

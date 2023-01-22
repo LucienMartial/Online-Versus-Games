@@ -193,6 +193,11 @@ class GameScene extends Scene {
       }
       this.predictor.synchronize(state, Date.now());
     });
+
+    // error with room
+    this.room.onError((code, message) => {
+      console.log("error occured: ", code, message);
+    });
   }
 
   /**

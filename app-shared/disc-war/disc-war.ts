@@ -30,6 +30,7 @@ class DiscWarEngine extends GameEngine {
   isServer: boolean;
   leftScore: number;
   rightScore: number;
+  paused: boolean;
 
   constructor(isServer = false, playerId = "") {
     super();
@@ -37,6 +38,7 @@ class DiscWarEngine extends GameEngine {
     this.isServer = isServer;
     this.leftScore = 0;
     this.rightScore = 0;
+    this.paused = true;
 
     // map
     const map = new Map(WORLD_WIDTH, WORLD_HEIGHT);
@@ -58,6 +60,7 @@ class DiscWarEngine extends GameEngine {
   }
 
   sync(state: GameState) {
+    this.paused = state.paused;
     // scores
     this.leftScore = state.leftScore;
     this.rightScore = state.rigthScore;
@@ -77,6 +80,22 @@ class DiscWarEngine extends GameEngine {
         player.setPosition(playerState.x, playerState.y);
       }
     }
+  }
+
+  // start the game
+  startGame() {
+    // choose random player
+    const players = Array.from(this.get<Player>("players").values());
+    const randomPlayer = players[Math.floor(Math.random() * players.length)];
+
+    // give him the disc
+    const disc = this.getOne<Disc>("disc");
+    disc.attach(randomPlayer);
+
+    // timer before the game start
+    this.respawnTimer.timeout(200, () => {
+      this.paused = false;
+    });
   }
 
   // Player
@@ -143,7 +162,7 @@ class DiscWarEngine extends GameEngine {
   // Input / update
 
   processInput(inputs: Inputs, id: string): void {
-    if (this.respawnTimer.active) return;
+    if (this.paused || this.respawnTimer.active) return;
     const player = this.getById<Player>("players", id);
     if (!player || player.isDead) return;
     player.processInput(inputs);
@@ -153,6 +172,8 @@ class DiscWarEngine extends GameEngine {
   step(dt: number): void {
     // timers
     this.respawnTimer.update();
+
+    if (this.paused) return;
 
     for (const player of this.get<Player>("players")) {
       player.update(dt);

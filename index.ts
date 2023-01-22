@@ -22,13 +22,12 @@ const app = express();
 const port = process.env.PORT || 3000;
 const server = http.createServer(app);
 
-app.use(
-  cookieSession({
-    name: "session",
-    keys: ["key1", "key2"],
-    maxAge: 10 * 60 * 1000, // 10 minutes
-  })
-);
+const session = cookieSession({
+  name: "session",
+  keys: ["key1", "key2"],
+  maxAge: 10 * 60 * 1000, // 10 minutes
+});
+app.use(session);
 
 app.use(express.json());
 app.use(express.static("dist"));
@@ -42,6 +41,9 @@ app.get("/*", (req, res) => {
 // game server
 const gameServer = new Server({
   transport: new WebSocketTransport({
+    verifyClient: (info, next) => {
+      session(info.req as any, {} as any, () => next(true));
+    },
     server: server,
   }),
 });

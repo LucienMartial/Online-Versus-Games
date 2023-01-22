@@ -10,6 +10,7 @@ import {
 } from "./commands/index.js";
 import { InputsData } from "../app-shared/types/index.js";
 import { CBuffer } from "../app-shared/utils/cbuffer.js";
+import { Request } from "express";
 
 // maximum number of inputs saved for each client
 const MAX_INPUTS = 50;
@@ -25,13 +26,16 @@ class GameRoom extends Room<GameState> {
   gameEngine: DiscWarEngine;
   leftId: string | null;
   rightId: string | null;
+  nbClient: number;
 
   onCreate() {
     this.maxClients = 2;
+    this.nbClient = 0;
     this.leftId = null;
     this.rightId = null;
     this.setState(new GameState());
     this.gameEngine = new DiscWarEngine(true);
+    this.gameEngine.paused = true;
     this.setSimulationInterval((dt: number) => this.update(dt), 1000 / 60);
     this.setPatchRate(20);
 
@@ -58,8 +62,11 @@ class GameRoom extends Room<GameState> {
   }
 
   // verify token, etc..
-  async onAuth(client: Client) {
-    console.log("client authentication");
+  async onAuth(client: Client, options: unknown, request: Request) {
+    // check if authentified
+    if (!request.session.authenticated) return false;
+    console.log(request.session);
+    console.log("client authenticated");
     return true;
   }
 
@@ -71,10 +78,10 @@ class GameRoom extends Room<GameState> {
     });
   }
 
-  onLeave(client: Client) {
+  async onLeave(client: Client, consented: boolean) {
     this.dispatcher.dispatch(new OnLeaveCommand(), {
       client: client,
-      gameEngine: this.gameEngine,
+      consented: consented,
     });
   }
 
