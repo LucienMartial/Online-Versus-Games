@@ -22,7 +22,7 @@ class DashAnimManager {
   }
 
   newDashAnim(x: number, y: number) {
-    if (!this.activatable || this.gameEngine.reenact) return;
+    if (!this.activatable) return;
 
     this.dashEmitter.emit = true;
     this.dashEmitter.updateOwnerPos(x, y);
