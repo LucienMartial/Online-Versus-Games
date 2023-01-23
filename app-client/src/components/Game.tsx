@@ -5,11 +5,30 @@ import { Viewport } from "pixi-viewport";
 import "./Game.css";
 import { GameScene } from "../game/game";
 import { Client, Room } from "colyseus.js";
-import { GameState } from "../../../app-shared/state/game-state";
 import { WORLD_WIDTH, WORLD_HEIGHT } from "../../../app-shared/utils/constants";
 import GameUI from "./GameUI";
 import EndScreen from "./EndScreen";
-import { EndGameState } from "../../../app-shared/state";
+import { EndGameState, GameState } from "../../../app-shared/state";
+import { Assets } from "@pixi/assets";
+
+// assets information
+const manifest = {
+  bundles: [
+    {
+      name: "basic",
+      assets: [
+        {
+          name: "character",
+          srcs: "/character.png",
+        },
+        {
+          name: "bubble",
+          srcs: "../assets/animations/bubble.png",
+        },
+      ],
+    },
+  ],
+};
 
 export interface GameProps {
   client: Client;
@@ -22,7 +41,9 @@ function Game({ client, gameRoom }: GameProps) {
   const [gameScene, setGameScene] = useState<GameScene | undefined>();
   const [endGameState, setEndGameState] = useState<EndGameState>();
 
-  useEffect(() => {
+  const load = async () => {
+    await Assets.init({ manifest: manifest });
+
     const app = new Application({
       view: canvasRef.current!,
       resolution: window.devicePixelRatio || 1,
@@ -81,6 +102,10 @@ function Game({ client, gameRoom }: GameProps) {
 
     // end of game
     gameRoom.onMessage("end-game", (state: EndGameState) => {
+      ticker.stop();
+      console.log("leave");
+      gameRoom.removeAllListeners();
+      gameRoom.leave();
       setEndGameState(state);
     });
 
@@ -90,6 +115,10 @@ function Game({ client, gameRoom }: GameProps) {
       app.destroy();
       window.removeEventListener("resize", resize);
     };
+  };
+
+  useEffect(() => {
+    load();
   }, []);
 
   // end of game?
