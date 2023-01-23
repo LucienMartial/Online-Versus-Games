@@ -1,4 +1,4 @@
-import React, { useEffect, useState, Suspense, lazy } from "react";
+import { useEffect, useState, Suspense, lazy } from "react";
 import {
   BrowserRouter as Router,
   Routes,
@@ -54,26 +54,28 @@ function App() {
 
   const initAssetsManifest = async () => {
     await Assets.init({ manifest: manifest });
-    setLoaded(true);
   };
 
   let client: Client;
   let gameRoom: Room;
 
   const initClient = async () => {
+    await initAssetsManifest();
     client = new Client(COLYSEUS_ENDPOINT);
 
-    let gameRoom: Room;
-
     // try to reconnect to current game
-    const gameInfo = localStorage.getItem("game-info");
     try {
       console.log("try to reconnect");
+
+      const gameInfo = localStorage.getItem("game-info");
       if (!gameInfo) throw new Error("now game info");
-      const data = JSON.parse(gameInfo);
+      let data = JSON.parse(gameInfo);
       console.log("reconnection with ", data);
+
       gameRoom = await client.reconnect(data.roomId, data.sessionId);
+
       setGameData({ client: client, gameRoom: gameRoom });
+      setLoaded(true);
       console.log("reconnected successfuly");
       return;
     } catch (e) {}
@@ -89,6 +91,7 @@ function App() {
 
       // ui data
       setGameData({ client: client, gameRoom: gameRoom });
+      setLoaded(true);
       console.log("joined a game successfully");
     } catch (e) {
       console.error("join error", e);
@@ -97,8 +100,13 @@ function App() {
 
   useEffect(() => {
     fetchData();
-    initAssetsManifest();
   }, []);
+
+  useEffect(() => {
+    console.log("auth:", isAuth);
+    if (isAuth === false) setLoaded(true);
+    console.log("loaded:", loaded, "auth", isAuth);
+  }, [isAuth]);
 
   useEffect(() => {
     if (started && isAuth) initClient();
@@ -124,7 +132,6 @@ function App() {
   };
 
   const renderGame = () => {
-    console.log(isAuth);
     if (!isAuth) {
       return <Navigate to={"/login"} />;
     }

@@ -6,7 +6,6 @@ import {
   WORLD_WIDTH,
   Inputs,
   SyncTimer,
-  GAME_RATE,
 } from "../utils/index.js";
 import { Map, Player, Disc } from "./index.js";
 
@@ -20,6 +19,7 @@ const PLAYER_RIGHT_POS = new SAT.Vector(
 
 // times
 const RESPAWN_DURATION = 2 * 60;
+const START_DURATION = 3 * 60;
 
 /**
  * Game logic for disc war
@@ -89,23 +89,28 @@ class DiscWarEngine extends GameEngine {
     const randomPlayer = players[Math.floor(Math.random() * players.length)];
 
     // give him the disc
-    const disc = this.getOne<Disc>("disc");
+    const disc = this.getDisc();
     disc.attach(randomPlayer);
 
     // timer before the game start
-    this.respawnTimer.timeout(200, () => {
+    this.respawnTimer.timeout(START_DURATION, () => {
       this.paused = false;
     });
+  }
+
+  // Disc
+
+  getDisc(): Disc {
+    return this.getOne<Disc>("disc");
   }
 
   // Player
 
   addPlayer(id: string, isLeft: boolean): Player {
     const isPuppet = !(this.isServer || id === this.playerId);
-    const disc = this.getOne<Disc>("disc");
+    const disc = this.getDisc();
     const player = new Player(id, isPuppet, this.playerDie.bind(this), disc);
     player.isLeft = isLeft;
-
     this.initPlayer(player);
     this.add("players", player);
     return player;
@@ -114,13 +119,15 @@ class DiscWarEngine extends GameEngine {
   initPlayer(player: Player) {
     if (player.isLeft) player.setPosition(PLAYER_LEFT_POS.x, PLAYER_LEFT_POS.y);
     else player.setPosition(PLAYER_RIGHT_POS.x, PLAYER_RIGHT_POS.y);
+    player.counterCooldownTimer.reset();
+    player.counterTimer.reset();
   }
 
   removePlayer(id: string) {
     const player = this.getPlayer(id);
     if (!player) return;
     if (player.possesDisc) {
-      const disc = this.getOne<Disc>("disc");
+      const disc = this.getDisc();
       disc.detach();
       disc.setPosition(DISC_POSITION.x, DISC_POSITION.y);
       disc.setVelocity(DISC_VELOCITY.x, DISC_VELOCITY.y);
@@ -134,7 +141,7 @@ class DiscWarEngine extends GameEngine {
 
   async playerDie(player: Player) {
     // disc in center
-    const disc = this.getOne<Disc>("disc");
+    const disc = this.getDisc();
     disc.reset();
     disc.setPosition(DISC_POSITION.x, DISC_POSITION.y);
     disc.setVelocity(0, 0);
@@ -147,8 +154,6 @@ class DiscWarEngine extends GameEngine {
     // reset players position
     for (const player of this.get<Player>("players")) {
       this.initPlayer(player);
-      player.counterCooldownTimer.reset();
-      player.counterTimer.reset();
     }
 
     // make player alive, launch ball
@@ -163,7 +168,7 @@ class DiscWarEngine extends GameEngine {
 
   processInput(inputs: Inputs, id: string): void {
     if (this.paused || this.respawnTimer.active) return;
-    const player = this.getById<Player>("players", id);
+    const player = this.getPlayer(id);
     if (!player || player.isDead) return;
     player.processInput(inputs);
   }
@@ -172,9 +177,9 @@ class DiscWarEngine extends GameEngine {
   step(dt: number): void {
     // timers
     this.respawnTimer.update();
-
     if (this.paused) return;
 
+    // update players
     for (const player of this.get<Player>("players")) {
       player.update(dt);
     }
@@ -183,7 +188,7 @@ class DiscWarEngine extends GameEngine {
     this.physicEngine.step(dt);
 
     // disc
-    const disc = this.getOne<Disc>("disc");
+    const disc = this.getDisc();
     disc.update(dt);
   }
 }

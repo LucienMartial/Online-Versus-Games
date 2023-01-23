@@ -4,27 +4,39 @@ import { db } from "../../index.js";
 
 const router = Router({ mergeParams: true });
 
-router.post("/login", (req: Request, res: Response, next: NextFunction) => {
-  console.log("login request");
-  // already connected
-  if (req.session.authenticated) {
-    res.statusMessage = "Already logged in";
-    return res.status(200).end();
+router.post(
+  "/login",
+  async (req: Request, res: Response, next: NextFunction) => {
+    console.log("login request");
+
+    // already connected
+    if (req.session.authenticated) {
+      res.statusMessage = "Already logged in";
+      return res.status(200).end();
+    }
+
+    // missing information
+    if (!req.body.username || !req.body.password) {
+      throw new AppError(400, "Missing username or password");
+    }
+
+    // password matching with registered one
+    try {
+      const match = await db.matchPassword(
+        req.body.username,
+        req.body.password
+      );
+      // not matching
+      if (!match) throw new AppError(400, "Invalid user or password");
+      // matching
+      req.session.authenticated = true;
+      res.statusMessage = "Login successful";
+      return res.status(200).end();
+    } catch (e) {
+      next();
+    }
   }
-  if (!req.body.username || !req.body.password) {
-    throw new AppError(400, "Missing username or password");
-  }
-  db.matchPassword(req.body.username, req.body.password)
-    .then((match) => {
-      if (match) {
-        req.session.authenticated = true;
-        res.statusMessage = "Login successful";
-        return res.status(200).end();
-      }
-      throw new AppError(400, "Invalid user or password");
-    })
-    .catch(next);
-});
+);
 
 router.get("/cookie-checker", (req: Request, res: Response) => {
   console.log("request received for /api/cookie-checker : " + req.session);

@@ -9,13 +9,17 @@ class OnLeaveCommand extends Command<
   { client: Client; consented: boolean }
 > {
   async execute({ client, consented } = this.payload) {
-    console.log("player leaved", client.id);
-
-    // this.state.players.get(client.sessionId).connected = false;
-    console.log(this.room.nbClient);
     this.room.nbClient -= 1;
 
-    // end of game
+    console.log(
+      "player leaved",
+      client.id,
+      "room",
+      this.room.roomId,
+      "nb players remaining",
+      this.room.nbClient
+    );
+    // this.state.players.get(client.sessionId).connected = false;
 
     // try to reconnect
     try {
@@ -25,11 +29,13 @@ class OnLeaveCommand extends Command<
       await this.room.allowReconnection(client, RECONNECTION_TIME);
       console.log("client reconnected sucessfuly", client.id);
       this.room.nbClient += 1;
+
       // this.state.players.get(client.sessionId).connected = true;
     } catch (e) {
       // could not reconnect
       this.room.gameEngine.removePlayer(client.id);
       this.state.players.delete(client.id);
+      console.log("client could not reconnect", e);
 
       // player left or right
       if (client.id === this.room.leftId) {
