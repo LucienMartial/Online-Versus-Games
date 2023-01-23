@@ -85,7 +85,7 @@ function App() {
 
   const renderGame = () => {
     if (!isAuth) return <Navigate to={"/login"} />;
-    if (!client || !gameRoom) return <Navigate to={"/home"} />;
+    if (!client || !gameRoom) return <p>Could not find a room.<br/>This account may already be in a room, check your other tabs.</p>;
     return <Game client={client} gameRoom={gameRoom} />;
   };
 
