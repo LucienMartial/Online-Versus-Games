@@ -23,7 +23,7 @@ function Privacy() {
         <h2>Collected data</h2>
         <p>
           We are automatically collecting the following data based on your prior
-          consentment:
+          consentment.
           <ul>
             <li>Data about the played games.</li>
             <li>Data about the preference and settings of the user.</li>

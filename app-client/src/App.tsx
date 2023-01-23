@@ -18,6 +18,7 @@ const Register = lazy(() => import("./components/Register"));
 const Home = lazy(() => import("./components/Home"));
 const Page404 = lazy(() => import("./components/Page404"));
 const Privacy = lazy(() => import("./components/Privacy"));
+const Acknowledgement = lazy(() => import("./components/Acknowledgement"));
 
 function App() {
   const [loaded, setLoaded] = useState(false);
@@ -98,6 +99,7 @@ function App() {
           <Route path="/register" element={<Register />} />
           <Route path="/game" element={renderGame()} />
           <Route path="/privacy" element={<Privacy />} />
+          <Route path="/acknowledgment" element={<Acknowledgement />} />
           <Route path="*" element={<Page404 />} />
         </Routes>
       </Suspense>

@@ -1,4 +1,5 @@
 import { StrictMode } from "react";
+import { Link } from "react-router-dom";
 import "./style.scss";
 
 interface HomeProps {
@@ -11,6 +12,14 @@ function Home({ tryConnection }: HomeProps) {
       <main>
         <h1>Home</h1>
         <button onClick={() => tryConnection()}>Play</button>
+        <footer>
+          <Link to={"/privacy"} className={"link"}>
+            Privacy Policy
+          </Link>
+          <Link to={"/acknowledgment"} className={"link"}>
+            Acknowledgment
+          </Link>
+        </footer>
       </main>
     </StrictMode>
   );
