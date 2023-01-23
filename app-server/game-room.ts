@@ -1,7 +1,7 @@
 import { Dispatcher } from "@colyseus/command";
 import { Client, Room } from "colyseus";
 import { DiscWarEngine } from "../app-shared/disc-war/disc-war.js";
-import { GameState } from "../app-shared/state/index.js";
+import { EndGameState, GameState } from "../app-shared/state/index.js";
 import {
   OnJoinCommand,
   OnLeaveCommand,
@@ -18,6 +18,8 @@ interface UserData {
   inputBuffer: CBuffer<InputsData>;
 }
 
+const MAX_DEATH = 3;
+
 /**
  * Server room for the disc war game
  */
@@ -27,17 +29,28 @@ class GameRoom extends Room<GameState> {
   leftId: string | null;
   rightId: string | null;
   nbClient: number;
+  maxDeath: number;
 
   onCreate() {
     this.maxClients = 2;
+    this.maxDeath = MAX_DEATH;
     this.nbClient = 0;
     this.leftId = null;
     this.rightId = null;
     this.setState(new GameState());
     this.gameEngine = new DiscWarEngine(true);
+    this.gameEngine.maxDeath = this.maxDeath;
     this.gameEngine.paused = true;
     this.setSimulationInterval((dt: number) => this.update(dt), 1000 / 60);
     this.setPatchRate(20);
+
+    // end of game
+    this.gameEngine.onEndGame = () => {
+      for (const client of this.clients) {
+        const state = new EndGameState(this.gameEngine, client, this);
+        client.send("end-game", state);
+      }
+    };
 
     // register event
     this.onMessage("*", (client, type, message) => {

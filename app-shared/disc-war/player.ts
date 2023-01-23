@@ -24,6 +24,10 @@ const COUNTER_COOLDOWN = 3 * 60;
 
 class Player extends BodyEntity {
   private isPuppet: boolean;
+
+  // stats
+  deathCounter: number;
+
   disc: Disc;
   direction: SAT.Vector;
   dashForce: SAT.Vector;
@@ -47,6 +51,9 @@ class Player extends BodyEntity {
     const collisionShape = new BoxShape(WIDTH, HEIGHT);
     super(collisionShape, false, id);
     this.setOffset(WIDTH / 2, HEIGHT / 2);
+
+    // stat
+    this.deathCounter = 0;
 
     // custom
     this.disc = disc;

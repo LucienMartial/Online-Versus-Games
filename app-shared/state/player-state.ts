@@ -12,6 +12,8 @@ class PlayerState extends Schema {
   @type(SyncTimerState) dashCooldownTimer = new SyncTimerState();
   @type(SyncTimerState) counterTimer = new SyncTimerState();
   @type(SyncTimerState) counterCooldownTimer = new SyncTimerState();
+  // stat
+  @type("number") deathCounter = 0;
 
   constructor() {
     super();

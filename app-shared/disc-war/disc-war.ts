@@ -32,6 +32,10 @@ class DiscWarEngine extends GameEngine {
   rightScore: number;
   paused: boolean;
 
+  // end of game
+  onEndGame?: { (): void };
+  maxDeath: number;
+
   constructor(isServer = false, playerId = "") {
     super();
     this.playerId = playerId;
@@ -80,6 +84,12 @@ class DiscWarEngine extends GameEngine {
         player.setPosition(playerState.x, playerState.y);
       }
     }
+  }
+
+  // end the game
+  endGame() {
+    this.paused = true;
+    this.onEndGame?.();
   }
 
   // start the game
@@ -148,8 +158,14 @@ class DiscWarEngine extends GameEngine {
 
     // player
     player.isDead = true;
+    player.deathCounter += 1;
     if (player.isLeft) this.leftScore += 1;
     else this.rightScore += 1;
+
+    // only on server
+    if (this.isServer && player.deathCounter >= this.maxDeath) {
+      this.endGame();
+    }
 
     // reset players position
     for (const player of this.get<Player>("players")) {

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useEffect, useRef } from "react";
-import { Application, Rectangle, Ticker } from "pixi.js";
+import { Application, Ticker } from "pixi.js";
 import { Viewport } from "pixi-viewport";
 import "./Game.css";
 import { GameScene } from "../game/game";
@@ -8,6 +8,8 @@ import { Client, Room } from "colyseus.js";
 import { GameState } from "../../../app-shared/state/game-state";
 import { WORLD_WIDTH, WORLD_HEIGHT } from "../../../app-shared/utils/constants";
 import GameUI from "./GameUI";
+import EndScreen from "./EndScreen";
+import { EndGameState } from "../../../app-shared/state";
 
 export interface GameProps {
   client: Client;
@@ -18,6 +20,7 @@ function Game({ client, gameRoom }: GameProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const guiRef = useRef<HTMLDivElement>(null);
   const [gameScene, setGameScene] = useState<GameScene | undefined>();
+  const [endGameState, setEndGameState] = useState<EndGameState>();
 
   useEffect(() => {
     const app = new Application({
@@ -50,7 +53,6 @@ function Game({ client, gameRoom }: GameProps) {
     const smoothingFrames = 10;
 
     let smoothedFrameDuration = 0;
-
     ticker.add((dt) => {
       smoothedFrameDuration =
         (smoothedFrameDuration * (smoothingFrames - 1) + dt) / smoothingFrames;
@@ -77,6 +79,11 @@ function Game({ client, gameRoom }: GameProps) {
     resize();
     window.addEventListener("resize", resize);
 
+    // end of game
+    gameRoom.onMessage("end-game", (state: EndGameState) => {
+      setEndGameState(state);
+    });
+
     // on unmount
     return () => {
       viewport.destroy();
@@ -84,6 +91,11 @@ function Game({ client, gameRoom }: GameProps) {
       window.removeEventListener("resize", resize);
     };
   }, []);
+
+  // end of game?
+  if (endGameState && gameScene) {
+    return <EndScreen gameScene={gameScene} endGameState={endGameState} />;
+  }
 
   return (
     <main id="game">
