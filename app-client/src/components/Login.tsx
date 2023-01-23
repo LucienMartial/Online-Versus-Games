@@ -73,6 +73,9 @@ function Login({ setLoggedIn }: LoginProps) {
               Create an account
             </Link>
           </p>
+          <Link to={"/privacy"} className={"link"}>
+            Privacy Policy
+          </Link>
         </form>
       </div>
     </React.StrictMode>
