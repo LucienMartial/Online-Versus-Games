@@ -30,6 +30,7 @@ router.post(
       if (!match) throw new AppError(400, "Invalid user or password");
       // matching
       req.session.authenticated = true;
+      req.session.username = req.body.username;
       res.statusMessage = "Login successful";
       return res.status(200).end();
     } catch (e) {

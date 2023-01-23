@@ -30,6 +30,7 @@ class GameRoom extends Room<GameState> {
   rightId!: string | null;
   nbClient!: number;
   maxDeath!: number;
+  clientsMap: Map<Client, string> = new Map();
 
   onCreate() {
     this.maxClients = 2;
@@ -78,6 +79,11 @@ class GameRoom extends Room<GameState> {
   async onAuth(client: Client, options: unknown, request: Request) {
     // check if authentified
     if (!request.session || !request.session.authenticated) return false;
+    // check if already in a room
+    for (let value of this.clientsMap.values()) {
+        if (value === request.session.username) return false;
+    }
+    this.clientsMap.set(client, request.session.username);
     console.log(request.session);
     console.log("client authenticated");
     return true;
@@ -92,6 +98,7 @@ class GameRoom extends Room<GameState> {
   }
 
   async onLeave(client: Client, consented: boolean) {
+    this.clientsMap.delete(client);
     this.dispatcher.dispatch(new OnLeaveCommand(), {
       client: client,
       consented: consented,

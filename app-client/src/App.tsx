@@ -47,6 +47,7 @@ function App() {
   const [started, setStarted] = useState(true); // dev: true
   const [gameData, setGameData] = useState<GameProps>();
   const [isLoggedIn, setLoggedIn] = useState(false);
+  const [joinFailed, setJoinFailed] = useState(false);
   const isAuth = useAuth([isLoggedIn]);
 
   const fetchData = async () => {
@@ -98,7 +99,8 @@ function App() {
       setLoaded(true);
       console.log("joined a game successfully");
     } catch (e) {
-      console.error("join error", e);
+      // join failed (username in a game)
+      setJoinFailed(true);
     }
   };
 
@@ -117,9 +119,10 @@ function App() {
   }, [started, isAuth]);
 
   // still loading
-  if (!loaded || isAuth === null) {
+  // TODO : move initClient to game component
+ /* if (!loaded || isAuth === null) {
     return <LoadingPage />;
-  }
+  }*/
 
   const renderDefault = () => {
     if (!isAuth) {
@@ -138,6 +141,9 @@ function App() {
   const renderGame = () => {
     if (!isAuth) {
       return <Navigate to={"/login"} />;
+    }
+    if (joinFailed) {
+      return <p>Failed to join a game.<br />This account may already be in a game, please check your other tabs.</p>
     }
     if (gameData) {
       return <Game {...gameData} />;
