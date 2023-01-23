@@ -28,7 +28,14 @@ function PlayerRow({
 function EndScreen({ gameScene, endGameState }: EndScreenProps) {
   const listPlayers = [...Object.entries(endGameState.players)].map(
     ([id, state]) => {
-      return <PlayerRow id={id} player={state} himself={id === gameScene.id} />;
+      return (
+        <PlayerRow
+          key={id}
+          id={id}
+          player={state}
+          himself={id === gameScene.id}
+        />
+      );
     }
   );
 

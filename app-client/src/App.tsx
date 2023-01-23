@@ -13,6 +13,7 @@ import { Assets } from "@pixi/assets";
 import { Client, Room } from "colyseus.js";
 import { useAuth } from "./hooks/useAuth";
 import LoadingPage from "./components/LoadingPage";
+import { useGameConnect } from "./hooks/useGameConnect";
 
 const Game = lazy(() => import("./components/Game"));
 const Login = lazy(() => import("./components/Login"));
@@ -45,7 +46,6 @@ const manifest = {
 function App() {
   const [loaded, setLoaded] = useState(false);
   const [started, setStarted] = useState(true); // dev: true
-  const [gameData, setGameData] = useState<GameProps>();
   const [isLoggedIn, setLoggedIn] = useState(false);
   const isAuth = useAuth([isLoggedIn]);
 
@@ -60,45 +60,29 @@ function App() {
     await Assets.init({ manifest: manifest });
   };
 
-  let client: Client;
-  let gameRoom: Room;
+  // let client: Client;
+  // let gameRoom: Room;
+
+  const { gameRoom, client, tryReconnection, tryConnection } = useGameConnect();
 
   const initClient = async () => {
     await initAssetsManifest();
-    client = new Client(COLYSEUS_ENDPOINT);
 
-    // try to reconnect to current game
+    // try to reconnect
     try {
-      console.log("try to reconnect");
-
-      const gameInfo = localStorage.getItem("game-info");
-      if (!gameInfo) throw new Error("now game info");
-      let data = JSON.parse(gameInfo);
-      console.log("reconnection with ", data);
-
-      gameRoom = await client.reconnect(data.roomId, data.sessionId);
-
-      setGameData({ client: client, gameRoom: gameRoom });
+      await tryReconnection();
       setLoaded(true);
-      console.log("reconnected successfuly");
       return;
-    } catch (e) {}
-
-    // try to create or join a new game
-    try {
-      console.log("try to join");
-      gameRoom = await client.joinOrCreate("game");
-
-      // save for reconnection
-      const data = { roomId: gameRoom.id, sessionId: gameRoom.sessionId };
-      localStorage.setItem("game-info", JSON.stringify(data));
-
-      // ui data
-      setGameData({ client: client, gameRoom: gameRoom });
-      setLoaded(true);
-      console.log("joined a game successfully");
     } catch (e) {
-      console.error("join error", e);
+      console.log("failed to reconnect", e);
+    }
+
+    // join or create a game
+    try {
+      await tryConnection();
+      setLoaded(true);
+    } catch (e) {
+      console.log("failed to connect to a game", e);
     }
   };
 
@@ -139,8 +123,8 @@ function App() {
     if (!isAuth) {
       return <Navigate to={"/login"} />;
     }
-    if (gameData) {
-      return <Game {...gameData} />;
+    if (client && gameRoom) {
+      return <Game client={client} gameRoom={gameRoom} />;
     }
   };
 

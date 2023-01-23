@@ -81,6 +81,10 @@ function Game({ client, gameRoom }: GameProps) {
 
     // end of game
     gameRoom.onMessage("end-game", (state: EndGameState) => {
+      ticker.stop();
+      console.log("leave");
+      gameRoom.removeAllListeners();
+      gameRoom.leave();
       setEndGameState(state);
     });
 
