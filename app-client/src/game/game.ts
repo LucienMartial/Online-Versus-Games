@@ -39,7 +39,7 @@ class GameScene extends Scene {
   id: string;
   mapFiltered: Container;
   lastState?: GameState;
-  dashAnimManager: DashAnimManager;
+  dashAnimManager!: DashAnimManager;
 
   constructor(
     viewport: Viewport,
@@ -55,14 +55,6 @@ class GameScene extends Scene {
     this.predictor = new Predictor(this.gameEngine, this.id, room);
     this.mainPlayer = this.gameEngine.addPlayer(this.id, true);
     this.mapFiltered = new Container();
-    this.dashAnimManager = new DashAnimManager(
-      this.gameEngine,
-      new Emitter(
-        new Container(),
-        Texture.from(ANIMATION_ASSETS_PATH + "bubble.png"),
-        DASH_ANIMATION.CONFIG_1
-      )
-    );
   }
 
   /**
@@ -71,6 +63,12 @@ class GameScene extends Scene {
    */
   async load(): Promise<void> {
     const assets = await Assets.loadBundle("basic");
+
+    // particle effects
+    this.dashAnimManager = new DashAnimManager(
+      this.gameEngine,
+      new Emitter(new Container(), assets.bubble, DASH_ANIMATION.CONFIG_1)
+    );
 
     // filters
     const shockwaveManager = new ShockwaveManager(15, this.gameEngine);

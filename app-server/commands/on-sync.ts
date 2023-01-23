@@ -23,6 +23,7 @@ class OnSyncCommand extends Command<GameRoom, Data> {
     for (const player of gameEngine.get<Player>("players")) {
       // update state
       const playerState = this.state.players.get(player.id);
+      if (!playerState) continue;
       playerState.sync(player);
       this.state.players.set(player.id, playerState);
     }

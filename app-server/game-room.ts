@@ -25,11 +25,11 @@ const MAX_DEATH = 3;
  */
 class GameRoom extends Room<GameState> {
   dispatcher = new Dispatcher(this);
-  gameEngine: DiscWarEngine;
-  leftId: string | null;
-  rightId: string | null;
-  nbClient: number;
-  maxDeath: number;
+  gameEngine!: DiscWarEngine;
+  leftId!: string | null;
+  rightId!: string | null;
+  nbClient!: number;
+  maxDeath!: number;
 
   onCreate() {
     this.maxClients = 2;
@@ -77,7 +77,7 @@ class GameRoom extends Room<GameState> {
   // verify token, etc..
   async onAuth(client: Client, options: unknown, request: Request) {
     // check if authentified
-    if (!request.session.authenticated) return false;
+    if (!request.session || !request.session.authenticated) return false;
     console.log(request.session);
     console.log("client authenticated");
     return true;

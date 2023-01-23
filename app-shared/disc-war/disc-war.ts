@@ -43,6 +43,7 @@ class DiscWarEngine extends GameEngine {
     this.leftScore = 0;
     this.rightScore = 0;
     this.paused = true;
+    this.maxDeath = 0;
 
     // map
     const map = new Map(WORLD_WIDTH, WORLD_HEIGHT);

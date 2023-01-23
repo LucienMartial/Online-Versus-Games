@@ -33,6 +33,10 @@ const manifest = {
           name: "character",
           srcs: "/character.png",
         },
+        {
+          name: "bubble",
+          srcs: "../assets/animations/bubble.png",
+        },
       ],
     },
   ],
