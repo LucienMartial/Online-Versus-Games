@@ -1,15 +1,19 @@
 import bcrypt from "bcryptjs";
+import { Document, WithId } from "mongodb";
 import { Collection } from "mongodb";
 
 const saltRounds = 10;
 
 export default function (users: Collection) {
-  async function searchUser(username: string) {
+  async function searchUser(
+    username: string
+  ): Promise<WithId<Document> | null> {
     try {
       const query = { name: username };
       return await users.findOne(query);
     } catch (e) {
       if (e instanceof Error) console.log("user search error", e.message);
+      return null;
     }
   }
 
@@ -47,5 +51,5 @@ export default function (users: Collection) {
     return false;
   }
 
-  return { removeUser, createUser, matchPassword };
+  return { searchUser, removeUser, createUser, matchPassword };
 }

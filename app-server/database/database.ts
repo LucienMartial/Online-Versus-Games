@@ -1,4 +1,11 @@
-import { Collection, Db, InsertOneResult, MongoClient } from "mongodb";
+import {
+  Collection,
+  Db,
+  Document,
+  InsertOneResult,
+  MongoClient,
+  WithId,
+} from "mongodb";
 import { EndGameState } from "../../app-shared/state/end-game-state.js";
 import ClientMethods from "./db-user.js";
 import GameMethods, { Game } from "./db-game.js";
@@ -10,6 +17,7 @@ class Database {
   private games: Collection<Game>;
 
   // users
+  searchUser: (username: string) => Promise<WithId<Document> | undefined>;
   removeUser: (username: string) => Promise<boolean>;
   createUser: (
     username: string,
@@ -19,6 +27,7 @@ class Database {
 
   // games
   createGame: (state: EndGameState) => Promise<void>;
+  getGames: (username: string, skip: number, limit: number) => Promise<Game[]>;
 
   constructor() {
     if (process.env.MONGODB_URL === "") console.log("MONGODB URL is empty");
@@ -34,14 +43,18 @@ class Database {
     this.games = this.database.collection("games");
 
     // users
-    const { removeUser, createUser, matchPassword } = ClientMethods(this.users);
+    const { searchUser, removeUser, createUser, matchPassword } = ClientMethods(
+      this.users
+    );
+    this.searchUser = searchUser;
     this.removeUser = removeUser;
     this.createUser = createUser;
     this.matchPassword = matchPassword;
 
     // games
-    const { createGame } = GameMethods(this.games);
+    const { createGame, getGames } = GameMethods(this.games);
     this.createGame = createGame;
+    this.getGames = getGames;
   }
 
   async close() {
