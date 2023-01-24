@@ -1,4 +1,4 @@
-import { NextFunction, Request, Response, Router } from "express";
+import { Request, Response, Router } from "express";
 import { Database } from "../database/database.js";
 import { AppError } from "../utils/error.js";
 

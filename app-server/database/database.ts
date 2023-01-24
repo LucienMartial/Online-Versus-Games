@@ -21,10 +21,13 @@ class Database {
     this.users = this.database.collection("Users");
   }
 
+  private async removeUser(username: string) {
+    const query = { name: username };
+  }
+
   private async searchUser(username: string) {
     const query = { name: username };
     const user = await this.users.findOne(query);
-    console.log(user);
     return user;
   }
 

@@ -3,11 +3,13 @@ import { Message } from "../../app-shared/types/api-types.js";
 import { handleAppError } from "../utils/error.js";
 import LoginRouter from "./login.js";
 import RegisterRouter from "./register.js";
+import LogoutRemoveRouter from "./logout-remove.js";
 
 export default function (database: any): Router {
   const router = Router();
   router.use(LoginRouter(database));
   router.use(RegisterRouter(database));
+  router.use(LogoutRemoveRouter(database));
 
   router.get("/", (req: Request, res: Response) => {
     console.log("request received for /api");
@@ -16,10 +18,6 @@ export default function (database: any): Router {
       date: new Date().toString(),
     };
     res.json(msg);
-  });
-
-  router.get("/game-info", (req: Request, res: Response) => {
-    console.log("request received for game info");
   });
 
   router.use(handleAppError);
