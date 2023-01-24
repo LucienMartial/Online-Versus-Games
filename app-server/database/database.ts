@@ -22,22 +22,34 @@ class Database {
   }
 
   private async searchUser(username: string) {
-    const query = { name: username };
-    const user = await this.users.findOne(query);
-    return user;
+    try {
+      const query = { name: username };
+      return await this.users.findOne(query);
+    } catch (e) {
+      if (e instanceof Error) console.log("user search error", e.message);
+    }
   }
 
   async removeUser(username: string): Promise<boolean> {
-    const query = { name: username };
-    const res = await this.users.deleteOne(query);
-    return res && res.deletedCount === 1;
+    try {
+      const query = { name: username };
+      const res = await this.users.deleteOne(query);
+      return res && res.deletedCount === 1;
+    } catch (e) {
+      if (e instanceof Error) console.log("user deletion error", e.message);
+      return false;
+    }
   }
 
   async createUser(username: string, password: string) {
-    const salt = await bcrypt.genSalt(saltRounds);
-    const hash = await bcrypt.hash(password, salt);
-    const user = { name: username, password: hash };
-    return await this.users.insertOne(user);
+    try {
+      const salt = await bcrypt.genSalt(saltRounds);
+      const hash = await bcrypt.hash(password, salt);
+      const user = { name: username, password: hash };
+      return await this.users.insertOne(user);
+    } catch (e) {
+      if (e instanceof Error) console.log("user creation error", e.message);
+    }
   }
 
   async matchPassword(username: string, password: string): Promise<boolean> {

@@ -13,7 +13,9 @@ export default function (db: Database): Router {
     // try to create a user
     const response = await db.createUser(req.body.username, req.body.password);
     // register succeed
-    if (response.acknowledged) {
+    if (response && response.acknowledged) {
+      req.session.authenticated = true;
+      req.session.username = req.body.username;
       res.statusMessage = "User created";
       return res.status(200).end();
     }

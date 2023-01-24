@@ -8,9 +8,9 @@ import {
 import "./App.css";
 import { hello } from "../../app-shared/hello";
 import { Message } from "../../app-shared/types";
-import { useAuth } from "./hooks/useAuth";
 import LoadingPage from "./components/LoadingPage";
 import { useGameConnect } from "./hooks/useGameConnect";
+import useAccount from "./hooks/useAccount";
 
 const Game = lazy(() => import("./components/Game"));
 const Login = lazy(() => import("./components/Login"));
@@ -23,8 +23,8 @@ const Profile = lazy(() => import("./components/Profile"));
 
 function App() {
   const [loaded, setLoaded] = useState(false);
-  const [isLoggedIn, setLoggedIn] = useState(false);
-  const isAuth = useAuth([isLoggedIn]);
+  const { loggedIn, tryLogin, tryLogout, tryRegister, tryRemoveAccount } =
+    useAccount();
   const { gameRoom, client, tryReconnection, tryConnection } = useGameConnect();
 
   // fetch api data
@@ -55,11 +55,11 @@ function App() {
   }, [client]);
 
   useEffect(() => {
-    if (isAuth === false) setLoaded(true);
-  }, [isAuth]);
+    if (loggedIn === false) setLoaded(true);
+  }, [loggedIn]);
 
   // still loading
-  if (!loaded || isAuth === null) {
+  if (!loaded || loggedIn === null) {
     return <LoadingPage />;
   }
 
@@ -68,29 +68,40 @@ function App() {
   // if possible, else show home menu
 
   const renderDefault = () => {
-    if (!isAuth) return <Navigate to={"/login"} />;
+    if (!loggedIn) return <Navigate to={"/login"} />;
     if (client && gameRoom) return <Navigate to={"/game"} />;
     return <Navigate to={"/home"} />;
   };
 
   const renderHome = () => {
-    if (!isAuth) return <Navigate to={"/login"} />;
+    if (!loggedIn) return <Navigate to={"/login"} />;
     if (client && gameRoom) return <Navigate to={"/game"} />;
-    return <Home tryConnection={tryConnection} />;
+    return (
+      <Home
+        tryConnection={tryConnection}
+        tryLogout={tryLogout}
+        tryRemoveAccount={tryRemoveAccount}
+      />
+    );
   };
 
   const renderProfile = () => {
-    if (!isAuth) return <Navigate to={"/login"} />;
+    if (!loggedIn) return <Navigate to={"/login"} />;
     return <Profile />;
   };
 
   const renderLogin = () => {
-    if (isAuth) return <Navigate to={"/"} />;
-    return <Login setLoggedIn={setLoggedIn} />;
+    if (loggedIn) return <Navigate to={"/"} />;
+    return <Login tryLogin={tryLogin} />;
+  };
+
+  const renderRegister = () => {
+    if (loggedIn) return <Navigate to={"/"} />;
+    return <Register tryRegister={tryRegister} />;
   };
 
   const renderGame = () => {
-    if (!isAuth) return <Navigate to={"/login"} />;
+    if (!loggedIn) return <Navigate to={"/login"} />;
     if (!client || !gameRoom)
       return (
         <p>
@@ -110,7 +121,7 @@ function App() {
           <Route path="/home" element={renderHome()} />
           <Route path="profile" element={renderProfile()} />
           <Route path="/login" element={renderLogin()} />
-          <Route path="/register" element={<Register />} />
+          <Route path="/register" element={renderRegister()} />
           <Route path="/game" element={renderGame()} />
           <Route path="/privacy" element={<Privacy />} />
           <Route path="/acknowledgment" element={<Acknowledgement />} />

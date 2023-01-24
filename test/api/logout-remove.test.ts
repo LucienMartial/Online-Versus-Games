@@ -12,7 +12,7 @@ describe("GET /logout", () => {
   });
 
   it("already connected", async () => {
-    const req = withCookie(request(app).get("/api/logout"), {
+    const req = withCookie(request(app).post("/api/logout"), {
       authenticated: true,
     });
     const res = await req;
@@ -21,7 +21,7 @@ describe("GET /logout", () => {
   });
 
   it("not connected", async () => {
-    const res = await request(app).get("/api/logout");
+    const res = await request(app).post("/api/logout");
     expect(res.status).toEqual(400);
   });
 });
