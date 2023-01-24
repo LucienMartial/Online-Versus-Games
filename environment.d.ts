@@ -4,6 +4,8 @@ declare global {
       NODE_ENV: "development" | "production";
       PORT?: string;
       MONGODB_URL: string;
+      COOKIE_KEY_1: string;
+      COOKIE_KEY_2: string;
     }
   }
 }

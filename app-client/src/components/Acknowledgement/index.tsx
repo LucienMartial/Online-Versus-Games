@@ -27,7 +27,7 @@ function Acknowledgement() {
           <li>React, React router</li>
           <li>Framer motion</li>
           <li>Vite, Vitest, Sass, Supertest, ts-node</li>
-          <li>Express, @express cookie session</li>
+          <li>Express, @express cookie session, @express async error</li>
           <li>bcrypt, Dotenv</li>
           <li>MongoDB</li>
         </ul>

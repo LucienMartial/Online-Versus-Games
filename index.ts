@@ -26,7 +26,8 @@ process.on("exit", () => {
 });
 
 // express app
-const { app, session } = createApp(__dirname, db);
+const cookieKeys = [process.env.COOKIE_KEY_1, process.env.COOKIE_KEY_2];
+const { app, session } = createApp(cookieKeys, __dirname, db);
 const port = process.env.PORT || 3000;
 const server = http.createServer(app);
 

@@ -2,9 +2,9 @@ import { test, expect } from "vitest";
 import request from "supertest";
 import { hello } from "../app-shared/hello";
 import { Message } from "../app-shared/types";
-import { createApp } from "../app-server/app";
+import { initApp } from "./utils";
 
-const { app } = createApp("../", {});
+const app = initApp({});
 
 function sum(a: number, b: number) {
   return a + b;

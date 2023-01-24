@@ -1,9 +1,9 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { createApp } from "../app-server/app";
 import request from "supertest";
+import { initApp } from "../utils";
 
 const createUser = vi.fn();
-const { app } = createApp("../", { createUser });
+const app = initApp({ createUser });
 
 async function register(body: {
   username?: string;
@@ -20,9 +20,11 @@ describe("POST /register", () => {
   describe("user creation", () => {
     it("missing username or password", async () => {
       let res = await register({ username: "bob" });
-      expect(res.statusCode).toEqual(400);
+      expect(res.status).toEqual(400);
       res = await register({ password: "bob123" });
-      expect(res.statusCode).toEqual(400);
+      expect(res.status).toEqual(400);
+      res = await register({});
+      expect(res.status).toEqual(400);
     });
 
     it("valid username and password", async () => {
