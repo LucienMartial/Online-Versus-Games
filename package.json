@@ -30,6 +30,7 @@
     "cookie-session": "^2.0.0",
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
+    "express-async-errors": "^3.1.1",
     "mongodb": "4.13",
     "sat": "^0.9.0"
   }

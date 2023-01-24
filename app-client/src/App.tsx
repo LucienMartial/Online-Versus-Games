@@ -79,6 +79,11 @@ function App() {
     return <Home tryConnection={tryConnection} />;
   };
 
+  const renderProfile = () => {
+    if (!isAuth) return <Navigate to={"/login"} />;
+    return <Profile />;
+  };
+
   const renderLogin = () => {
     if (isAuth) return <Navigate to={"/"} />;
     return <Login setLoggedIn={setLoggedIn} />;
@@ -86,7 +91,14 @@ function App() {
 
   const renderGame = () => {
     if (!isAuth) return <Navigate to={"/login"} />;
-    if (!client || !gameRoom) return <p>Could not find a room.<br/>This account may already be in a room, check your other tabs.</p>;
+    if (!client || !gameRoom)
+      return (
+        <p>
+          Could not find a room.
+          <br />
+          This account may already be in a room, check your other tabs.
+        </p>
+      );
     return <Game client={client} gameRoom={gameRoom} />;
   };
 
@@ -96,7 +108,7 @@ function App() {
         <Routes>
           <Route path="/" element={renderDefault()} />
           <Route path="/home" element={renderHome()} />
-          <Route path="profile" element={<Profile />} />
+          <Route path="profile" element={renderProfile()} />
           <Route path="/login" element={renderLogin()} />
           <Route path="/register" element={<Register />} />
           <Route path="/game" element={renderGame()} />

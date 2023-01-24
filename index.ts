@@ -1,8 +1,13 @@
-import express from "express";
-import cookieSession from "cookie-session";
 import http from "http";
 import { Server } from "colyseus";
 import { WebSocketTransport } from "@colyseus/ws-transport";
+
+// dirname
+import { fileURLToPath } from "url";
+import { dirname } from "path";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 // environment
 import * as dotenv from "dotenv";
@@ -11,32 +16,19 @@ dotenv.config();
 import { hello } from "./app-shared/hello.js";
 hello();
 
-import { fileURLToPath } from "url";
-import { dirname } from "path";
+// database
+import { Database } from "./app-server/database/database.js";
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+const db = new Database();
+db.connect().then(() => console.log("connected to database"));
+process.on("exit", () => {
+  db.close().then(() => console.log("disconnected from database"));
+});
 
 // express app
-const app = express();
+const { app, session } = createApp(__dirname, db);
 const port = process.env.PORT || 3000;
 const server = http.createServer(app);
-
-const session = cookieSession({
-  name: "session",
-  keys: ["key1", "key2"],
-  maxAge: 10 * 60 * 1000, // 10 minutes
-});
-app.use(session);
-
-app.use(express.json());
-app.use(express.static("dist"));
-import apiRouter from "./app-server/api/api.js";
-app.use("/api", apiRouter);
-
-app.get("/*", (req, res) => {
-  res.sendFile(__dirname + "/index.html");
-});
 
 // game server
 const gameServer = new Server({
@@ -55,20 +47,9 @@ if (process.env.NODE_ENV !== "production") {
 
 // rooms
 import { GameRoom } from "./app-server/game-room.js";
+import { createApp } from "./app-server/app.js";
 gameServer.define("game", GameRoom);
 
 server.listen(port, () => {
   console.log(`local: http://localhost:${port}`);
 });
-
-// database
-import { Database } from "./app-server/database/database.js";
-
-const db = new Database();
-db.connect().then(() => console.log("connected to database"));
-
-process.on("exit", () => {
-  db.close().then(() => console.log("disconnected from database"));
-});
-
-export { app, db };
