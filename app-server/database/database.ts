@@ -21,14 +21,16 @@ class Database {
     this.users = this.database.collection("Users");
   }
 
-  private async removeUser(username: string) {
-    const query = { name: username };
-  }
-
   private async searchUser(username: string) {
     const query = { name: username };
     const user = await this.users.findOne(query);
     return user;
+  }
+
+  async removeUser(username: string): Promise<boolean> {
+    const query = { name: username };
+    const res = await this.users.deleteOne(query);
+    return res && res.deletedCount === 1;
   }
 
   async createUser(username: string, password: string) {

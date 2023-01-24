@@ -17,5 +17,19 @@ export default function (db: Database): Router {
     return res.status(200).end();
   });
 
+  router.post("/remove-account", async (req: Request, res: Response) => {
+    // not connected
+    if (!req.session.authenticated || !req.session.username) {
+      throw new AppError(400, "Not connected");
+    }
+    // remove user
+    const result = await db.removeUser(req.session.username);
+    if (!result) {
+      throw new AppError(400, "Could not remove user: " + req.session.username);
+    }
+    // succesfuly removed
+    return res.status(200).end();
+  });
+
   return router;
 }
