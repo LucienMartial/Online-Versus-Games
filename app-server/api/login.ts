@@ -1,6 +1,7 @@
 import { Request, Response, Router } from "express";
 import { Database } from "../database/database.js";
 import { AppError } from "../utils/error.js";
+import { saveSession } from "../utils/session.js";
 
 export default function (db: Database): Router {
   const router = Router({ mergeParams: true });
@@ -20,8 +21,7 @@ export default function (db: Database): Router {
     // not matching
     if (!match) throw new AppError(400, "Invalid user or password");
     // matching
-    req.session.authenticated = true;
-    req.session.username = req.body.username;
+    saveSession(req);
     res.statusMessage = "Login successful";
     return res.status(200).end();
   });

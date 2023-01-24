@@ -71,7 +71,11 @@ class GameScene extends Scene {
     );
 
     // filters
-    const shockwaveManager = new ShockwaveManager(15, this.gameEngine);
+    const shockwaveManager = new ShockwaveManager(
+      this.gameEngine,
+      this.viewport,
+      15
+    );
     const shockWaveFilters = shockwaveManager.exportShockwaves();
 
     this.stage.filters = [

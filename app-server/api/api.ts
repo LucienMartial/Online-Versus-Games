@@ -10,16 +10,6 @@ export default function (database: any): Router {
   router.use(LoginRouter(database));
   router.use(RegisterRouter(database));
   router.use(LogoutRemoveRouter(database));
-
-  router.get("/", (req: Request, res: Response) => {
-    console.log("request received for /api");
-    const msg: Message = {
-      content: "Hello World from API",
-      date: new Date().toString(),
-    };
-    res.json(msg);
-  });
-
   router.use(handleAppError);
   return router;
 }

@@ -10,6 +10,7 @@ class OnLeaveCommand extends Command<
 > {
   async execute({ client, consented } = this.payload) {
     this.room.nbClient -= 1;
+    this.room.clientsMap.delete(client.id);
 
     console.log(
       "player leaved",

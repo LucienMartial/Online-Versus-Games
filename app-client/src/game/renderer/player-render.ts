@@ -17,7 +17,13 @@ class PlayerRender extends RenderObject {
   viewports: Viewport;
   dashAnim: DashAnimManager;
 
-  constructor(player: Player, id: string, dashAnim: DashAnimManager, viewports: Viewport, color = DEFAULT_COLOR) {
+  constructor(
+    player: Player,
+    id: string,
+    dashAnim: DashAnimManager,
+    viewports: Viewport,
+    color = DEFAULT_COLOR
+  ) {
     super(id);
     const shape = player.collisionShape as BoxShape;
     this.player = player;

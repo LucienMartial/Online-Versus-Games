@@ -1,4 +1,5 @@
 import { ShockwaveFilter } from "@pixi/filter-shockwave";
+import { Viewport } from "pixi-viewport";
 import { Vector } from "sat";
 import { DiscWarEngine } from "../../../../app-shared/disc-war";
 
@@ -17,22 +18,24 @@ class ShockwaveManager {
   nbEffects: number;
   activeShockwaves: ShockwaveFilter[];
   inactiveShockWaves: ShockwaveFilter[];
-  starter: boolean;
-  lastPos: Vector;
   engine: DiscWarEngine;
+  viewport: Viewport;
 
-  constructor(nbEffects: number = DEFAULT_MIN_EFFECTS, engine: DiscWarEngine) {
+  constructor(
+    engine: DiscWarEngine,
+    viewport: Viewport,
+    nbEffects: number = DEFAULT_MIN_EFFECTS
+  ) {
     if (nbEffects < 2 || nbEffects > 10) {
       this.nbEffects = DEFAULT_MIN_EFFECTS;
     }
 
     this.engine = engine;
+    this.viewport = viewport;
 
     this.nbEffects = nbEffects;
     this.activeShockwaves = [];
     this.inactiveShockWaves = [];
-    this.starter = true;
-    this.lastPos = new Vector();
 
     for (let i = 0; i < this.nbEffects; i++) {
       const shockwave = new ShockwaveFilter();
@@ -65,23 +68,17 @@ class ShockwaveManager {
   ) {
     if (this.engine.reenact) return;
     const shockwave = this.inactiveShockWaves.pop();
-    console.log("new shockwave", posX, posY);
 
     if (shockwave) {
       shockwave.enabled = true;
       shockwave.time = 0;
       shockwave.center = [posX, posY];
-      shockwave.radius = radius;
-      shockwave.wavelength = wavelength;
+      shockwave.radius = radius * this.viewport.scale.y;
       shockwave.amplitude = amplitude;
+      shockwave.wavelength = wavelength;
       shockwave.brightness = brightness;
       this.activeShockwaves.push(shockwave);
     }
-
-    // this.starter = false;
-    // setTimeout(() => {
-    //   this.starter = true;
-    // }, 250);
   }
 
   update(dt: number) {

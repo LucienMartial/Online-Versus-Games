@@ -1,11 +1,25 @@
-import { useEffect, useState, StrictMode, FC } from "react";
+import {
+  useEffect,
+  useState,
+  StrictMode,
+  FC,
+  Dispatch,
+  useCallback,
+} from "react";
 import { GameScene } from "../../game/game";
-import { EndGamePlayerState, EndGameState } from "../../../../app-shared/state";
+import {
+  EndGamePlayerState,
+  EndGameState,
+  GameState,
+} from "../../../../app-shared/state";
 import "./style.scss";
+import { Link, useNavigate } from "react-router-dom";
+import { Room } from "colyseus.js";
 
 interface EndScreenProps {
   gameScene: GameScene;
   endGameState: EndGameState;
+  setGameRoom: Dispatch<Room<GameState> | undefined>;
 }
 
 function PlayerRow({
@@ -19,31 +33,42 @@ function PlayerRow({
 }) {
   return (
     <tr className={`player ${himself ? "himself" : ""}`}>
-      <th>{id}</th>
+      <th>{player.username}</th>
       <th>{player.deathCounter}</th>
     </tr>
   );
 }
 
-function EndScreen({ gameScene, endGameState }: EndScreenProps) {
-  const listPlayers = [...Object.entries(endGameState.players)].map(
-    ([id, state]) => {
-      return (
-        <PlayerRow
-          key={id}
-          id={id}
-          player={state}
-          himself={id === gameScene.id}
-        />
-      );
+function EndScreen({ gameScene, endGameState, setGameRoom }: EndScreenProps) {
+  const listPlayers: JSX.Element[] = [];
+  let victory = false;
+  [...Object.entries(endGameState.players)].forEach(([id, state]) => {
+    // current player
+    if (id === gameScene.id) {
+      victory = state.victory;
     }
-  );
+    // info for list of players
+    listPlayers.push(
+      <PlayerRow
+        key={id}
+        id={id}
+        player={state}
+        himself={id === gameScene.id}
+      />
+    );
+  });
+
+  const navigate = useNavigate();
+  const leaveGame = useCallback(() => {
+    navigate("/home");
+    setGameRoom(undefined);
+  }, []);
 
   return (
     <StrictMode>
-      <>
+      <main>
         <section>
-          <h1>{endGameState.victory ? "Victory" : "Defeat"}</h1>
+          <h1>{victory ? "Victory" : "Defeat"}</h1>
           <table>
             <thead>
               <tr>
@@ -54,7 +79,8 @@ function EndScreen({ gameScene, endGameState }: EndScreenProps) {
             <tbody>{listPlayers}</tbody>
           </table>
         </section>
-      </>
+        <button onClick={leaveGame}>Leave</button>
+      </main>
     </StrictMode>
   );
 }

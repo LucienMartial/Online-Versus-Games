@@ -84,6 +84,9 @@ class DiscWarEngine extends GameEngine {
       if (player.isDead || this.respawnTimer.active) {
         player.setPosition(playerState.x, playerState.y);
       }
+      // visual effect
+      if (playerState.dashTimer.active)
+        player.onDash?.(player.position.x, player.position.y);
     }
   }
 

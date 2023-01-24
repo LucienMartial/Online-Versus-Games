@@ -5,23 +5,29 @@ import { DiscWarEngine, Player } from "../disc-war/index.js";
 
 // stat
 class EndGamePlayerState extends Schema {
+  @type("string") username = "";
   @type("number") deathCounter = 0;
+  @type("boolean") victory = false;
 }
 
 class EndGameState extends Schema {
-  @type("boolean") victory = false;
-  @type("string") hello = "hey";
   @type({ map: EndGamePlayerState }) players =
     new MapSchema<EndGamePlayerState>();
 
-  constructor(engine: DiscWarEngine, client: Client, room: GameRoom) {
+  constructor(engine: DiscWarEngine, room: GameRoom) {
     super();
     for (const player of engine.get<Player>("players")) {
+      // player state
       const state = new EndGamePlayerState();
+      state.username = room.clientsMap.get(player.id) ?? "";
       state.deathCounter = player.deathCounter;
-      if (client.id === player.id && player.deathCounter !== room.maxDeath) {
-        this.victory = true;
+
+      // victory
+      if (player.deathCounter !== room.maxDeath) {
+        state.victory = true;
       }
+
+      // set player in map
       this.players.set(player.id, state);
     }
   }

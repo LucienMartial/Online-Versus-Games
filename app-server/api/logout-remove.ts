@@ -1,6 +1,7 @@
 import { Request, Response, Router } from "express";
 import { Database } from "../database/database.js";
 import { AppError } from "../utils/error.js";
+import { removeSesion } from "../utils/session.js";
 
 /**
  * Manage disconnection and remove of account
@@ -13,7 +14,7 @@ export default function (db: Database): Router {
     // not connected
     if (!req.session.authenticated) throw new AppError(400, "Not connected");
     // logout
-    req.session = null;
+    removeSesion(req);
     return res.status(200).end();
   });
 
@@ -28,7 +29,7 @@ export default function (db: Database): Router {
       throw new AppError(400, "Could not remove user: " + req.session.username);
     }
     // succesfuly removed
-    req.session = null;
+    removeSesion(req);
     return res.status(200).end();
   });
 

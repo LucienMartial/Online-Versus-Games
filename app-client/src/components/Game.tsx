@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { Dispatch, useState } from "react";
 import { useEffect, useRef } from "react";
 import { Application, Ticker } from "pixi.js";
 import { Viewport } from "pixi-viewport";
@@ -33,9 +33,10 @@ const manifest = {
 export interface GameProps {
   client: Client;
   gameRoom: Room<GameState>;
+  setGameRoom: Dispatch<Room<GameState> | undefined>;
 }
 
-function Game({ client, gameRoom }: GameProps) {
+function Game({ client, gameRoom, setGameRoom }: GameProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const guiRef = useRef<HTMLDivElement>(null);
   const [gameScene, setGameScene] = useState<GameScene | undefined>();
@@ -103,7 +104,6 @@ function Game({ client, gameRoom }: GameProps) {
     // end of game
     gameRoom.onMessage("end-game", (state: EndGameState) => {
       ticker.stop();
-      console.log("leave");
       gameRoom.removeAllListeners();
       gameRoom.leave();
       setEndGameState(state);
@@ -123,7 +123,13 @@ function Game({ client, gameRoom }: GameProps) {
 
   // end of game?
   if (endGameState && gameScene) {
-    return <EndScreen gameScene={gameScene} endGameState={endGameState} />;
+    return (
+      <EndScreen
+        gameScene={gameScene}
+        endGameState={endGameState}
+        setGameRoom={setGameRoom}
+      />
+    );
   }
 
   return (

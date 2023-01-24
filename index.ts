@@ -13,14 +13,13 @@ const __dirname = dirname(__filename);
 import * as dotenv from "dotenv";
 dotenv.config();
 
-import { hello } from "./app-shared/hello.js";
-hello();
-
 // database
 import { Database } from "./app-server/database/database.js";
 
 const db = new Database();
-db.connect().then(() => console.log("connected to database"));
+await db.connect();
+console.log("connected to database");
+
 process.on("exit", () => {
   db.close().then(() => console.log("disconnected from database"));
 });
@@ -49,7 +48,9 @@ if (process.env.NODE_ENV !== "production") {
 // rooms
 import { GameRoom } from "./app-server/game-room.js";
 import { createApp } from "./app-server/app.js";
-gameServer.define("game", GameRoom);
+gameServer.define("game", GameRoom, {
+  dbCreateGame: db.createGame,
+});
 
 server.listen(port, () => {
   console.log(`local: http://localhost:${port}`);

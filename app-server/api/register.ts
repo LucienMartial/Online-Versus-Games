@@ -1,6 +1,7 @@
 import { Request, Response, Router } from "express";
 import { Database } from "../database/database.js";
 import { AppError } from "../utils/error.js";
+import { saveSession } from "../utils/session.js";
 
 export default function (db: Database): Router {
   const router = Router({ mergeParams: true });
@@ -14,8 +15,7 @@ export default function (db: Database): Router {
     const response = await db.createUser(req.body.username, req.body.password);
     // register succeed
     if (response && response.acknowledged) {
-      req.session.authenticated = true;
-      req.session.username = req.body.username;
+      saveSession(req);
       res.statusMessage = "User created";
       return res.status(200).end();
     }

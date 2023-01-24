@@ -1,12 +1,24 @@
-import { Collection, Db, MongoClient } from "mongodb";
-import bcrypt from "bcryptjs";
-
-const saltRounds = 10;
+import { Collection, Db, InsertOneResult, MongoClient } from "mongodb";
+import { EndGameState } from "../../app-shared/state/end-game-state.js";
+import ClientMethods from "./db-user.js";
+import GameMethods, { Game } from "./db-game.js";
 
 class Database {
   private client: MongoClient;
   private database: Db;
   private users: Collection;
+  private games: Collection<Game>;
+
+  // users
+  removeUser: (username: string) => Promise<boolean>;
+  createUser: (
+    username: string,
+    password: string
+  ) => Promise<InsertOneResult<Document>>;
+  matchPassword: (username: string, password: string) => Promise<boolean>;
+
+  // games
+  createGame: (state: EndGameState) => Promise<void>;
 
   constructor() {
     if (process.env.MONGODB_URL === "") console.log("MONGODB URL is empty");
@@ -19,46 +31,17 @@ class Database {
     await this.client.connect();
     this.database = this.client.db("online-versus-game");
     this.users = this.database.collection("Users");
-  }
+    this.games = this.database.collection("games");
 
-  private async searchUser(username: string) {
-    try {
-      const query = { name: username };
-      return await this.users.findOne(query);
-    } catch (e) {
-      if (e instanceof Error) console.log("user search error", e.message);
-    }
-  }
+    // users
+    const { removeUser, createUser, matchPassword } = ClientMethods(this.users);
+    this.removeUser = removeUser;
+    this.createUser = createUser;
+    this.matchPassword = matchPassword;
 
-  async removeUser(username: string): Promise<boolean> {
-    try {
-      const query = { name: username };
-      const res = await this.users.deleteOne(query);
-      return res && res.deletedCount === 1;
-    } catch (e) {
-      if (e instanceof Error) console.log("user deletion error", e.message);
-      return false;
-    }
-  }
-
-  async createUser(username: string, password: string) {
-    try {
-      const salt = await bcrypt.genSalt(saltRounds);
-      const hash = await bcrypt.hash(password, salt);
-      const user = { name: username, password: hash };
-      return await this.users.insertOne(user);
-    } catch (e) {
-      if (e instanceof Error) console.log("user creation error", e.message);
-    }
-  }
-
-  async matchPassword(username: string, password: string): Promise<boolean> {
-    const user = await this.searchUser(username);
-    if (user && user.password) {
-      const hash = user.password;
-      return await bcrypt.compare(password, hash);
-    }
-    return false;
+    // games
+    const { createGame } = GameMethods(this.games);
+    this.createGame = createGame;
   }
 
   async close() {

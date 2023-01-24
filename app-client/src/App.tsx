@@ -6,7 +6,6 @@ import {
   Navigate,
 } from "react-router-dom";
 import "./App.css";
-import { hello } from "../../app-shared/hello";
 import { Message } from "../../app-shared/types";
 import LoadingPage from "./components/LoadingPage";
 import { useGameConnect } from "./hooks/useGameConnect";
@@ -25,19 +24,8 @@ function App() {
   const [loaded, setLoaded] = useState(false);
   const { loggedIn, tryLogin, tryLogout, tryRegister, tryRemoveAccount } =
     useAccount();
-  const { gameRoom, client, tryReconnection, tryConnection } = useGameConnect();
-
-  // fetch api data
-  const fetchData = async () => {
-    const res = await fetch("/api/");
-    const msg: Message = await res.json();
-    console.log(msg);
-    console.log(hello());
-  };
-
-  useEffect(() => {
-    fetchData();
-  }, []);
+  const { gameRoom, client, tryReconnection, tryConnection, setGameRoom } =
+    useGameConnect();
 
   // try to reconenct
   useEffect(() => {
@@ -110,7 +98,9 @@ function App() {
           This account may already be in a room, check your other tabs.
         </p>
       );
-    return <Game client={client} gameRoom={gameRoom} />;
+    return (
+      <Game client={client} gameRoom={gameRoom} setGameRoom={setGameRoom} />
+    );
   };
 
   return (

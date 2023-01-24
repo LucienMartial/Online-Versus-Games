@@ -20,6 +20,10 @@ interface UserData {
 
 const MAX_DEATH = 3;
 
+interface GameParams {
+  dbCreateGame: (state: EndGameState) => Promise<void>;
+}
+
 /**
  * Server room for the disc war game
  */
@@ -30,9 +34,9 @@ class GameRoom extends Room<GameState> {
   rightId!: string | null;
   nbClient!: number;
   maxDeath!: number;
-  clientsMap: Map<Client, string> = new Map();
+  clientsMap: Map<string, string> = new Map();
 
-  onCreate() {
+  onCreate({ dbCreateGame }: GameParams) {
     this.maxClients = 2;
     this.maxDeath = MAX_DEATH;
     this.nbClient = 0;
@@ -47,8 +51,9 @@ class GameRoom extends Room<GameState> {
 
     // end of game
     this.gameEngine.onEndGame = () => {
+      const state = new EndGameState(this.gameEngine, this);
+      dbCreateGame(state);
       for (const client of this.clients) {
-        const state = new EndGameState(this.gameEngine, client, this);
         client.send("end-game", state);
       }
     };
@@ -80,11 +85,12 @@ class GameRoom extends Room<GameState> {
     // check if authentified
     if (!request.session || !request.session.authenticated) return false;
     // check if already in a room
-    for (let value of this.clientsMap.values()) {
-        if (value === request.session.username) return false;
+    const username = request.session.username;
+    if (!username || this.clientsMap.has(request.session.username)) {
+      return false;
     }
-    this.clientsMap.set(client, request.session.username);
-    console.log(request.session);
+    // add username
+    this.clientsMap.set(client.id, request.session.username);
     console.log("client authenticated");
     return true;
   }
@@ -98,7 +104,6 @@ class GameRoom extends Room<GameState> {
   }
 
   async onLeave(client: Client, consented: boolean) {
-    this.clientsMap.delete(client);
     this.dispatcher.dispatch(new OnLeaveCommand(), {
       client: client,
       consented: consented,

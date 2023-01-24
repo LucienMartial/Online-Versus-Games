@@ -1,8 +1,6 @@
 import { DiscWarEngine } from "../../../../app-shared/disc-war";
 import { Emitter } from "pixi-particles";
 
-const EFFECT_SPEED = 1;
-
 class DashAnimManager {
   gameEngine: DiscWarEngine;
   dashEmitter: Emitter;
@@ -23,7 +21,6 @@ class DashAnimManager {
 
   newDashAnim(x: number, y: number) {
     if (!this.activatable) return;
-
     this.dashEmitter.emit = true;
     this.dashEmitter.updateOwnerPos(x, y);
     this.dashEmitter.autoUpdate = true;
@@ -32,13 +29,6 @@ class DashAnimManager {
       this.resetAnimations();
     });
     this.activatable = false;
-  }
-
-  update(dt: number) {
-    // usless because autoupdate is true
-    if (this.dashEmitter.emit) {
-      this.dashEmitter.update(dt * EFFECT_SPEED);
-    }
   }
 }
 

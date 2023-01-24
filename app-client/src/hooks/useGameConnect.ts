@@ -71,7 +71,7 @@ function useGameConnect() {
     }
   }, [client]);
 
-  return { gameRoom, client, tryReconnection, tryConnection };
+  return { gameRoom, client, tryReconnection, tryConnection, setGameRoom };
 }
 
 export { useGameConnect };
