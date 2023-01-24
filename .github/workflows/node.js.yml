@@ -21,6 +21,4 @@ jobs:
           cache: "npm"
       - run: npm run deploy
       - name: tests
-        env:
-          MONGODB_URL: ${{ secrets.MONGODB_URL }}
         run: npm run test
