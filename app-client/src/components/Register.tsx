@@ -62,6 +62,7 @@ export default function Register({ tryRegister }: RegisterProps) {
             required={false}
             onChange={(e) => setPassword2(e.target.value)}
           />
+          <p><input type={"checkbox"} id={"privacyCheckbox"} className={"w-4 h-4 rounded accent-themelighter mx-2"} required={true}/><label htmlFor={"privacyCheckbox"}>I have read and accept the <AppLink to={"/privacy"}>privacy policy</AppLink></label></p>
           {invalidPassword && <AppError>Passwords must match</AppError>}
           {registerError && <AppError>{registerError}</AppError>}
           <button type="submit" className={"bg-themelight"}>Register</button>
