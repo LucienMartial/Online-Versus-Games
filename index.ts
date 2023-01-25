@@ -42,7 +42,7 @@ const gameServer = new Server({
 
 if (process.env.NODE_ENV !== "production") {
   // simulate 200ms latency between server and client.
-  // gameServer.simulateLatency(200);
+  gameServer.simulateLatency(200);
 }
 
 // rooms

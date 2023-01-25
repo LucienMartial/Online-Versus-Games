@@ -4,14 +4,14 @@ import { Vector } from "sat";
 import { DiscWarEngine } from "../../../../app-shared/disc-war";
 
 const DEFAULT_MIN_EFFECTS = 7;
-const MAX_TIME_SHOCKWAVE = 1.2;
-const SHOCKWAVE_SPEED = 8;
+const MAX_TIME_SHOCKWAVE = 0.75;
+const SHOCKWAVE_SPEED = 18;
 
 const DEFAULT_WAVE_PARAMS = {
-  RADIUS: 100,
-  WAVELENGTH: 200,
-  AMPLITUDE: 25,
-  BRIGHTNESS: 1.2,
+  RADIUS: 80,
+  WAVELENGTH: 150,
+  AMPLITUDE: 20,
+  BRIGHTNESS: 1,
 };
 
 class ShockwaveManager {

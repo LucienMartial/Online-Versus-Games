@@ -48,12 +48,12 @@ function ChatContainer({ chatRoom }: ChatContainerProperties) {
   return (
     <StrictMode>
       <main>
-        <section className="chatOutline">
-          <h1> Chat </h1>
-          <section ref={chatBoxRef} className="chatBox">
+        <section className="chatMessage chatOutline">
+          <h1>Tell the love to your opponent</h1>
+          <section ref={chatBoxRef} className="chatMessage chatBox">
             {renderChatElements()}
           </section>
-          <section className="chatInput">
+          <section className="chatMessage chatInput">
             <form action="" onSubmit={submitMessage}>
               <input
                 ref={inputReference}

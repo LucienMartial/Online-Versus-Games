@@ -8,23 +8,29 @@ interface ChatMessageProperties {
 }
 
 function ChatMessage({ message }: ChatMessageProperties) {
+  function timeFormat(time: number) {
+    return time < 10 ? "0" + time : time;
+  }
+
   const username = useContext(UserContext);
   return (
     <StrictMode>
       <div
         className={
-          message.sender === username ? "self-message" : "other-message"
+          message.sender === username
+            ? "chatMessage self-message"
+            : "chatMessage other-message"
         }
       >
-        <section>
-          <p>From {message.sender === username ? "me" : message.sender}</p>
-          <br />
+        <section className="chatMessage informations">
           <p>
-            At {message.date.getHours()}:{message.date.getMinutes()}
+            From {message.sender === username ? "me" : message.sender} at{" "}
+            {timeFormat(message.date.getHours())}:
+            {timeFormat(message.date.getMinutes())}
           </p>
           <br />
         </section>
-        <section>{message.content}</section>
+        <section className="chatMessage content">{message.content}</section>
       </div>
     </StrictMode>
   );

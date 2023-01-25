@@ -5,7 +5,7 @@ import {
   EndGameState,
   GameState,
 } from "../../../../app-shared/state";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import ChatContainer from "../chat-components/ChatContainer";
 import { Room } from "colyseus.js";
 
