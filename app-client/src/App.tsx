@@ -5,7 +5,6 @@ import {
   Route,
   Navigate,
 } from "react-router-dom";
-import "./App.css";
 import { Message } from "../../app-shared/types";
 import LoadingPage from "./components/LoadingPage";
 import { useGameConnect } from "./hooks/useGameConnect";
