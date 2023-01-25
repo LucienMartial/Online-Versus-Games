@@ -46,8 +46,8 @@ if (process.env.NODE_ENV !== "production") {
 }
 
 // rooms
-import { GameRoom } from "./app-server/game-room.js";
 import { createApp } from "./app-server/app.js";
+import { GameRoom } from "./app-server/game-room.js";
 gameServer.define("game", GameRoom, {
   dbCreateGame: db.createGame,
 });

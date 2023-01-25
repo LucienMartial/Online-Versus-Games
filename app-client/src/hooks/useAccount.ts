@@ -80,7 +80,7 @@ async function postRemove(): Promise<postRes> {
  */
 
 interface useAccountRes {
-  loggedIn: boolean;
+  loggedIn: boolean | null;
   tryLogin: (username: string, password: string) => Promise<void>;
   tryLogout: () => Promise<void>;
   tryRegister: (username: string, password: string) => Promise<void>;
@@ -88,7 +88,7 @@ interface useAccountRes {
 }
 
 function useAccount(): useAccountRes {
-  const [loggedIn, setLoggedIn] = useState(false);
+  const [loggedIn, setLoggedIn] = useState<boolean | null>(null);
 
   const tryLogin = useCallback(async (username: string, password: string) => {
     const { success, message } = await postLogin(username, password);
