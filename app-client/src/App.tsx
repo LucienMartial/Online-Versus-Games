@@ -46,7 +46,7 @@ function App() {
   }, [loggedIn]);
 
   // still loading
-  if (!loaded || loggedIn === null) {
+  if (!loaded) {
     return <LoadingPage />;
   }
 
