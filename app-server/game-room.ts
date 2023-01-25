@@ -92,7 +92,8 @@ class GameRoom extends Room<GameState> {
     if (!request.session || !request.session.authenticated) return false;
     // check if already in a room
     const username = request.session.username;
-    if (!username || this.clientsMap.has(request.session.username)) {
+    const alreadyExist = [...this.clientsMap.values()].includes(username);
+    if (!username || alreadyExist) {
       return false;
     }
     // add username
