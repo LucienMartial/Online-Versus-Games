@@ -9,7 +9,10 @@ interface AppLinkProps {
 function AppLink({ to, children }: AppLinkProps) {
   return (
     <StrictMode>
-      <Link to={to} className="text-blue-400 decoration-0 font-bold cursor-pointer hover:text-blue-700">
+      <Link
+        to={to}
+        className="text-blue-300 decoration-0 font-semibold cursor-pointer hover:text-blue-400"
+      >
         {children}
       </Link>
     </StrictMode>

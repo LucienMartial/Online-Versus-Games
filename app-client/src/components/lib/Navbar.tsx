@@ -10,7 +10,7 @@ function Navbar({ tryLogout }: NavbarProps) {
 
   return (
     <StrictMode>
-      <header className="flex justify-between p-2 bg-blue-900">
+      <header className="flex justify-between p-2 border-b-2 border-slate-700">
         <button onClick={() => navigate("/home")}>Home</button>
         <section className="flex gap-3">
           <button onClick={() => navigate("/profile")}>Profile</button>

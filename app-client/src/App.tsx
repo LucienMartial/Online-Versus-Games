@@ -16,7 +16,7 @@ const Home = lazy(() => import("./components/user/Home"));
 const Page404 = lazy(() => import("./components/Page404"));
 const Privacy = lazy(() => import("./components/static-pages/Privacy"));
 const Acknowledgement = lazy(
-  () => import("./components/static-pages/Acknowledgement")
+  () => import("./components/static-pages/Acknowledgment")
 );
 const Profile = lazy(() => import("./components/user/Profile"));
 
