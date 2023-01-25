@@ -75,7 +75,7 @@ function App() {
 
   const renderProfile = () => {
     if (!loggedIn) return <Navigate to={"/login"} />;
-    return <Profile />;
+    return <Profile tryLogout={tryLogout} />;
   };
 
   const renderLogin = () => {
