@@ -124,6 +124,7 @@ function App() {
             <Route path="/" element={renderDefault()} />
             <Route path="/home" element={renderHome()} />
             <Route path="profile" element={renderProfile()} />
+            <Route path="history" element={renderHistory()} />
             <Route path="/login" element={renderLogin()} />
             <Route path="/register" element={renderRegister()} />
             <Route path="/game" element={renderGame()} />
