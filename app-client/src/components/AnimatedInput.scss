@@ -17,10 +17,10 @@
     outline: none;
     background: transparent;
     border: 1px solid $border-color;
-    font-size: 2em;
+    font-size: 1.5em;
     border-radius: 8px;
 
-    &:is(:focus,:not(:placeholder-shown)) + .movingLabel {
+    &:is(:focus, :not(:placeholder-shown)) + .movingLabel {
       top: 0;
     }
 

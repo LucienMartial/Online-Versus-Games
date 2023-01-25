@@ -5,7 +5,6 @@ import {
   Route,
   Navigate,
 } from "react-router-dom";
-import { Message } from "../../app-shared/types";
 import LoadingPage from "./components/LoadingPage";
 import { useGameConnect } from "./hooks/useGameConnect";
 import useAccount from "./hooks/useAccount";
@@ -26,7 +25,7 @@ function App() {
   const { gameRoom, client, tryReconnection, tryConnection, setGameRoom } =
     useGameConnect();
 
-  // try to reconenct
+  // try to reconnect
   useEffect(() => {
     if (!client) return;
     const load = async () => {
@@ -42,11 +41,12 @@ function App() {
   }, [client]);
 
   useEffect(() => {
+    console.log(loggedIn);
     if (loggedIn === false) setLoaded(true);
   }, [loggedIn]);
 
   // still loading
-  if (!loaded) {
+  if (!loaded || loggedIn === null) {
     return <LoadingPage />;
   }
 
@@ -89,10 +89,7 @@ function App() {
 
   const renderGame = () => {
     if (!loggedIn) return <Navigate to={"/login"} />;
-    if (!client || !gameRoom)
-      return (
-        <Navigate to={"/home"} />
-      );
+    if (!client || !gameRoom) return <Navigate to={"/home"} />;
     return (
       <Game client={client} gameRoom={gameRoom} setGameRoom={setGameRoom} />
     );

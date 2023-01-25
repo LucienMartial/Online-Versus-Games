@@ -1,12 +1,12 @@
-$body-color: #0A2647;
+$body-color: #0f172a; //#0A2647;
 $border-color: #144272;
-$text-color: #FFF;
+$text-color: #fff;
 $light-color: #205295;
-$lighter-color: #2C74B3;
+$lighter-color: #2c74b3;
 
-@mixin absoluteCenter{
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+@mixin absoluteCenter {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }

@@ -10,7 +10,7 @@ function Privacy() {
     <StrictMode>
       <div>
         <article className="prose prose-invert prose-lg py-8 pb-12">
-          <AppLink to="home">Back Home</AppLink>
+          <AppLink to="/home">Back Home</AppLink>
           <h1>Privacy Policy</h1>
           <h2>What is this website</h2>
           <p>

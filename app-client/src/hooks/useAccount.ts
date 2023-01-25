@@ -122,6 +122,7 @@ function useAccount(): useAccountRes {
     const load = async () => {
       const res = await checkAuth();
       if (res) setLoggedIn(true);
+      else setLoggedIn(false);
     };
     load();
   }, []);
