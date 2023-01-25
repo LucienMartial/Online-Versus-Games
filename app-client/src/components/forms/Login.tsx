@@ -2,6 +2,7 @@ import React from "react";
 import AnimatedInput from "./AnimatedInput";
 import AppLink from "../lib/AppLink";
 import AppError from "./AppError";
+import Footer from "../lib/Footer";
 
 interface LoginProps {
   tryLogin: (username: string, password: string) => Promise<void>;
@@ -26,11 +27,11 @@ function Login({ tryLogin }: LoginProps) {
 
   return (
     <React.StrictMode>
-      <div className={"login"}>
+      <div className="flex flex-col w-screen justify-between">
         <form
           action=""
           onSubmit={login}
-          className={"h-screen flex justify-center items-center flex-col gap-8"}
+          className={"flex grow justify-center items-center flex-col gap-8"}
         >
           <h1>WELCOME !</h1>
           <AnimatedInput
@@ -57,11 +58,8 @@ function Login({ tryLogin }: LoginProps) {
             No account yet ?{" "}
             <AppLink to={"/register"}>Create an account</AppLink>
           </p>
-          <footer>
-            <AppLink to={"/privacy"}>Privacy Policy</AppLink>
-            <AppLink to={"/acknowledgment"}>Acknowledgment</AppLink>
-          </footer>
         </form>
+        <Footer />
       </div>
     </React.StrictMode>
   );

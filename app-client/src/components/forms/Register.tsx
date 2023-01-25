@@ -2,6 +2,7 @@ import React from "react";
 import AnimatedInput from "./AnimatedInput";
 import AppLink from "../lib/AppLink";
 import AppError from "./AppError";
+import Footer from "../lib/Footer";
 // TODO: checkbox stating that the user agree to the privacy policy
 // TODO: footer component
 
@@ -34,64 +35,59 @@ export default function Register({ tryRegister }: RegisterProps) {
   };
 
   return (
-    <>
-      <div className={"register"}>
-        <form
-          action=""
-          onSubmit={register}
-          className={"h-screen flex justify-center items-center flex-col gap-8"}
-        >
-          <h1>Create an account</h1>
-          <AnimatedInput
-            type={"text"}
-            id={"username"}
-            label={"Username"}
-            autofocus={true}
+    <div className="flex flex-col w-screen justify-between">
+      <form
+        action=""
+        onSubmit={register}
+        className={"flex grow justify-center items-center flex-col gap-8"}
+      >
+        <h1>Create an account</h1>
+        <AnimatedInput
+          type={"text"}
+          id={"username"}
+          label={"Username"}
+          autofocus={true}
+          required={true}
+          onChange={(e) => setUsername(e.target.value)}
+        />
+        <AnimatedInput
+          type={"password"}
+          label={"Password"}
+          id={"password"}
+          autofocus={false}
+          required={false}
+          onChange={(e) => setPassword(e.target.value)}
+        />
+        <AnimatedInput
+          type={"password"}
+          label={"Confirm your password"}
+          id={"password2"}
+          autofocus={false}
+          required={false}
+          onChange={(e) => setPassword2(e.target.value)}
+        />
+        <p>
+          <input
+            type={"checkbox"}
+            id={"privacyCheckbox"}
+            className={"w-4 h-4 rounded accent-themelighter mx-2"}
             required={true}
-            onChange={(e) => setUsername(e.target.value)}
           />
-          <AnimatedInput
-            type={"password"}
-            label={"Password"}
-            id={"password"}
-            autofocus={false}
-            required={false}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-          <AnimatedInput
-            type={"password"}
-            label={"Confirm your password"}
-            id={"password2"}
-            autofocus={false}
-            required={false}
-            onChange={(e) => setPassword2(e.target.value)}
-          />
-          <p>
-            <input
-              type={"checkbox"}
-              id={"privacyCheckbox"}
-              className={"w-4 h-4 rounded accent-themelighter mx-2"}
-              required={true}
-            />
-            <label htmlFor={"privacyCheckbox"}>
-              I have read and accept the{" "}
-              <AppLink to={"/privacy"}>privacy policy</AppLink>
-            </label>
-          </p>
-          {invalidPassword && <AppError>Passwords must match</AppError>}
-          {registerError && <AppError>{registerError}</AppError>}
-          <button type="submit" className={"bg-themelight"}>
-            Register
-          </button>
-          <p>
-            Already have an account ? <AppLink to={"/login"}>Login</AppLink>
-          </p>
-          <footer>
-            <AppLink to={"/privacy"}>Privacy Policy</AppLink>
-            <AppLink to={"/acknowledgment"}>Acknowledgment</AppLink>
-          </footer>
-        </form>
-      </div>
-    </>
+          <label htmlFor={"privacyCheckbox"}>
+            I have read and accept the{" "}
+            <AppLink to={"/privacy"}>privacy policy</AppLink>
+          </label>
+        </p>
+        {invalidPassword && <AppError>Passwords must match</AppError>}
+        {registerError && <AppError>{registerError}</AppError>}
+        <button type="submit" className={"bg-themelight"}>
+          Register
+        </button>
+        <p>
+          Already have an account ? <AppLink to={"/login"}>Login</AppLink>
+        </p>
+      </form>
+      <Footer />
+    </div>
   );
 }
