@@ -1,4 +1,4 @@
-import { useEffect, useState, Suspense, lazy, createContext } from "react";
+import {useEffect, useState, Suspense, lazy, createContext} from "react";
 import {
   BrowserRouter as Router,
   Routes,
@@ -6,7 +6,7 @@ import {
   Navigate,
 } from "react-router-dom";
 import LoadingPage from "./components/LoadingPage";
-import { useGameConnect } from "./hooks/useGameConnect";
+import {useGameConnect} from "./hooks/useGameConnect";
 import useAccount from "./hooks/useAccount";
 
 const Game = lazy(() => import("./components/game/Game"));
@@ -16,7 +16,7 @@ const Home = lazy(() => import("./components/user/Home"));
 const Page404 = lazy(() => import("./components/Page404"));
 const Privacy = lazy(() => import("./components/static-pages/Privacy"));
 const Acknowledgement = lazy(
-  () => import("./components/static-pages/Acknowledgment")
+    () => import("./components/static-pages/Acknowledgment")
 );
 const Profile = lazy(() => import("./components/user/Profile"));
 const History = lazy(() => import("./components/user/History"));
@@ -27,15 +27,13 @@ const UserContext = createContext({});
 function App() {
   const [username, setUsername] = useState("Hacker");
   const [loaded, setLoaded] = useState(false);
-  const { loggedIn, tryLogin, tryLogout, tryRegister, tryRemoveAccount } =
-    useAccount();
-  const { gameRoom, client, tryReconnection, tryConnection, setGameRoom } =
-    useGameConnect();
+  const {loggedIn, tryLogin, tryLogout, tryRegister, tryRemoveAccount} =
+      useAccount();
+  const {gameRoom, client, tryReconnection, tryConnection, setGameRoom} =
+      useGameConnect();
 
   // try to reconnect
   useEffect(() => {
-    const usernameLocalStorage = localStorage.getItem("username") ?? "hacker";
-    setUsername(usernameLocalStorage);
 
     if (!client) return;
     const load = async () => {
@@ -50,6 +48,12 @@ function App() {
     load();
   }, [client]);
 
+  // change local storage every connection/disconnection
+  useEffect(() => {
+    const usernameLocalStorage = localStorage.getItem("username") ?? "hacker";
+    setUsername(usernameLocalStorage);
+  }, [loggedIn])
+
   useEffect(() => {
     console.log(loggedIn);
     if (loggedIn === false) setLoaded(true);
@@ -57,7 +61,7 @@ function App() {
 
   // still loading
   if (!loaded || loggedIn === null) {
-    return <LoadingPage />;
+    return <LoadingPage/>;
   }
 
   // If not auth, show login page
@@ -65,78 +69,79 @@ function App() {
   // if possible, else show home menu
 
   const renderDefault = () => {
-    if (!loggedIn) return <Navigate to={"/login"} />;
-    if (client && gameRoom) return <Navigate to={"/game"} />;
-    return <Navigate to={"/home"} />;
+    if (!loggedIn) return <Navigate to={"/login"}/>;
+    if (client && gameRoom) return <Navigate to={"/game"}/>;
+    return <Navigate to={"/home"}/>;
   };
 
   // Login locked page
 
   const renderHome = () => {
-    if (!loggedIn) return <Navigate to={"/login"} />;
-    if (client && gameRoom) return <Navigate to={"/game"} />;
+    if (!loggedIn) return <Navigate to={"/login"}/>;
+    if (client && gameRoom) return <Navigate to={"/game"}/>;
     return (
-      <Home
-        tryConnection={tryConnection}
-        tryLogout={tryLogout}
-        tryRemoveAccount={tryRemoveAccount}
-      />
+        <Home
+            tryConnection={tryConnection}
+            tryLogout={tryLogout}
+            tryRemoveAccount={tryRemoveAccount}
+        />
     );
   };
 
   const renderGame = () => {
-    if (!loggedIn) return <Navigate to={"/login"} />;
-    if (!client || !gameRoom) return <Navigate to={"/home"} />;
+    if (!loggedIn) return <Navigate to={"/login"}/>;
+    if (!client || !gameRoom) return <Navigate to={"/home"}/>;
     return (
-      <Game client={client} gameRoom={gameRoom} setGameRoom={setGameRoom} />
+        <Game client={client} gameRoom={gameRoom} setGameRoom={setGameRoom}/>
     );
   };
 
   // TODO: profile dependant on login info
 
   const renderProfile = () => {
-    if (!loggedIn) return <Navigate to={"/login"} />;
-    return <Profile tryLogout={tryLogout} />;
+    if (!loggedIn) return <Navigate to={"/login"}/>;
+    return <Profile tryLogout={tryLogout}/>;
   };
 
   const renderHistory = () => {
-    if (!loggedIn) return <Navigate to={"/login"} />;
-    return <History tryLogout={tryLogout} />;
+    if (!loggedIn) return <Navigate to={"/login"}/>;
+    return <History tryLogout={tryLogout}/>;
   };
 
   // free access page
 
   const renderLogin = () => {
-    if (loggedIn) return <Navigate to={"/"} />;
-    return <Login tryLogin={tryLogin} />;
+    if (loggedIn) return <Navigate to={"/"}/>;
+    return <Login tryLogin={tryLogin}/>;
   };
 
   const renderRegister = () => {
-    if (loggedIn) return <Navigate to={"/"} />;
-    return <Register tryRegister={tryRegister} />;
+    if (loggedIn) return <Navigate to={"/"}/>;
+    return <Register tryRegister={tryRegister}/>;
   };
 
   return (
-    <UserContext.Provider value={username}>
-      <Router>
-        <Suspense fallback={<LoadingPage />}>
-          <Routes>
-            <Route path="/" element={renderDefault()} />
-            <Route path="/home" element={renderHome()} />
-            <Route path="profile" element={renderProfile()} />
-            <Route path="history" element={renderHistory()} />
-            <Route path="/login" element={renderLogin()} />
-            <Route path="/register" element={renderRegister()} />
-            <Route path="/game" element={renderGame()} />
-            <Route path="/privacy" element={<Privacy />} />
-            <Route path="/acknowledgment" element={<Acknowledgement />} />
-            <Route path="*" element={<Page404 />} />
-          </Routes>
-        </Suspense>
-      </Router>
-    </UserContext.Provider>
+      <UserContext.Provider value={username}>
+        <Router>
+          <Suspense fallback={<LoadingPage/>}>
+            <Routes>
+              <Route path="/" element={renderDefault()}/>
+              <Route path="/home" element={renderHome()}/>
+              <Route path="/profile" element={renderProfile()}/>
+              <Route path="/history" element={<Navigate to={`/history/${username}`}/>}/>
+              <Route path="/history/:username" element={renderHistory()}/>
+              <Route path="/login" element={renderLogin()}/>
+              <Route path="/register" element={renderRegister()}/>
+              <Route path="/game" element={renderGame()}/>
+              <Route path="/privacy" element={<Privacy/>}/>
+              <Route path="/acknowledgment" element={<Acknowledgement/>}/>
+              <Route path="*" element={<Page404/>}/>
+            </Routes>
+          </Suspense>
+        </Router>
+      </UserContext.Provider>
   );
 }
 
 export default App;
-export { UserContext };
+export {UserContext};

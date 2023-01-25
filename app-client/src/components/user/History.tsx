@@ -2,30 +2,16 @@ import { StrictMode, useCallback, useEffect, useState } from "react";
 import AppLink from "../lib/AppLink";
 import Footer from "../lib/Footer";
 import Navbar from "../lib/Navbar";
-import { Game, GamePlayer } from "../../../../app-shared/types";
+import { Game } from "../../../../app-shared/types";
+import {useParams} from "react-router-dom";
+import HistoryList from "./HistoryList";
 
 interface HomeProps {
   tryLogout: () => Promise<void>;
 }
 
-function HistoryGame(game: Game) {
-  return (
-    <li key={game.timestamp.toString()}>
-      <div>
-        <span>{game.timestamp.toString()}</span>
-        <ul>
-          {game.players.map((player: GamePlayer) => {
-            return <li>{player.username}</li>;
-          })}
-        </ul>
-      </div>
-    </li>
-  );
-}
-
 function History({ tryLogout }: HomeProps) {
-  // TODO: use context
-  const username = "riwan";
+  const {username=" "} = useParams();
   const [history, setHistory] = useState<Game[]>([]);
   const [error, setError] = useState<null | string>(null);
 
@@ -51,7 +37,6 @@ function History({ tryLogout }: HomeProps) {
     getHistory();
   }, []);
 
-  // TODO: Put tab system with page style in his own component
   if (error) {
     return (
       <StrictMode>
@@ -86,7 +71,7 @@ function History({ tryLogout }: HomeProps) {
           </div>
           <section className="mt-4">
             <h1>History</h1>
-            <ul>{history.map(HistoryGame)}</ul>
+            <HistoryList games={history} />
           </section>
         </main>
         <Footer />
