@@ -1,5 +1,5 @@
 import { StrictMode } from "react";
-import AppLink from "../AppLink";
+import AppLink from "./AppLink";
 
 function Footer() {
   return (

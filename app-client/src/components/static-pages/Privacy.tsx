@@ -1,9 +1,6 @@
 import { StrictMode } from "react";
-import AppLink from "../AppLink";
-import Footer from "../Footer";
-import "./style.scss";
-
-const markdown = "hello";
+import AppLink from "../lib/AppLink";
+import Footer from "../lib/Footer";
 
 function Privacy() {
   return (

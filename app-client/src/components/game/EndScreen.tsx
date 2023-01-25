@@ -1,11 +1,4 @@
-import {
-  useEffect,
-  useState,
-  StrictMode,
-  FC,
-  Dispatch,
-  useCallback,
-} from "react";
+import { StrictMode, Dispatch, useCallback } from "react";
 import { GameScene } from "../../game/game";
 import {
   EndGamePlayerState,
@@ -13,7 +6,7 @@ import {
   GameState,
 } from "../../../../app-shared/state";
 import "./style.scss";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Room } from "colyseus.js";
 
 interface EndScreenProps {

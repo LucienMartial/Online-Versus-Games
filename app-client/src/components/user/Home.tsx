@@ -1,7 +1,6 @@
 import { StrictMode } from "react";
-import Footer from "../Footer";
-import Navbar from "../Navbar";
-import "./style.scss";
+import Footer from "../lib/Footer";
+import Navbar from "../lib/Navbar";
 
 // TODO: Headebar component
 

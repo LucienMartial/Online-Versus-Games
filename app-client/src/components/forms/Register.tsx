@@ -1,6 +1,6 @@
 import React from "react";
 import AnimatedInput from "./AnimatedInput";
-import AppLink from "./AppLink";
+import AppLink from "../lib/AppLink";
 import AppError from "./AppError";
 // TODO: checkbox stating that the user agree to the privacy policy
 // TODO: footer component
@@ -36,7 +36,11 @@ export default function Register({ tryRegister }: RegisterProps) {
   return (
     <>
       <div className={"register"}>
-        <form action="" onSubmit={register} className={"h-screen flex justify-center items-center flex-col gap-8"}>
+        <form
+          action=""
+          onSubmit={register}
+          className={"h-screen flex justify-center items-center flex-col gap-8"}
+        >
           <h1>Create an account</h1>
           <AnimatedInput
             type={"text"}
@@ -62,23 +66,29 @@ export default function Register({ tryRegister }: RegisterProps) {
             required={false}
             onChange={(e) => setPassword2(e.target.value)}
           />
-          <p><input type={"checkbox"} id={"privacyCheckbox"} className={"w-4 h-4 rounded accent-themelighter mx-2"} required={true}/><label htmlFor={"privacyCheckbox"}>I have read and accept the <AppLink to={"/privacy"}>privacy policy</AppLink></label></p>
+          <p>
+            <input
+              type={"checkbox"}
+              id={"privacyCheckbox"}
+              className={"w-4 h-4 rounded accent-themelighter mx-2"}
+              required={true}
+            />
+            <label htmlFor={"privacyCheckbox"}>
+              I have read and accept the{" "}
+              <AppLink to={"/privacy"}>privacy policy</AppLink>
+            </label>
+          </p>
           {invalidPassword && <AppError>Passwords must match</AppError>}
           {registerError && <AppError>{registerError}</AppError>}
-          <button type="submit" className={"bg-themelight"}>Register</button>
+          <button type="submit" className={"bg-themelight"}>
+            Register
+          </button>
           <p>
-            Already have an account ?{" "}
-            <AppLink to={"/login"}>
-              Login
-            </AppLink>
+            Already have an account ? <AppLink to={"/login"}>Login</AppLink>
           </p>
           <footer>
-            <AppLink to={"/privacy"}>
-              Privacy Policy
-            </AppLink>
-            <AppLink to={"/acknowledgment"}>
-              Acknowledgment
-            </AppLink>
+            <AppLink to={"/privacy"}>Privacy Policy</AppLink>
+            <AppLink to={"/acknowledgment"}>Acknowledgment</AppLink>
           </footer>
         </form>
       </div>

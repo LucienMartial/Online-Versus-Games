@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { GameScene } from "../game/game";
+import { GameScene } from "../../game/game";
 import { StrictMode } from "react";
 import "./GameUI.css";
 

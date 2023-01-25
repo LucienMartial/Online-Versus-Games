@@ -1,6 +1,6 @@
 import React from "react";
 import AnimatedInput from "./AnimatedInput";
-import AppLink from "./AppLink";
+import AppLink from "../lib/AppLink";
 import AppError from "./AppError";
 
 interface LoginProps {
@@ -27,7 +27,11 @@ function Login({ tryLogin }: LoginProps) {
   return (
     <React.StrictMode>
       <div className={"login"}>
-        <form action="" onSubmit={login} className={"h-screen flex justify-center items-center flex-col gap-8"}>
+        <form
+          action=""
+          onSubmit={login}
+          className={"h-screen flex justify-center items-center flex-col gap-8"}
+        >
           <h1>WELCOME !</h1>
           <AnimatedInput
             type={"text"}
@@ -46,20 +50,16 @@ function Login({ tryLogin }: LoginProps) {
             onChange={(e) => setPassword(e.target.value)}
           />
           {errorMessage && <AppError>{errorMessage}</AppError>}
-          <button type="submit" className={"bg-themelight"}>Login</button>
+          <button type="submit" className={"bg-themelight"}>
+            Login
+          </button>
           <p>
             No account yet ?{" "}
-            <AppLink to={"/register"} >
-              Create an account
-            </AppLink>
+            <AppLink to={"/register"}>Create an account</AppLink>
           </p>
           <footer>
-            <AppLink to={"/privacy"}>
-              Privacy Policy
-            </AppLink>
-            <AppLink to={"/acknowledgment"}>
-              Acknowledgment
-            </AppLink>
+            <AppLink to={"/privacy"}>Privacy Policy</AppLink>
+            <AppLink to={"/acknowledgment"}>Acknowledgment</AppLink>
           </footer>
         </form>
       </div>

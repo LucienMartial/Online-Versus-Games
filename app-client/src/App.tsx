@@ -9,14 +9,16 @@ import LoadingPage from "./components/LoadingPage";
 import { useGameConnect } from "./hooks/useGameConnect";
 import useAccount from "./hooks/useAccount";
 
-const Game = lazy(() => import("./components/Game"));
-const Login = lazy(() => import("./components/Login"));
-const Register = lazy(() => import("./components/Register"));
-const Home = lazy(() => import("./components/Home"));
+const Game = lazy(() => import("./components/game/Game"));
+const Login = lazy(() => import("./components/forms/Login"));
+const Register = lazy(() => import("./components/forms/Register"));
+const Home = lazy(() => import("./components/user/Home"));
 const Page404 = lazy(() => import("./components/Page404"));
-const Privacy = lazy(() => import("./components/Privacy"));
-const Acknowledgement = lazy(() => import("./components/Acknowledgement"));
-const Profile = lazy(() => import("./components/Profile"));
+const Privacy = lazy(() => import("./components/static-pages/Privacy"));
+const Acknowledgement = lazy(
+  () => import("./components/static-pages/Acknowledgement")
+);
+const Profile = lazy(() => import("./components/user/Profile"));
 
 function App() {
   const [loaded, setLoaded] = useState(false);
