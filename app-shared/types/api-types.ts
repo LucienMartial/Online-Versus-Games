@@ -1,6 +1,6 @@
 interface Message {
   content: string;
-  date: string;
+  date: Date;
 }
 
 interface Login {

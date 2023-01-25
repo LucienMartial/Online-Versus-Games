@@ -6,13 +6,15 @@ import {
   GameState,
 } from "../../../../app-shared/state";
 import "./style.scss";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import ChatContainer from "../chat-components/ChatContainer";
 import { Room } from "colyseus.js";
 
 interface EndScreenProps {
   gameScene: GameScene;
   endGameState: EndGameState;
   setGameRoom: Dispatch<Room<GameState> | undefined>;
+  chatRoom: Room;
 }
 
 function PlayerRow({
@@ -32,7 +34,12 @@ function PlayerRow({
   );
 }
 
-function EndScreen({ gameScene, endGameState, setGameRoom }: EndScreenProps) {
+function EndScreen({
+  gameScene,
+  endGameState,
+  setGameRoom,
+  chatRoom,
+}: EndScreenProps) {
   const listPlayers: JSX.Element[] = [];
   let victory = false;
   [...Object.entries(endGameState.players)].forEach(([id, state]) => {
@@ -71,6 +78,9 @@ function EndScreen({ gameScene, endGameState, setGameRoom }: EndScreenProps) {
             </thead>
             <tbody>{listPlayers}</tbody>
           </table>
+        </section>
+        <section>
+          <ChatContainer chatRoom={chatRoom} />
         </section>
         <button onClick={leaveGame}>Leave</button>
       </main>

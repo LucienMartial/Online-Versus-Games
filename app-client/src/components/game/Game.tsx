@@ -44,6 +44,7 @@ function Game({ client, gameRoom, setGameRoom }: GameProps) {
   const guiRef = useRef<HTMLDivElement>(null);
   const [gameScene, setGameScene] = useState<GameScene | undefined>();
   const [endGameState, setEndGameState] = useState<EndGameState>();
+  const [chatRoom, setChatRoom] = useState<Room>();
 
   const load = async () => {
     await Assets.init({ manifest: manifest });
@@ -104,6 +105,20 @@ function Game({ client, gameRoom, setGameRoom }: GameProps) {
     resize();
     window.addEventListener("resize", resize);
 
+    // reservation for end-game chat
+    gameRoom.onMessage(
+      "end-game-chat-reservation",
+      async (reservation: Object) => {
+        try {
+          const room = await client.consumeSeatReservation(reservation);
+          setChatRoom(room);
+          console.log("joined successfully end-game chat room", room);
+        } catch (e) {
+          console.error("join error", e);
+        }
+      }
+    );
+
     // end of game
     gameRoom.onMessage("end-game", (state: EndGameState) => {
       ticker.stop();
@@ -125,12 +140,13 @@ function Game({ client, gameRoom, setGameRoom }: GameProps) {
   }, []);
 
   // end of game?
-  if (endGameState && gameScene) {
+  if (endGameState && gameScene && chatRoom) {
     return (
       <EndScreen
         gameScene={gameScene}
         endGameState={endGameState}
         setGameRoom={setGameRoom}
+        chatRoom={chatRoom}
       />
     );
   }

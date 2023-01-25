@@ -42,15 +42,19 @@ const gameServer = new Server({
 
 if (process.env.NODE_ENV !== "production") {
   // simulate 200ms latency between server and client.
-  gameServer.simulateLatency(200);
+  // gameServer.simulateLatency(200);
 }
 
 // rooms
 import { createApp } from "./app-server/app.js";
 import { GameRoom } from "./app-server/game-room.js";
+import { ChatRoom } from "./app-server/chat-room.js";
+
 gameServer.define("game", GameRoom, {
   dbCreateGame: db.createGame,
 });
+
+gameServer.define("chat-room", ChatRoom);
 
 server.listen(port, () => {
   console.log(`local: http://localhost:${port}`);

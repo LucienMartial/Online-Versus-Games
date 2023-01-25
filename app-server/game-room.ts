@@ -1,5 +1,5 @@
 import { Dispatcher } from "@colyseus/command";
-import { Client, Room } from "colyseus";
+import { Client, Room, matchMaker } from "colyseus";
 import { DiscWarEngine } from "../app-shared/disc-war/disc-war.js";
 import { EndGameState, GameState } from "../app-shared/state/index.js";
 import {
@@ -50,10 +50,16 @@ class GameRoom extends Room<GameState> {
     this.setPatchRate(20);
 
     // end of game
-    this.gameEngine.onEndGame = () => {
+    this.gameEngine.onEndGame = async () => {
+      const chatEndGameRoom = await matchMaker.createRoom("chat-room", {});
       const state = new EndGameState(this.gameEngine, this);
       dbCreateGame(state);
       for (const client of this.clients) {
+        const reservation = await matchMaker.reserveSeatFor(
+          chatEndGameRoom,
+          {}
+        );
+        client.send("end-game-chat-reservation", reservation);
         client.send("end-game", state);
       }
     };

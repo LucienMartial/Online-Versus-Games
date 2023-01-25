@@ -93,6 +93,7 @@ function useAccount(): useAccountRes {
   const tryLogin = useCallback(async (username: string, password: string) => {
     const { success, message } = await postLogin(username, password);
     if (!success) throw new Error(message);
+    localStorage.setItem("username", username);
     setLoggedIn(true);
   }, []);
 
@@ -106,6 +107,7 @@ function useAccount(): useAccountRes {
     async (username: string, password: string) => {
       const { success, message } = await postRegister(username, password);
       if (!success) throw new Error(message);
+      localStorage.setItem("username", username);
       setLoggedIn(true);
     },
     []
@@ -114,6 +116,7 @@ function useAccount(): useAccountRes {
   const tryRemoveAccount = useCallback(async () => {
     const { success, message } = await postRemove();
     if (!success) throw new Error(message);
+    localStorage.removeItem("username");
     setLoggedIn(false);
   }, []);
 

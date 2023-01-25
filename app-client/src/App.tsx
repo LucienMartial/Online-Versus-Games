@@ -1,4 +1,4 @@
-import { useEffect, useState, Suspense, lazy } from "react";
+import { useEffect, useState, Suspense, lazy, createContext } from "react";
 import {
   BrowserRouter as Router,
   Routes,
@@ -20,7 +20,11 @@ const Acknowledgement = lazy(
 );
 const Profile = lazy(() => import("./components/user/Profile"));
 
+// user context
+const UserContext = createContext({});
+
 function App() {
+  const [username, setUsername] = useState("Hacker");
   const [loaded, setLoaded] = useState(false);
   const { loggedIn, tryLogin, tryLogout, tryRegister, tryRemoveAccount } =
     useAccount();
@@ -29,6 +33,9 @@ function App() {
 
   // try to reconnect
   useEffect(() => {
+    const usernameLocalStorage = localStorage.getItem("username") ?? "hacker";
+    setUsername(usernameLocalStorage);
+
     if (!client) return;
     const load = async () => {
       try {
@@ -98,22 +105,25 @@ function App() {
   };
 
   return (
-    <Router>
-      <Suspense fallback={<LoadingPage />}>
-        <Routes>
-          <Route path="/" element={renderDefault()} />
-          <Route path="/home" element={renderHome()} />
-          <Route path="/profile" element={renderProfile()} />
-          <Route path="/login" element={renderLogin()} />
-          <Route path="/register" element={renderRegister()} />
-          <Route path="/game" element={renderGame()} />
-          <Route path="/privacy" element={<Privacy />} />
-          <Route path="/acknowledgment" element={<Acknowledgement />} />
-          <Route path="*" element={<Page404 />} />
-        </Routes>
-      </Suspense>
-    </Router>
+    <UserContext.Provider value={username}>
+      <Router>
+        <Suspense fallback={<LoadingPage />}>
+          <Routes>
+            <Route path="/" element={renderDefault()} />
+            <Route path="/home" element={renderHome()} />
+            <Route path="profile" element={renderProfile()} />
+            <Route path="/login" element={renderLogin()} />
+            <Route path="/register" element={renderRegister()} />
+            <Route path="/game" element={renderGame()} />
+            <Route path="/privacy" element={<Privacy />} />
+            <Route path="/acknowledgment" element={<Acknowledgement />} />
+            <Route path="*" element={<Page404 />} />
+          </Routes>
+        </Suspense>
+      </Router>
+    </UserContext.Provider>
   );
 }
 
 export default App;
+export { UserContext };
