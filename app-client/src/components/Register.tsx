@@ -1,8 +1,7 @@
 import React from "react";
 import AnimatedInput from "./AnimatedInput";
-import "./Login.scss";
-import { Link } from "react-router-dom";
-
+import AppLink from "./AppLink";
+import AppError from "./AppError";
 // TODO: checkbox stating that the user agree to the privacy policy
 // TODO: footer component
 
@@ -37,7 +36,7 @@ export default function Register({ tryRegister }: RegisterProps) {
   return (
     <>
       <div className={"register"}>
-        <form action="" onSubmit={register}>
+        <form action="" onSubmit={register} className={"h-screen flex justify-center items-center flex-col gap-8"}>
           <h1>Create an account</h1>
           <AnimatedInput
             type={"text"}
@@ -63,22 +62,22 @@ export default function Register({ tryRegister }: RegisterProps) {
             required={false}
             onChange={(e) => setPassword2(e.target.value)}
           />
-          {invalidPassword && <p className={"error"}>Passwords must match</p>}
-          {registerError && <p className={"error"}>{registerError}</p>}
-          <button type="submit">Register</button>
+          {invalidPassword && <AppError>Passwords must match</AppError>}
+          {registerError && <AppError>{registerError}</AppError>}
+          <button type="submit" className={"bg-themelight"}>Register</button>
           <p>
             Already have an account ?{" "}
-            <Link to={"/login"} className={"link"}>
+            <AppLink to={"/login"}>
               Login
-            </Link>
+            </AppLink>
           </p>
           <footer>
-            <Link to={"/privacy"} className={"link"}>
+            <AppLink to={"/privacy"}>
               Privacy Policy
-            </Link>
-            <Link to={"/acknowledgment"} className={"link"}>
+            </AppLink>
+            <AppLink to={"/acknowledgment"}>
               Acknowledgment
-            </Link>
+            </AppLink>
           </footer>
         </form>
       </div>

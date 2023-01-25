@@ -1,7 +1,7 @@
 import React from "react";
-import "./Login.scss";
 import AnimatedInput from "./AnimatedInput";
-import { Link } from "react-router-dom";
+import AppLink from "./AppLink";
+import AppError from "./AppError";
 
 interface LoginProps {
   tryLogin: (username: string, password: string) => Promise<void>;
@@ -27,7 +27,7 @@ function Login({ tryLogin }: LoginProps) {
   return (
     <React.StrictMode>
       <div className={"login"}>
-        <form action="" onSubmit={login}>
+        <form action="" onSubmit={login} className={"h-screen flex justify-center items-center flex-col gap-8"}>
           <h1>WELCOME !</h1>
           <AnimatedInput
             type={"text"}
@@ -45,21 +45,21 @@ function Login({ tryLogin }: LoginProps) {
             required={true}
             onChange={(e) => setPassword(e.target.value)}
           />
-          {errorMessage && <p className={"error"}>{errorMessage}</p>}
-          <button type="submit">Login</button>
+          {errorMessage && <AppError>{errorMessage}</AppError>}
+          <button type="submit" className={"bg-themelight"}>Login</button>
           <p>
             No account yet ?{" "}
-            <Link to={"/register"} className={"link"}>
+            <AppLink to={"/register"} >
               Create an account
-            </Link>
+            </AppLink>
           </p>
           <footer>
-            <Link to={"/privacy"} className={"link"}>
+            <AppLink to={"/privacy"}>
               Privacy Policy
-            </Link>
-            <Link to={"/acknowledgment"} className={"link"}>
+            </AppLink>
+            <AppLink to={"/acknowledgment"}>
               Acknowledgment
-            </Link>
+            </AppLink>
           </footer>
         </form>
       </div>
