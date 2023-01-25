@@ -1,17 +1,7 @@
 import { Collection } from "mongodb";
 import { EndGameState } from "../../app-shared/state/end-game-state.js";
 import { AppError } from "../utils/error.js";
-
-interface Game {
-  timestamp: Date;
-  players: GamePlayer[];
-}
-
-interface GamePlayer {
-  username: string;
-  deathCount: number;
-  victory: boolean;
-}
+import { Game, GamePlayer } from "../../app-shared/types/index.js";
 
 export default function (games: Collection<Game>) {
   async function createGame(state: EndGameState): Promise<void> {
@@ -58,5 +48,3 @@ export default function (games: Collection<Game>) {
 
   return { createGame, getGames };
 }
-
-export type { Game };

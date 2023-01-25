@@ -8,7 +8,8 @@ import {
 } from "mongodb";
 import { EndGameState } from "../../app-shared/state/end-game-state.js";
 import ClientMethods from "./db-user.js";
-import GameMethods, { Game } from "./db-game.js";
+import GameMethods from "./db-game.js";
+import { Game } from "../../app-shared/types/index.js";
 
 class Database {
   private client: MongoClient;

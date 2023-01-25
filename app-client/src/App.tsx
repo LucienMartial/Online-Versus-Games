@@ -19,6 +19,7 @@ const Acknowledgement = lazy(
   () => import("./components/static-pages/Acknowledgment")
 );
 const Profile = lazy(() => import("./components/user/Profile"));
+const History = lazy(() => import("./components/user/History"));
 
 // user context
 const UserContext = createContext({});
@@ -69,6 +70,8 @@ function App() {
     return <Navigate to={"/home"} />;
   };
 
+  // Login locked page
+
   const renderHome = () => {
     if (!loggedIn) return <Navigate to={"/login"} />;
     if (client && gameRoom) return <Navigate to={"/game"} />;
@@ -81,10 +84,27 @@ function App() {
     );
   };
 
+  const renderGame = () => {
+    if (!loggedIn) return <Navigate to={"/login"} />;
+    if (!client || !gameRoom) return <Navigate to={"/home"} />;
+    return (
+      <Game client={client} gameRoom={gameRoom} setGameRoom={setGameRoom} />
+    );
+  };
+
+  // TODO: profile dependant on login info
+
   const renderProfile = () => {
     if (!loggedIn) return <Navigate to={"/login"} />;
     return <Profile tryLogout={tryLogout} />;
   };
+
+  const renderHistory = () => {
+    if (!loggedIn) return <Navigate to={"/login"} />;
+    return <History tryLogout={tryLogout} />;
+  };
+
+  // free access page
 
   const renderLogin = () => {
     if (loggedIn) return <Navigate to={"/"} />;
@@ -94,14 +114,6 @@ function App() {
   const renderRegister = () => {
     if (loggedIn) return <Navigate to={"/"} />;
     return <Register tryRegister={tryRegister} />;
-  };
-
-  const renderGame = () => {
-    if (!loggedIn) return <Navigate to={"/login"} />;
-    if (!client || !gameRoom) return <Navigate to={"/home"} />;
-    return (
-      <Game client={client} gameRoom={gameRoom} setGameRoom={setGameRoom} />
-    );
   };
 
   return (
