@@ -91,11 +91,7 @@ function App() {
     if (!loggedIn) return <Navigate to={"/login"} />;
     if (!client || !gameRoom)
       return (
-        <p>
-          Could not find a room.
-          <br />
-          This account may already be in a room, check your other tabs.
-        </p>
+        <Navigate to={"/home"} />
       );
     return (
       <Game client={client} gameRoom={gameRoom} setGameRoom={setGameRoom} />
@@ -108,7 +104,7 @@ function App() {
         <Routes>
           <Route path="/" element={renderDefault()} />
           <Route path="/home" element={renderHome()} />
-          <Route path="profile" element={renderProfile()} />
+          <Route path="/profile" element={renderProfile()} />
           <Route path="/login" element={renderLogin()} />
           <Route path="/register" element={renderRegister()} />
           <Route path="/game" element={renderGame()} />
