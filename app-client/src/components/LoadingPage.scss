@@ -1,28 +1,30 @@
 @import "../_theme";
-$delay : .3s;
-$duration : .9s;
+$delay: 0.3s;
+$duration: 0.9s;
 
-.loading{
+.loading {
   display: flex;
   gap: 3vw;
-  div{
+  div {
     background-color: $lighter-color;
     width: 3vw;
     aspect-ratio: 1/1;
     border-radius: 50%;
     animation: animate $duration linear infinite;
-    @for $i from 1 to 3{
-      &:nth-child(#{$i}){
+    @for $i from 1 to 3 {
+      &:nth-child(#{$i}) {
         animation-delay: calc($delay * $i);
       }
     }
   }
 }
+
 @keyframes animate {
-  0%,100%{
+  0%,
+  100% {
     transform: scale(1);
   }
-  50%{
+  50% {
     transform: scale(1.2);
   }
 }

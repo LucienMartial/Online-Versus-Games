@@ -1,24 +1,21 @@
 import { StrictMode } from "react";
 import { Link } from "react-router-dom";
+import Footer from "../Footer";
+import Navbar from "../Navbar";
 import "./style.scss";
 
-function Profile() {
+interface HomeProps {
+  tryLogout: () => Promise<void>;
+}
+
+function Profile({ tryLogout }: HomeProps) {
   return (
     <StrictMode>
+      <Navbar tryLogout={tryLogout} />
       <main>
         <h1>Profile</h1>
-        <Link to={"/home"} className={"link"}>
-          Back to home
-        </Link>
-        <footer>
-          <Link to={"/privacy"} className={"link"}>
-            Privacy Policy
-          </Link>
-          <Link to={"/acknowledgment"} className={"link"}>
-            Acknowledgment
-          </Link>
-        </footer>
       </main>
+      <Footer />
     </StrictMode>
   );
 }

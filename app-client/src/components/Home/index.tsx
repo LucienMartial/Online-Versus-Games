@@ -1,5 +1,6 @@
-import { StrictMode, useCallback } from "react";
-import { Link } from "react-router-dom";
+import { StrictMode } from "react";
+import Footer from "../Footer";
+import Navbar from "../Navbar";
 import "./style.scss";
 
 // TODO: Headebar component
@@ -13,28 +14,18 @@ interface HomeProps {
 function Home({ tryConnection, tryLogout, tryRemoveAccount }: HomeProps) {
   return (
     <StrictMode>
-      <header>
-        <button onClick={tryLogout}>Disconnect</button>
-        <button onClick={tryRemoveAccount}>Remove account</button>
-      </header>
+      <div className="flex flex-col h-screen w-screen justify-between">
+        <Navbar tryLogout={tryLogout} />
+        {/* <button onClick={tryRemoveAccount}>Remove account</button> */}
 
-      <main>
-        <h1>Home</h1>
-        <Link to={"/profile"} className={"link"}>
-          Profile
-        </Link>
-        <br />
-        <button onClick={() => tryConnection()}>Play</button>
-      </main>
+        <main>
+          <h1>Home</h1>
+          <br />
+          <button onClick={() => tryConnection()}>Play</button>
+        </main>
 
-      <footer>
-        <Link to={"/privacy"} className={"link"}>
-          Privacy Policy
-        </Link>
-        <Link to={"/acknowledgment"} className={"link"}>
-          Acknowledgment
-        </Link>
-      </footer>
+        <Footer />
+      </div>
     </StrictMode>
   );
 }
