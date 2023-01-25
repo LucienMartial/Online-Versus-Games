@@ -11,8 +11,14 @@ interface HomeProps {
 function HistoryGame(game: Game) {
   return (
     <li key={game.timestamp.toString()}>
-      <div>{game.timestamp.toString()}</div>
-      {game.players.map((player: GamePlayer) => {})}
+      <div>
+        <span>{game.timestamp.toString()}</span>
+        <ul>
+          {game.players.map((player: GamePlayer) => {
+            return <li>{player.username}</li>;
+          })}
+        </ul>
+      </div>
     </li>
   );
 }
@@ -45,6 +51,7 @@ function History({ tryLogout }: HomeProps) {
     getHistory();
   }, []);
 
+  // TODO: Put tab system with page style in his own component
   if (error) {
     return (
       <StrictMode>
