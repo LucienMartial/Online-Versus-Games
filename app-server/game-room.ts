@@ -56,8 +56,7 @@ class GameRoom extends Room<GameState> {
       this.gameEnded = true;
       const chatEndGameRoom = await matchMaker.createRoom("chat-room", {});
       const state = new EndGameState(this.gameEngine, this);
-      // for testing purpose, finish game early
-      // dbCreateGame(state);
+      dbCreateGame(state);
       for (const client of this.clients) {
         const reservation = await matchMaker.reserveSeatFor(
           chatEndGameRoom,
