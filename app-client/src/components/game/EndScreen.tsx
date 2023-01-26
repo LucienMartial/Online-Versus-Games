@@ -8,7 +8,6 @@ import {
 import { useNavigate } from "react-router-dom";
 import ChatContainer from "../chat-components/ChatContainer";
 import { Room } from "colyseus.js";
-import AppLink from "../lib/AppLink";
 import Profile from "../user/Profile";
 
 interface EndScreenProps {
@@ -81,7 +80,7 @@ function EndScreen({
 
   useEffect(() => {
     return () => {
-      // leaveGame();
+      leaveGame();
     };
   }, []);
 
@@ -95,7 +94,7 @@ function EndScreen({
     <StrictMode>
       <main className="flex flex-col w-screen justify-between items-center my-12">
         <h1 className="text-6xl pt-5">{victory ? "Victory" : "Defeat"}</h1>
-        <section className="transition-all container p-4 my-8">
+        <section className="transition-all w-full p-4 my-8">
           <table className="w-full table-fixed border-separate border-spacing-y-2">
             <thead>
               <tr>
