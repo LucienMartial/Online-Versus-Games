@@ -1,6 +1,5 @@
 import { ShockwaveFilter } from "@pixi/filter-shockwave";
 import { Viewport } from "pixi-viewport";
-import { Vector } from "sat";
 import { DiscWarEngine } from "../../../../app-shared/disc-war";
 
 const DEFAULT_MIN_EFFECTS = 7;

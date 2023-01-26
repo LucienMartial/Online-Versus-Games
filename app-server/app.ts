@@ -25,6 +25,12 @@ export function createApp(
   const app = express();
   app.use(session);
 
+  // prolong cookie every minute if there is a request
+  app.use(function (req, res, next) {
+    req.session.nowInMinutes = Math.floor(Date.now() / 60e3);
+    next();
+  });
+
   app.use(express.json());
   app.use(express.static("dist"));
   app.use("/api", apiRouter(database));
