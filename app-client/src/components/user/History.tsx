@@ -71,7 +71,7 @@ function History({ tryLogout }: HomeProps) {
           </div>
           <section className="mt-4">
             <h1>History</h1>
-            <HistoryList games={history} />
+            <HistoryList games={history} username={username} />
           </section>
         </main>
         <Footer />
