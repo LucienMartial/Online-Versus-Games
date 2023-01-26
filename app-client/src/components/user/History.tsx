@@ -1,17 +1,12 @@
 import { StrictMode, useCallback, useEffect, useState } from "react";
-import AppLink from "../lib/AppLink";
-import Footer from "../lib/Footer";
-import Navbar from "../lib/Navbar";
 import { Game } from "../../../../app-shared/types";
-import { useParams } from "react-router-dom";
 import HistoryList from "./HistoryList";
 
-interface HomeProps {
-  tryLogout: () => Promise<void>;
+interface HistoryProps {
+  username: string;
 }
 
-function History({ tryLogout }: HomeProps) {
-  const { username = " " } = useParams();
+function History({ username }: HistoryProps) {
   const [history, setHistory] = useState<Game[]>([]);
   const [error, setError] = useState<null | string>(null);
 
@@ -43,40 +38,15 @@ function History({ tryLogout }: HomeProps) {
   if (error) {
     return (
       <StrictMode>
-        <div className="flex flex-col h-screen w-screen justify-between">
-          <Navbar tryLogout={tryLogout} />
-          <main className="grow">
-            <div className="p-4 border-2 border-slate-800 divide-x-2 divide-slate-700 grid grid-cols-2">
-              <AppLink to="/profile">Profile</AppLink>
-              <AppLink to="/history">History</AppLink>
-            </div>
-            <section className="mt-4">
-              <p>Sorry, it seems we could not load the historic..</p>
-              <p>Server error: {error}</p>
-            </section>
-          </main>
-          <Footer />
-        </div>
+        <p>Sorry, it seems we could not load the historic..</p>
+        <p>Server error: {error}</p>
       </StrictMode>
     );
   }
 
   return (
     <StrictMode>
-      <div className="flex flex-col h-screen w-screen justify-between">
-        <Navbar tryLogout={tryLogout} />
-        <main className="h-full flex flex-col min-h-0">
-          <div className="p-4 border-2 border-slate-800 divide-x-2 divide-slate-700 grid grid-cols-2">
-            <AppLink to="/profile">Profile</AppLink>
-            <AppLink to="/history">History</AppLink>
-          </div>
-          <section className="min-h-0 flex flex-col">
-            <h1 className={"my-4"}>History</h1>
-            <HistoryList games={history} username={username} />
-          </section>
-        </main>
-        <Footer />
-      </div>
+      <HistoryList games={history} username={username} />
     </StrictMode>
   );
 }

@@ -18,8 +18,7 @@ const Privacy = lazy(() => import("./components/static-pages/Privacy"));
 const Acknowledgement = lazy(
   () => import("./components/static-pages/Acknowledgment")
 );
-const Profile = lazy(() => import("./components/user/Profile"));
-const History = lazy(() => import("./components/user/History"));
+const User = lazy(() => import("./components/user/User"));
 
 // user context
 const UserContext = createContext({});
@@ -96,14 +95,9 @@ function App() {
 
   // TODO: profile dependant on login info
 
-  const renderProfile = () => {
+  const renderUser = () => {
     if (!loggedIn) return <Navigate to={"/login"} />;
-    return <Profile tryLogout={tryLogout} />;
-  };
-
-  const renderHistory = () => {
-    if (!loggedIn) return <Navigate to={"/login"} />;
-    return <History tryLogout={tryLogout} />;
+    return <User tryLogout={tryLogout} />;
   };
 
   // free access page
@@ -125,10 +119,12 @@ function App() {
           <Routes>
             <Route path="/" element={renderDefault()} />
             <Route path="/home" element={renderHome()} />
-            <Route path="/profile" element={renderProfile()} />
+            <Route
+              path="/user"
+              element={<Navigate to={"/user/" + username} />}
+            />
+            <Route path="/user/:username" element={renderUser()} />
             <Route path="/login" element={renderLogin()} />
-            <Route path="/history" element={renderHistory()} />
-            <Route path="/history/:username" element={renderHistory()} />
             <Route path="/register" element={renderRegister()} />
             <Route path="/game" element={renderGame()} />
             <Route path="/privacy" element={<Privacy />} />
