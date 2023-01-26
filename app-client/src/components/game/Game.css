@@ -2,6 +2,6 @@ body {
   overflow: hidden;
 }
 
-main {
+#game {
   font-size: calc(1vw + 1vh + 1vmin);
 }

@@ -24,6 +24,8 @@ class OnLeaveCommand extends Command<
 
     // try to reconnect
     try {
+      if (this.room.gameEnded)
+        throw new Error("game is finished, no reconnection");
       if (consented) throw new Error("consented leave");
       if (this.room.nbClient <= 0) throw new Error("no players left");
 

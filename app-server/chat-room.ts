@@ -23,7 +23,8 @@ class ChatRoom extends Room {
 
     // check if already in a room
     const username = request.session.username;
-    if (!username || this.clientsMap.has(request.session.username)) {
+    const alreadyExist = [...this.clientsMap.values()].includes(username);
+    if (!username || alreadyExist) {
       return false;
     }
     // add username

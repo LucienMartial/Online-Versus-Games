@@ -48,7 +48,7 @@ function History({ tryLogout }: HomeProps) {
           <main className="grow">
             <div className="p-4 border-2 border-slate-800 divide-x-2 divide-slate-700 grid grid-cols-2">
               <AppLink to="/profile">Profile</AppLink>
-              <AppLink to="/history">History</AppLink>
+              <AppLink to={"/history/" + username}>History</AppLink>
             </div>
             <section className="mt-4">
               <p>Sorry, it seems we could not load the historic..</p>
@@ -68,7 +68,7 @@ function History({ tryLogout }: HomeProps) {
         <main className="grow">
           <div className="p-4 border-2 border-slate-800 divide-x-2 divide-slate-700 grid grid-cols-2">
             <AppLink to="/profile">Profile</AppLink>
-            <AppLink to="/history">History</AppLink>
+            <AppLink to={"/history/" + username}>History</AppLink>
           </div>
           <section className="mt-4">
             <h1>History</h1>

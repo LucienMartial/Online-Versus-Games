@@ -34,11 +34,13 @@ class GameRoom extends Room<GameState> {
   rightId!: string | null;
   nbClient!: number;
   maxDeath!: number;
+  gameEnded: boolean;
   clientsMap: Map<string, string> = new Map();
 
   onCreate({ dbCreateGame }: GameParams) {
     this.maxClients = 2;
     this.maxDeath = MAX_DEATH;
+    this.gameEnded = false;
     this.nbClient = 0;
     this.leftId = null;
     this.rightId = null;
@@ -51,9 +53,11 @@ class GameRoom extends Room<GameState> {
 
     // end of game
     this.gameEngine.onEndGame = async () => {
+      this.gameEnded = true;
       const chatEndGameRoom = await matchMaker.createRoom("chat-room", {});
       const state = new EndGameState(this.gameEngine, this);
-      dbCreateGame(state);
+      // for testing purpose, finish game early
+      // dbCreateGame(state);
       for (const client of this.clients) {
         const reservation = await matchMaker.reserveSeatFor(
           chatEndGameRoom,
