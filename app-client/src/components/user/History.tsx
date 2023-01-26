@@ -3,7 +3,7 @@ import AppLink from "../lib/AppLink";
 import Footer from "../lib/Footer";
 import Navbar from "../lib/Navbar";
 import { Game } from "../../../../app-shared/types";
-import {useParams} from "react-router-dom";
+import { useParams } from "react-router-dom";
 import HistoryList from "./HistoryList";
 
 interface HomeProps {
@@ -11,7 +11,7 @@ interface HomeProps {
 }
 
 function History({ tryLogout }: HomeProps) {
-  const {username=" "} = useParams();
+  const { username = " " } = useParams();
   const [history, setHistory] = useState<Game[]>([]);
   const [error, setError] = useState<null | string>(null);
 
@@ -22,7 +22,11 @@ function History({ tryLogout }: HomeProps) {
         "Content-Type": "application/json",
       },
     });
-    // failed
+    console.log(res);
+    if (res.status === 404) {
+      setError("No user specified");
+      return;
+    }
     if (res.status !== 200) {
       const error: Error = await res.json();
       setError(error.message);
@@ -48,9 +52,7 @@ function History({ tryLogout }: HomeProps) {
               <AppLink to="/history">History</AppLink>
             </div>
             <section className="mt-4">
-              <p>
-                Sorry, it seems we could not load the historic of {username}
-              </p>
+              <p>Sorry, it seems we could not load the historic..</p>
               <p>Server error: {error}</p>
             </section>
           </main>
