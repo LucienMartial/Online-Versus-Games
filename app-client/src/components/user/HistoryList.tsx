@@ -11,6 +11,7 @@ export default function HistoryList({ games, username }: HistoryListProps) {
     return games.map((game) => {
       return (
         <HistoryEntry
+          key={game.timestamp.toString()}
           timestamp={game.timestamp}
           player1={game.players[0]}
           player2={game.players[1]}

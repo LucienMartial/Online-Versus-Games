@@ -22,7 +22,6 @@ function History({ tryLogout }: HomeProps) {
         "Content-Type": "application/json",
       },
     });
-    console.log(res);
     if (res.status === 404) {
       setError("No user specified");
       return;
@@ -35,11 +34,11 @@ function History({ tryLogout }: HomeProps) {
     // success
     const games = await res.json();
     setHistory(games);
-  }, []);
+  }, [username]);
 
   useEffect(() => {
     getHistory();
-  }, []);
+  }, [username]);
 
   if (error) {
     return (
