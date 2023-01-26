@@ -9,6 +9,7 @@ import { useNavigate } from "react-router-dom";
 import ChatContainer from "../chat-components/ChatContainer";
 import { Room } from "colyseus.js";
 import Profile from "../user/Profile";
+import { FiUser } from "react-icons/fi";
 
 interface EndScreenProps {
   gameScene: GameScene;
@@ -30,11 +31,11 @@ function PlayerRow({
   return (
     <tr className="group hover:bg-slate-800">
       <td className="text-left py-6">
-        <div className="flex">
+        <div className="flex items-center">
           <span className="border-l-4 -mt-6 -mb-6 border-blue-900 group-hover:border-blue-400"></span>
-          <button className="" onClick={() => setProfileName("riri")}>
-            <span className="ml-4">👤</span>
-          </button>
+          {/* <span className="ml-4"> */}
+          <FiUser className="ml-4" />
+          {/* </span> */}
           <span className="ml-4">{player.username}</span>
         </div>
       </td>
@@ -98,7 +99,6 @@ function EndScreen({
           <table className="w-full table-fixed border-separate border-spacing-y-2">
             <thead>
               <tr>
-                <th>Hello 1</th>
                 <th className="px-2 py-1 w-3/6 text-left">Players</th>
                 <th>Death</th>
                 <th>Shots</th>
