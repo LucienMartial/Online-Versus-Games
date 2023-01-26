@@ -35,6 +35,12 @@ function App() {
   useEffect(() => {
     if (!client) return;
     const load = async () => {
+      // game already defined
+      if (gameRoom) {
+        setLoaded(true);
+        return;
+      }
+      // try to reconnect
       try {
         await tryReconnection();
       } catch (e) {

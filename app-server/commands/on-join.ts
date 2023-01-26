@@ -36,6 +36,10 @@ class OnJoinCommand extends Command<GameRoom, Data> {
     // check if game can start
     if (this.room.nbClient < this.room.maxClients) return;
 
+    // for testing purpose, finish game early
+    this.room.gameEngine.endGame();
+    return;
+
     // start game
     this.clock.setTimeout(() => {
       this.room.gameEngine.startGame();
