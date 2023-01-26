@@ -65,13 +65,13 @@ function History({ tryLogout }: HomeProps) {
     <StrictMode>
       <div className="flex flex-col h-screen w-screen justify-between">
         <Navbar tryLogout={tryLogout} />
-        <main className="grow">
+        <main className="h-full flex flex-col min-h-0">
           <div className="p-4 border-2 border-slate-800 divide-x-2 divide-slate-700 grid grid-cols-2">
             <AppLink to="/profile">Profile</AppLink>
             <AppLink to={"/history/" + username}>History</AppLink>
           </div>
-          <section className="mt-4">
-            <h1>History</h1>
+          <section className="min-h-0 flex flex-col">
+            <h1 className={"my-4"}>History</h1>
             <HistoryList games={history} username={username} />
           </section>
         </main>
