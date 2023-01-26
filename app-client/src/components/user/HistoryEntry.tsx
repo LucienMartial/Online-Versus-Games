@@ -24,10 +24,10 @@ export default function HistoryEntry({
       }`}
     >
       <span className={"border-b border-slate-400"}>{date.toUTCString()}</span>
-      <div className={"flex flex-row justify-between gap-2"}>
-        <span>{player1.username}</span>
+      <div className={"grid grid-cols-5 sm:gap-20"}>
+        <span className={"text-left"}>{player1.username}</span>
         <span>{player1.deathCount}</span>-<span>{player2.deathCount}</span>
-        <span>{player2.username}</span>
+        <span className={"text-right"}>{player2.username}</span>
       </div>
     </li>
   );
