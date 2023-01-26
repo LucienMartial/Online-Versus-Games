@@ -22,7 +22,7 @@ export default function HistoryList({ games, username }: HistoryListProps) {
   }
   return (
     <ul
-      className={"flex flex-col w-screen sm:w-fit mx-auto max-h-96 overflow-auto rounded text-2xl"}
+      className={"flex flex-col w-screen min-h-0 max-h-full overflow-auto sm:w-fit mx-auto rounded text-2xl"}
     >
       {renderGames()}
     </ul>
