@@ -8,6 +8,7 @@ import {
 import LoadingPage from "./components/LoadingPage";
 import { useGameConnect } from "./hooks/useGameConnect";
 import useAccount from "./hooks/useAccount";
+import ProfilePopup from "./components/user/ProfilePopup";
 
 const Game = lazy(() => import("./components/game/Game"));
 const Login = lazy(() => import("./components/forms/Login"));

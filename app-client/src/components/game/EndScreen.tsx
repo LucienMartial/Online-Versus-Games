@@ -8,8 +8,8 @@ import {
 import { useNavigate } from "react-router-dom";
 import ChatContainer from "../chat-components/ChatContainer";
 import { Room } from "colyseus.js";
-import Profile from "../user/Profile";
 import { FiUser } from "react-icons/fi";
+import ProfilePopup from "../user/ProfilePopup";
 
 interface EndScreenProps {
   gameScene: GameScene;
@@ -33,9 +33,12 @@ function PlayerRow({
       <td className="text-left py-6">
         <div className="flex items-center">
           <span className="border-l-4 -mt-6 -mb-6 border-blue-900 group-hover:border-blue-400"></span>
-          {/* <span className="ml-4"> */}
-          <FiUser className="ml-4" />
-          {/* </span> */}
+          <button
+            className="ml-4 text-lg"
+            onClick={() => setProfileName(player.username)}
+          >
+            <FiUser />
+          </button>
           <span className="ml-4">{player.username}</span>
         </div>
       </td>
@@ -88,7 +91,12 @@ function EndScreen({
   console.log("PROFILE", profileName);
 
   if (profileName) {
-    <Profile />;
+    return (
+      <ProfilePopup
+        username={profileName}
+        setProfileUsername={setProfileName}
+      />
+    );
   }
 
   return (
