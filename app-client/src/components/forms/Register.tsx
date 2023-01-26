@@ -3,6 +3,7 @@ import AnimatedInput from "./AnimatedInput";
 import AppLink from "../lib/AppLink";
 import AppError from "./AppError";
 import Footer from "../lib/Footer";
+import AppButton from "../lib/AppButton";
 // TODO: checkbox stating that the user agree to the privacy policy
 // TODO: footer component
 
@@ -80,9 +81,9 @@ export default function Register({ tryRegister }: RegisterProps) {
         </p>
         {invalidPassword && <AppError>Passwords must match</AppError>}
         {registerError && <AppError>{registerError}</AppError>}
-        <button type="submit" className={"bg-themelight"}>
+        <AppButton color={"regular"} type={"submit"}>
           Register
-        </button>
+        </AppButton>
         <p>
           Already have an account ? <AppLink to={"/login"}>Login</AppLink>
         </p>
