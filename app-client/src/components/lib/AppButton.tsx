@@ -22,11 +22,18 @@ export default function AppButton({
     }
   }
 
+  function handleClick() {
+    if (!onClick) return;
+    if (color !== "danger" || confirm("Are you sure?")) {
+      onClick();
+    }
+  }
+
   return (
     <button
-      onClick={onClick}
+      onClick={handleClick}
       type={type}
-      className={`${buttonStyle()} text-white font-bold py-2.5 px-5 rounded`}
+      className={`${buttonStyle()} text-white font-bold py-2.5 px-5 rounded w-fit`}
     >
       {children}
     </button>

@@ -6,18 +6,30 @@ import { FaHistory } from "react-icons/all";
 
 interface ProfileProps {
   username: string;
+  handleRemoveAccount?: () => Promise<void>;
+  isUser?: boolean;
 }
 
 const activeTabStyle = "border-blue-400 text-blue-400";
 const inactiveTabStyle = "border-blue-900";
 
-export default function Profile({ username }: ProfileProps) {
+export default function Profile({
+  username,
+  isUser,
+  handleRemoveAccount,
+}: ProfileProps) {
   const [currentTab, setCurrentTab] = useState("overview");
 
   function renderTabs() {
     switch (currentTab) {
       case "overview":
-        return <Overview username={username} />;
+        return (
+          <Overview
+            username={username}
+            isUser={isUser}
+            handleRemoveAccount={handleRemoveAccount}
+          />
+        );
       case "history":
         return <History username={username} />;
     }

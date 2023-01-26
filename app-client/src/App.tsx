@@ -100,11 +100,9 @@ function App() {
     );
   };
 
-  // TODO: profile dependant on login info
-
   const renderUser = () => {
     if (!loggedIn) return <Navigate to={"/login"} />;
-    return <User tryLogout={tryLogout} />;
+    return <User tryLogout={tryLogout} tryRemoveAccount={tryRemoveAccount} />;
   };
 
   // free access page
