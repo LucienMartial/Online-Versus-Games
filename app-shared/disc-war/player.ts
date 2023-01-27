@@ -6,8 +6,8 @@ import { Inputs, SyncTimer } from "../utils/index.js";
 import { Disc } from "./index.js";
 
 // shape
-const WIDTH = 60;
-const HEIGHT = 110;
+export const WIDTH = 60;
+export const HEIGHT = 110;
 
 // movement. 0 friction mean full determinism
 const FRICTION = 0;
@@ -45,6 +45,9 @@ class Player extends BodyEntity {
   counterCooldownTimer: SyncTimer;
   friendlyDisc: boolean;
   onDash?: { (posX: number, posY: number): void };
+  onDeath?: {
+    (posX: number, posY: number, width: number, height: number): void;
+  };
 
   constructor(
     id: string,
@@ -111,7 +114,10 @@ class Player extends BodyEntity {
 
       // do not posses disc, did not counter, enemy disc
       if (!this.possesDisc && !this.friendlyDisc) {
-        if (!this.isDead) this.deadCallback(this);
+        if (!this.isDead) {
+          this.deadCallback(this);
+          this.onDeath?.(this.position.x, this.position.y, WIDTH, HEIGHT);
+        }
         this.isDead = true;
       }
       return;

@@ -7,22 +7,15 @@ import * as PIXI from "pixi.js";
 import { PERSPECTIVE_OFFSET } from "../../../../app-shared/disc-war";
 import { Vector } from "sat";
 import { Container } from "pixi.js";
+import { MAP_COLOR_CONFIGS } from "./map-configs/map-configs";
 
 // walls
 const TOP_WALL_HEIGHT = 138;
 const TOP_WALL_OFFSET = 4;
 // const WALL_COLOR = 0x488cb5;
-const WALL_COLOR = 0x377ba4;
-const TOP_WALL_COLOR = 0x092335;
-const TOP_WALL_SIDE_COLOR = 0x05151f;
-const TOP_WALL_REFLECTION = 0.3;
 
-// floor
-const FLOOR_COLOR = 0x222222;
-
-// split line
-const SPLIT_LINE_COLOR = 0xa3c5da;
-const SPLIT_LINE_ALPHA = 0.6;
+// colors of walls, floor and split line
+const COLOR_CONFIG = MAP_COLOR_CONFIGS.CONFIG_1;
 
 class MapRender extends RenderObject {
   floorMask: PIXI.Graphics;
@@ -43,7 +36,7 @@ class MapRender extends RenderObject {
     this.renderTopWall(
       map.topLeftWall,
       TOP_WALL_HEIGHT,
-      TOP_WALL_SIDE_COLOR,
+      COLOR_CONFIG.TOP_WALL_SIDE_COLOR,
       TOP_WALL_OFFSET,
       0
     );
@@ -51,7 +44,7 @@ class MapRender extends RenderObject {
     this.renderTopWall(
       map.topRightWall,
       TOP_WALL_HEIGHT,
-      TOP_WALL_SIDE_COLOR,
+      COLOR_CONFIG.TOP_WALL_SIDE_COLOR,
       -TOP_WALL_OFFSET,
       0
     );
@@ -59,7 +52,7 @@ class MapRender extends RenderObject {
     this.renderTopWall(
       map.topMiddleWall,
       TOP_WALL_HEIGHT,
-      TOP_WALL_COLOR,
+      COLOR_CONFIG.TOP_WALL_COLOR,
       0,
       -TOP_WALL_OFFSET
     );
@@ -86,16 +79,16 @@ class MapRender extends RenderObject {
       shape.p2.x,
       shape.p2.y,
       shape.thickness,
-      SPLIT_LINE_COLOR
+      COLOR_CONFIG.SPLIT_LINE_COLOR
     );
-    displayLine.alpha = SPLIT_LINE_ALPHA;
+    displayLine.alpha = COLOR_CONFIG.SPLIT_LINE_ALPHA;
     displayLine.position.set(splitLine.position.x, splitLine.position.y);
     this.splitLineContainer.addChild(displayLine);
   }
 
   renderFloor(floor: Vector[]) {
     const obj = new PIXI.Graphics();
-    obj.beginFill(FLOOR_COLOR);
+    obj.beginFill(COLOR_CONFIG.FLOOR_COLOR);
     const first = floor.shift()!;
     obj.moveTo(first.x, first.y);
     for (const point of floor) {
@@ -133,7 +126,7 @@ class MapRender extends RenderObject {
     // reflection
     const mirror = innerWall.clone();
     mirror.position.y += height;
-    mirror.alpha = TOP_WALL_REFLECTION;
+    mirror.alpha = COLOR_CONFIG.TOP_WALL_REFLECTION;
     mirror.tint = 0x777777;
     innerWall.addChild(mirror);
 
@@ -148,7 +141,7 @@ class MapRender extends RenderObject {
       shape.p2.x,
       shape.p2.y + offset,
       shape.thickness,
-      WALL_COLOR
+      COLOR_CONFIG.WALL_COLOR
     );
     displayLine.position.set(wall.position.x, wall.position.y);
     this.wallsContainer.addChild(displayLine);

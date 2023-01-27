@@ -19,7 +19,9 @@ import { AdvancedBloomFilter } from "@pixi/filter-advanced-bloom";
 import { ShockwaveManager } from "./effects/shockwave-manager";
 import { DashAnimManager } from "./effects/dash-anim-manager";
 import { Emitter } from "pixi-particles";
-import { DASH_ANIMATION } from "./effects/configs/dashAnimationConfig";
+import { DASH_ANIMATION } from "./effects/configs/dash-anim-config";
+import { DEATH_ANIMATION } from "./effects/configs/death-anim-config";
+import { DeathAnimManager } from "./effects/death-anim-manager";
 
 const PLAYER_GHOST = false;
 const DISC_GHOST = false;
@@ -40,6 +42,7 @@ class GameScene extends Scene {
   mapFiltered: Container;
   lastState?: GameState;
   dashAnimManager!: DashAnimManager;
+  deathAnimManager!: DeathAnimManager;
 
   constructor(
     viewport: Viewport,
@@ -70,6 +73,12 @@ class GameScene extends Scene {
       new Emitter(new Container(), assets.bubble, DASH_ANIMATION.CONFIG_1)
     );
 
+    // death effect
+    this.deathAnimManager = new DeathAnimManager(
+      this.gameEngine,
+      new Emitter(new Container(), assets.bubble, DEATH_ANIMATION.CONFIG_1)
+    );
+
     // filters
     const shockwaveManager = new ShockwaveManager(
       this.gameEngine,
@@ -94,8 +103,8 @@ class GameScene extends Scene {
     this.mapFiltered.sortableChildren = true;
 
     // particles
-    // dash animation
 
+    // dash animation
     const dashAnimContainer = new Container();
     this.mapFiltered.addChild(dashAnimContainer);
     const bubbleTexture = Texture.from(ANIMATION_ASSETS_PATH + "bubble.png");
@@ -105,6 +114,20 @@ class GameScene extends Scene {
       DASH_ANIMATION.CONFIG_3
     );
     this.dashAnimManager = new DashAnimManager(this.gameEngine, dashEmitter);
+
+    // death animation
+    const deathAnimContainer = new Container();
+    // TODO we absolutly have to change that texture
+    const redSquareTexture = Texture.from(
+      ANIMATION_ASSETS_PATH + "redSquare.png"
+    );
+    this.mapFiltered.addChild(deathAnimContainer);
+    const deathEmitter = new Emitter(
+      deathAnimContainer,
+      redSquareTexture,
+      DEATH_ANIMATION.CONFIG_3
+    );
+    this.deathAnimManager = new DeathAnimManager(this.gameEngine, deathEmitter);
 
     // map
     const mapRender = new MapRender(this.gameEngine);
@@ -156,6 +179,7 @@ class GameScene extends Scene {
       this.mainPlayer,
       this.id,
       this.dashAnimManager,
+      this.deathAnimManager,
       this.viewport
     );
     mainPlayerRender.container.zIndex = 10;
@@ -233,6 +257,7 @@ class GameScene extends Scene {
         player,
         id,
         this.dashAnimManager,
+        this.deathAnimManager,
         this.viewport,
         0x0099cc
       );

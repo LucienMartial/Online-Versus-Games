@@ -4,6 +4,7 @@ import { RenderObject } from "./render-object";
 import { Watcher, Graphics } from "../utils";
 import * as PIXI from "pixi.js";
 import { DashAnimManager } from "../effects/dash-anim-manager";
+import { DeathAnimManager } from "../effects/death-anim-manager";
 import { Viewport } from "pixi-viewport";
 
 const DEFAULT_COLOR = 0x990000;
@@ -16,11 +17,13 @@ class PlayerRender extends RenderObject {
   shield: PIXI.Graphics;
   viewports: Viewport;
   dashAnim: DashAnimManager;
+  deathAnim: DeathAnimManager;
 
   constructor(
     player: Player,
     id: string,
     dashAnim: DashAnimManager,
+    deathAnim: DeathAnimManager,
     viewports: Viewport,
     color = DEFAULT_COLOR
   ) {
@@ -48,6 +51,9 @@ class PlayerRender extends RenderObject {
     // dash
     this.dashAnim = dashAnim;
 
+    // death
+    this.deathAnim = deathAnim;
+
     // shield watcher
     this.shieldWatcher = new Watcher();
     this.shieldWatcher.onActive = () => {
@@ -70,12 +76,19 @@ class PlayerRender extends RenderObject {
     this.player.onDash = (posX: number, posY: number) => {
       this.dashAnim.newDashAnim(posX, posY);
     };
+
+    // death
+    this.player.onDeath = (posX: number, posY: number) => {
+      this.deathAnim.newDeathAnim(posX, posY);
+    };
   }
 
   update(dt: number, now: number) {
     super.update(dt, now);
-    // dashAnim
+    // dashAnim (auto update is on)
     // this.dashAnim.update(dt);
+    // deathAnim (auto update is on)
+    // this.deathAnim.update(dt);
     // watchers
     this.deadWatcher.watch(this.player.isDead);
     this.shieldWatcher.watch(this.player.counterTimer.active);
