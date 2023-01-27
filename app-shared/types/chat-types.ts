@@ -8,4 +8,4 @@ interface ClientMessage {
   content: string;
 }
 
-export { ServerMessage, ClientMessage };
+export type { ServerMessage, ClientMessage };

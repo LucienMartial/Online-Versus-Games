@@ -3,7 +3,7 @@
 .container {
   position: relative;
   width: 400px;
-  aspect-ratio: 5/1;
+  aspect-ratio: 6/1;
   color: $text-color;
 
   & > * {
@@ -17,7 +17,7 @@
     outline: none;
     background: transparent;
     border: 1px solid $border-color;
-    font-size: 1.5em;
+    font-size: 1.4em;
     border-radius: 8px;
 
     &:is(:focus, :not(:placeholder-shown)) + .movingLabel {
@@ -30,7 +30,7 @@
   }
 
   .movingLabel {
-    font-size: 1.2em;
+    font-size: 1.1em;
     font-weight: 600;
     position: absolute;
     top: 50%;

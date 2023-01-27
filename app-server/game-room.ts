@@ -30,20 +30,15 @@ interface GameParams {
 class GameRoom extends Room<GameState> {
   dispatcher = new Dispatcher(this);
   gameEngine!: DiscWarEngine;
-  leftId!: string | null;
-  rightId!: string | null;
-  nbClient!: number;
-  maxDeath!: number;
-  gameEnded: boolean;
+  leftId: string | null = null;
+  rightId: string | null = null;
+  nbClient = 0;
+  maxDeath = MAX_DEATH;
+  gameEnded = false;
+  maxClients = 2;
   clientsMap: Map<string, string> = new Map();
 
   onCreate({ dbCreateGame }: GameParams) {
-    this.maxClients = 2;
-    this.maxDeath = MAX_DEATH;
-    this.gameEnded = false;
-    this.nbClient = 0;
-    this.leftId = null;
-    this.rightId = null;
     this.setState(new GameState());
     this.gameEngine = new DiscWarEngine(true);
     this.gameEngine.maxDeath = this.maxDeath;

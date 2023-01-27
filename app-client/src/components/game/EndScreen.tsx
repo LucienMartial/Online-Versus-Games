@@ -30,9 +30,9 @@ function PlayerRow({
 }) {
   return (
     <tr className="group hover:bg-slate-800">
-      <td className="text-left py-6">
+      <td className="text-left py-5">
         <div className="flex items-center">
-          <span className="border-l-4 -mt-6 -mb-6 border-blue-900 group-hover:border-blue-400"></span>
+          <span className="border-l-4 h-16 -mt-6 -mb-6 border-blue-900 group-hover:border-blue-400"></span>
           <button
             className="ml-4 text-lg"
             onClick={() => setProfileName(player.username)}

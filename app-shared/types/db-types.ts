@@ -9,4 +9,4 @@ interface GamePlayer {
   victory: boolean;
 }
 
-export { Game, GamePlayer };
+export type { Game, GamePlayer };

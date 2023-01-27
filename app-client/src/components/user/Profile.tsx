@@ -46,7 +46,7 @@ export default function Profile({
 
   return (
     <main className="h-full flex flex-col min-h-0">
-      <div className=" grid grid-cols-2 text-xl">
+      <div className=" grid grid-cols-2 text-lg">
         <div
           className={`flex flex-row justify-center items-center cursor-pointer p-4 border-b-2 ${
             currentTab === "overview" ? activeTabStyle : inactiveTabStyle
