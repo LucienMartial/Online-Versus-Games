@@ -1,6 +1,7 @@
 import { Client, Room } from "colyseus";
 import { IncomingMessage } from "http";
 import { Request } from "express";
+import { ServerMessage } from "../app-shared/types/index.js";
 
 class ChatRoom extends Room {
   clientsMap: Map<string, string> = new Map();
@@ -8,7 +9,7 @@ class ChatRoom extends Room {
   onCreate() {
     this.setPatchRate(0);
     this.onMessage("message", (client, message) => {
-      const serverMessage = {
+      const serverMessage: ServerMessage = {
         content: message.content.trim(),
         sender: this.clientsMap.get(client.id) ?? "hacker",
         date: new Date(),
@@ -29,6 +30,17 @@ class ChatRoom extends Room {
     // add username
     this.clientsMap.set(client.id, request.session.username);
     return true;
+  }
+
+  onLeave(client: Client, consented: boolean) {
+    const serverMessage: ServerMessage = {
+      content: `${this.clientsMap.get(client.id)} left.`,
+      sender: "server",
+      date: new Date(),
+    };
+    this.broadcast("message", serverMessage);
+    console.log("client left");
+    this.clientsMap.delete(client.id);
   }
 
   //   onJoin(client) {
