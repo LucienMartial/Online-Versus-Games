@@ -23,10 +23,16 @@ export default function HistoryEntry({
         won ? "bg-green-900" : "bg-red-900"
       }`}
     >
-      <span className={"border-b border-slate-400"}>{date.toDateString()+" - "+date.getHours()+":"+date.getMinutes()}</span>
+      <span className={"border-b border-slate-400"}>
+        {date.toDateString() +
+          " - " +
+          date.getHours() +
+          ":" +
+          date.getMinutes()}
+      </span>
       <div className={"grid grid-cols-5 sm:gap-20"}>
         <span className={"text-left"}>{player1.username}</span>
-        <span>{player1.deathCount}</span>-<span>{player2.deathCount}</span>
+        <span>{player1.deaths}</span>-<span>{player2.deaths}</span>
         <span className={"text-right"}>{player2.username}</span>
       </div>
     </li>

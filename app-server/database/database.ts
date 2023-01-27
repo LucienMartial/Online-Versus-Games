@@ -1,8 +1,14 @@
-import { Collection, Db, MongoClient, WithId } from "mongodb";
+import { Collection, Db, ModifyResult, MongoClient, WithId } from "mongodb";
 import { EndGameState } from "../../app-shared/state/end-game-state.js";
 import ClientMethods from "./db-user.js";
 import GameMethods from "./db-game.js";
-import { Game, User } from "../../app-shared/types/index.js";
+import FriendMethods from "./db-friends.js";
+import {
+  FriendRequest,
+  Friends,
+  Game,
+  User,
+} from "../../app-shared/types/index.js";
 import { ObjectId } from "mongodb";
 
 class Database {
@@ -10,6 +16,8 @@ class Database {
   private database: Db;
   private users: Collection<User>;
   private games: Collection<Game>;
+  private friends: Collection<Friends>;
+  private friendRequests: Collection<FriendRequest>;
 
   // users
   searchUser: (username: string) => Promise<WithId<User> | null>;
@@ -20,6 +28,15 @@ class Database {
   // games
   createGame: (state: EndGameState) => Promise<void>;
   getGames: (id: ObjectId, skip: number, limit: number) => Promise<Game[]>;
+
+  // friends
+  getFriendsAndRequests: (
+    userId: ObjectId
+  ) => Promise<ModifyResult<Friends> | null>;
+  addFriendRequest: () => Promise<boolean>;
+  removeFriendRequest: () => Promise<boolean>;
+  acceptFriendRequest: () => Promise<boolean>;
+  removeFriend: () => Promise<boolean>;
 
   constructor() {
     if (process.env.MONGODB_URL === "") console.log("MONGODB URL is empty");
@@ -33,6 +50,8 @@ class Database {
     this.database = this.client.db("online-versus-game");
     this.users = this.database.collection("Users");
     this.games = this.database.collection("games");
+    this.friends = this.database.collection("friends");
+    this.friendRequests = this.database.collection("friend-requests");
 
     // users
     const { searchUser, removeUser, createUser, matchPassword } = ClientMethods(
@@ -47,6 +66,20 @@ class Database {
     const { createGame, getGames } = GameMethods(this.games);
     this.createGame = createGame;
     this.getGames = getGames;
+
+    // friends
+    const {
+      getFriendsAndRequests,
+      addFriendRequest,
+      removeFriendRequest,
+      acceptFriendRequest,
+      removeFriend,
+    } = FriendMethods(this.friends, this.friendRequests);
+    this.getFriendsAndRequests = getFriendsAndRequests;
+    this.addFriendRequest = addFriendRequest;
+    this.removeFriendRequest = removeFriendRequest;
+    this.acceptFriendRequest = acceptFriendRequest;
+    this.removeFriend = removeFriend;
   }
 
   async close() {

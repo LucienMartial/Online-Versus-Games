@@ -19,7 +19,7 @@ class DeathAnimManager {
     this.dashEmitter.cleanup();
   }
 
-  newDeathAnim(x: number, y: number, width: number, height: number) {
+  newDeathAnim(x: number, y: number) {
     if (!this.activatable) return;
     this.dashEmitter.emit = true;
     this.dashEmitter.updateOwnerPos(x, y);

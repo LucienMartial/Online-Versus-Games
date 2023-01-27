@@ -25,6 +25,7 @@ class EndGameState extends Schema {
     super();
     for (const client of room.clients) {
       const player = engine.getPlayer(client.id);
+      if (!player) continue;
       // player state
       const state = new EndGamePlayerState();
       state.username = client.userData.username;

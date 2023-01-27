@@ -2,6 +2,7 @@ import { StrictMode } from "react";
 import Footer from "../lib/Footer";
 import Navbar from "../lib/Navbar";
 import AppButton from "../lib/AppButton";
+import FriendList from "./FriendList";
 
 // TODO: Headebar component
 
@@ -19,10 +20,10 @@ function Home({ tryConnection, tryLogout }: HomeProps) {
 
         <main>
           <h1>Home</h1>
-          <br />
           <AppButton color={"regular"} onClick={() => tryConnection()}>
             Play
           </AppButton>
+          <FriendList />
         </main>
 
         <Footer />

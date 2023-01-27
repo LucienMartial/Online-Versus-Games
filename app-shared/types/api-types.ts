@@ -9,8 +9,12 @@ interface Login {
   id: ObjectId;
 }
 
+interface Friend {
+  username: string;
+}
+
 interface Error {
   message: string;
 }
 
-export type { Error, Message, Login };
+export type { Error, Message, Login, Friend };

@@ -1,9 +1,17 @@
 import { ObjectId } from "mongodb";
 
+/**
+ * User
+ */
+
 interface User {
   name: string;
   password: string;
 }
+
+/**
+ * Game
+ */
 
 interface Game {
   timestamp: Date;
@@ -22,4 +30,37 @@ interface GamePlayer {
   dashes: number;
 }
 
-export type { User, Game, GamePlayer };
+/**
+ * Friend
+ * id is the same as the user's one
+ */
+
+interface Friends {
+  _id: ObjectId;
+  friends: { user_id: ObjectId; username: string }[];
+  request: ObjectId[];
+}
+
+/**
+ * Friend Request
+ */
+
+enum FriendRequestStatus {
+  Sent = 0,
+  Accepted = 1,
+}
+
+interface FriendRequest {
+  recipient: ObjectId;
+  expeditor: ObjectId;
+  status: FriendRequestStatus;
+}
+
+export type {
+  User,
+  Game,
+  GamePlayer,
+  Friends,
+  FriendRequestStatus,
+  FriendRequest,
+};
