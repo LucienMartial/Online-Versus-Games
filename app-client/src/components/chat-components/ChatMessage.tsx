@@ -1,5 +1,4 @@
 import { StrictMode, useContext } from "react";
-import "./style.scss";
 import { ServerMessage } from "../../../../app-shared/types";
 import { UserContext } from "../../App";
 
@@ -18,11 +17,13 @@ function ChatMessage({ message }: ChatMessageProperties) {
       <div
         className={
           message.sender === username
-            ? "chatMessage self-message"
-            : "chatMessage other-message"
+            ? "float-right clear-both m-2 p-2 text-left text-white bg-blue-700 rounded-xl"
+            : message.sender === "server"
+            ? "float-left clear-both m-2 p-2 text-left text-white bg-red-600 rounded-xl"
+            : "float-left clear-both m-2 p-2 text-left text-white bg-purple-600 rounded-xl"
         }
       >
-        <section className="chatMessage informations">
+        <section className={"text-sm mb-0 text-left"}>
           <p>
             From {message.sender === username ? "me" : message.sender} at{" "}
             {timeFormat(message.date.getHours())}:
@@ -30,7 +31,7 @@ function ChatMessage({ message }: ChatMessageProperties) {
           </p>
           <br />
         </section>
-        <section className="chatMessage content">{message.content}</section>
+        <section className="text-xl text-left">{message.content}</section>
       </div>
     </StrictMode>
   );

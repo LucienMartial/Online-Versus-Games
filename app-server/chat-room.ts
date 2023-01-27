@@ -35,12 +35,11 @@ class ChatRoom extends Room {
 
   onLeave(client: Client, consented: boolean) {
     const serverMessage: ServerMessage = {
-      content: `${this.clientsMap.get(client.id)} left.`,
+      content: `${this.clientsMap.get(client.id)} left the chat`,
       sender: "server",
       date: new Date(),
     };
     this.broadcast("message", serverMessage);
-    console.log("client left");
     this.clientsMap.delete(client.id);
   }
 

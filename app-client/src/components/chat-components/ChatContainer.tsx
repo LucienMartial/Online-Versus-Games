@@ -1,6 +1,5 @@
 import { StrictMode, useState, useRef, useEffect } from "react";
 import { Room } from "colyseus.js";
-import "./style.scss";
 import ChatMessage from "./ChatMessage";
 import { ClientMessage, ServerMessage } from "../../../../app-shared/types";
 
@@ -47,18 +46,40 @@ function ChatContainer({ chatRoom }: ChatContainerProperties) {
 
   return (
     <StrictMode>
-      <main className={"temp-class"}> //TODO remove temp-class after tailwindcss styling
-        <section className="chatMessage chatOutline">
-          <h1>Tell the love to your opponent</h1>
-          <section ref={chatBoxRef} className="chatMessage chatBox">
+      <main>
+        <section
+          className={
+            "border-solid border-2 border-white rounded-xl p-px relative left-1/2 w-96 -translate-x-1/2"
+          }
+        >
+          <h1 className={"text-lg mx-0 my-2 text-center"}>
+            What do you want to talk about?
+          </h1>
+          <section
+            ref={chatBoxRef}
+            className={
+              "border-solid border-t overflow-y-scroll border-white h-80 max-h-80 rounded-xl"
+            }
+          >
             {renderChatElements()}
           </section>
-          <section className="chatMessage chatInput">
-            <form action="" onSubmit={submitMessage}>
+          <section
+            className={
+              "items-center justify-center mt-2 p-px w-full bg-blue-800 rounded-xl"
+            }
+          >
+            <form
+              action=""
+              onSubmit={submitMessage}
+              className={"h-full w-full"}
+            >
               <input
                 ref={inputReference}
                 type="text"
                 placeholder="Type your message here"
+                className={
+                  "placeholder:text-xl rounded box-border m-0 py-3 px-5 w-full h-1/4 bg-blue-800"
+                }
               />
             </form>
           </section>
