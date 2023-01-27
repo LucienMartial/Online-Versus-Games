@@ -80,7 +80,7 @@ class DiscWarEngine extends GameEngine {
       // die event
       if (!player.isDead && playerState.isDead) {
         // TODO, get player size
-        player.onDeath(player.position.x, player.position.y, 0, 0);
+        player.onDeath?.(player.position.x, player.position.y, 0, 0);
       }
 
       player.isDead = playerState.isDead;
