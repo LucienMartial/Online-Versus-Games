@@ -33,10 +33,13 @@ class Database {
   getFriendsAndRequests: (
     userId: ObjectId
   ) => Promise<ModifyResult<Friends> | null>;
-  addFriendRequest: () => Promise<boolean>;
-  removeFriendRequest: () => Promise<boolean>;
-  acceptFriendRequest: () => Promise<boolean>;
-  removeFriend: () => Promise<boolean>;
+  addFriendRequest: (
+    userId: ObjectId,
+    otherId: ObjectId
+  ) => Promise<ObjectId | null>;
+  removeFriendRequest: (requestId: ObjectId) => Promise<boolean>;
+  acceptFriendRequest: (requestId: ObjectId) => Promise<boolean>;
+  removeFriend: (otherName: string) => Promise<boolean>;
 
   constructor() {
     if (process.env.MONGODB_URL === "") console.log("MONGODB URL is empty");

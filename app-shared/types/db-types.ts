@@ -56,11 +56,5 @@ interface FriendRequest {
   status: FriendRequestStatus;
 }
 
-export type {
-  User,
-  Game,
-  GamePlayer,
-  Friends,
-  FriendRequestStatus,
-  FriendRequest,
-};
+export { FriendRequestStatus };
+export type { User, Game, GamePlayer, Friends, FriendRequest };

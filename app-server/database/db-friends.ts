@@ -5,8 +5,11 @@ import {
   ObjectId,
   UpdateFilter,
 } from "mongodb";
-import { EndGameState } from "../../app-shared/state/end-game-state.js";
-import { FriendRequest, Friends } from "../../app-shared/types/index.js";
+import {
+  FriendRequest,
+  FriendRequestStatus,
+  Friends,
+} from "../../app-shared/types/index.js";
 
 export default function (
   friends: Collection<Friends>,
@@ -40,19 +43,35 @@ export default function (
     }
   }
 
-  async function addFriendRequest(): Promise<boolean> {
+  async function addFriendRequest(
+    userId: ObjectId,
+    otherId: ObjectId
+  ): Promise<ObjectId | null> {
+    try {
+      const request: FriendRequest = {
+        expeditor: userId,
+        recipient: otherId,
+        status: FriendRequestStatus.Sent,
+      };
+      const res = await requests.insertOne(request);
+      if (!res.acknowledged) return null;
+      return res.insertedId;
+    } catch (e) {
+      if (e instanceof Error)
+        console.log("Could not get friends data", e.message);
+      return null;
+    }
+  }
+
+  async function removeFriendRequest(requestId: ObjectId): Promise<boolean> {
     return false;
   }
 
-  async function removeFriendRequest(): Promise<boolean> {
+  async function acceptFriendRequest(requestId: ObjectId): Promise<boolean> {
     return false;
   }
 
-  async function acceptFriendRequest(): Promise<boolean> {
-    return false;
-  }
-
-  async function removeFriend(): Promise<boolean> {
+  async function removeFriend(otherName: string): Promise<boolean> {
     return false;
   }
 

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Overview from "./Overview";
 import History from "./History";
 import { FiUser } from "react-icons/fi";
@@ -35,15 +35,6 @@ export default function Profile({
     }
   }
 
-  function renderTitle() {
-    switch (currentTab) {
-      case "overview":
-        return "Overview";
-      case "history":
-        return "History";
-    }
-  }
-
   return (
     <main className="h-full flex flex-col min-h-0">
       <div className=" grid grid-cols-2 text-lg">
@@ -66,10 +57,7 @@ export default function Profile({
           <h2>History</h2>
         </div>
       </div>
-      <section className="min-h-0 flex flex-col">
-        <h1 className={"my-4"}>{renderTitle()}</h1>
-        {renderTabs()}
-      </section>
+      <section className="min-h-0 flex flex-col">{renderTabs()}</section>
     </main>
   );
 }

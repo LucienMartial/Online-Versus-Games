@@ -9,6 +9,7 @@ import LoadingPage from "./components/LoadingPage";
 import { useGameConnect } from "./hooks/useGameConnect";
 import useAccount from "./hooks/useAccount";
 import { ObjectId } from "mongodb";
+import useFriends, { useFriendsRes } from "./hooks/useFriends";
 
 const Game = lazy(() => import("./components/game/Game"));
 const Login = lazy(() => import("./components/forms/Login"));
@@ -28,6 +29,9 @@ interface UserContextType {
 }
 const UserContext = createContext<UserContextType>({} as UserContextType);
 
+// Friends context
+const FriendsContext = createContext<useFriendsRes>({} as useFriendsRes);
+
 function App() {
   const [userData, setUserData] = useState<UserContextType>(
     {} as UserContextType
@@ -37,6 +41,9 @@ function App() {
     useAccount();
   const { gameRoom, client, tryReconnection, tryConnection, setGameRoom } =
     useGameConnect();
+  const friendsRes = useFriends();
+
+  console.log("RELOAD RERENDER");
 
   // try to reconnect
   useEffect(() => {
@@ -127,29 +134,31 @@ function App() {
 
   return (
     <UserContext.Provider value={userData}>
-      <Router>
-        <Suspense fallback={<LoadingPage />}>
-          <Routes>
-            <Route path="/" element={renderDefault()} />
-            <Route path="/home" element={renderHome()} />
-            <Route
-              path="/user"
-              element={<Navigate to={"/user/" + userData.username} />}
-            />
-            <Route path="/user/:username" element={renderUser()} />
-            <Route path="/login" element={renderLogin()} />
-            <Route path="/register" element={renderRegister()} />
-            <Route path="/game" element={renderGame()} />
-            <Route path="/privacy" element={<Privacy />} />
-            <Route path="/acknowledgment" element={<Acknowledgement />} />
-            <Route path="*" element={<Page404 />} />
-          </Routes>
-        </Suspense>
-      </Router>
+      <FriendsContext.Provider value={friendsRes}>
+        <Router>
+          <Suspense fallback={<LoadingPage />}>
+            <Routes>
+              <Route path="/" element={renderDefault()} />
+              <Route path="/home" element={renderHome()} />
+              <Route
+                path="/user"
+                element={<Navigate to={"/user/" + userData.username} />}
+              />
+              <Route path="/user/:username" element={renderUser()} />
+              <Route path="/login" element={renderLogin()} />
+              <Route path="/register" element={renderRegister()} />
+              <Route path="/game" element={renderGame()} />
+              <Route path="/privacy" element={<Privacy />} />
+              <Route path="/acknowledgment" element={<Acknowledgement />} />
+              <Route path="*" element={<Page404 />} />
+            </Routes>
+          </Suspense>
+        </Router>
+      </FriendsContext.Provider>
     </UserContext.Provider>
   );
 }
 
 export default App;
-export { UserContext };
+export { UserContext, FriendsContext };
 export type { UserContextType };

@@ -1,35 +1,23 @@
 // TODO: Headebar component
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
+import { FriendsContext } from "../../App";
 
 interface FriendListProps {}
 
 function FriendList({}: FriendListProps) {
   const [error, setError] = useState<string | null>(null);
-
-  // fetch data from server
-  const loadFriendList = useCallback(async () => {
-    console.log("load friends");
-    const res = await fetch("/api/friends", {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-    if (res.status !== 200) {
-      const error: Error = await res.json();
-      setError(error.message);
-      return;
-    }
-    const data = await res.json();
-    console.log(data);
-  }, []);
+  const { friendsData, tryGetFriends } = useContext(FriendsContext);
 
   useEffect(() => {
-    loadFriendList();
-    return () => {
-      console.log("remove friends");
-    };
+    async function load() {
+      try {
+        await tryGetFriends();
+      } catch (e) {
+        if (e instanceof Error) setError(e.message);
+      }
+    }
+    load();
   }, []);
 
   if (error) {
