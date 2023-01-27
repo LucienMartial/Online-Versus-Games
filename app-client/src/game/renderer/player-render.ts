@@ -66,7 +66,7 @@ class PlayerRender extends RenderObject {
     // dead watcher
     this.deadWatcher = new Watcher();
     this.deadWatcher.onActive = () => {
-      this.display.alpha = 0.5;
+      this.display.alpha = 0.1;
     };
     this.deadWatcher.onInactive = () => {
       this.display.alpha = 1;
@@ -78,7 +78,12 @@ class PlayerRender extends RenderObject {
     };
 
     // death
-    this.player.onDeath = (posX: number, posY: number) => {
+    this.player.onDeath = (
+      posX: number,
+      posY: number,
+      width: number,
+      height: number
+    ) => {
       this.deathAnim.newDeathAnim(posX, posY);
     };
   }

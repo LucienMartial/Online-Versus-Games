@@ -115,8 +115,8 @@ class Player extends BodyEntity {
       // do not posses disc, did not counter, enemy disc
       if (!this.possesDisc && !this.friendlyDisc) {
         if (!this.isDead) {
-          this.deadCallback(this);
           this.onDeath?.(this.position.x, this.position.y, WIDTH, HEIGHT);
+          this.deadCallback(this);
         }
         this.isDead = true;
       }

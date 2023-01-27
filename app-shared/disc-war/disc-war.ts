@@ -76,7 +76,13 @@ class DiscWarEngine extends GameEngine {
       if (id === this.playerId) continue;
       const player = this.getPlayer(id);
       if (!player) continue;
-      // interpolate new position
+
+      // die event
+      if (!player.isDead && playerState.isDead) {
+        // TODO, get player size
+        player.onDeath(player.position.x, player.position.y, 0, 0);
+      }
+
       player.isDead = playerState.isDead;
       player.isLeft = playerState.isLeft;
       player.possesDisc = playerState.possesDisc;
@@ -84,6 +90,7 @@ class DiscWarEngine extends GameEngine {
       if (player.isDead || this.respawnTimer.active) {
         player.setPosition(playerState.x, playerState.y);
       }
+
       // visual effect
       if (playerState.dashTimer.active)
         player.onDash?.(player.position.x, player.position.y);
