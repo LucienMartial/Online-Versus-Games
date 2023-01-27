@@ -1,33 +1,75 @@
-import { StrictMode, useContext } from "react";
-import { UserContext } from "../../App";
-import AppLink from "../lib/AppLink";
-import Footer from "../lib/Footer";
-import Navbar from "../lib/Navbar";
+import { useState } from "react";
+import Overview from "./Overview";
+import History from "./History";
+import { FiUser } from "react-icons/fi";
+import { FaHistory } from "react-icons/all";
 
-interface HomeProps {
-  tryLogout: () => Promise<void>;
+interface ProfileProps {
+  username: string;
+  handleRemoveAccount?: () => Promise<void>;
+  isUser?: boolean;
 }
 
-function Profile({ tryLogout }: HomeProps) {
-  const username = useContext(UserContext);
+const activeTabStyle = "border-blue-400 text-blue-400";
+const inactiveTabStyle = "border-blue-900";
+
+export default function Profile({
+  username,
+  isUser,
+  handleRemoveAccount,
+}: ProfileProps) {
+  const [currentTab, setCurrentTab] = useState("overview");
+
+  function renderTabs() {
+    switch (currentTab) {
+      case "overview":
+        return (
+          <Overview
+            username={username}
+            isUser={isUser}
+            handleRemoveAccount={handleRemoveAccount}
+          />
+        );
+      case "history":
+        return <History username={username} />;
+    }
+  }
+
+  function renderTitle() {
+    switch (currentTab) {
+      case "overview":
+        return "Overview";
+      case "history":
+        return "History";
+    }
+  }
 
   return (
-    <StrictMode>
-      <div className="flex flex-col h-screen w-screen justify-between">
-        <Navbar tryLogout={tryLogout} />
-        <main className="grow">
-          <div className="p-4 border-2 border-slate-800 divide-x-2 divide-slate-700 grid grid-cols-2">
-            <AppLink to="/profile">Profile</AppLink>
-            <AppLink to={"/history/" + username}>History</AppLink>
-          </div>
-          <section className="mt-4">
-            <h1>Profile</h1>
-          </section>
-        </main>
-        <Footer />
+    <main className="h-full flex flex-col min-h-0">
+      <div className=" grid grid-cols-2 text-lg">
+        <div
+          className={`flex flex-row justify-center items-center cursor-pointer p-4 border-b-2 ${
+            currentTab === "overview" ? activeTabStyle : inactiveTabStyle
+          }`}
+          onClick={() => setCurrentTab("overview")}
+        >
+          <FiUser className="inline-block mr-2" />
+          <h2>Overview</h2>
+        </div>
+        <div
+          className={`flex flex-row justify-center items-center cursor-pointer p-4 border-b-2 ${
+            currentTab === "history" ? activeTabStyle : inactiveTabStyle
+          }`}
+          onClick={() => setCurrentTab("history")}
+        >
+          <FaHistory className="inline-block mr-2" />
+          <h2>History</h2>
+        </div>
       </div>
-    </StrictMode>
+      <section className="min-h-0 flex flex-col">
+        <h1 className={"my-4"}>{renderTitle()}</h1>
+        {renderTabs()}
+      </section>
+    </main>
   );
 }
-
-export default Profile;

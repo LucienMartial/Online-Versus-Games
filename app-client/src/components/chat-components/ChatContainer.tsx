@@ -47,7 +47,7 @@ function ChatContainer({ chatRoom }: ChatContainerProperties) {
 
   return (
     <StrictMode>
-      <main>
+      <main className={"temp-class"}> //TODO remove temp-class after tailwindcss styling
         <section className="chatMessage chatOutline">
           <h1>Tell the love to your opponent</h1>
           <section ref={chatBoxRef} className="chatMessage chatBox">

@@ -1,6 +1,7 @@
 import { StrictMode } from "react";
 import Footer from "../lib/Footer";
 import Navbar from "../lib/Navbar";
+import AppButton from "../lib/AppButton";
 
 // TODO: Headebar component
 
@@ -10,17 +11,18 @@ interface HomeProps {
   tryRemoveAccount: () => Promise<void>;
 }
 
-function Home({ tryConnection, tryLogout, tryRemoveAccount }: HomeProps) {
+function Home({ tryConnection, tryLogout }: HomeProps) {
   return (
     <StrictMode>
       <div className="flex flex-col h-screen w-screen justify-between">
         <Navbar tryLogout={tryLogout} />
-        {/* <button onClick={tryRemoveAccount}>Remove account</button> */}
 
         <main>
           <h1>Home</h1>
           <br />
-          <button onClick={() => tryConnection()}>Play</button>
+          <AppButton color={"regular"} onClick={() => tryConnection()}>
+            Play
+          </AppButton>
         </main>
 
         <Footer />

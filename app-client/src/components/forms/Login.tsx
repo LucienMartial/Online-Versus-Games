@@ -3,6 +3,7 @@ import AnimatedInput from "./AnimatedInput";
 import AppLink from "../lib/AppLink";
 import AppError from "./AppError";
 import Footer from "../lib/Footer";
+import AppButton from "../lib/AppButton";
 
 interface LoginProps {
   tryLogin: (username: string, password: string) => Promise<void>;
@@ -51,9 +52,9 @@ function Login({ tryLogin }: LoginProps) {
             onChange={(e) => setPassword(e.target.value)}
           />
           {errorMessage && <AppError>{errorMessage}</AppError>}
-          <button type="submit" className={"bg-themelight"}>
+          <AppButton color={"regular"} type={"submit"}>
             Login
-          </button>
+          </AppButton>
           <p>
             No account yet ?{" "}
             <AppLink to={"/register"}>Create an account</AppLink>

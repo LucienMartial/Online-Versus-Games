@@ -8,6 +8,7 @@ import {
 import LoadingPage from "./components/LoadingPage";
 import { useGameConnect } from "./hooks/useGameConnect";
 import useAccount from "./hooks/useAccount";
+import ProfilePopup from "./components/user/ProfilePopup";
 
 const Game = lazy(() => import("./components/game/Game"));
 const Login = lazy(() => import("./components/forms/Login"));
@@ -18,8 +19,7 @@ const Privacy = lazy(() => import("./components/static-pages/Privacy"));
 const Acknowledgement = lazy(
   () => import("./components/static-pages/Acknowledgment")
 );
-const Profile = lazy(() => import("./components/user/Profile"));
-const History = lazy(() => import("./components/user/History"));
+const User = lazy(() => import("./components/user/User"));
 
 // user context
 const UserContext = createContext({});
@@ -36,6 +36,12 @@ function App() {
   useEffect(() => {
     if (!client) return;
     const load = async () => {
+      // game already defined
+      if (gameRoom) {
+        setLoaded(true);
+        return;
+      }
+      // try to reconnect
       try {
         await tryReconnection();
       } catch (e) {
@@ -94,16 +100,9 @@ function App() {
     );
   };
 
-  // TODO: profile dependant on login info
-
-  const renderProfile = () => {
+  const renderUser = () => {
     if (!loggedIn) return <Navigate to={"/login"} />;
-    return <Profile tryLogout={tryLogout} />;
-  };
-
-  const renderHistory = () => {
-    if (!loggedIn) return <Navigate to={"/login"} />;
-    return <History tryLogout={tryLogout} />;
+    return <User tryLogout={tryLogout} tryRemoveAccount={tryRemoveAccount} />;
   };
 
   // free access page
@@ -125,10 +124,12 @@ function App() {
           <Routes>
             <Route path="/" element={renderDefault()} />
             <Route path="/home" element={renderHome()} />
-            <Route path="/profile" element={renderProfile()} />
+            <Route
+              path="/user"
+              element={<Navigate to={"/user/" + username} />}
+            />
+            <Route path="/user/:username" element={renderUser()} />
             <Route path="/login" element={renderLogin()} />
-            <Route path="/history" element={renderHistory()} />
-            <Route path="/history/:username" element={renderHistory()} />
             <Route path="/register" element={renderRegister()} />
             <Route path="/game" element={renderGame()} />
             <Route path="/privacy" element={<Privacy />} />

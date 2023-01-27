@@ -30,18 +30,15 @@ interface GameParams {
 class GameRoom extends Room<GameState> {
   dispatcher = new Dispatcher(this);
   gameEngine!: DiscWarEngine;
-  leftId!: string | null;
-  rightId!: string | null;
-  nbClient!: number;
-  maxDeath!: number;
+  leftId: string | null = null;
+  rightId: string | null = null;
+  nbClient = 0;
+  maxDeath = MAX_DEATH;
+  gameEnded = false;
+  maxClients = 2;
   clientsMap: Map<string, string> = new Map();
 
   onCreate({ dbCreateGame }: GameParams) {
-    this.maxClients = 2;
-    this.maxDeath = MAX_DEATH;
-    this.nbClient = 0;
-    this.leftId = null;
-    this.rightId = null;
     this.setState(new GameState());
     this.gameEngine = new DiscWarEngine(true);
     this.gameEngine.maxDeath = this.maxDeath;
@@ -51,6 +48,7 @@ class GameRoom extends Room<GameState> {
 
     // end of game
     this.gameEngine.onEndGame = async () => {
+      this.gameEnded = true;
       const chatEndGameRoom = await matchMaker.createRoom("chat-room", {});
       const state = new EndGameState(this.gameEngine, this);
       dbCreateGame(state);

@@ -44,7 +44,7 @@ function Game({ client, gameRoom, setGameRoom }: GameProps) {
   const guiRef = useRef<HTMLDivElement>(null);
   const [gameScene, setGameScene] = useState<GameScene | undefined>();
   const [endGameState, setEndGameState] = useState<EndGameState>();
-  const [chatRoom, setChatRoom] = useState<Room>();
+  const [chatRoom, setChatRoom] = useState<Room | null>(null);
 
   const load = async () => {
     await Assets.init({ manifest: manifest });
@@ -136,6 +136,7 @@ function Game({ client, gameRoom, setGameRoom }: GameProps) {
   };
 
   useEffect(() => {
+    if (chatRoom) return;
     load();
   }, []);
 
