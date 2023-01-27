@@ -1,3 +1,5 @@
+import { ObjectId } from "mongodb";
+
 interface User {
   name: string;
   password: string;
@@ -9,9 +11,15 @@ interface Game {
 }
 
 interface GamePlayer {
+  user_id: ObjectId;
   username: string;
-  deathCount: number;
   victory: boolean;
+  deaths: number;
+  straightShots: number;
+  curveShots: number;
+  shields: number;
+  shieldCatches: number;
+  dashes: number;
 }
 
 export type { User, Game, GamePlayer };

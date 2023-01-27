@@ -11,6 +11,7 @@ import {
 import { InputsData } from "../app-shared/types/index.js";
 import { CBuffer } from "../app-shared/utils/cbuffer.js";
 import { Request } from "express";
+import { ObjectId } from "mongodb";
 
 // maximum number of inputs saved for each client
 const MAX_INPUTS = 50;
@@ -89,20 +90,26 @@ class GameRoom extends Room<GameState> {
     // check if authentified
     if (!request.session || !request.session.authenticated) return false;
     // check if already in a room
+    const id = request.session.id;
     const username = request.session.username;
     const alreadyExist = [...this.clientsMap.values()].includes(username);
-    if (!username || alreadyExist) {
+    if (!username || !id || alreadyExist) {
       return false;
     }
     // add username
-    this.clientsMap.set(client.id, request.session.username);
-    console.log("client authenticated");
+    this.clientsMap.set(client.id, username);
+    console.log("client authenticated", username, id);
+    // client data
+    client.userData = {
+      inputBuffer: new CBuffer<InputsData>(MAX_INPUTS),
+      username: username,
+      id: id,
+    };
     return true;
   }
 
   onJoin(client: Client) {
     this.dispatcher.dispatch(new OnJoinCommand(), {
-      maxInputs: MAX_INPUTS,
       client: client,
       gameEngine: this.gameEngine,
     });

@@ -1,4 +1,4 @@
-import { Collection } from "mongodb";
+import { Collection, ObjectId } from "mongodb";
 import { EndGameState } from "../../app-shared/state/end-game-state.js";
 import { AppError } from "../utils/error.js";
 import { Game, GamePlayer } from "../../app-shared/types/index.js";
@@ -8,11 +8,17 @@ export default function (games: Collection<Game>) {
     try {
       // insert game
       const players: GamePlayer[] = [];
-      state.players.forEach((state, id) => {
+      state.players.forEach((state) => {
         players.push({
+          user_id: new ObjectId(state.id),
           username: state.username,
-          deathCount: state.deaths,
           victory: state.victory,
+          deaths: state.deaths,
+          straightShots: state.straightShots,
+          curveShots: state.curveShots,
+          shields: state.shields,
+          shieldCatches: state.shieldCatches,
+          dashes: state.dashes,
         });
       });
       const res = await games.insertOne({
@@ -27,12 +33,12 @@ export default function (games: Collection<Game>) {
 
   // for speciefied username, return the most recent games
   async function getGames(
-    username: string,
+    id: ObjectId,
     skip: number,
     limit: number
   ): Promise<Game[]> {
     try {
-      const querry = { players: { $elemMatch: { username: username } } };
+      const querry = { players: { $elemMatch: { user_id: id } } };
       const result = await games
         .find(querry)
         .limit(limit)
@@ -41,7 +47,7 @@ export default function (games: Collection<Game>) {
       return result.toArray();
     } catch (e) {
       if (e instanceof Error)
-        console.log("game fetching error for user ", username, e.message);
+        console.log("game fetching error for user ", id, e.message);
       throw new AppError(500, "Error while fetching game");
     }
   }

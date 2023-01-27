@@ -10,6 +10,7 @@ import ChatContainer from "../chat-components/ChatContainer";
 import { Room } from "colyseus.js";
 import { FiUser } from "react-icons/fi";
 import ProfilePopup from "../user/ProfilePopup";
+import AppButton from "../lib/AppButton";
 
 interface EndScreenProps {
   gameScene: GameScene;
@@ -125,7 +126,9 @@ function EndScreen({
         <section className="grow">
           <ChatContainer chatRoom={chatRoom} />
         </section>
-        <button onClick={leaveGame}>Leave</button>
+        <AppButton color="regular" onClick={leaveGame}>
+          Leave
+        </AppButton>
       </main>
     </StrictMode>
   );

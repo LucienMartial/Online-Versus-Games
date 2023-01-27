@@ -1,10 +1,12 @@
 import { Schema, type, MapSchema } from "@colyseus/schema";
 import { Client } from "colyseus";
+import { ObjectId } from "mongodb";
 import { GameRoom } from "../../app-server/game-room.js";
 import { DiscWarEngine, Player } from "../disc-war/index.js";
 
 // stat
 class EndGamePlayerState extends Schema {
+  @type("string") id = "";
   @type("string") username = "";
   @type("boolean") victory = false;
   @type("number") deaths = 0;
@@ -21,10 +23,12 @@ class EndGameState extends Schema {
 
   constructor(engine: DiscWarEngine, room: GameRoom) {
     super();
-    for (const player of engine.get<Player>("players")) {
+    for (const client of room.clients) {
+      const player = engine.getPlayer(client.id);
       // player state
       const state = new EndGamePlayerState();
-      state.username = room.clientsMap.get(player.id) ?? "";
+      state.username = client.userData.username;
+      state.id = client.userData.id;
 
       // victory
       state.victory = player.deathCounter !== room.maxDeath;

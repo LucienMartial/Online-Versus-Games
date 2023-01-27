@@ -19,7 +19,7 @@ class Database {
 
   // games
   createGame: (state: EndGameState) => Promise<void>;
-  getGames: (username: string, skip: number, limit: number) => Promise<Game[]>;
+  getGames: (id: ObjectId, skip: number, limit: number) => Promise<Game[]>;
 
   constructor() {
     if (process.env.MONGODB_URL === "") console.log("MONGODB URL is empty");

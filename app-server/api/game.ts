@@ -7,9 +7,9 @@ export default function (db: Database): Router {
 
   router.get("/history/:username", async (req: Request, res: Response) => {
     const username = req.params.username;
-    const user = await db.searchUser(username);
-    if (!user) throw new AppError(400, "User does not exist");
-    const games = await db.getGames(username, 0, 30);
+    const { _id } = await db.searchUser(username);
+    if (!_id) throw new AppError(400, "User does not exist");
+    const games = await db.getGames(_id, 0, 30);
     res.status(200).json(games);
   });
 
