@@ -12,8 +12,8 @@ interface UserProps {
 
 export default function User({ tryLogout, tryRemoveAccount }: UserProps) {
   const { username = " " } = useParams();
-  const connectedUser = useContext(UserContext);
-  const isUser = connectedUser === username;
+  const userData = useContext(UserContext);
+  const isUser = userData.username === username;
   return (
     <StrictMode>
       <div className="flex flex-col h-screen w-screen justify-between">

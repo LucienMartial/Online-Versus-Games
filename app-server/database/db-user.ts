@@ -1,13 +1,12 @@
 import bcrypt from "bcryptjs";
-import { Document, WithId } from "mongodb";
+import { ObjectId, WithId } from "mongodb";
 import { Collection } from "mongodb";
+import { User } from "../../app-shared/types/db-types.js";
 
 const saltRounds = 10;
 
-export default function (users: Collection) {
-  async function searchUser(
-    username: string
-  ): Promise<WithId<Document> | null> {
+export default function (users: Collection<User>) {
+  async function searchUser(username: string): Promise<WithId<User> | null> {
     try {
       const query = { name: username };
       return await users.findOne(query);
@@ -28,22 +27,22 @@ export default function (users: Collection) {
     }
   }
 
-  async function createUser(username: string, password: string) {
+  async function createUser(
+    username: string,
+    password: string
+  ): Promise<ObjectId | null> {
     try {
       const salt = await bcrypt.genSalt(saltRounds);
       const hash = await bcrypt.hash(password, salt);
-      const user = { name: username, password: hash };
-      return await users.insertOne(user);
+      const user = await users.insertOne({ name: username, password: hash });
+      return user.insertedId;
     } catch (e) {
       if (e instanceof Error) console.log("user creation error", e.message);
+      return null;
     }
   }
 
-  async function matchPassword(
-    username: string,
-    password: string
-  ): Promise<boolean> {
-    const user = await searchUser(username);
+  async function matchPassword(password: string, user: User): Promise<boolean> {
     if (user && user.password) {
       const hash = user.password;
       return await bcrypt.compare(password, hash);

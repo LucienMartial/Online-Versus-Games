@@ -27,6 +27,11 @@ class Player extends BodyEntity {
 
   // stats
   deathCounter: number;
+  dashCounter: number;
+  shieldCounter: number;
+  successfulShieldCounter: number;
+  straightShotCounter: number;
+  curveShotCounter: number;
 
   disc: Disc;
   direction: SAT.Vector;
@@ -54,6 +59,11 @@ class Player extends BodyEntity {
 
     // stat
     this.deathCounter = 0;
+    this.dashCounter = 0;
+    this.shieldCounter = 0;
+    this.successfulShieldCounter = 0;
+    this.straightShotCounter = 0;
+    this.curveShotCounter = 0;
 
     // custom
     this.disc = disc;
@@ -95,6 +105,7 @@ class Player extends BodyEntity {
     if (!other.static) {
       // did try to counter
       if (this.counterTimer.active) {
+        this.successfulShieldCounter += 1;
         this.disc.attach(this);
       }
 
@@ -117,9 +128,11 @@ class Player extends BodyEntity {
     // counter ability
     if (
       inputs.keys.counter &&
+      !this.counterTimer.active &&
       !this.counterCooldownTimer.active &&
       !this.possesDisc
     ) {
+      this.shieldCounter += 1;
       this.counterTimer.timeout(COUNTER_DURATION, () => {
         this.counterCooldownTimer.timeout(COUNTER_COOLDOWN);
       });
@@ -128,6 +141,10 @@ class Player extends BodyEntity {
     // shoot ability
     if ((inputs.mouseLeft || inputs.mouseRight) && this.possesDisc) {
       // if shooting
+      // stats
+      if (inputs.mouseRight) this.curveShotCounter += 1;
+      else this.straightShotCounter += 1;
+      // logic
       const dir = new SAT.Vector();
       dir.x = inputs.mousePos.x - this.position.x;
       dir.y = inputs.mousePos.y - this.position.y;
@@ -156,6 +173,7 @@ class Player extends BodyEntity {
 
     // dash ability
     if (inputs.keys.dash && !this.dashCooldownTimer.active) {
+      this.dashCounter += 1;
       this.maxSpeed = DASH_SPEED;
       this.dashForce = this.direction.clone().scale(DASH_SPEED);
       this.onDash?.(this.position.x, this.position.y);

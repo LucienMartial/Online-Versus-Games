@@ -1,5 +1,7 @@
+import { ObjectId } from "mongodb";
 import { useCallback, useEffect, useState } from "react";
 import type { Error } from "../../../app-shared/types";
+import { UserContextType } from "../App";
 
 /**
  * Utils
@@ -7,6 +9,7 @@ import type { Error } from "../../../app-shared/types";
 
 interface postRes {
   success: boolean;
+  res?: Response;
   message?: string;
 }
 
@@ -19,7 +22,7 @@ async function postData(path: string, body: {}): Promise<postRes> {
     body: JSON.stringify(body),
   });
   // success
-  if (res.status === 200) return { success: true };
+  if (res.status === 200) return { success: true, res: res };
   // failed
   const error: Error = await res.json();
   return {
@@ -91,9 +94,14 @@ function useAccount(): useAccountRes {
   const [loggedIn, setLoggedIn] = useState<boolean | null>(null);
 
   const tryLogin = useCallback(async (username: string, password: string) => {
-    const { success, message } = await postLogin(username, password);
-    if (!success) throw new Error(message);
-    localStorage.setItem("username", username);
+    const { success, message, res } = await postLogin(username, password);
+    if (!success || !res) throw new Error(message);
+    const { id } = await res.json();
+    const userData: UserContextType = {
+      id: id,
+      username: username,
+    };
+    localStorage.setItem("user-data", JSON.stringify(userData));
     setLoggedIn(true);
   }, []);
 
@@ -105,9 +113,14 @@ function useAccount(): useAccountRes {
 
   const tryRegister = useCallback(
     async (username: string, password: string) => {
-      const { success, message } = await postRegister(username, password);
-      if (!success) throw new Error(message);
-      localStorage.setItem("username", username);
+      const { success, message, res } = await postRegister(username, password);
+      if (!success || !res) throw new Error(message);
+      const { id } = await res.json();
+      const userData: UserContextType = {
+        id: id,
+        username: username,
+      };
+      localStorage.setItem("user-data", JSON.stringify(userData));
       setLoggedIn(true);
     },
     []

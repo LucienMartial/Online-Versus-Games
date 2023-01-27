@@ -1,3 +1,8 @@
+interface User {
+  name: string;
+  password: string;
+}
+
 interface Game {
   timestamp: Date;
   players: GamePlayer[];
@@ -9,4 +14,4 @@ interface GamePlayer {
   victory: boolean;
 }
 
-export type { Game, GamePlayer };
+export type { User, Game, GamePlayer };

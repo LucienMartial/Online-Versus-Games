@@ -1,9 +1,12 @@
 import { beforeEach, describe, expect, it, vi, withCallback } from "vitest";
 import request from "supertest";
 import { initApp, withCookie } from "../utils";
+import { ObjectId } from "mongodb";
+import { Login } from "../../app-shared/types";
 
 const matchPassword = vi.fn();
-const app = initApp({ matchPassword });
+const searchUser = vi.fn();
+const app = initApp({ matchPassword, searchUser });
 
 async function login(body: {
   username?: string;
@@ -17,12 +20,15 @@ async function login(body: {
 describe("POST /login", () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    searchUser.mockReturnValue({ _id: new ObjectId(0), password: "hey" });
   });
 
   describe("user login", () => {
     it("valid username and password", async () => {
       matchPassword.mockReturnValue(true);
       const res = await login({ username: "john", password: "john13" });
+      const data: Login = res.body;
+      expect(data.id).toBeDefined();
       expect(res.status).toEqual(200);
     });
 

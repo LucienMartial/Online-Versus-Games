@@ -11,7 +11,8 @@ function ChatMessage({ message }: ChatMessageProperties) {
     return time < 10 ? "0" + time : time;
   }
 
-  const username = useContext(UserContext);
+  const { username } = useContext(UserContext);
+
   return (
     <StrictMode>
       <div

@@ -42,9 +42,12 @@ function PlayerRow({
           <span className="ml-4">{player.username}</span>
         </div>
       </td>
-      <td>{player.deathCounter}</td>
-      <td>{"NEED VALUE"}</td>
-      <td>{"NEED VALUE"}</td>
+      <td>{player.deaths}</td>
+      <td>{player.straightShots}</td>
+      <td>{player.curveShots}</td>
+      <td>{player.shields}</td>
+      <td>{player.shieldCatches}</td>
+      <td>{player.dashes}</td>
     </tr>
   );
 }
@@ -108,9 +111,12 @@ function EndScreen({
             <thead>
               <tr>
                 <th className="px-2 py-1 w-3/6 text-left">Players</th>
-                <th>Death</th>
-                <th>Shots</th>
-                <th>Counters</th>
+                <th>Deaths</th>
+                <th>Straight Shots</th>
+                <th>Curve Shots</th>
+                <th>Shields</th>
+                <th>Shield Catches</th>
+                <th>Dashes</th>
               </tr>
             </thead>
             <tbody>{listPlayers}</tbody>

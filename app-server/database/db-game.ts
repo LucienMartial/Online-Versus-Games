@@ -11,7 +11,7 @@ export default function (games: Collection<Game>) {
       state.players.forEach((state, id) => {
         players.push({
           username: state.username,
-          deathCount: state.deathCounter,
+          deathCount: state.deaths,
           victory: state.victory,
         });
       });

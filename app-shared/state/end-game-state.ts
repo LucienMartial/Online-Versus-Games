@@ -6,8 +6,13 @@ import { DiscWarEngine, Player } from "../disc-war/index.js";
 // stat
 class EndGamePlayerState extends Schema {
   @type("string") username = "";
-  @type("number") deathCounter = 0;
   @type("boolean") victory = false;
+  @type("number") deaths = 0;
+  @type("number") dashes = 0;
+  @type("number") shields = 0;
+  @type("number") shieldCatches = 0;
+  @type("number") straightShots = 0;
+  @type("number") curveShots = 0;
 }
 
 class EndGameState extends Schema {
@@ -20,12 +25,17 @@ class EndGameState extends Schema {
       // player state
       const state = new EndGamePlayerState();
       state.username = room.clientsMap.get(player.id) ?? "";
-      state.deathCounter = player.deathCounter;
 
       // victory
-      if (player.deathCounter !== room.maxDeath) {
-        state.victory = true;
-      }
+      state.victory = player.deathCounter !== room.maxDeath;
+
+      // stats
+      state.deaths = player.deathCounter;
+      state.dashes = player.dashCounter;
+      state.shields = player.shieldCounter;
+      state.shieldCatches = player.successfulShieldCounter;
+      state.straightShots = player.straightShotCounter;
+      state.curveShots = player.curveShotCounter;
 
       // set player in map
       this.players.set(player.id, state);

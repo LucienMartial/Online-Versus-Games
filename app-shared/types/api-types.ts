@@ -1,10 +1,12 @@
+import { ObjectId } from "mongodb";
+
 interface Message {
   content: string;
   date: Date;
 }
 
 interface Login {
-  username: string;
+  id: ObjectId;
 }
 
 interface Error {

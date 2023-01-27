@@ -8,7 +8,7 @@ import {
 import LoadingPage from "./components/LoadingPage";
 import { useGameConnect } from "./hooks/useGameConnect";
 import useAccount from "./hooks/useAccount";
-import ProfilePopup from "./components/user/ProfilePopup";
+import { ObjectId } from "mongodb";
 
 const Game = lazy(() => import("./components/game/Game"));
 const Login = lazy(() => import("./components/forms/Login"));
@@ -22,10 +22,16 @@ const Acknowledgement = lazy(
 const User = lazy(() => import("./components/user/User"));
 
 // user context
-const UserContext = createContext({});
+interface UserContextType {
+  id: ObjectId;
+  username: string;
+}
+const UserContext = createContext<UserContextType>({} as UserContextType);
 
 function App() {
-  const [username, setUsername] = useState("Hacker");
+  const [userData, setUserData] = useState<UserContextType>(
+    {} as UserContextType
+  );
   const [loaded, setLoaded] = useState(false);
   const { loggedIn, tryLogin, tryLogout, tryRegister, tryRemoveAccount } =
     useAccount();
@@ -55,8 +61,10 @@ function App() {
 
   // change local storage every connection/disconnection
   useEffect(() => {
-    const usernameLocalStorage = localStorage.getItem("username") ?? "hacker";
-    setUsername(usernameLocalStorage);
+    const userDataString = localStorage.getItem("user-data");
+    if (!userDataString) return;
+    const userData: UserContextType = JSON.parse(userDataString);
+    setUserData(userData);
   }, [loggedIn]);
 
   useEffect(() => {
@@ -118,7 +126,7 @@ function App() {
   };
 
   return (
-    <UserContext.Provider value={username}>
+    <UserContext.Provider value={userData}>
       <Router>
         <Suspense fallback={<LoadingPage />}>
           <Routes>
@@ -126,7 +134,7 @@ function App() {
             <Route path="/home" element={renderHome()} />
             <Route
               path="/user"
-              element={<Navigate to={"/user/" + username} />}
+              element={<Navigate to={"/user/" + userData.username} />}
             />
             <Route path="/user/:username" element={renderUser()} />
             <Route path="/login" element={renderLogin()} />
@@ -144,3 +152,4 @@ function App() {
 
 export default App;
 export { UserContext };
+export type { UserContextType };

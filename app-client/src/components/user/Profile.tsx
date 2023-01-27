@@ -48,7 +48,7 @@ export default function Profile({
     <main className="h-full flex flex-col min-h-0">
       <div className=" grid grid-cols-2 text-lg">
         <div
-          className={`flex flex-row justify-center items-center cursor-pointer p-4 border-b-2 ${
+          className={`flex flex-row justify-center items-center cursor-pointer p-3 border-b-2 ${
             currentTab === "overview" ? activeTabStyle : inactiveTabStyle
           }`}
           onClick={() => setCurrentTab("overview")}
@@ -57,7 +57,7 @@ export default function Profile({
           <h2>Overview</h2>
         </div>
         <div
-          className={`flex flex-row justify-center items-center cursor-pointer p-4 border-b-2 ${
+          className={`flex flex-row justify-center items-center cursor-pointer p-3 border-b-2 ${
             currentTab === "history" ? activeTabStyle : inactiveTabStyle
           }`}
           onClick={() => setCurrentTab("history")}

@@ -1,30 +1,21 @@
-import {
-  Collection,
-  Db,
-  Document,
-  InsertOneResult,
-  MongoClient,
-  WithId,
-} from "mongodb";
+import { Collection, Db, MongoClient, WithId } from "mongodb";
 import { EndGameState } from "../../app-shared/state/end-game-state.js";
 import ClientMethods from "./db-user.js";
 import GameMethods from "./db-game.js";
-import { Game } from "../../app-shared/types/index.js";
+import { Game, User } from "../../app-shared/types/index.js";
+import { ObjectId } from "mongodb";
 
 class Database {
   private client: MongoClient;
   private database: Db;
-  private users: Collection;
+  private users: Collection<User>;
   private games: Collection<Game>;
 
   // users
-  searchUser: (username: string) => Promise<WithId<Document> | undefined>;
+  searchUser: (username: string) => Promise<WithId<User> | null>;
   removeUser: (username: string) => Promise<boolean>;
-  createUser: (
-    username: string,
-    password: string
-  ) => Promise<InsertOneResult<Document>>;
-  matchPassword: (username: string, password: string) => Promise<boolean>;
+  createUser: (username: string, password: string) => Promise<ObjectId | null>;
+  matchPassword: (password: string, user: User) => Promise<boolean>;
 
   // games
   createGame: (state: EndGameState) => Promise<void>;
