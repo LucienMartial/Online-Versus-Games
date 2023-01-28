@@ -5,6 +5,7 @@ import RegisterRouter from "./register.js";
 import LogoutRemoveRouter from "./logout-remove.js";
 import ProfileRouter from "./profile.js";
 import FriendsRouter from "./friends.js";
+import ShopRouter from "./shop.js";
 
 export default function (database: any): Router {
   const router = Router();
@@ -13,6 +14,7 @@ export default function (database: any): Router {
   router.use(LogoutRemoveRouter(database));
   router.use(ProfileRouter(database));
   router.use(FriendsRouter(database));
+  router.use(ShopRouter(database));
   router.use(handleAppError);
   return router;
 }

@@ -21,6 +21,7 @@ const Acknowledgement = lazy(
   () => import("./components/static-pages/Acknowledgment")
 );
 const User = lazy(() => import("./components/user/User"));
+const Shop = lazy(() => import("./components/user/Shop"));
 
 // user context
 interface UserContextType {
@@ -118,6 +119,13 @@ function App() {
     return <User tryLogout={tryLogout} tryRemoveAccount={tryRemoveAccount} />;
   };
 
+  // shop page
+
+  const renderShop = () => {
+    if (!loggedIn) return <Navigate to={"/login"} />;
+    return <Shop />;
+  };
+
   // free access page
 
   const renderLogin = () => {
@@ -143,6 +151,7 @@ function App() {
                 element={<Navigate to={"/user/" + userData.username} />}
               />
               <Route path="/user/:username" element={renderUser()} />
+              <Route path="/shop" element={renderShop()} />
               <Route path="/login" element={renderLogin()} />
               <Route path="/register" element={renderRegister()} />
               <Route path="/game" element={renderGame()} />

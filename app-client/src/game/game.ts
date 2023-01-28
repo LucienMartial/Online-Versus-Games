@@ -22,6 +22,7 @@ import { Emitter } from "pixi-particles";
 import { DASH_ANIMATION } from "./effects/configs/dash-anim-config";
 import { DEATH_ANIMATION } from "./effects/configs/death-anim-config";
 import { DeathAnimManager } from "./effects/death-anim-manager";
+import { CosmeticAssets } from "./configs/assets-config";
 
 const PLAYER_GHOST = false;
 const DISC_GHOST = false;
@@ -43,6 +44,7 @@ class GameScene extends Scene {
   lastState?: GameState;
   dashAnimManager!: DashAnimManager;
   deathAnimManager!: DeathAnimManager;
+  cosmeticsAssets?: CosmeticAssets;
 
   constructor(
     viewport: Viewport,
@@ -65,6 +67,8 @@ class GameScene extends Scene {
    * Do not forget to remove assets loaded in destroy
    */
   async load(): Promise<void> {
+    this.cosmeticsAssets = await Assets.loadBundle("cosmetics");
+
     const assets = await Assets.loadBundle("basic");
 
     // particle effects
@@ -180,7 +184,8 @@ class GameScene extends Scene {
       this.id,
       this.dashAnimManager,
       this.deathAnimManager,
-      this.viewport
+      this.viewport,
+      this.cosmeticsAssets!
     );
     mainPlayerRender.container.zIndex = 10;
     this.add(mainPlayerRender, false);
@@ -231,6 +236,7 @@ class GameScene extends Scene {
    */
   destroy() {
     Assets.unload("basic");
+    Assets.unload("cosmetics");
     super.destroy();
   }
 
@@ -259,7 +265,7 @@ class GameScene extends Scene {
         this.dashAnimManager,
         this.deathAnimManager,
         this.viewport,
-        0x0099cc
+        this.cosmeticsAssets!
       );
       this.add(playerRender, false);
       this.mapFiltered.addChild(playerRender.container);

@@ -6,8 +6,9 @@ import * as PIXI from "pixi.js";
 import { DashAnimManager } from "../effects/dash-anim-manager";
 import { DeathAnimManager } from "../effects/death-anim-manager";
 import { Viewport } from "pixi-viewport";
-
-const DEFAULT_COLOR = 0x990000;
+import { Cosmetics } from "./cosmetics/cosmetics";
+import { CosmeticAssets } from "../configs/assets-config";
+import { DEFAULT_SKIN } from "../../../../app-shared/configs/shop-config";
 
 class PlayerRender extends RenderObject {
   player: Player;
@@ -18,6 +19,8 @@ class PlayerRender extends RenderObject {
   viewports: Viewport;
   dashAnim: DashAnimManager;
   deathAnim: DeathAnimManager;
+  cosmetics: Cosmetics;
+  reflection: PIXI.Graphics;
 
   constructor(
     player: Player,
@@ -25,12 +28,17 @@ class PlayerRender extends RenderObject {
     dashAnim: DashAnimManager,
     deathAnim: DeathAnimManager,
     viewports: Viewport,
-    color = DEFAULT_COLOR
+    cosmeticsAssets: CosmeticAssets
   ) {
     super(id);
     const shape = player.collisionShape as BoxShape;
     this.player = player;
-    this.display = Graphics.createRectangle(shape.width, shape.height, color);
+    this.display = Graphics.createRectangle(
+      shape.width,
+      shape.height,
+      0xffffff
+    );
+    this.display.tint = DEFAULT_SKIN;
     this.addChild(this.display);
     this.setOffset(player.offset.x, player.offset.y);
     this.container.sortableChildren = true;
@@ -43,8 +51,21 @@ class PlayerRender extends RenderObject {
     this.addChild(this.shield);
 
     // reflection
-    Graphics.createMirror(this.display, shape.height * 2);
+    this.reflection = Graphics.createMirror(
+      this.display,
+      shape.height * 2,
+      false
+    );
+    this.display.addChild(this.reflection);
     Graphics.createMirror(this.shield, shape.height);
+
+    // cosmetics
+    this.cosmetics = new Cosmetics(this, cosmeticsAssets);
+    this.cosmetics.loadSkins(player.cosmetics.skinID);
+    this.cosmetics.loadHats(player.cosmetics.hatID);
+    this.cosmetics.loadFaces(player.cosmetics.faceID);
+    this.cosmetics.container.zIndex = 1;
+    this.container.addChild(this.cosmetics.container);
 
     this.viewports = viewports;
 
@@ -99,6 +120,7 @@ class PlayerRender extends RenderObject {
     this.shieldWatcher.watch(this.player.counterTimer.active);
     this.position.set(this.player.position.x, this.player.position.y);
     this.shield.position = this.display.position.clone();
+    // this.container.position.set(this.position.x, this.position.y);
   }
 }
 

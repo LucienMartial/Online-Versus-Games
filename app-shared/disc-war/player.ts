@@ -5,6 +5,12 @@ import { PlayerState } from "../state/index.js";
 import { Inputs, SyncTimer } from "../utils/index.js";
 import { Disc } from "./index.js";
 
+interface PLayerCosmetics {
+  skinID: number;
+  hatID: number;
+  faceID: number;
+}
+
 // shape
 export const WIDTH = 60;
 export const HEIGHT = 110;
@@ -24,6 +30,9 @@ const COUNTER_COOLDOWN = 3 * 60;
 
 class Player extends BodyEntity {
   private isPuppet: boolean;
+
+  // cosmetics
+  cosmetics: PLayerCosmetics;
 
   // stats
   deathCounter: number;
@@ -59,6 +68,13 @@ class Player extends BodyEntity {
     const collisionShape = new BoxShape(WIDTH, HEIGHT);
     super(collisionShape, false, id);
     this.setOffset(WIDTH / 2, HEIGHT / 2);
+
+    // cosmetics
+    this.cosmetics = {
+      skinID: -1,
+      hatID: -1,
+      faceID: -1,
+    };
 
     // stat
     this.deathCounter = 0;
@@ -206,4 +222,4 @@ class Player extends BodyEntity {
   }
 }
 
-export { Player };
+export { Player, PLayerCosmetics };

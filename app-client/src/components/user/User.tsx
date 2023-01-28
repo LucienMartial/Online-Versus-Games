@@ -3,7 +3,7 @@ import { StrictMode, useContext } from "react";
 import Navbar from "../lib/Navbar";
 import Footer from "../lib/Footer";
 import Profile from "./Profile";
-import { UserContext } from "../../App";
+// import { UserContext } from "../../App";
 
 interface UserProps {
   tryLogout: () => Promise<void>;

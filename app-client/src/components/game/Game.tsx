@@ -13,25 +13,7 @@ import GameUI from "./GameUI";
 import EndScreen from "./EndScreen";
 import { EndGameState, GameState } from "../../../../app-shared/state";
 import { Assets } from "@pixi/assets";
-
-// assets information
-const manifest = {
-  bundles: [
-    {
-      name: "basic",
-      assets: [
-        {
-          name: "character",
-          srcs: "/character.png",
-        },
-        {
-          name: "bubble",
-          srcs: "../assets/animations/bubble.png",
-        },
-      ],
-    },
-  ],
-};
+import { manifest } from "../../game/configs/assets-config";
 
 export interface GameProps {
   client: Client;

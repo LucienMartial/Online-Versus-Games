@@ -22,4 +22,9 @@ interface Error {
   message: string;
 }
 
-export type { Error, Message, Login, UserTarget, RequestTarget };
+interface ApiShopData {
+  coins: number;
+  items: number[];
+}
+
+export type { Error, Message, Login, UserTarget, ApiShopData, RequestTarget };
