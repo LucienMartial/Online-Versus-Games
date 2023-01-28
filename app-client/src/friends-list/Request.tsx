@@ -2,6 +2,7 @@ import { ObjectId } from "mongodb";
 import { WithId } from "mongodb";
 import { FriendRequest } from "../../../app-shared/types";
 import { FiX, FiCheck } from "react-icons/fi";
+import UserField from "./UserField";
 
 function Request({
   request,
@@ -15,11 +16,12 @@ function Request({
   acceptRequest: (request: WithId<FriendRequest>) => Promise<void>;
 }) {
   const received = request.recipient === userId;
+  const target = received ? request.expeditorName : request.recipientName;
 
   return (
     <li className="w-full px-4">
       <div className="flex items-center justify-between mt-1 px-2 py-2 text-lg bg-slate-900">
-        <p>{received ? request.expeditorName : request.recipientName}</p>
+        <UserField username={target} />
         <div className="text-xl flex items-center gap-2">
           {received && (
             <button

@@ -6,39 +6,51 @@ function FriendTab({
   expandedByDefault,
   title,
   children,
+  notifCount,
 }: {
   expandedByDefault: boolean;
   title: string;
   children: ReactNode;
+  notifCount?: number;
 }) {
   const [expanded, setExpanded] = useState(expandedByDefault);
+  if (!notifCount) notifCount = 0;
 
   return (
     <div>
       <div
-        className="flex items-center gap-2 select-none cursor-pointer mx-4 mt-2 px-2 py-1 bg-black"
+        className="flex items-center select-none cursor-pointer mx-4 mt-2 px-2 py-1 bg-black"
         onClick={() => setExpanded(!expanded)}
       >
-        {expanded ? (
-          <AnimatePresence>
-            <motion.div
-              initial={{ rotate: -90 }}
-              animate={{ rotate: 0 }}
-              transition={{ duration: 0.1 }}
-            >
-              <FiChevronDown className="text-lg" />
-            </motion.div>
-          </AnimatePresence>
-        ) : (
-          <motion.div
-            initial={{ rotate: 90 }}
-            animate={{ rotate: 0 }}
-            transition={{ duration: 0.1 }}
-          >
-            <FiChevronRight className="text-lg" />
-          </motion.div>
-        )}
-        <p className="font-semibold text-lg">{title}</p>
+        <div className="flex w-full justify-between items-center">
+          <div className="flex items-center gap-2">
+            {expanded ? (
+              <AnimatePresence>
+                <motion.div
+                  initial={{ rotate: -90 }}
+                  animate={{ rotate: 0 }}
+                  transition={{ duration: 0.1 }}
+                >
+                  <FiChevronDown className="text-lg" />
+                </motion.div>
+              </AnimatePresence>
+            ) : (
+              <motion.div
+                initial={{ rotate: 90 }}
+                animate={{ rotate: 0 }}
+                transition={{ duration: 0.1 }}
+              >
+                <FiChevronRight className="text-lg" />
+              </motion.div>
+            )}
+            <p className="font-semibold text-lg">{title}</p>
+          </div>
+          {notifCount > 0 && (
+            <p className="bg-blue-500 px-1.5 rounded-full text-sm">
+              {notifCount}
+            </p>
+          )}
+        </div>
       </div>
       {expanded && (
         <motion.div

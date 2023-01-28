@@ -46,6 +46,7 @@ interface useFriendsRes {
   sendFriendRequest: (otherName: string) => Promise<void>;
   removeFriendRequest: (requestId: ObjectId) => Promise<void>;
   acceptFriendRequest: (request: WithId<FriendRequest>) => Promise<void>;
+  removeFriend: (friendName: string) => Promise<void>;
 }
 
 function useFriends(): useFriendsRes {
@@ -114,12 +115,28 @@ function useFriends(): useFriendsRes {
     }
   }, []);
 
+  // remove friend from friend list
+
+  const removeFriend = useCallback(async (friendName: string) => {
+    const body: UserTarget = { username: friendName };
+    const res = await postRequest("/api/friends/remove", body);
+    if (!(res instanceof Response)) throw new Error(res);
+    if (!friendsRequestsData.current) return;
+    const index = friendsRequestsData.current.friendsData.friends.findIndex(
+      (friend) => friend.username === friendName
+    );
+    if (index !== -1) {
+      friendsRequestsData.current!.friendsData.friends.splice(index, 1);
+    }
+  }, []);
+
   return {
     friendsRequestsData,
     tryGetFriends,
     sendFriendRequest,
     removeFriendRequest,
     acceptFriendRequest,
+    removeFriend,
   };
 }
 

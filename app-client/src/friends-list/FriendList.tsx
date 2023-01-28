@@ -11,11 +11,22 @@ interface FriendListProps {}
 function FriendList({}: FriendListProps) {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
-  const { friendsRequestsData, tryGetFriends } = useContext(FriendsContext);
+  const { friendsRequestsData, tryGetFriends, removeFriend } =
+    useContext(FriendsContext);
   const [friends, setFriends] = useState<Friend[]>([]);
 
   const onFriendAccept = useCallback(() => {
     setFriends([...friendsRequestsData.current!.friendsData.friends]);
+  }, []);
+
+  const onRemoveFriend = useCallback(async (friendName: string) => {
+    try {
+      await removeFriend(friendName);
+      setFriends([...friendsRequestsData.current!.friendsData.friends]);
+    } catch (e) {
+      if (e instanceof Error)
+        console.error("could not remove friend", e.message);
+    }
   }, []);
 
   useEffect(() => {
@@ -53,13 +64,21 @@ function FriendList({}: FriendListProps) {
 
   return (
     <section className={mainClasses}>
-      <FriendTab expandedByDefault={false} title="Requests">
+      <FriendTab
+        expandedByDefault={false}
+        title="Requests"
+        notifCount={friendsRequestsData.current.requestsData.length}
+      >
         <FriendRequestsList onFriendAccept={onFriendAccept} />
       </FriendTab>
       <FriendTab expandedByDefault={true} title="Friends">
         <ul className="mt-2">
           {friends.map((friend) => (
-            <FriendUser friend={friend} />
+            <FriendUser
+              key={friend.user_id.toString()}
+              friend={friend}
+              onRemoveFriend={onRemoveFriend}
+            />
           ))}
         </ul>
       </FriendTab>

@@ -118,7 +118,7 @@ export default function (
     }
 
     // user is not the one that can accept the friend request, not the recipient
-    if (friendRequest.recipient.equals(userId))
+    if (!friendRequest.recipient.equals(userId))
       throw new AppError(400, "Friend request recipient is not matching");
 
     // everything is valid, remove request and add to friends
@@ -203,7 +203,7 @@ export default function (
           },
         },
       ]);
-      if (res.deletedCount !== 2) return false;
+      if (res.hasWriteErrors() || res.modifiedCount !== 2) return false;
       return true;
     } catch (e) {
       if (e instanceof Error) console.error("remove friend error", e.message);
