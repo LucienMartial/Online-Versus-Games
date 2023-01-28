@@ -1,3 +1,4 @@
+import { request } from "express";
 import {
   StrictMode,
   useCallback,
@@ -6,7 +7,7 @@ import {
   useMemo,
   useState,
 } from "react";
-import { FriendsContext } from "../../App";
+import { FriendsContext, UserContext } from "../../App";
 import AppButton from "../lib/AppButton";
 import LoadingPage from "../LoadingPage";
 
@@ -21,11 +22,14 @@ function Overview({ username, handleRemoveAccount, isUser }: OverviewProps) {
     useContext(FriendsContext);
   const [alreadyFriend, setAlreadyFriend] = useState(false);
   const [loading, setLoading] = useState(true);
+  // check if it's own user profile
+  const userData = useContext(UserContext);
+  const sameUser = userData.username === username;
 
   const checkIfFriend = useCallback(() => {
     if (!friendsRequestsData.current) return;
     setAlreadyFriend(
-      isUser ||
+      sameUser ||
         friendsRequestsData.current.friendsData.friends.some(
           (friend) => friend.username === username
         ) ||

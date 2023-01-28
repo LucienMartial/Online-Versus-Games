@@ -43,8 +43,6 @@ function App() {
     useGameConnect();
   const friendsRes = useFriends();
 
-  console.log("RELOAD RERENDER");
-
   // try to reconnect
   useEffect(() => {
     if (!client) return;

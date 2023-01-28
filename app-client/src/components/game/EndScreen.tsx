@@ -1,4 +1,11 @@
-import { StrictMode, Dispatch, useCallback, useEffect, useState } from "react";
+import {
+  StrictMode,
+  Dispatch,
+  useCallback,
+  useEffect,
+  useState,
+  useContext,
+} from "react";
 import { GameScene } from "../../game/game";
 import {
   EndGamePlayerState,
@@ -11,6 +18,7 @@ import { Room } from "colyseus.js";
 import { FiUser } from "react-icons/fi";
 import ProfilePopup from "../user/ProfilePopup";
 import AppButton from "../lib/AppButton";
+import { UserContext } from "../../App";
 
 interface EndScreenProps {
   gameScene: GameScene;
@@ -59,6 +67,7 @@ function EndScreen({
   setGameRoom,
   chatRoom,
 }: EndScreenProps) {
+  const userData = useContext(UserContext);
   const [profileName, setProfileName] = useState<null | string>(null);
   const listPlayers: JSX.Element[] = [];
   let victory = false;
@@ -91,8 +100,6 @@ function EndScreen({
       leaveGame();
     };
   }, []);
-
-  console.log("PROFILE", profileName);
 
   if (profileName) {
     return (

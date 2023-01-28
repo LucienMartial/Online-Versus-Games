@@ -1,7 +1,6 @@
 import { Collection, ObjectId, UpdateFilter } from "mongodb";
 import {
   FriendRequest,
-  FriendRequestStatus,
   Friends,
   FriendsRequestsData,
 } from "../../app-shared/types/index.js";
@@ -81,7 +80,6 @@ export default function (
         expeditorName: username,
         recipient: otherId,
         recipientName: othername,
-        status: FriendRequestStatus.Sent,
       };
       const res = await requests.insertOne(request);
       if (!res.acknowledged) return null;

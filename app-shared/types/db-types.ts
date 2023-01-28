@@ -44,17 +44,11 @@ interface Friends {
  * Friend Request
  */
 
-enum FriendRequestStatus {
-  Sent = 0,
-  Accepted = 1,
-}
-
 interface FriendRequest {
   recipient: ObjectId;
   recipientName: string;
   expeditor: ObjectId;
   expeditorName: string;
-  status: FriendRequestStatus;
 }
 
 /**
@@ -66,7 +60,6 @@ interface FriendsRequestsData {
   requestsData: FriendRequest[];
 }
 
-export { FriendRequestStatus };
 export type {
   User,
   Game,

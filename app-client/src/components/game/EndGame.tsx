@@ -1,4 +1,4 @@
-import { StrictMode } from "react";
+import { StrictMode, useContext } from "react";
 import AppLink from "../lib/AppLink";
 
 function EndGamePlayer(
