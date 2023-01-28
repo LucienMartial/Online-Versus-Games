@@ -2,7 +2,7 @@ import { StrictMode } from "react";
 import Footer from "../lib/Footer";
 import Navbar from "../lib/Navbar";
 import AppButton from "../lib/AppButton";
-import FriendList from "./FriendList";
+import FriendList from "../../friends-list/FriendList";
 
 // TODO: Headebar component
 
@@ -18,11 +18,13 @@ function Home({ tryConnection, tryLogout }: HomeProps) {
       <div className="flex flex-col h-screen w-screen justify-between">
         <Navbar tryLogout={tryLogout} />
 
-        <main>
-          <h1>Home</h1>
-          <AppButton color={"regular"} onClick={() => tryConnection()}>
-            Play
-          </AppButton>
+        <main className="flex grow">
+          <section className="grow">
+            <h1>Game</h1>
+            <AppButton color={"regular"} onClick={() => tryConnection()}>
+              Play
+            </AppButton>
+          </section>
           <FriendList />
         </main>
 

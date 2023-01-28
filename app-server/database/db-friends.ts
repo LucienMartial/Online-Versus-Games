@@ -118,7 +118,7 @@ export default function (
     }
 
     // user is not the one that can accept the friend request, not the recipient
-    if (friendRequest.recipient.equals(requestId))
+    if (friendRequest.recipient.equals(userId))
       throw new AppError(400, "Friend request recipient is not matching");
 
     // everything is valid, remove request and add to friends
@@ -176,8 +176,39 @@ export default function (
     }
   }
 
-  async function removeFriend(otherName: string): Promise<boolean> {
-    return false;
+  async function removeFriend(
+    userId: ObjectId,
+    otherId: ObjectId
+  ): Promise<boolean> {
+    try {
+      const res = await friends.bulkWrite([
+        {
+          updateOne: {
+            filter: { _id: userId },
+            update: {
+              $pull: {
+                friends: { user_id: otherId },
+              },
+            },
+          },
+        },
+        {
+          updateOne: {
+            filter: { _id: otherId },
+            update: {
+              $pull: {
+                friends: { user_id: userId },
+              },
+            },
+          },
+        },
+      ]);
+      if (res.deletedCount !== 2) return false;
+      return true;
+    } catch (e) {
+      if (e instanceof Error) console.error("remove friend error", e.message);
+      return false;
+    }
   }
 
   return {

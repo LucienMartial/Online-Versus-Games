@@ -44,7 +44,7 @@ class Database {
     userId: ObjectId,
     requestId: ObjectId
   ) => Promise<boolean>;
-  removeFriend: (otherName: string) => Promise<boolean>;
+  removeFriend: (userId: ObjectId, otherId: ObjectId) => Promise<boolean>;
 
   constructor() {
     if (process.env.MONGODB_URL === "") console.log("MONGODB URL is empty");
@@ -94,14 +94,12 @@ class Database {
     try {
       await this.users.deleteOne({ _id: userId });
       await this.friends.deleteOne({ _id: userId });
-      console.log(userId);
-      const res = await this.friends.updateMany(
+      await this.friends.updateMany(
         {
           friends: { $elemMatch: { user_id: userId } },
         },
         { $pull: { friends: { user_id: userId } } }
       );
-      console.log(res.matchedCount, res.modifiedCount);
       await this.friendRequests.deleteMany({
         expeditor: userId,
         recipient: userId,

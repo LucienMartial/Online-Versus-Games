@@ -1,10 +1,10 @@
-// TODO: Headebar component
-
 import { useCallback, useContext, useEffect, useState } from "react";
-import { Friend } from "../../../../app-shared/types";
-import { FriendsContext } from "../../App";
-import LoadingPage from "../LoadingPage";
+import { Friend } from "../../../app-shared/types";
+import { FriendsContext } from "../App";
+import LoadingPage from "../components/LoadingPage";
 import FriendRequestsList from "./FriendRequestsList";
+import FriendTab from "./FriendTab";
+import FriendUser from "./FriendUser";
 
 interface FriendListProps {}
 
@@ -32,9 +32,11 @@ function FriendList({}: FriendListProps) {
     load();
   }, []);
 
+  const mainClasses = "bg-slate-800 w-full max-w-xs mx-auto h-full ";
+
   if (loading) {
     return (
-      <section className="bg-slate-800 flex justify-center max-w-md mx-auto mt-5">
+      <section className={mainClasses + "flex justify-center"}>
         <LoadingPage />
       </section>
     );
@@ -42,7 +44,7 @@ function FriendList({}: FriendListProps) {
 
   if (error || !friendsRequestsData.current) {
     return (
-      <section className="bg-slate-800 max-w-md mx-auto mt-5">
+      <section className={mainClasses}>
         <h2 className="text-3xl">Friends</h2>
         <p>Sorry, it seems we could not load the friends list..</p>
       </section>
@@ -50,14 +52,17 @@ function FriendList({}: FriendListProps) {
   }
 
   return (
-    <section className="bg-slate-800 max-w-md mx-auto mt-5">
-      <h2 className="text-3xl">Friends</h2>
-      <ul>
-        {friends.map((friend) => {
-          return <li key={friend.user_id.toString()}>{friend.username}</li>;
-        })}
-      </ul>
-      <FriendRequestsList onFriendAccept={onFriendAccept} />
+    <section className={mainClasses}>
+      <FriendTab expandedByDefault={false} title="Requests">
+        <FriendRequestsList onFriendAccept={onFriendAccept} />
+      </FriendTab>
+      <FriendTab expandedByDefault={true} title="Friends">
+        <ul className="mt-2">
+          {friends.map((friend) => (
+            <FriendUser friend={friend} />
+          ))}
+        </ul>
+      </FriendTab>
     </section>
   );
 }

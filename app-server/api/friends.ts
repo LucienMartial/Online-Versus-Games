@@ -44,8 +44,11 @@ export default function (db: Database): Router {
   }
 
   router.post("/friends/remove", async (req: Request, res: Response) => {
-    const id = checkClientStatus(req);
-    const otherId = await getTarget(req);
+    const { id } = checkClientStatus(req);
+    const { otherId } = await getTarget(req);
+    const result = await db.removeFriend(id, otherId);
+    if (!result) throw new AppError(500, "Could not remove friend");
+    res.status(200).end();
   });
 
   router.post("/friends/request-add", async (req: Request, res: Response) => {
