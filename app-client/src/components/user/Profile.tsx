@@ -3,6 +3,7 @@ import Overview from "./Overview";
 import History from "./History";
 import { FiUser } from "react-icons/fi";
 import { FaHistory } from "react-icons/all";
+import LoadingPage from "../LoadingPage";
 
 interface ProfileProps {
   username: string;
@@ -19,6 +20,7 @@ export default function Profile({
   handleRemoveAccount,
 }: ProfileProps) {
   const [currentTab, setCurrentTab] = useState("overview");
+  const [exist, setExist] = useState<boolean | null>(null);
 
   function renderTabs() {
     switch (currentTab) {
@@ -34,6 +36,20 @@ export default function Profile({
         return <History username={username} />;
     }
   }
+
+  useEffect(() => {
+    const load = async () => {
+      const res = await fetch("/api/profile/" + username, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      if (res.status !== 200) setExist(false);
+      else setExist(true);
+    };
+    load();
+  }, []);
 
   return (
     <main className="h-full flex flex-col min-h-0 grow">
@@ -57,7 +73,14 @@ export default function Profile({
           <h2>History</h2>
         </div>
       </div>
-      <section className="min-h-0 grow flex flex-col">{renderTabs()}</section>
+      {exist && (
+        <section className="min-h-0 grow flex flex-col">{renderTabs()}</section>
+      )}
+      {!exist && (
+        <section className="min-h-0 grow flex flex-col justify-center">
+          <h2 className="text-2xl">This user does not exist..</h2>
+        </section>
+      )}
     </main>
   );
 }

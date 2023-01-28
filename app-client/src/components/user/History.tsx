@@ -46,7 +46,14 @@ function History({ username }: HistoryProps) {
 
   return (
     <StrictMode>
-      <HistoryList games={history} username={username} />
+      {history.length > 0 && (
+        <HistoryList games={history} username={username} />
+      )}
+      {history.length === 0 && (
+        <div className="flex flex-col grow justify-center">
+          <h2 className="text-2xl">No games yet..</h2>
+        </div>
+      )}
     </StrictMode>
   );
 }

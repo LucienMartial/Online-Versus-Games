@@ -1,10 +1,8 @@
-import { request } from "express";
 import {
   StrictMode,
   useCallback,
   useContext,
   useEffect,
-  useMemo,
   useState,
 } from "react";
 import { FriendsContext, UserContext } from "../../App";

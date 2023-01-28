@@ -1,4 +1,4 @@
-import { ObjectId } from "mongodb";
+import { ObjectId, WithId } from "mongodb";
 
 /**
  * User
@@ -35,9 +35,14 @@ interface GamePlayer {
  * id is the same as the user's one
  */
 
+interface Friend {
+  user_id: ObjectId;
+  username: string;
+}
+
 interface Friends {
   _id: ObjectId;
-  friends: { user_id: ObjectId; username: string }[];
+  friends: Friend[];
 }
 
 /**
@@ -57,13 +62,14 @@ interface FriendRequest {
 
 interface FriendsRequestsData {
   friendsData: Friends;
-  requestsData: FriendRequest[];
+  requestsData: WithId<FriendRequest>[];
 }
 
 export type {
   User,
   Game,
   GamePlayer,
+  Friend,
   Friends,
   FriendRequest,
   FriendsRequestsData,

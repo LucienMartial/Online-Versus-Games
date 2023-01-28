@@ -16,17 +16,6 @@ export default function (users: Collection<User>) {
     }
   }
 
-  async function removeUser(username: string): Promise<boolean> {
-    try {
-      const query = { name: username };
-      const res = await users.deleteOne(query);
-      return res && res.deletedCount === 1;
-    } catch (e) {
-      if (e instanceof Error) console.log("user deletion error", e.message);
-      return false;
-    }
-  }
-
   async function createUser(
     username: string,
     password: string
@@ -50,5 +39,5 @@ export default function (users: Collection<User>) {
     return false;
   }
 
-  return { searchUser, removeUser, createUser, matchPassword };
+  return { searchUser, createUser, matchPassword };
 }

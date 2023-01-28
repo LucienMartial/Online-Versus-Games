@@ -19,7 +19,7 @@ describe("GET /games", () => {
 
   describe("get games", () => {
     it("user does not exist", async () => {
-      searchUser.mockReturnValue({ _id: null });
+      searchUser.mockReturnValue(null);
       const res = await games();
       expect(res.status).toEqual(400);
       expect(res.body.message).toBeDefined();

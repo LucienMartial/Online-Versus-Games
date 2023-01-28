@@ -1,4 +1,5 @@
 import { Request, Response, Router } from "express";
+import { ObjectId } from "mongodb";
 import { Database } from "../database/database.js";
 import { AppError } from "../utils/error.js";
 import { removeSesion } from "../utils/session.js";
@@ -20,11 +21,16 @@ export default function (db: Database): Router {
 
   router.post("/remove-account", async (req: Request, res: Response) => {
     // not connected
-    if (!req.session.authenticated || !req.session.username) {
+    if (
+      !req.session.authenticated ||
+      !req.session.username ||
+      !req.session.id
+    ) {
       throw new AppError(400, "Not connected");
     }
     // remove user
-    const result = await db.removeUser(req.session.username);
+    const id = new ObjectId(req.session.id);
+    const result = await db.removeUser(id);
     if (!result) {
       throw new AppError(400, "Could not remove user: " + req.session.username);
     }

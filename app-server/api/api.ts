@@ -3,7 +3,7 @@ import { handleAppError } from "../utils/error.js";
 import LoginRouter from "./login.js";
 import RegisterRouter from "./register.js";
 import LogoutRemoveRouter from "./logout-remove.js";
-import GameRouter from "./game.js";
+import ProfileRouter from "./profile.js";
 import FriendsRouter from "./friends.js";
 
 export default function (database: any): Router {
@@ -11,7 +11,7 @@ export default function (database: any): Router {
   router.use(LoginRouter(database));
   router.use(RegisterRouter(database));
   router.use(LogoutRemoveRouter(database));
-  router.use(GameRouter(database));
+  router.use(ProfileRouter(database));
   router.use(FriendsRouter(database));
   router.use(handleAppError);
   return router;

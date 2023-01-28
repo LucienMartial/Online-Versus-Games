@@ -22,7 +22,6 @@ class Database {
 
   // users
   searchUser: (username: string) => Promise<WithId<User> | null>;
-  removeUser: (username: string) => Promise<boolean>;
   createUser: (username: string, password: string) => Promise<ObjectId | null>;
   matchPassword: (password: string, user: User) => Promise<boolean>;
 
@@ -41,7 +40,10 @@ class Database {
     othername: string
   ) => Promise<FriendRequest | null>;
   removeFriendRequest: (requestId: ObjectId) => Promise<boolean>;
-  acceptFriendRequest: (requestId: ObjectId) => Promise<boolean>;
+  acceptFriendRequest: (
+    userId: ObjectId,
+    requestId: ObjectId
+  ) => Promise<boolean>;
   removeFriend: (otherName: string) => Promise<boolean>;
 
   constructor() {
@@ -60,11 +62,8 @@ class Database {
     this.friendRequests = this.database.collection("friend-requests");
 
     // users
-    const { searchUser, removeUser, createUser, matchPassword } = ClientMethods(
-      this.users
-    );
+    const { searchUser, createUser, matchPassword } = ClientMethods(this.users);
     this.searchUser = searchUser;
-    this.removeUser = removeUser;
     this.createUser = createUser;
     this.matchPassword = matchPassword;
 
@@ -86,6 +85,33 @@ class Database {
     this.removeFriendRequest = removeFriendRequest;
     this.acceptFriendRequest = acceptFriendRequest;
     this.removeFriend = removeFriend;
+  }
+
+  /**
+   * Remove user, should be a transaction because there is mutliple collection involved
+   */
+  async removeUser(userId: ObjectId): Promise<boolean> {
+    try {
+      await this.users.deleteOne({ _id: userId });
+      await this.friends.deleteOne({ _id: userId });
+      console.log(userId);
+      const res = await this.friends.updateMany(
+        {
+          friends: { $elemMatch: { user_id: userId } },
+        },
+        { $pull: { friends: { user_id: userId } } }
+      );
+      console.log(res.matchedCount, res.modifiedCount);
+      await this.friendRequests.deleteMany({
+        expeditor: userId,
+        recipient: userId,
+      });
+      return true;
+    } catch (e) {
+      if (e instanceof Error) console.error("user deletion error", e.message);
+      // temp, need transaction
+      return true;
+    }
   }
 
   async close() {

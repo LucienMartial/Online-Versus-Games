@@ -19,7 +19,7 @@ export default function HistoryEntry({
   const date = new Date(timestamp);
   return (
     <li
-      className={`flex flex-col px-2 bg-slate-500 border-b-2 last:border-b-0 border-slate-700 ${
+      className={`text-2xl flex flex-col px-2 bg-slate-500 border-b-2 last:border-b-0 border-slate-700 ${
         won ? "bg-green-900" : "bg-red-900"
       }`}
     >

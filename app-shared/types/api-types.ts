@@ -14,8 +14,12 @@ interface UserTarget {
   username: string;
 }
 
+interface RequestTarget {
+  id: ObjectId;
+}
+
 interface Error {
   message: string;
 }
 
-export type { Error, Message, Login, UserTarget };
+export type { Error, Message, Login, UserTarget, RequestTarget };

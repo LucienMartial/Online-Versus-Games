@@ -1,6 +1,6 @@
 import { Request, Response, Router } from "express";
 import { ObjectId } from "mongodb";
-import { UserTarget } from "../../app-shared/types/api-types.js";
+import { RequestTarget, UserTarget } from "../../app-shared/types/api-types.js";
 import { Database } from "../database/database.js";
 import { AppError } from "../utils/error.js";
 
@@ -62,17 +62,39 @@ export default function (db: Database): Router {
     res.status(200).end();
   });
 
+  function checkRequestTarget(req: Request): ObjectId {
+    const data: RequestTarget = req.body;
+    if (!data.id) throw new AppError(400, "No request to remove was provided");
+    try {
+      const objectId = new ObjectId(data.id);
+      return objectId;
+    } catch (e) {
+      if (e instanceof Error) console.error(e.message);
+      throw new AppError(400, "Given request id is not valid");
+    }
+  }
+
   router.post(
     "/friends/request-accept",
     async (req: Request, res: Response) => {
-      const id = checkClientStatus(req);
+      const { id } = checkClientStatus(req);
+      const requestId = checkRequestTarget(req);
+      const result = await db.acceptFriendRequest(id, requestId);
+      if (!result)
+        throw new AppError(500, "Could not accept specified friend request");
+      res.status(200).end();
     }
   );
 
   router.post(
     "/friends/request-remove",
     async (req: Request, res: Response) => {
-      const id = checkClientStatus(req);
+      checkClientStatus(req);
+      const requestId = checkRequestTarget(req);
+      const result = await db.removeFriendRequest(requestId);
+      if (!result)
+        throw new AppError(500, "Could not remove specified friend request");
+      res.status(200).end();
     }
   );
 

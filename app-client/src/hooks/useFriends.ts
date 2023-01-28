@@ -1,7 +1,9 @@
+import { ObjectId, WithId } from "mongodb";
 import { MutableRefObject, useCallback, useRef } from "react";
 import {
   FriendRequest,
   FriendsRequestsData,
+  RequestTarget,
   UserTarget,
 } from "../../../app-shared/types";
 
@@ -42,10 +44,14 @@ interface useFriendsRes {
   friendsRequestsData: MutableRefObject<FriendsRequestsData | null>;
   tryGetFriends: () => Promise<void>;
   sendFriendRequest: (otherName: string) => Promise<void>;
+  removeFriendRequest: (requestId: ObjectId) => Promise<void>;
+  acceptFriendRequest: (request: WithId<FriendRequest>) => Promise<void>;
 }
 
 function useFriends(): useFriendsRes {
   const friendsRequestsData = useRef<FriendsRequestsData | null>(null);
+
+  // fetch data
 
   const tryGetFriends = useCallback(async () => {
     if (friendsRequestsData.current) {
@@ -57,17 +63,64 @@ function useFriends(): useFriendsRes {
     friendsRequestsData.current = res;
   }, []);
 
+  // send friend request
+
   const sendFriendRequest = useCallback(async (otherName: string) => {
     if (!friendsRequestsData.current) await tryGetFriends();
     const body: UserTarget = { username: otherName };
     const res = await postRequest("/api/friends/request-add", body);
     if (!(res instanceof Response)) throw new Error(res);
-    const data: FriendRequest = await res.json();
+    const data: WithId<FriendRequest> = await res.json();
     friendsRequestsData.current?.requestsData.push(data);
-    console.log("REQUEST ID", friendsRequestsData.current);
+    console.log("REQUEST ID", data._id);
   }, []);
 
-  return { friendsRequestsData, tryGetFriends, sendFriendRequest };
+  // accept friend request
+
+  const acceptFriendRequest = useCallback(
+    async (request: WithId<FriendRequest>) => {
+      const body: RequestTarget = { id: request._id };
+      const res = await postRequest("/api/friends/request-accept", body);
+      if (!(res instanceof Response)) throw new Error(res);
+      console.log("Request successfuly accepted", request._id);
+      if (!friendsRequestsData.current) return;
+      const index = friendsRequestsData.current.requestsData.findIndex(
+        (req) => req._id === request._id
+      );
+      if (index !== -1) {
+        friendsRequestsData.current!.requestsData.splice(index, 1);
+      }
+      friendsRequestsData.current.friendsData.friends.push({
+        user_id: request.expeditor,
+        username: request.expeditorName,
+      });
+    },
+    []
+  );
+
+  // remove friend request
+
+  const removeFriendRequest = useCallback(async (requestId: ObjectId) => {
+    const body: RequestTarget = { id: requestId };
+    const res = await postRequest("/api/friends/request-remove", body);
+    if (!(res instanceof Response)) throw new Error(res);
+    console.log("Request successfuly removed", requestId);
+    if (!friendsRequestsData.current) return;
+    const index = friendsRequestsData.current.requestsData.findIndex(
+      (req) => req._id === requestId
+    );
+    if (index !== -1) {
+      friendsRequestsData.current!.requestsData.splice(index, 1);
+    }
+  }, []);
+
+  return {
+    friendsRequestsData,
+    tryGetFriends,
+    sendFriendRequest,
+    removeFriendRequest,
+    acceptFriendRequest,
+  };
 }
 
 export default useFriends;

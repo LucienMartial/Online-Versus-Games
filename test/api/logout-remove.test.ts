@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it, vi, withCallback } from "vitest";
 import request from "supertest";
 import { initApp, withCookie } from "../utils";
+import { ObjectId } from "mongodb";
 
 const matchPassword = vi.fn();
 const removeUser = vi.fn();
@@ -44,6 +45,7 @@ describe("POST /remove-account", () => {
     removeUser.mockReturnValue(true);
     const res = await withCookie(request(app).post("/api/remove-account"), {
       authenticated: true,
+      id: new ObjectId(0),
       username: "tom",
     });
     expect(res.status).toEqual(200);
