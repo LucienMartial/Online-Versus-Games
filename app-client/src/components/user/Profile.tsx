@@ -36,7 +36,7 @@ export default function Profile({
   }
 
   return (
-    <main className="h-full flex flex-col min-h-0">
+    <main className="h-full flex flex-col min-h-0 grow">
       <div className=" grid grid-cols-2 text-lg">
         <div
           className={`flex flex-row justify-center items-center cursor-pointer p-3 border-b-2 ${
@@ -57,7 +57,7 @@ export default function Profile({
           <h2>History</h2>
         </div>
       </div>
-      <section className="min-h-0 flex flex-col">{renderTabs()}</section>
+      <section className="min-h-0 grow flex flex-col">{renderTabs()}</section>
     </main>
   );
 }

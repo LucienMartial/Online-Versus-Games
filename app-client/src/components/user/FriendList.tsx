@@ -7,7 +7,7 @@ interface FriendListProps {}
 
 function FriendList({}: FriendListProps) {
   const [error, setError] = useState<string | null>(null);
-  const { friendsData, tryGetFriends } = useContext(FriendsContext);
+  const { friendsRequestsData, tryGetFriends } = useContext(FriendsContext);
 
   useEffect(() => {
     async function load() {

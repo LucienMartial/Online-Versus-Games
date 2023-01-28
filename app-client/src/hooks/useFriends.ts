@@ -1,11 +1,15 @@
 import { MutableRefObject, useCallback, useRef } from "react";
-import { Friends } from "../../../app-shared/types";
+import {
+  FriendRequest,
+  FriendsRequestsData,
+  UserTarget,
+} from "../../../app-shared/types";
 
 /**
  * Utils
  */
 
-async function fetchFriends(): Promise<Friends | Error> {
+async function fetchFriendsRequests(): Promise<FriendsRequestsData | Error> {
   const res = await fetch("/api/friends", {
     method: "GET",
     headers: {
@@ -14,10 +18,10 @@ async function fetchFriends(): Promise<Friends | Error> {
   });
   const data = await res.json();
   if (res.status !== 200) return data as Error;
-  return data as Friends;
+  return data as FriendsRequestsData;
 }
 
-async function postRequest(path: string, body: {}): Promise<Response | Error> {
+async function postRequest(path: string, body: {}): Promise<Response | string> {
   const res = await fetch(path, {
     method: "POST",
     headers: {
@@ -27,7 +31,7 @@ async function postRequest(path: string, body: {}): Promise<Response | Error> {
   });
   if (res.status === 200) return res;
   const error: Error = await res.json();
-  return error;
+  return error.message;
 }
 
 /**
@@ -35,24 +39,35 @@ async function postRequest(path: string, body: {}): Promise<Response | Error> {
  */
 
 interface useFriendsRes {
-  friendsData: MutableRefObject<Friends | null>;
+  friendsRequestsData: MutableRefObject<FriendsRequestsData | null>;
   tryGetFriends: () => Promise<void>;
+  sendFriendRequest: (otherName: string) => Promise<void>;
 }
 
 function useFriends(): useFriendsRes {
-  const friendsData = useRef<Friends | null>(null);
+  const friendsRequestsData = useRef<FriendsRequestsData | null>(null);
 
   const tryGetFriends = useCallback(async () => {
-    if (friendsData.current) {
+    if (friendsRequestsData.current) {
       console.log("Avoid loading, users already cached");
       return;
     }
-    const res = await fetchFriends();
+    const res = await fetchFriendsRequests();
     if (res instanceof Error) throw new Error(res.message);
-    friendsData.current = res;
+    friendsRequestsData.current = res;
   }, []);
 
-  return { friendsData, tryGetFriends };
+  const sendFriendRequest = useCallback(async (otherName: string) => {
+    if (!friendsRequestsData.current) await tryGetFriends();
+    const body: UserTarget = { username: otherName };
+    const res = await postRequest("/api/friends/request-add", body);
+    if (!(res instanceof Response)) throw new Error(res);
+    const data: FriendRequest = await res.json();
+    friendsRequestsData.current?.requestsData.push(data);
+    console.log("REQUEST ID", friendsRequestsData.current);
+  }, []);
+
+  return { friendsRequestsData, tryGetFriends, sendFriendRequest };
 }
 
 export default useFriends;

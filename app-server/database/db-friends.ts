@@ -1,15 +1,11 @@
-import {
-  Collection,
-  ModifyResult,
-  FindOneAndUpdateOptions,
-  ObjectId,
-  UpdateFilter,
-} from "mongodb";
+import { Collection, ObjectId, UpdateFilter } from "mongodb";
 import {
   FriendRequest,
   FriendRequestStatus,
   Friends,
+  FriendsRequestsData,
 } from "../../app-shared/types/index.js";
+import { AppError } from "../utils/error.js";
 
 export default function (
   friends: Collection<Friends>,
@@ -21,21 +17,33 @@ export default function (
    */
   async function getFriendsAndRequests(
     userId: ObjectId
-  ): Promise<ModifyResult<Friends> | null> {
+  ): Promise<FriendsRequestsData | null> {
     try {
-      const findQuerry = { _id: userId };
-      const updateQuerry = {
-        $setOnInsert: {
-          _id: userId,
-          friends: [],
-          requests: [],
-        } as UpdateFilter<Friends>,
+      // friends
+      const friendsData = await friends.findOneAndUpdate(
+        { _id: userId },
+        {
+          $setOnInsert: {
+            _id: userId,
+            friends: [],
+          } as UpdateFilter<Friends>,
+        },
+        {
+          upsert: true,
+          returnDocument: "after",
+        }
+      );
+      if (friendsData.ok === 0) return null;
+      // requests
+      const requestsData = await requests.find({
+        $or: [{ recipient: userId }, { expeditor: userId }],
+      });
+      const requestsArray = await requestsData.toArray();
+      // final data
+      return {
+        friendsData: friendsData.value,
+        requestsData: requestsArray as FriendRequest[],
       };
-      const options: FindOneAndUpdateOptions = {
-        upsert: true,
-        returnDocument: "after",
-      };
-      return await friends.findOneAndUpdate(findQuerry, updateQuerry, options);
     } catch (e) {
       if (e instanceof Error)
         console.log("Could not get friends data", e.message);
@@ -43,19 +51,41 @@ export default function (
     }
   }
 
-  async function addFriendRequest(
+  async function requestAlreadyExist(
     userId: ObjectId,
     otherId: ObjectId
-  ): Promise<ObjectId | null> {
+  ): Promise<boolean> {
+    const users = [userId, otherId];
+    try {
+      const res = await requests.findOne({
+        expeditor: { $in: users },
+        recipient: { $in: users },
+      });
+      return res !== null;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  async function addFriendRequest(
+    userId: ObjectId,
+    username: string,
+    otherId: ObjectId,
+    othername: string
+  ): Promise<FriendRequest | null> {
+    const alreadyExist = await requestAlreadyExist(userId, otherId);
+    if (alreadyExist) throw new AppError(400, "Request already exist");
     try {
       const request: FriendRequest = {
         expeditor: userId,
+        expeditorName: username,
         recipient: otherId,
+        recipientName: othername,
         status: FriendRequestStatus.Sent,
       };
       const res = await requests.insertOne(request);
       if (!res.acknowledged) return null;
-      return res.insertedId;
+      return request;
     } catch (e) {
       if (e instanceof Error)
         console.log("Could not get friends data", e.message);

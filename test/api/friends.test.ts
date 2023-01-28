@@ -1,16 +1,7 @@
-import {
-  beforeEach,
-  describe,
-  expect,
-  it,
-  Test,
-  test,
-  TestFunction,
-  vi,
-} from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import request from "supertest";
 import { initApp, withCookie } from "../utils";
-import { Friend, FriendRequest, User } from "../../app-shared/types";
+import { FriendsRequestsData, User, UserTarget } from "../../app-shared/types";
 import { ObjectId } from "mongodb";
 
 const getFriendsAndRequests = vi.fn();
@@ -43,7 +34,8 @@ describe("GET /friends", () => {
     it("database could not fetch data", async () => {
       getFriendsAndRequests.mockReturnValue(null);
       const res = await withCookie(request(app).get("/api/friends"), {
-        id: "hey",
+        id: 0,
+        username: "riri",
         authenticated: true,
       });
       expect(res.status).toEqual(500);
@@ -51,13 +43,14 @@ describe("GET /friends", () => {
     });
 
     it("valid request", async () => {
-      getFriendsAndRequests.mockReturnValue({ value: "data" });
+      getFriendsAndRequests.mockReturnValue({} as FriendsRequestsData);
       const res = await withCookie(request(app).get("/api/friends"), {
-        id: "hey",
+        id: 0,
+        username: "riri",
         authenticated: true,
       });
       expect(res.status).toEqual(200);
-      expect(res.body).toEqual("data");
+      expect(res.body).toBeDefined();
     });
   });
 });
@@ -77,7 +70,7 @@ function nonValidCookieRequest(path: string) {
 function userNotProvided(path: string) {
   it("user not provided", async () => {
     const res = await withCookie(request(app).post(path), {
-      id: "hey",
+      id: 0,
       authenticated: true,
     });
     expect(res.status).toEqual(400);
@@ -88,9 +81,10 @@ function userNotProvided(path: string) {
 function userNotExisting(path: string) {
   it("user not valid", async () => {
     searchUser.mockReturnValue(null);
-    const data: Friend = { username: "john" };
+    const data: UserTarget = { username: "john" };
     const res = await withCookie(request(app).post(path).send(data), {
-      id: "hey",
+      id: 0,
+      username: "riri",
       authenticated: true,
     });
     expect(res.status).toEqual(404);
@@ -105,7 +99,8 @@ describe("POST /friends/remove", () => {
 
   it("no user given", async () => {
     const res = await withCookie(request(app).post("/api/friends/remove"), {
-      id: "hey",
+      id: 0,
+      username: "riri",
       authenticated: true,
     });
     expect(res.status).toEqual(400);
@@ -125,10 +120,14 @@ describe("POST /friends/request-add", () => {
   it("server error", async () => {
     addFriendRequest.mockReturnValue(null);
     searchUser.mockReturnValue(new ObjectId());
-    const data: Friend = { username: "john" };
+    const data: UserTarget = { username: "john" };
     const res = await withCookie(
       request(app).post("/api/friends/request-add").send(data),
-      { id: "hey", authenticated: true }
+      {
+        id: 0,
+        username: "riri",
+        authenticated: true,
+      }
     );
     expect(res.status).toEqual(500);
     expect(res.body.message).toBeDefined();
@@ -137,10 +136,14 @@ describe("POST /friends/request-add", () => {
   it("working correctly", async () => {
     addFriendRequest.mockReturnValue(new ObjectId());
     searchUser.mockReturnValue({} as User);
-    const data: Friend = { username: "john" };
+    const data: UserTarget = { username: "john" };
     const res = await withCookie(
       request(app).post("/api/friends/request-add").send(data),
-      { id: "hey", authenticated: true }
+      {
+        id: 0,
+        username: "riri",
+        authenticated: true,
+      }
     );
     expect(res.status).toEqual(200);
     expect(res.body).toBeTypeOf("string");

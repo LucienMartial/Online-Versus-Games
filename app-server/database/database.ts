@@ -6,6 +6,7 @@ import FriendMethods from "./db-friends.js";
 import {
   FriendRequest,
   Friends,
+  FriendsRequestsData,
   Game,
   User,
 } from "../../app-shared/types/index.js";
@@ -32,11 +33,13 @@ class Database {
   // friends
   getFriendsAndRequests: (
     userId: ObjectId
-  ) => Promise<ModifyResult<Friends> | null>;
+  ) => Promise<FriendsRequestsData | null>;
   addFriendRequest: (
     userId: ObjectId,
-    otherId: ObjectId
-  ) => Promise<ObjectId | null>;
+    username: string,
+    otherId: ObjectId,
+    othername: string
+  ) => Promise<FriendRequest | null>;
   removeFriendRequest: (requestId: ObjectId) => Promise<boolean>;
   acceptFriendRequest: (requestId: ObjectId) => Promise<boolean>;
   removeFriend: (otherName: string) => Promise<boolean>;

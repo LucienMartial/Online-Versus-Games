@@ -38,7 +38,6 @@ interface GamePlayer {
 interface Friends {
   _id: ObjectId;
   friends: { user_id: ObjectId; username: string }[];
-  request: ObjectId[];
 }
 
 /**
@@ -52,9 +51,27 @@ enum FriendRequestStatus {
 
 interface FriendRequest {
   recipient: ObjectId;
+  recipientName: string;
   expeditor: ObjectId;
+  expeditorName: string;
   status: FriendRequestStatus;
 }
 
+/**
+ * Friends + request data
+ */
+
+interface FriendsRequestsData {
+  friendsData: Friends;
+  requestsData: FriendRequest[];
+}
+
 export { FriendRequestStatus };
-export type { User, Game, GamePlayer, Friends, FriendRequest };
+export type {
+  User,
+  Game,
+  GamePlayer,
+  Friends,
+  FriendRequest,
+  FriendsRequestsData,
+};
