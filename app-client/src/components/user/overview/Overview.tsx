@@ -94,7 +94,8 @@ function Overview({ username, handleRemoveAccount, isUser }: OverviewProps) {
     <StrictMode>
       <div
         className={
-          pageStyle + "md:px-6 w-full max-w-screen-xl self-center overflow-auto"
+          pageStyle +
+          "md:px-6 w-full max-w-screen-xl h-screen justify-between self-center overflow-auto"
         }
       >
         <section className="flex justify-between items-center  gap-1 mt-2 w-full">

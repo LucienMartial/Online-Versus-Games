@@ -14,7 +14,7 @@ export default function User({ tryLogout, tryRemoveAccount }: UserProps) {
   const { username = " " } = useParams();
   return (
     <StrictMode>
-      <div className="flex flex-col h-screen w-screen justify-between">
+      <div className="flex flex-col w-screen">
         <Navbar tryLogout={tryLogout} />
         <Profile
           username={username}

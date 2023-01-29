@@ -53,7 +53,7 @@ export default function Profile({
 
   return (
     <main className="h-full flex flex-col min-h-0 grow">
-      <div className=" grid grid-cols-2 text-lg">
+      <div className="grid grid-cols-2 text-lg">
         <div
           className={`flex flex-row justify-center items-center cursor-pointer p-3 border-b-2 ${
             currentTab === "overview" ? activeTabStyle : inactiveTabStyle
@@ -77,7 +77,7 @@ export default function Profile({
         <section className="min-h-0 grow flex flex-col">{renderTabs()}</section>
       )}
       {!exist && (
-        <section className="min-h-0 grow flex flex-col justify-center">
+        <section className="min-h-0 grow flex flex-col">
           <h2 className="text-2xl">This user does not exist..</h2>
         </section>
       )}
