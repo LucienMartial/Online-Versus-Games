@@ -209,7 +209,7 @@ class Player extends BodyEntity {
   }
 
   setCosmetics(id: number): void {
-    const item: Item = getItem(id);
+    const item = getItem(id);
     if (!item) return;
 
     switch (item.category) {
