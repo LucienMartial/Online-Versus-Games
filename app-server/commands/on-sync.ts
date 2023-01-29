@@ -4,7 +4,7 @@ import {
   DiscWarEngine,
   Player,
 } from "../../app-shared/disc-war/index.js";
-import { GameRoom } from "../game-room.js";
+import { GameRoom } from "../rooms/game-room.js";
 
 interface Data {
   gameEngine: DiscWarEngine;

@@ -5,6 +5,7 @@ interface AppButtonProps {
   color: "regular" | "danger";
   type?: "submit" | "button";
   children?: ReactNode;
+  className?: string;
 }
 
 export default function AppButton({
@@ -12,6 +13,7 @@ export default function AppButton({
   color,
   type,
   children,
+  className,
 }: AppButtonProps) {
   function buttonStyle() {
     switch (color) {
@@ -33,7 +35,10 @@ export default function AppButton({
     <button
       onClick={handleClick}
       type={type}
-      className={`${buttonStyle()} text-white font-bold py-2.5 px-5 rounded w-fit`}
+      className={
+        `${buttonStyle()} text-white font-bold py-2.5 px-5 rounded w-fit ` +
+        className
+      }
     >
       {children}
     </button>

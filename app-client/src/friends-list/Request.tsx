@@ -12,11 +12,12 @@ function Request({
 }: {
   request: WithId<FriendRequest>;
   userId: ObjectId;
-  removeRequest: (requestId: ObjectId) => Promise<void>;
+  removeRequest: (requestId: ObjectId, otherId: ObjectId) => Promise<void>;
   acceptRequest: (request: WithId<FriendRequest>) => Promise<void>;
 }) {
   const received = request.recipient === userId;
   const target = received ? request.expeditorName : request.recipientName;
+  const targetId = received ? request.expeditor : request.recipient;
 
   return (
     <li className="w-full px-4">
@@ -33,7 +34,7 @@ function Request({
           )}
           <button
             className="select-none"
-            onClick={() => removeRequest(request._id)}
+            onClick={() => removeRequest(request._id, targetId)}
           >
             <FiX />
           </button>

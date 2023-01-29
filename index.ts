@@ -47,13 +47,14 @@ if (process.env.NODE_ENV !== "production") {
 
 // rooms
 import { createApp } from "./app-server/app.js";
-import { GameRoom } from "./app-server/game-room.js";
-import { ChatRoom } from "./app-server/chat-room.js";
+import { GameRoom } from "./app-server/rooms/game-room.js";
+import { ChatRoom } from "./app-server/rooms/chat-room.js";
+import SocialRoom from "./app-server/rooms/social-room.js";
 
 gameServer.define("game", GameRoom, {
   dbCreateGame: db.createGame,
 });
-
+gameServer.define("social", SocialRoom);
 gameServer.define("chat-room", ChatRoom);
 
 server.listen(port, () => {

@@ -1,7 +1,7 @@
 import { Schema, type, MapSchema } from "@colyseus/schema";
 import { Client } from "colyseus";
 import { ObjectId } from "mongodb";
-import { GameRoom } from "../../app-server/game-room.js";
+import { GameRoom } from "../../app-server/rooms/game-room.js";
 import { DiscWarEngine, Player } from "../disc-war/index.js";
 
 // stat

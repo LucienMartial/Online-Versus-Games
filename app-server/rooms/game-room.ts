@@ -1,17 +1,16 @@
 import { Dispatcher } from "@colyseus/command";
 import { Client, Room, matchMaker } from "colyseus";
-import { DiscWarEngine } from "../app-shared/disc-war/disc-war.js";
-import { EndGameState, GameState } from "../app-shared/state/index.js";
+import { DiscWarEngine } from "../../app-shared/disc-war/disc-war.js";
+import { EndGameState, GameState } from "../../app-shared/state/index.js";
 import {
   OnJoinCommand,
   OnLeaveCommand,
   OnInputCommand,
   OnSyncCommand,
-} from "./commands/index.js";
-import { InputsData } from "../app-shared/types/index.js";
-import { CBuffer } from "../app-shared/utils/cbuffer.js";
+} from "../commands/index.js";
+import { InputsData } from "../../app-shared/types/index.js";
+import { CBuffer } from "../../app-shared/utils/cbuffer.js";
 import { Request } from "express";
-import { ObjectId } from "mongodb";
 
 // maximum number of inputs saved for each client
 const MAX_INPUTS = 50;

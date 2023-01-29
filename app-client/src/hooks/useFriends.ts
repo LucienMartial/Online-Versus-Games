@@ -42,11 +42,12 @@ async function postRequest(path: string, body: {}): Promise<Response | string> {
 
 interface useFriendsRes {
   friendsRequestsData: MutableRefObject<FriendsRequestsData | null>;
-  tryGetFriends: () => Promise<void>;
-  sendFriendRequest: (otherName: string) => Promise<void>;
+  tryGetFriends: (cached: boolean) => Promise<void>;
+  sendFriendRequest: (otherName: string) => Promise<string>;
   removeFriendRequest: (requestId: ObjectId) => Promise<void>;
   acceptFriendRequest: (request: WithId<FriendRequest>) => Promise<void>;
   removeFriend: (friendName: string) => Promise<void>;
+  destroy: () => void;
 }
 
 function useFriends(): useFriendsRes {
@@ -54,8 +55,8 @@ function useFriends(): useFriendsRes {
 
   // fetch data
 
-  const tryGetFriends = useCallback(async () => {
-    if (friendsRequestsData.current) {
+  const tryGetFriends = useCallback(async (cached: boolean) => {
+    if (friendsRequestsData.current && cached) {
       console.log("Avoid loading, users already cached");
       return;
     }
@@ -66,15 +67,18 @@ function useFriends(): useFriendsRes {
 
   // send friend request
 
-  const sendFriendRequest = useCallback(async (otherName: string) => {
-    if (!friendsRequestsData.current) await tryGetFriends();
-    const body: UserTarget = { username: otherName };
-    const res = await postRequest("/api/friends/request-add", body);
-    if (!(res instanceof Response)) throw new Error(res);
-    const data: WithId<FriendRequest> = await res.json();
-    friendsRequestsData.current?.requestsData.push(data);
-    console.log("REQUEST ID", data._id);
-  }, []);
+  const sendFriendRequest = useCallback(
+    async (otherName: string): Promise<string> => {
+      if (!friendsRequestsData.current) await tryGetFriends(true);
+      const body: UserTarget = { username: otherName };
+      const res = await postRequest("/api/friends/request-add", body);
+      if (!(res instanceof Response)) throw new Error(res);
+      const data: WithId<FriendRequest> = await res.json();
+      friendsRequestsData.current?.requestsData.push(data);
+      return data.recipient.toString();
+    },
+    []
+  );
 
   // accept friend request
 
@@ -130,6 +134,10 @@ function useFriends(): useFriendsRes {
     }
   }, []);
 
+  const destroy = useCallback(() => {
+    friendsRequestsData.current = null;
+  }, []);
+
   return {
     friendsRequestsData,
     tryGetFriends,
@@ -137,6 +145,7 @@ function useFriends(): useFriendsRes {
     removeFriendRequest,
     acceptFriendRequest,
     removeFriend,
+    destroy,
   };
 }
 

@@ -5,7 +5,7 @@ function UserField({ username }: { username: string }) {
   const navigate = useNavigate();
 
   return (
-    <div className="flex gap-2.5 ml-1">
+    <div className="flex gap-1.5 ml-1">
       <button className="text-lg" onClick={() => navigate("/user/" + username)}>
         <FiUser />
       </button>

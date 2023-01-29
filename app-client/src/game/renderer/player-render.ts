@@ -120,7 +120,6 @@ class PlayerRender extends RenderObject {
     this.shieldWatcher.watch(this.player.counterTimer.active);
     this.position.set(this.player.position.x, this.player.position.y);
     this.shield.position = this.display.position.clone();
-    // this.container.position.set(this.position.x, this.position.y);
   }
 }
 

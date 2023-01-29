@@ -10,6 +10,7 @@ import { useGameConnect } from "./hooks/useGameConnect";
 import useAccount from "./hooks/useAccount";
 import { ObjectId } from "mongodb";
 import useFriends, { useFriendsRes } from "./hooks/useFriends";
+import useSocial, { useSocialRes } from "./hooks/useSocial";
 
 const Game = lazy(() => import("./components/game/Game"));
 const Login = lazy(() => import("./components/forms/Login"));
@@ -33,6 +34,9 @@ const UserContext = createContext<UserContextType>({} as UserContextType);
 // Friends context
 const FriendsContext = createContext<useFriendsRes>({} as useFriendsRes);
 
+// Social context
+const SocialContext = createContext<useSocialRes>({} as useSocialRes);
+
 function App() {
   const [userData, setUserData] = useState<UserContextType>(
     {} as UserContextType
@@ -43,6 +47,7 @@ function App() {
   const { gameRoom, client, tryReconnection, tryConnection, setGameRoom } =
     useGameConnect();
   const friendsRes = useFriends();
+  const socialRes = useSocial();
 
   // try to reconnect
   useEffect(() => {
@@ -58,23 +63,35 @@ function App() {
         await tryReconnection();
       } catch (e) {
         console.log("could not reconnect", e);
-      } finally {
-        setLoaded(true);
       }
+      setLoaded(true);
     };
     load();
   }, [client]);
 
   // change local storage every connection/disconnection
   useEffect(() => {
-    const userDataString = localStorage.getItem("user-data");
-    if (!userDataString) return;
-    const userData: UserContextType = JSON.parse(userDataString);
-    setUserData(userData);
-  }, [loggedIn]);
+    setLoaded(false);
+    if (loggedIn === false) {
+      socialRes.destroy();
+      friendsRes.destroy();
+      setLoaded(true);
+      return;
+    }
 
-  useEffect(() => {
-    if (loggedIn === false) setLoaded(true);
+    const load = async () => {
+      const userDataString = localStorage.getItem("user-data");
+      if (!userDataString) return;
+      const userData: UserContextType = JSON.parse(userDataString);
+      setUserData(userData);
+      // join social
+      if (client) {
+        await socialRes.tryConnectSocial(client);
+      }
+      setLoaded(true);
+    };
+
+    load();
   }, [loggedIn]);
 
   // still loading
@@ -101,7 +118,7 @@ function App() {
       <Home
         tryConnection={tryConnection}
         tryLogout={tryLogout}
-        tryRemoveAccount={tryRemoveAccount}
+        client={client}
       />
     );
   };
@@ -141,31 +158,33 @@ function App() {
   return (
     <UserContext.Provider value={userData}>
       <FriendsContext.Provider value={friendsRes}>
-        <Router>
-          <Suspense fallback={<LoadingPage />}>
-            <Routes>
-              <Route path="/" element={renderDefault()} />
-              <Route path="/home" element={renderHome()} />
-              <Route
-                path="/user"
-                element={<Navigate to={"/user/" + userData.username} />}
-              />
-              <Route path="/user/:username" element={renderUser()} />
-              <Route path="/shop" element={renderShop()} />
-              <Route path="/login" element={renderLogin()} />
-              <Route path="/register" element={renderRegister()} />
-              <Route path="/game" element={renderGame()} />
-              <Route path="/privacy" element={<Privacy />} />
-              <Route path="/acknowledgment" element={<Acknowledgement />} />
-              <Route path="*" element={<Page404 />} />
-            </Routes>
-          </Suspense>
-        </Router>
+        <SocialContext.Provider value={socialRes}>
+          <Router>
+            <Suspense fallback={<LoadingPage />}>
+              <Routes>
+                <Route path="/" element={renderDefault()} />
+                <Route path="/home" element={renderHome()} />
+                <Route
+                  path="/user"
+                  element={<Navigate to={"/user/" + userData.username} />}
+                />
+                <Route path="/user/:username" element={renderUser()} />
+                <Route path="/shop" element={renderShop()} />
+                <Route path="/login" element={renderLogin()} />
+                <Route path="/register" element={renderRegister()} />
+                <Route path="/game" element={renderGame()} />
+                <Route path="/privacy" element={<Privacy />} />
+                <Route path="/acknowledgment" element={<Acknowledgement />} />
+                <Route path="*" element={<Page404 />} />
+              </Routes>
+            </Suspense>
+          </Router>
+        </SocialContext.Provider>
       </FriendsContext.Provider>
     </UserContext.Provider>
   );
 }
 
 export default App;
-export { UserContext, FriendsContext };
+export { UserContext, FriendsContext, SocialContext };
 export type { UserContextType };

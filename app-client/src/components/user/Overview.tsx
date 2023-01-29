@@ -5,7 +5,8 @@ import {
   useEffect,
   useState,
 } from "react";
-import { FriendsContext, UserContext } from "../../App";
+import { FriendRequest } from "../../../../app-shared/types";
+import { FriendsContext, SocialContext, UserContext } from "../../App";
 import AppButton from "../lib/AppButton";
 import LoadingPage from "../LoadingPage";
 
@@ -23,6 +24,7 @@ function Overview({ username, handleRemoveAccount, isUser }: OverviewProps) {
   // check if it's own user profile
   const userData = useContext(UserContext);
   const sameUser = userData.username === username;
+  const { socialRoom } = useContext(SocialContext);
 
   const checkIfFriend = useCallback(() => {
     if (!friendsRequestsData.current) return;
@@ -40,8 +42,24 @@ function Overview({ username, handleRemoveAccount, isUser }: OverviewProps) {
   }, [username]);
 
   useEffect(() => {
+    if (!socialRoom) return;
+    socialRoom.removeAllListeners();
+
+    socialRoom.onMessage("*", async (type, message) => {
+      switch (type) {
+        case "request:new":
+        case "request:remove":
+        case "friend:remove":
+          await tryGetFriends(false);
+          checkIfFriend();
+          break;
+      }
+    });
+  }, [socialRoom]);
+
+  useEffect(() => {
     const load = async () => {
-      await tryGetFriends();
+      await tryGetFriends(true);
       checkIfFriend();
       setLoading(false);
     };
@@ -50,7 +68,8 @@ function Overview({ username, handleRemoveAccount, isUser }: OverviewProps) {
 
   const sendRequest = useCallback(async () => {
     try {
-      await sendFriendRequest(username);
+      const userId = await sendFriendRequest(username);
+      socialRoom?.send("request:new", userId);
       setAlreadyFriend(true);
     } catch (e) {
       if (e instanceof Error) console.log(e.message);

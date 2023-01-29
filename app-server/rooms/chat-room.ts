@@ -1,7 +1,6 @@
 import { Client, Room } from "colyseus";
-import { IncomingMessage } from "http";
 import { Request } from "express";
-import { ServerMessage } from "../app-shared/types/index.js";
+import { ServerMessage } from "../../app-shared/types/index.js";
 
 class ChatRoom extends Room {
   clientsMap: Map<string, string> = new Map();
