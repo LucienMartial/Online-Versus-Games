@@ -8,9 +8,9 @@ const SHOCKWAVE_SPEED = 18;
 
 const DEFAULT_WAVE_PARAMS = {
   RADIUS: 80,
-  WAVELENGTH: 150,
+  WAVELENGTH: 80,
   AMPLITUDE: 20,
-  BRIGHTNESS: 1,
+  BRIGHTNESS: 1.5,
 };
 
 class ShockwaveManager {

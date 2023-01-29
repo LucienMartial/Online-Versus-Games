@@ -1,11 +1,23 @@
 import { Router } from "express";
 import { Database } from "../database/database.js";
 import { ApiShopData } from "../../app-shared/types/api-types.js";
+import { getItem } from "../../app-shared/configs/shop-config.js";
+import { Item } from "../../app-shared/types/index.js";
 
 // put all that in the database
-const USER_COIN: number = 21;
-const USER_ITEMS: number[] = [0, 3];
-const userItemsConfig = { coins: USER_COIN, items: USER_ITEMS };
+let userCoins: number = 4;
+let userItems: number[] = [0, 3];
+const userItemsConfig: ApiShopData = { coins: userCoins, items: userItems };
+
+function buyItem(id: number): string | null {
+  const item: Item = getItem(id);
+  if (item === null) return "Item not found";
+  if (userCoins < item.price) return "Not enough coins";
+  if (userItems.includes(id)) return "You already have this item";
+  userCoins -= item.price;
+  userItems.push(id);
+  return null;
+}
 
 export default function (db: Database): Router {
   const router = Router({ mergeParams: true });
@@ -37,7 +49,12 @@ export default function (db: Database): Router {
   // response to the request to get user items
 
   router.post("/shop-buy", (req, res) => {
-    // res.status(200).json(userItems);
+    const error: string | null = buyItem(req.body.id);
+    if (!error) {
+      res.status(200).json({ status: 0, error: "no error" });
+    } else {
+      res.status(400).json({ status: -1, error: error });
+    }
   });
 
   return router;

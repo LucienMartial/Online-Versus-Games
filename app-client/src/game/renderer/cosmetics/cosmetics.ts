@@ -1,6 +1,7 @@
 import { PlayerRender } from "../player-render";
 import { CosmeticAssets } from "../../configs/assets-config";
-import { Container } from "pixi.js";
+import { Container, Sprite } from "pixi.js";
+import { WIDTH, HEIGHT } from "../../../../../app-shared/disc-war";
 
 class Cosmetics {
   playerRender: PlayerRender;
@@ -23,23 +24,23 @@ class Cosmetics {
   loadSkins(skinID: number) {
     switch (skinID) {
       case 0:
-        this.playerRender.display.tint = 0xff0000;
-        this.playerRender.reflection.tint = 0xff0000;
+        this.playerRender.display.tint = 0x990000;
+        this.playerRender.reflection.tint = 0x990000;
         break;
 
       case 1:
-        this.playerRender.display.tint = 0x0000ff;
-        this.playerRender.reflection.tint = 0x0000ff;
+        this.playerRender.display.tint = 0x000099;
+        this.playerRender.reflection.tint = 0x000099;
         break;
 
       case 2:
-        this.playerRender.display.tint = 0x00ff00;
-        this.playerRender.reflection.tint = 0x00ff00;
+        this.playerRender.display.tint = 0x009900;
+        this.playerRender.reflection.tint = 0x009900;
         break;
 
       case 3:
-        this.playerRender.display.tint = 0xffff00;
-        this.playerRender.reflection.tint = 0xffff00;
+        this.playerRender.display.tint = 0x999900;
+        this.playerRender.reflection.tint = 0x999900;
         break;
 
       default:
@@ -50,13 +51,59 @@ class Cosmetics {
   loadHats(hatID: number) {
     this.hatContainer.removeChildren();
 
-    // switch (hatID) {
+    switch (hatID) {
+      case 20:
+        const sprite20 = new Sprite(this.cosmeticsAssets.melon_hat);
+        console.log(this.cosmeticsAssets);
+        this.hatContainer.pivot.set(sprite20.width / 2, sprite20.height / 2);
+        this.hatContainer.scale.set(0.035, 0.035);
+        this.hatContainer.position.set(WIDTH / 2, -HEIGHT / 10);
+        this.hatContainer.addChild(sprite20);
+        break;
+      case 21:
+        const sprite21 = new Sprite(this.cosmeticsAssets.blue_cap);
+        this.hatContainer.pivot.set(sprite21.width / 2, sprite21.height / 2);
+        this.hatContainer.scale.set(0.1, 0.1);
+        this.hatContainer.position.set(WIDTH / 2 - WIDTH / 8, -HEIGHT / 20);
+        this.hatContainer.addChild(sprite21);
+        break;
+      default:
+        break;
+    }
   }
 
   loadFaces(faceID: number) {
     this.faceContainer.removeChildren();
 
-    // switch (faceID) {
+    switch (faceID) {
+      case 40:
+        const sprite40 = new Sprite(this.cosmeticsAssets.black_sunglasses);
+        this.faceContainer.pivot.set(sprite40.width / 2, sprite40.height / 2);
+        this.faceContainer.scale.set(0.02, 0.02);
+        this.faceContainer.position.set(WIDTH / 2, HEIGHT / 4);
+        this.faceContainer.addChild(sprite40);
+        break;
+
+      case 41:
+        const sprite41 = new Sprite(this.cosmeticsAssets.pink_sunglasses);
+        this.faceContainer.pivot.set(sprite41.width / 2, sprite41.height / 2);
+        this.faceContainer.scale.set(0.1, 0.1);
+        this.faceContainer.position.set(WIDTH / 2, HEIGHT / 4);
+        this.faceContainer.addChild(sprite41);
+        break;
+      default:
+        const eye1 = new Sprite(this.cosmeticsAssets.default_eye);
+        const eye2 = new Sprite(this.cosmeticsAssets.default_eye);
+        eye1.pivot.set(eye1.width / 2, eye1.height / 2);
+        eye2.pivot.set(eye2.width / 2, eye2.height / 2);
+        eye1.scale.set(0.1, 0.1);
+        eye2.scale.set(0.1, 0.1);
+        eye1.position.set(WIDTH / 2 - WIDTH / 4, HEIGHT / 4);
+        eye2.position.set(WIDTH / 2 + WIDTH / 4, HEIGHT / 4);
+        this.faceContainer.addChild(eye1);
+        this.faceContainer.addChild(eye2);
+        break;
+    }
   }
 
   // setup position with "offset" method

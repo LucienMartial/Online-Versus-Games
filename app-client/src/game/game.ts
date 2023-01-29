@@ -22,7 +22,7 @@ import { Emitter } from "pixi-particles";
 import { DASH_ANIMATION } from "./effects/configs/dash-anim-config";
 import { DEATH_ANIMATION } from "./effects/configs/death-anim-config";
 import { DeathAnimManager } from "./effects/death-anim-manager";
-import { CosmeticAssets } from "./configs/assets-config";
+import { CosmeticAssets, manifest } from "./configs/assets-config";
 
 const PLAYER_GHOST = false;
 const DISC_GHOST = false;

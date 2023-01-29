@@ -13,6 +13,7 @@ function ShopItem({ id, name, price, owned, tryBuy }: ItemProps) {
     <div
       className={"flex flex-row justify-between items-center p-3 border-b-2"}
     >
+      ID = {id}
       <div className={"flex flex-row justify-start items-center"}>
         <p className={"ml-2"}>{name}</p>
       </div>

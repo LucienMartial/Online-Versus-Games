@@ -1,3 +1,5 @@
+import { Texture } from "pixi.js";
+
 const manifest = {
   bundles: [
     {
@@ -15,12 +17,39 @@ const manifest = {
     },
     {
       name: "cosmetics",
-      assets: [],
+      assets: [
+        {
+          name: "default_eye",
+          srcs: "../assets/cosmetics/default_eye.png",
+        },
+        {
+          name: "melon_hat",
+          srcs: "../assets/cosmetics/melon_hat.png",
+        },
+        {
+          name: "blue_cap",
+          srcs: "../assets/cosmetics/blue_cap.png",
+        },
+        {
+          name: "black_sunglasses",
+          srcs: "../assets/cosmetics/black_sunglasses.png",
+        },
+        {
+          name: "pink_sunglasses",
+          srcs: "../assets/cosmetics/pink_sunglasses.png",
+        },
+      ],
     },
   ],
 };
 
-interface CosmeticAssets {}
+interface CosmeticAssets {
+  default_eye: Texture;
+  melon_hat: Texture;
+  blue_cap: Texture;
+  black_sunglasses: Texture;
+  pink_sunglasses: Texture;
+}
 
 export { manifest };
 export type { CosmeticAssets };

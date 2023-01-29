@@ -4,6 +4,8 @@ import { BoxShape } from "../physics/index.js";
 import { PlayerState } from "../state/index.js";
 import { Inputs, SyncTimer } from "../utils/index.js";
 import { Disc } from "./index.js";
+import { getItem } from "../configs/shop-config.js";
+import { Item } from "../types/index.js";
 
 interface PLayerCosmetics {
   skinID: number;
@@ -203,6 +205,25 @@ class Player extends BodyEntity {
         this.maxSpeed = MAX_SPEED;
         this.dashCooldownTimer.timeout(DASH_COOLDOWN);
       });
+    }
+  }
+
+  setCosmetics(id: number): void {
+    const item: Item = getItem(id);
+    if (!item) return;
+
+    switch (item.category) {
+      case "skin":
+        this.cosmetics.skinID = id;
+        break;
+      case "hat":
+        this.cosmetics.hatID = id;
+        break;
+      case "face":
+        this.cosmetics.faceID = id;
+        break;
+      default:
+        break;
     }
   }
 

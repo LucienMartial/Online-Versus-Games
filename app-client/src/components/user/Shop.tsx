@@ -33,6 +33,8 @@ export default function Shop() {
       },
       body: JSON.stringify({ id: id }),
     });
+    const data = await res.json();
+    console.log(data);
     if (res.status === 200) {
       return true;
     }
@@ -41,6 +43,7 @@ export default function Shop() {
 
   async function tryBuy(id: number) {
     const item = getItem(id);
+    console.log("item", item);
     if (item && shopData) {
       if (shopData.coins >= item.price) {
         const success = await tryBuyServer(id);
