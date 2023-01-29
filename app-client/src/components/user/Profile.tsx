@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import Overview from "./Overview";
+import Overview from "./overview/Overview";
 import History from "./History";
 import { FiUser } from "react-icons/fi";
 import { FaHistory } from "react-icons/all";
