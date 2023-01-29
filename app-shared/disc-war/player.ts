@@ -222,4 +222,5 @@ class Player extends BodyEntity {
   }
 }
 
-export { Player, PLayerCosmetics };
+export { Player };
+export type { PLayerCosmetics };

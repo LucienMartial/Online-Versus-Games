@@ -7,4 +7,4 @@ interface Item {
   category: ItemCategory;
 }
 
-export { Item };
+export type { Item };
