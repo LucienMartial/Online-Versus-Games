@@ -1,5 +1,6 @@
 import { StrictMode, useCallback, useEffect, useState } from "react";
 import { Game } from "../../../../app-shared/types";
+import LoadingPage from "../LoadingPage";
 import HistoryList from "./HistoryList";
 
 interface HistoryProps {
@@ -7,7 +8,7 @@ interface HistoryProps {
 }
 
 function History({ username }: HistoryProps) {
-  const [history, setHistory] = useState<Game[]>([]);
+  const [history, setHistory] = useState<Game[] | null>(null);
   const [error, setError] = useState<null | string>(null);
 
   const getHistory = useCallback(async () => {
@@ -35,17 +36,25 @@ function History({ username }: HistoryProps) {
     getHistory();
   }, [username]);
 
+  if (!history) {
+    return (
+      <section className="grow flex justify-center item-center ">
+        <LoadingPage />
+      </section>
+    );
+  }
+
   if (error) {
     return (
-      <StrictMode>
+      <section className="grow flex justify-center item-center ">
         <p>Sorry, it seems we could not load the historic..</p>
         <p>Server error: {error}</p>
-      </StrictMode>
+      </section>
     );
   }
 
   return (
-    <StrictMode>
+    <>
       {history.length > 0 && (
         <HistoryList games={history} username={username} />
       )}
@@ -54,7 +63,7 @@ function History({ username }: HistoryProps) {
           <h2 className="text-2xl">No games yet..</h2>
         </div>
       )}
-    </StrictMode>
+    </>
   );
 }
 

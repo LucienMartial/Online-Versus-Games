@@ -1,22 +1,18 @@
-import { GamePlayer } from "../../../../app-shared/types";
+import { Game } from "../../../../app-shared/types";
 
 interface HistoryEntryProps {
-  timestamp: Date;
-  player1: GamePlayer;
-  player2: GamePlayer;
+  game: Game;
   username: string;
 }
 
-export default function HistoryEntry({
-  timestamp,
-  player1,
-  player2,
-  username,
-}: HistoryEntryProps) {
+export default function HistoryEntry({ game, username }: HistoryEntryProps) {
+  const player1 = game.players[0];
+  const player2 = game.players[1];
+  const date = new Date(game.timestamp);
   const won =
     (player1.username === username && player1.victory) ||
     (player2.username === username && player2.victory);
-  const date = new Date(timestamp);
+
   return (
     <li
       className={`text-2xl flex flex-col px-2 bg-slate-500 border-b-2 last:border-b-0 border-slate-700 ${

@@ -12,10 +12,8 @@ export default function HistoryList({ games, username }: HistoryListProps) {
       return (
         <HistoryEntry
           key={game.timestamp.toString()}
-          timestamp={game.timestamp}
-          player1={game.players[0]}
-          player2={game.players[1]}
           username={username}
+          game={game}
         />
       );
     });
