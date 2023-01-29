@@ -7,19 +7,23 @@ function FriendTab({
   title,
   children,
   notifCount,
+  className,
 }: {
   expandedByDefault: boolean;
   title: string;
   children: ReactNode;
+  className?: string;
   notifCount?: number;
 }) {
   const [expanded, setExpanded] = useState(expandedByDefault);
   if (!notifCount) notifCount = 0;
 
   return (
-    <div>
+    <div className={className}>
       <div
-        className="flex items-center select-none cursor-pointer mx-4 mt-2 px-2 py-1 bg-black"
+        className={
+          "flex items-center select-none cursor-pointer mx-4 mt-2 px-2 py-1 bg-black"
+        }
         onClick={() => setExpanded(!expanded)}
       >
         <div className="flex w-full justify-between items-center">

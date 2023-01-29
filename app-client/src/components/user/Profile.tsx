@@ -73,11 +73,16 @@ export default function Profile({
           <h2>History</h2>
         </div>
       </div>
+      {exist === null && (
+        <main className="h-full flex flex-col min-h-0 grow justify-center items-center">
+          <LoadingPage />
+        </main>
+      )}
       {exist && (
         <section className="min-h-0 grow flex flex-col">{renderTabs()}</section>
       )}
-      {!exist && (
-        <section className="min-h-0 grow flex flex-col">
+      {exist === false && (
+        <section className="min-h-0 grow flex flex-col items-center justify-center">
           <h2 className="text-2xl">This user does not exist..</h2>
         </section>
       )}

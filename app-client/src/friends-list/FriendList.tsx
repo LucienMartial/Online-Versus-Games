@@ -174,8 +174,8 @@ function FriendList({ client }: FriendListProps) {
           onRemoveRequest={onRemoveRequest}
         />
       </FriendTab>
-      <FriendTab expandedByDefault={true} title="Friends">
-        <ul className="mt-2">
+      <FriendTab className="mt-2.5" expandedByDefault={true} title="Friends">
+        <ul>
           {friends
             .sort((friend) => {
               return onlineFriends.has(friend.user_id.toString()) ? -1 : 1;
