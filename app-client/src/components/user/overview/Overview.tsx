@@ -13,10 +13,9 @@ import StatCard from "./StatCard";
 interface OverviewProps {
   username: string;
   handleRemoveAccount?: () => Promise<void>;
-  isUser?: boolean;
 }
 
-function Overview({ username, handleRemoveAccount, isUser }: OverviewProps) {
+function Overview({ username, handleRemoveAccount }: OverviewProps) {
   const { friendsRequestsData, tryGetFriends, sendFriendRequest } =
     useContext(FriendsContext);
   const [alreadyFriend, setAlreadyFriend] = useState(false);
@@ -51,6 +50,11 @@ function Overview({ username, handleRemoveAccount, isUser }: OverviewProps) {
         )
     );
   }, [username]);
+
+  const removeAccount = () => {
+    if (confirm("Are you sure you want to delete your account?"))
+      handleRemoveAccount?.().catch((e) => console.log(e));
+  }
 
   // real time update of friend status
   const { socialRoom } = useContext(SocialContext);
@@ -113,7 +117,7 @@ function Overview({ username, handleRemoveAccount, isUser }: OverviewProps) {
           {handleRemoveAccount && sameUser && (
             <button
               className="flex items-center text-lg gap-2 bg-red-700 px-2 py-1.5 rounded-xl hover:bg-red-800"
-              onClick={handleRemoveAccount}
+              onClick={removeAccount}
             >
               <FiTrash />
               <p className="mt-0.5 font-medium">Delete my account</p>

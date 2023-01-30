@@ -8,7 +8,6 @@ import LoadingPage from "../LoadingPage";
 interface ProfileProps {
   username: string;
   handleRemoveAccount?: () => Promise<void>;
-  isUser?: boolean;
 }
 
 const activeTabStyle = "border-blue-400 text-blue-400";
@@ -16,7 +15,6 @@ const inactiveTabStyle = "border-blue-900";
 
 export default function Profile({
   username,
-  isUser,
   handleRemoveAccount,
 }: ProfileProps) {
   const [currentTab, setCurrentTab] = useState("overview");
@@ -28,7 +26,6 @@ export default function Profile({
         return (
           <Overview
             username={username}
-            isUser={isUser}
             handleRemoveAccount={handleRemoveAccount}
           />
         );

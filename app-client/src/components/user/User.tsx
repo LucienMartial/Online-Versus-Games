@@ -18,7 +18,6 @@ export default function User({ tryLogout, tryRemoveAccount }: UserProps) {
         <Navbar tryLogout={tryLogout} />
         <Profile
           username={username}
-          isUser={true}
           handleRemoveAccount={tryRemoveAccount}
         />
         <Footer />
