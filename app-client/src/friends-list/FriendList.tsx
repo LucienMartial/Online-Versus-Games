@@ -57,12 +57,12 @@ function FriendList({ client }: FriendListProps) {
     []
   );
 
-  const loadPage = useCallback(async () => {
+  const loadPage = useCallback(async (cached = true) => {
     console.log("loading friendlist..");
     setLoading(true);
     // db
     try {
-      await tryGetFriends(true);
+      await tryGetFriends(cached);
       setFriends([...friendsRequestsData.current!.friendsData.friends]);
       setRequestCount(friendsRequestsData.current!.requestsData.length);
     } catch (e) {
@@ -85,7 +85,7 @@ function FriendList({ client }: FriendListProps) {
   }, [refresh]);
 
   useEffect(() => {
-    loadPage();
+    loadPage(false);
   }, []);
 
   useEffect(() => {

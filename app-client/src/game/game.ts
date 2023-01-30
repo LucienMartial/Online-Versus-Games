@@ -22,7 +22,7 @@ import { Emitter } from "pixi-particles";
 import { DASH_ANIMATION } from "./effects/configs/dash-anim-config";
 import { DEATH_ANIMATION } from "./effects/configs/death-anim-config";
 import { DeathAnimManager } from "./effects/death-anim-manager";
-import { CosmeticAssets, manifest } from "./configs/assets-config";
+import { CosmeticAssets } from "./configs/assets-config";
 
 const PLAYER_GHOST = false;
 const DISC_GHOST = false;
@@ -68,7 +68,6 @@ class GameScene extends Scene {
    */
   async load(): Promise<void> {
     this.cosmeticsAssets = await Assets.loadBundle("cosmetics");
-
     const assets = await Assets.loadBundle("basic");
 
     // particle effects
@@ -90,7 +89,6 @@ class GameScene extends Scene {
       15
     );
     const shockWaveFilters = shockwaveManager.exportShockwaves();
-
     this.stage.filters = [
       new AdvancedBloomFilter({
         threshold: 0.4,

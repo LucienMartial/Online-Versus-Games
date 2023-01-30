@@ -31,6 +31,7 @@ class PlayerRender extends RenderObject {
     cosmeticsAssets: CosmeticAssets
   ) {
     super(id);
+    this.viewports = viewports;
     const shape = player.collisionShape as BoxShape;
     this.player = player;
     this.display = Graphics.createRectangle(
@@ -56,6 +57,7 @@ class PlayerRender extends RenderObject {
       shape.height * 2,
       false
     );
+    this.reflection.tint = DEFAULT_SKIN;
     this.display.addChild(this.reflection);
     Graphics.createMirror(this.shield, shape.height);
 
@@ -66,8 +68,6 @@ class PlayerRender extends RenderObject {
     this.cosmetics.loadFaces(player.cosmetics.faceID);
     this.cosmetics.container.zIndex = 1;
     this.container.addChild(this.cosmetics.container);
-
-    this.viewports = viewports;
 
     // dash
     this.dashAnim = dashAnim;
@@ -88,9 +88,11 @@ class PlayerRender extends RenderObject {
     this.deadWatcher = new Watcher();
     this.deadWatcher.onActive = () => {
       this.display.alpha = 0.1;
+      this.cosmetics.container.alpha = 0.1;
     };
     this.deadWatcher.onInactive = () => {
       this.display.alpha = 1;
+      this.cosmetics.container.alpha = 1;
     };
 
     // dash
@@ -111,11 +113,7 @@ class PlayerRender extends RenderObject {
 
   update(dt: number, now: number) {
     super.update(dt, now);
-    // dashAnim (auto update is on)
-    // this.dashAnim.update(dt);
-    // deathAnim (auto update is on)
-    // this.deathAnim.update(dt);
-    // watchers
+    // dashAnim & deathAnim (auto update is on)
     this.deadWatcher.watch(this.player.isDead);
     this.shieldWatcher.watch(this.player.counterTimer.active);
     this.position.set(this.player.position.x, this.player.position.y);

@@ -43,6 +43,7 @@ function useGameConnect() {
 
   // try to reconnect to precedent game
   const tryReconnection = useCallback(async () => {
+    if (gameRoom) return;
     if (!client) throw new Error("client is not defined");
 
     console.log("fetch connection data");

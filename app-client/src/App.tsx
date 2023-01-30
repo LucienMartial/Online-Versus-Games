@@ -51,27 +51,10 @@ function App() {
 
   // try to reconnect to last game
   useEffect(() => {
-    if (!client || !loggedIn) return;
-    const load = async () => {
-      // game already defined
-      if (gameRoom) {
-        setLoaded(true);
-        return;
-      }
-      // try to reconnect
-      try {
-        await tryReconnection();
-      } catch (e) {
-        console.log("could not reconnect", e);
-      }
-      setLoaded(true);
-    };
-    load();
-  }, [client]);
+    // still loading
+    if (loggedIn === null) return;
 
-  // change local storage every connection/disconnection
-  useEffect(() => {
-    setLoaded(false);
+    // could not connect, got disconnect
     if (loggedIn === false) {
       socialRes.destroy();
       friendsRes.destroy();
@@ -80,19 +63,29 @@ function App() {
     }
 
     const load = async () => {
+      // get user data
       const userDataString = localStorage.getItem("user-data");
       if (!userDataString) return;
       const userData: UserContextType = JSON.parse(userDataString);
       setUserData(userData);
-      // join social
+
+      // websocket connections
       if (client) {
+        // try to connect to social
         await socialRes.tryConnectSocial(client);
+        // try to reconnect to game
+        try {
+          await tryReconnection();
+        } catch (e) {
+          if (e instanceof Error)
+            console.error("could not reconnect", e.message);
+        }
       }
+
       setLoaded(true);
     };
-
     load();
-  }, [loggedIn]);
+  }, [client, loggedIn]);
 
   // still loading
   if (!loaded || loggedIn === null) {
