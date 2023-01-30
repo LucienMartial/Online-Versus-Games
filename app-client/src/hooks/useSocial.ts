@@ -26,7 +26,11 @@ function useSocial(): useSocialRes {
     setSocialRoom(undefined);
   }, [socialRoom]);
 
-  return { socialRoom, tryConnectSocial, destroy };
+  return {
+    socialRoom,
+    tryConnectSocial,
+    destroy,
+  };
 }
 
 export default useSocial;

@@ -33,6 +33,14 @@ class SocialRoom extends Room {
           if (target) target.send(type, userId);
           break;
 
+        /**
+         * Ask for current room state
+         */
+
+        case "state":
+          const state = new SocialState([...this.userIdMap.values()]);
+          client.send("state", state);
+
         default:
           console.error("invalid message in social room");
           break;
@@ -64,10 +72,6 @@ class SocialRoom extends Room {
       client.userData.username,
       client.userData.id
     );
-
-    // init event
-    const state = new SocialState([...this.userIdMap.values()]);
-    client.send("init", state);
 
     // connection event
     this.broadcast("connection", client.userData.id, {

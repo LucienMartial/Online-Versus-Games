@@ -49,9 +49,9 @@ function App() {
   const friendsRes = useFriends();
   const socialRes = useSocial();
 
-  // try to reconnect
+  // try to reconnect to last game
   useEffect(() => {
-    if (!client) return;
+    if (!client || !loggedIn) return;
     const load = async () => {
       // game already defined
       if (gameRoom) {

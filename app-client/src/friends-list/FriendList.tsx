@@ -1,14 +1,14 @@
 import { useCallback, useContext, useEffect, useState } from "react";
-import { Friend, FriendRequest } from "../../../app-shared/types";
-import { FriendsContext, SocialContext, UserContext } from "../App";
+import { Friend } from "../../../app-shared/types";
+import { FriendsContext, SocialContext } from "../App";
 import LoadingPage from "../components/LoadingPage";
 import FriendRequestsList from "./FriendRequestsList";
 import FriendTab from "./FriendTab";
 import FriendUser from "./FriendUser";
 import { FiRotateCw } from "react-icons/fi";
 import { Client } from "colyseus.js";
+import { ObjectId } from "mongodb";
 import { SocialState } from "../../../app-shared/state";
-import { ObjectId, WithId } from "mongodb";
 
 interface FriendListProps {
   client: Client | undefined;
@@ -24,11 +24,10 @@ function FriendList({ client }: FriendListProps) {
   const { friendsRequestsData, tryGetFriends, removeFriend } =
     useContext(FriendsContext);
   const [friends, setFriends] = useState<Friend[]>([]);
-  const [onlineFriends, setOnlineFriends] = useState<Set<string>>(new Set());
   const { socialRoom, tryConnectSocial } = useContext(SocialContext);
+  const [onlineFriends, setOnlineFriends] = useState<Set<string>>(new Set());
   const [requestCount, setRequestCount] = useState(0);
   const [refresh, setRefresh] = useState(false);
-  const { id } = useContext(UserContext);
 
   const onFriendAccept = useCallback((otherId: ObjectId) => {
     setRequestCount(requestCount - 1);
@@ -59,6 +58,7 @@ function FriendList({ client }: FriendListProps) {
   );
 
   const loadPage = useCallback(async () => {
+    console.log("loading friendlist..");
     setLoading(true);
     // db
     try {
@@ -69,7 +69,12 @@ function FriendList({ client }: FriendListProps) {
       if (e instanceof Error) setError(e.message);
     }
     // social
-    if (client && !socialRoom && refresh) await tryConnectSocial(client);
+    // connect to room if not already in
+    if (client && !socialRoom && refresh) {
+      await tryConnectSocial(client);
+    }
+    // ask for current state
+    socialRoom?.send("state");
     setLoading(false);
   }, []);
 
@@ -83,14 +88,12 @@ function FriendList({ client }: FriendListProps) {
     loadPage();
   }, []);
 
-  console.log("re render", requestCount);
-
   useEffect(() => {
     if (!socialRoom) return;
     socialRoom.removeAllListeners();
 
-    // init
-    socialRoom.onMessage("init", (state: SocialState) => {
+    socialRoom.onMessage("state", (state: SocialState) => {
+      console.log("Get initial state");
       setOnlineFriends(new Set(state.users));
     });
 

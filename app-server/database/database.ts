@@ -47,8 +47,6 @@ class Database {
   removeFriend: (userId: ObjectId, otherId: ObjectId) => Promise<boolean>;
 
   constructor() {
-    if (process.env.MONGODB_URL === "") console.log("MONGODB URL is empty");
-    else console.log("MONGODB URL is not empty");
     const url = process.env.MONGODB_URL;
     this.client = new MongoClient(url);
   }

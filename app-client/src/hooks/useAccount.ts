@@ -38,8 +38,13 @@ async function postData(path: string, body: {}): Promise<postRes> {
 async function checkAuth(): Promise<boolean> {
   const res = await fetch("/api/cookie-checker");
   if (res.status === 200) return true;
-  const error: Error = await res.json();
-  console.error("Could not authenticate with cookie:", error.message);
+  try {
+    const error: Error = await res.json();
+    console.error("Could not authenticate with cookie:", error.message);
+  } catch (e) {
+    if (e instanceof Error)
+      console.error("server reponse not valid in cookie-checker", e.message);
+  }
   return false;
 }
 
