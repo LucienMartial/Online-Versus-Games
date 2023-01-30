@@ -3,25 +3,18 @@ import { StrictMode, useContext } from "react";
 import Navbar from "../lib/Navbar";
 import Footer from "../lib/Footer";
 import Profile from "./Profile";
+
 // import { UserContext } from "../../App";
 
 interface UserProps {
-  tryLogout: () => Promise<void>;
   tryRemoveAccount: () => Promise<void>;
 }
 
-export default function User({ tryLogout, tryRemoveAccount }: UserProps) {
+export default function User({ tryRemoveAccount }: UserProps) {
   const { username = " " } = useParams();
   return (
     <StrictMode>
-      <div className="flex flex-col w-screen">
-        <Navbar tryLogout={tryLogout} />
-        <Profile
-          username={username}
-          handleRemoveAccount={tryRemoveAccount}
-        />
-        <Footer />
-      </div>
+      <Profile username={username} handleRemoveAccount={tryRemoveAccount} />
     </StrictMode>
   );
 }

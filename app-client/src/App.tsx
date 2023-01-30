@@ -23,6 +23,7 @@ const Acknowledgement = lazy(
 );
 const User = lazy(() => import("./components/user/User"));
 const Shop = lazy(() => import("./components/user/Shop"));
+const MainUI = lazy(() => import("./components/lib/MainUI"));
 
 // user context
 interface UserContextType {
@@ -108,11 +109,9 @@ function App() {
     if (!loggedIn) return <Navigate to={"/login"} />;
     if (client && gameRoom) return <Navigate to={"/game"} />;
     return (
-      <Home
-        tryConnection={tryConnection}
-        tryLogout={tryLogout}
-        client={client}
-      />
+      <MainUI tryLogout={tryLogout}>
+        <Home tryConnection={tryConnection} client={client} />
+      </MainUI>
     );
   };
 
@@ -126,7 +125,11 @@ function App() {
 
   const renderUser = () => {
     if (!loggedIn) return <Navigate to={"/login"} />;
-    return <User tryLogout={tryLogout} tryRemoveAccount={tryRemoveAccount} />;
+    return (
+      <MainUI tryLogout={tryLogout}>
+        <User tryRemoveAccount={tryRemoveAccount} />
+      </MainUI>
+    );
   };
 
   // shop page
