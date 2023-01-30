@@ -5,10 +5,9 @@ import {
   SelectedItems,
   ItemTarget,
 } from "../../app-shared/types/index.js";
-import { getItem, SHOP_ITEMS } from "../../app-shared/configs/shop-config.js";
-import { Item } from "../../app-shared/types/index.js";
+import { getItem } from "../../app-shared/configs/shop-config.js";
 import { AppError } from "../utils/error.js";
-import { WithId } from "mongodb";
+import { ObjectId, WithId } from "mongodb";
 
 export default function (db: Database): Router {
   const router = Router({ mergeParams: true });
@@ -17,7 +16,8 @@ export default function (db: Database): Router {
     const id = req.session.id;
     if (!req.session.authenticated || !id)
       throw new AppError(400, "User not connected");
-    const userShop = await db.getUserShop(id);
+    const objectId = new ObjectId(id);
+    const userShop = await db.getUserShop(objectId);
     if (!userShop) throw new AppError(500, "Could not fetch user shop data");
     return userShop;
   }
