@@ -46,7 +46,7 @@ export default function Profile({
       else setExist(true);
     };
     load();
-  }, []);
+  }, [username]);
 
   return (
     <main className="h-full flex flex-col min-h-0 grow">
