@@ -35,7 +35,8 @@ export default function (db: Database): Router {
     // get user data
     const data: ItemTarget = req.body;
     const item = getItem(data.itemId);
-    if (!data.itemId || !item)
+    console.log(data.itemId, item);
+    if (data.itemId === undefined || data.itemId === null || !item)
       throw new AppError(400, "Client body shall be a valid item target");
 
     // get user shop
@@ -66,7 +67,7 @@ export default function (db: Database): Router {
       { id: cosmeticData.hatID, category: "hat" },
       { id: cosmeticData.skinID, category: "skin" },
     ].map(({ id, category }) => {
-      if (!id)
+      if (id === null || id === undefined)
         throw new AppError(
           400,
           "Client body should be a selection of cosmetics"

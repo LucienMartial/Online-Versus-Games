@@ -11,7 +11,7 @@ interface ItemProps {
   owned: boolean;
   selected: boolean;
   tryBuy: (id: number) => Promise<void>;
-  trySelect: (id: number) => Promise<void>;
+  trySelect: (id: number) => void;
 }
 
 function ShopItem({

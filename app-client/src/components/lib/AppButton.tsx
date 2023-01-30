@@ -6,6 +6,7 @@ interface AppButtonProps {
   type?: "submit" | "button";
   children?: ReactNode;
   className?: string;
+  grayedOut?: boolean;
 }
 
 export default function AppButton({
@@ -14,6 +15,7 @@ export default function AppButton({
   type,
   children,
   className,
+  grayedOut,
 }: AppButtonProps) {
   function buttonStyle() {
     switch (color) {
@@ -36,9 +38,13 @@ export default function AppButton({
       onClick={handleClick}
       type={type}
       className={
-        `${buttonStyle()} text-white font-bold py-2.5 px-5 rounded w-fit ` +
-        className
+        `${
+          !grayedOut
+            ? `${buttonStyle()} text-white font-bold py-2.5 px-5 rounded w-fit `
+            : `bg-gray-500 text-white font-bold py-2.5 px-5 rounded w-fit `
+        }` + className
       }
+      disabled={grayedOut}
     >
       {children}
     </button>

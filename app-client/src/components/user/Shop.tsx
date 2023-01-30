@@ -5,8 +5,8 @@ import {
   SHOP_ITEMS,
   getItem,
 } from "../../../../app-shared/configs/shop-config";
-import Navbar from "../lib/Navbar";
-import Footer from "../lib/Footer";
+import { ItemTarget } from "../../../../app-shared/types";
+import AppButton from "../lib/AppButton";
 
 function replaceSelectedItem(
   id: number,
@@ -32,7 +32,10 @@ const inactiveTabStyle = "border-blue-900";
 
 export default function Shop() {
   const [shopData, setShopData] = useState<UserShop | null>(null);
+  const [serverSelectedItems, setServerSelectedItems] =
+    useState<SelectedItems | null>(null);
   const [currentTab, setCurrentTab] = useState<string>("skin");
+  const [grayedOut, setGrayedOut] = useState<boolean>(true);
 
   useEffect(() => {
     async function load() {
@@ -45,6 +48,7 @@ export default function Shop() {
       if (res.status === 200) {
         const data: UserShop = await res.json();
         setShopData(data);
+        setServerSelectedItems(data.selectedItems);
       }
     }
     load();
@@ -56,11 +60,13 @@ export default function Shop() {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ id: id }),
+      body: JSON.stringify({ itemId: id } satisfies ItemTarget),
     });
     if (res.status === 200) {
       return true;
     }
+    const err: Error = await res.json();
+    console.log(err);
     return false;
   }
 
@@ -80,29 +86,41 @@ export default function Shop() {
     }
   }
 
-  async function trySelectServer(id: number): Promise<boolean> {
+  async function selectCharacterServer(): Promise<boolean> {
+    if (!shopData) return false;
     const res = await fetch("/api/shop-select", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ id: id }),
+      body: JSON.stringify(shopData.selectedItems satisfies SelectedItems),
     });
     if (res.status === 200) {
+      setServerSelectedItems(shopData.selectedItems);
+      setGrayedOut(true);
       return true;
     }
+    const err: Error = await res.json();
+    console.log(err);
     return false;
   }
 
-  async function trySelect(id: number): Promise<void> {
-    const item = getItem(id);
-    if (item && shopData) {
-      const success = await trySelectServer(id);
-      if (success) {
-        setShopData({
-          ...shopData,
-          selectedItems: replaceSelectedItem(id, shopData.selectedItems),
-        });
+  function trySelect(id: number): void {
+    if (!shopData) return;
+    setShopData({
+      ...shopData,
+      selectedItems: replaceSelectedItem(id, shopData.selectedItems),
+    });
+
+    if (serverSelectedItems) {
+      if (
+        shopData.selectedItems.faceID === serverSelectedItems.faceID &&
+        shopData.selectedItems.hatID === serverSelectedItems.hatID &&
+        shopData.selectedItems.skinID === serverSelectedItems.skinID
+      ) {
+        setGrayedOut(false);
+      } else {
+        setGrayedOut(true);
       }
     }
   }
@@ -166,6 +184,14 @@ export default function Shop() {
               >
                 FACE
               </div>
+              <AppButton
+                className={"col-span-3"}
+                color={"regular"}
+                onClick={selectCharacterServer}
+                grayedOut={grayedOut}
+              >
+                Select character
+              </AppButton>
             </div>
             <div className={"min-h-0 grow flex flex-col"}>{renderItems()}</div>
           </div>

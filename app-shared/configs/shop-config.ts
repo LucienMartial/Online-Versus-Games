@@ -75,8 +75,6 @@ const SHOP_ITEMS: Item[] = [
   },
 ];
 
-// const SHOP_ITEM_MAP
-
 const DEFAULT_SKIN = 0x009999;
 
 function getItem(id: number): Item | null {
