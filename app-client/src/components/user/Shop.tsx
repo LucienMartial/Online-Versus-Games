@@ -5,6 +5,8 @@ import {
   SHOP_ITEMS,
   getItem,
 } from "../../../../app-shared/configs/shop-config";
+import Navbar from "../lib/Navbar";
+import Footer from "../lib/Footer";
 
 function replaceSelectedItem(
   id: number,
@@ -25,8 +27,12 @@ function replaceSelectedItem(
   return selectedItems;
 }
 
+const activeTabStyle = "border-blue-400 text-blue-400";
+const inactiveTabStyle = "border-blue-900";
+
 export default function Shop() {
   const [shopData, setShopData] = useState<UserShop | null>(null);
+  const [currentTab, setCurrentTab] = useState<string>("skin");
 
   useEffect(() => {
     async function load() {
@@ -52,7 +58,6 @@ export default function Shop() {
       },
       body: JSON.stringify({ id: id }),
     });
-    const data = await res.json();
     if (res.status === 200) {
       return true;
     }
@@ -83,7 +88,6 @@ export default function Shop() {
       },
       body: JSON.stringify({ id: id }),
     });
-    const data = await res.json();
     if (res.status === 200) {
       return true;
     }
@@ -112,30 +116,59 @@ export default function Shop() {
         selectedItems?.skinID === item.id ||
         selectedItems?.hatID === item.id ||
         selectedItems?.faceID === item.id;
-      return (
+      return item.category === currentTab ? (
         <ShopItem
           id={item.id}
           name={item.name}
           price={item.price}
+          category={item.category}
           owned={owned}
           selected={selected}
           tryBuy={tryBuy}
           trySelect={trySelect}
           key={item.id}
         />
-      );
+      ) : null;
     });
   }
 
   return (
     <StrictMode>
-      <main className="h-full flex flex-col min-h-0 grow">
-        <div className="flex flex-row justify-between items-center p-3 border-b-2">
-          <p className="text-2xl">Shop</p>
-          <p className="text-2xl">You have {shopData?.coins} coins</p>
-        </div>
-        <section className="min-h-0 grow flex flex-col">
-          {renderItems()}
+      <main className={"h-full flex flex-col min-h-0 grow"}>
+        <section className={""}>
+          <p className={"text-2xl"}>You have {shopData?.coins} coins</p>
+        </section>
+        <section className={""}>
+          <div className={"float-left"}>HERE WILL APEAR THE SKIN PREVIEW</div>
+          <div className={"float-right"}>
+            <div className={"grid grid-cols-3 text-lg"}>
+              <div
+                className={`flex flex-row justify-center items-center cursor-pointer p-3 border-b-2 ${
+                  currentTab === "skin" ? activeTabStyle : inactiveTabStyle
+                }`}
+                onClick={() => setCurrentTab("skin")}
+              >
+                SKIN
+              </div>
+              <div
+                className={`flex flex-row justify-center items-center cursor-pointer p-3 border-b-2 ${
+                  currentTab === "hat" ? activeTabStyle : inactiveTabStyle
+                }`}
+                onClick={() => setCurrentTab("hat")}
+              >
+                HAT
+              </div>
+              <div
+                className={`flex flex-row justify-center items-center cursor-pointer p-3 border-b-2 ${
+                  currentTab === "face" ? activeTabStyle : inactiveTabStyle
+                }`}
+                onClick={() => setCurrentTab("face")}
+              >
+                FACE
+              </div>
+            </div>
+            <div className={"min-h-0 grow flex flex-col"}>{renderItems()}</div>
+          </div>
         </section>
       </main>
     </StrictMode>

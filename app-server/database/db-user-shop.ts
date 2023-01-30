@@ -7,7 +7,23 @@ export default function (userShops: Collection<UserShop>) {
     userId: ObjectId
   ): Promise<WithId<UserShop> | null> {
     try {
-      // TODO
+      const shopData = await userShops.findOneAndUpdate(
+        { _id: userId },
+        {
+          $setOnInsert: {
+            _id: userId,
+            coins: 0,
+            items: [-1, -2, -3],
+            selectedItems: {
+              skinID: -1,
+              hatID: -2,
+              faceID: -3,
+            },
+          },
+        },
+        { upsert: true, returnDocument: "after" }
+      );
+      return shopData.value;
     } catch (e) {
       if (e instanceof Error) console.log("user shop get error", e.message);
       return null;
@@ -19,7 +35,11 @@ export default function (userShops: Collection<UserShop>) {
     selectedItems: SelectedItems
   ): Promise<boolean> {
     try {
-      // TODO
+      const shopData = await userShops.updateOne(
+        { _id: userId },
+        { $set: { selectedItems: selectedItems } }
+      );
+      return shopData.modifiedCount === 1;
     } catch (e) {
       if (e instanceof Error) console.log("user shop select error", e.message);
       return false;
@@ -32,7 +52,14 @@ export default function (userShops: Collection<UserShop>) {
     remainingCoins: number
   ): Promise<boolean> {
     try {
-      // TODO
+      const shopData = await userShops.updateOne(
+        { _id: userId },
+        {
+          $set: { coins: remainingCoins },
+          $push: { items: itemId },
+        }
+      );
+      return shopData.modifiedCount === 1;
     } catch (e) {
       if (e instanceof Error)
         console.log("user shop add item error", e.message);

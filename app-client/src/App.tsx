@@ -136,7 +136,11 @@ function App() {
 
   const renderShop = () => {
     if (!loggedIn) return <Navigate to={"/login"} />;
-    return <Shop />;
+    return (
+      <MainUI tryLogout={tryLogout}>
+        <Shop />
+      </MainUI>
+    );
   };
 
   // free access page

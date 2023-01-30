@@ -35,18 +35,6 @@ class Database {
   // profiles
   getProfile: (userId: ObjectId) => Promise<Profile | null>;
 
-  // shop
-  getUserShop: (userId: ObjectId) => Promise<WithId<UserShop> | null>;
-  selectUserShopItem: (
-    userId: ObjectId,
-    selectedItems: SelectedItems
-  ) => Promise<boolean>;
-  buyUserShopItem: (
-    userId: ObjectId,
-    itemId: number,
-    remainingCoins: number
-  ) => Promise<boolean>;
-
   // games
   createGame: (state: EndGameState) => Promise<void>;
   getGames: (id: ObjectId, skip: number, limit: number) => Promise<Game[]>;
@@ -67,6 +55,18 @@ class Database {
     requestId: ObjectId
   ) => Promise<boolean>;
   removeFriend: (userId: ObjectId, otherId: ObjectId) => Promise<boolean>;
+
+  // shop
+  getUserShop: (userId: ObjectId) => Promise<WithId<UserShop> | null>;
+  selectUserShopItem: (
+    userId: ObjectId,
+    selectedItems: SelectedItems
+  ) => Promise<boolean>;
+  buyUserShopItem: (
+    userId: ObjectId,
+    itemId: number,
+    remainingCoins: number
+  ) => Promise<boolean>;
 
   constructor() {
     const url = process.env.MONGODB_URL;

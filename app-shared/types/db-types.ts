@@ -83,8 +83,8 @@ interface SelectedItems {
 
 interface UserShop {
   coins: number;
-  selectedItems: SelectedItems;
   items: number[];
+  selectedItems: SelectedItems;
 }
 
 export type {
