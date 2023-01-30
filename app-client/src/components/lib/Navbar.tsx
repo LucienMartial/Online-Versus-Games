@@ -1,4 +1,4 @@
-import React, { StrictMode } from "react";
+import {FormEvent, StrictMode, useRef} from "react";
 import { useNavigate } from "react-router-dom";
 import AppButton from "./AppButton";
 import {FaSearch} from "react-icons/all";
@@ -9,12 +9,13 @@ interface NavbarProps {
 
 function Navbar({ tryLogout }: NavbarProps) {
   const navigate = useNavigate();
-  const [usernameSearched, setUsernameSearched] = React.useState<string>("");
+  const searchbarRef = useRef<HTMLInputElement>(null);
 
-  const handleUserSearch = (e:React.FormEvent) => {
+  const handleUserSearch = (e:FormEvent) => {
     e.preventDefault();
-    const username = usernameSearched.trim();
+    const username = searchbarRef.current?.value.trim() ?? "";
     if (username === "") return;
+    searchbarRef.current!.value = "";
     navigate(`/user/${username}`);
   }
 
@@ -24,7 +25,7 @@ function Navbar({ tryLogout }: NavbarProps) {
         <section className={"flex gap-3"}>
           <AppButton color={"regular"} onClick={() => navigate("/home")}>Home</AppButton>
           <form className={"flex h-full"} action="" onSubmit={handleUserSearch}>
-            <input type="text" className={"h-full bg-slate-800 rounded outline-none text-white pl-2"} placeholder={"Search a user"} onChange={(e)=>setUsernameSearched(e.currentTarget?.value)}/>
+            <input type="text" className={"h-full bg-slate-800 rounded outline-none text-white pl-2"} placeholder={"Search a user"} ref={searchbarRef}/>
             <button type={"submit"} className={"h-full px-2"}><FaSearch className={"h-full"}/></button>
           </form>
         </section>
