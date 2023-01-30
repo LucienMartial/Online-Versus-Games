@@ -74,7 +74,6 @@ function FriendList({ client }: FriendListProps) {
       await tryConnectSocial(client);
     }
     // ask for current state
-    socialRoom?.send("state");
     setLoading(false);
   }, []);
 
@@ -91,6 +90,7 @@ function FriendList({ client }: FriendListProps) {
   useEffect(() => {
     if (!socialRoom) return;
     socialRoom.removeAllListeners();
+    socialRoom.send("state");
 
     socialRoom.onMessage("state", (state: SocialState) => {
       console.log("Get initial state");

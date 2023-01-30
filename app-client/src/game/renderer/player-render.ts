@@ -9,6 +9,7 @@ import { Viewport } from "pixi-viewport";
 import { Cosmetics } from "./cosmetics/cosmetics";
 import { CosmeticAssets } from "../configs/assets-config";
 import { DEFAULT_SKIN } from "../../../../app-shared/configs/shop-config";
+import { Container, DisplayObject } from "pixi.js";
 
 class PlayerRender extends RenderObject {
   player: Player;
@@ -68,6 +69,14 @@ class PlayerRender extends RenderObject {
     this.cosmetics.loadFaces(player.cosmetics.faceID);
     this.cosmetics.container.zIndex = 1;
     this.container.addChild(this.cosmetics.container);
+
+    // cosmetics reflection
+    const cosmeticReflection = Object.create(this.cosmetics.container);
+    cosmeticReflection.scale.y = -1;
+    cosmeticReflection.pivot.y = shape.height * 2;
+    cosmeticReflection.alpha = 0.2;
+    cosmeticReflection.zIndex = -1;
+    this.display.addChild(cosmeticReflection);
 
     // dash
     this.dashAnim = dashAnim;

@@ -1,6 +1,6 @@
 import { StrictMode, useEffect, useState } from "react";
 import { ShopItem } from "./ShopItem";
-import { ApiShopData, ApiSelectedItems } from "../../../../app-shared/types";
+import { UserShop, SelectedItems } from "../../../../app-shared/types";
 import {
   SHOP_ITEMS,
   getItem,
@@ -8,8 +8,8 @@ import {
 
 function replaceSelectedItem(
   id: number,
-  selectedItems: ApiSelectedItems
-): ApiSelectedItems {
+  selectedItems: SelectedItems
+): SelectedItems {
   const IDItem = getItem(id);
   const category = IDItem?.category;
 
@@ -26,7 +26,7 @@ function replaceSelectedItem(
 }
 
 export default function Shop() {
-  const [shopData, setShopData] = useState<ApiShopData | null>(null);
+  const [shopData, setShopData] = useState<UserShop | null>(null);
 
   useEffect(() => {
     async function load() {
@@ -37,7 +37,7 @@ export default function Shop() {
         },
       });
       if (res.status === 200) {
-        const data = (await res.json()) as ApiShopData;
+        const data: UserShop = await res.json();
         setShopData(data);
       }
     }

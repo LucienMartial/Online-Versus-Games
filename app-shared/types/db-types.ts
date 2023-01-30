@@ -65,6 +65,28 @@ interface FriendsRequestsData {
   requestsData: WithId<FriendRequest>[];
 }
 
+/**
+ * User Profile
+ */
+
+interface Profile {}
+
+/**
+ * User Shop data
+ */
+
+interface SelectedItems {
+  skinID: number;
+  hatID: number;
+  faceID: number;
+}
+
+interface UserShop {
+  coins: number;
+  selectedItems: SelectedItems;
+  items: number[];
+}
+
 export type {
   User,
   Game,
@@ -73,4 +95,7 @@ export type {
   Friends,
   FriendRequest,
   FriendsRequestsData,
+  Profile,
+  UserShop,
+  SelectedItems,
 };

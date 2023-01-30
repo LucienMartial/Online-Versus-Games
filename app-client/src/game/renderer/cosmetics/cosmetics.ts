@@ -7,8 +7,11 @@ class Cosmetics {
   playerRender: PlayerRender;
   cosmeticsAssets: CosmeticAssets;
   hatContainer: Container;
+  hatReflection: Container;
   faceContainer: Container;
+  faceReflection: Container;
   container: Container;
+  reflection: Container;
 
   constructor(playerRender: PlayerRender, cosmeticsAssets: CosmeticAssets) {
     this.playerRender = playerRender;
@@ -19,6 +22,12 @@ class Cosmetics {
     this.faceContainer = new Container();
     this.container.addChild(this.hatContainer);
     this.container.addChild(this.faceContainer);
+
+    this.reflection = new Container();
+    this.faceReflection = new Container();
+    this.hatReflection = new Container();
+    this.reflection.addChild(this.hatReflection);
+    this.reflection.addChild(this.faceReflection);
   }
 
   loadSkins(skinID: number) {
@@ -54,7 +63,6 @@ class Cosmetics {
     switch (hatID) {
       case 20:
         const sprite20 = new Sprite(this.cosmeticsAssets.melon_hat);
-        console.log(this.cosmeticsAssets);
         this.hatContainer.pivot.set(sprite20.width / 2, sprite20.height / 2);
         this.hatContainer.scale.set(0.035, 0.035);
         this.hatContainer.position.set(WIDTH / 2, -HEIGHT / 10);

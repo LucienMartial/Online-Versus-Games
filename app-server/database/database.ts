@@ -1,14 +1,19 @@
-import { Collection, Db, ModifyResult, MongoClient, WithId } from "mongodb";
+import { Collection, Db, MongoClient, WithId } from "mongodb";
 import { EndGameState } from "../../app-shared/state/end-game-state.js";
 import ClientMethods from "./db-user.js";
 import GameMethods from "./db-game.js";
 import FriendMethods from "./db-friends.js";
+import ProfileMethods from "./db-profile.js";
+import UserShopMethods from "./db-user-shop.js";
 import {
   FriendRequest,
   Friends,
   FriendsRequestsData,
   Game,
+  Profile,
   User,
+  UserShop,
+  SelectedItems,
 } from "../../app-shared/types/index.js";
 import { ObjectId } from "mongodb";
 
@@ -19,11 +24,28 @@ class Database {
   private games: Collection<Game>;
   private friends: Collection<Friends>;
   private friendRequests: Collection<FriendRequest>;
+  private profiles: Collection<Profile>;
+  private userShops: Collection<UserShop>;
 
   // users
   searchUser: (username: string) => Promise<WithId<User> | null>;
   createUser: (username: string, password: string) => Promise<ObjectId | null>;
   matchPassword: (password: string, user: User) => Promise<boolean>;
+
+  // profiles
+  getProfile: (userId: ObjectId) => Promise<Profile | null>;
+
+  // shop
+  getUserShop: (userId: ObjectId) => Promise<WithId<UserShop> | null>;
+  selectUserShopItem: (
+    userId: ObjectId,
+    selectedItems: SelectedItems
+  ) => Promise<boolean>;
+  buyUserShopItem: (
+    userId: ObjectId,
+    itemId: number,
+    remainingCoins: number
+  ) => Promise<boolean>;
 
   // games
   createGame: (state: EndGameState) => Promise<void>;
@@ -58,6 +80,8 @@ class Database {
     this.games = this.database.collection("games");
     this.friends = this.database.collection("friends");
     this.friendRequests = this.database.collection("friend-requests");
+    this.profiles = this.database.collection("profiles");
+    this.userShops = this.database.collection("user-shops");
 
     // users
     const { searchUser, createUser, matchPassword } = ClientMethods(this.users);
@@ -83,6 +107,17 @@ class Database {
     this.removeFriendRequest = removeFriendRequest;
     this.acceptFriendRequest = acceptFriendRequest;
     this.removeFriend = removeFriend;
+
+    // profiles
+    const { getProfile } = ProfileMethods(this.profiles);
+    this.getProfile = getProfile;
+
+    // user shop
+    const { getUserShop, buyUserShopItem, selectUserShopItem } =
+      UserShopMethods(this.userShops);
+    this.getUserShop = getUserShop;
+    this.buyUserShopItem = buyUserShopItem;
+    this.selectUserShopItem = selectUserShopItem;
   }
 
   /**

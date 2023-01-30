@@ -4,7 +4,7 @@ import { BoxShape } from "../physics/index.js";
 import { PlayerState } from "../state/index.js";
 import { Inputs, SyncTimer } from "../utils/index.js";
 import { Disc } from "./index.js";
-import { ApiSelectedItems } from "../../app-shared/types/api-types.js";
+import { SelectedItems } from "../types/db-types.js";
 
 // shape
 export const WIDTH = 60;
@@ -27,7 +27,7 @@ class Player extends BodyEntity {
   private isPuppet: boolean;
 
   // cosmetics
-  cosmetics: ApiSelectedItems;
+  cosmetics: SelectedItems;
 
   // stats
   deathCounter: number;

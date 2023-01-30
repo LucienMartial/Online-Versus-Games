@@ -17,6 +17,7 @@ export default function (db: Database): Router {
     const username = req.params.username;
     const user = await db.searchUser(username);
     if (!user) throw new AppError(400, "User does not exist");
+    const profile = await db.getProfile(user._id);
     res.status(200).end();
   });
 

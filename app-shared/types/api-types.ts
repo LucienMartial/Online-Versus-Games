@@ -21,24 +21,8 @@ interface Error {
   message: string;
 }
 
-interface ApiShopData {
-  coins: number;
-  items: number[];
-  selectedItems: ApiSelectedItems;
+interface ItemTarget {
+  itemId: number;
 }
 
-interface ApiSelectedItems {
-  skinID: number;
-  hatID: number;
-  faceID: number;
-}
-
-export type {
-  Error,
-  Message,
-  Login,
-  UserTarget,
-  ApiShopData,
-  RequestTarget,
-  ApiSelectedItems,
-};
+export type { Error, Message, Login, UserTarget, ItemTarget, RequestTarget };
