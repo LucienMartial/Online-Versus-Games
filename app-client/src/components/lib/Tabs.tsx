@@ -18,11 +18,10 @@ export default function Tabs({ tabsDatas }: TabsProps) {
 
   return (
     <main className="h-full flex flex-col min-h-0">
-      <>
-        <div className={`grid grid-cols-${tabsDatas.length} text-lg`}>
+        <div className={`flex w-full text-lg`}>
           {tabsDatas.map((data) => (
             <div
-              className={`flex flex-row justify-center items-center cursor-pointer p-3 border-b-2 ${
+              className={`w-full flex flex-row justify-center items-center cursor-pointer p-3 border-b-2 ${
                 currentTab === data.title ? activeTabStyle : inactiveTabStyle
               }`}
               onClick={() => setCurrentTab(data.title)}
@@ -39,7 +38,6 @@ export default function Tabs({ tabsDatas }: TabsProps) {
             tabsDatas.findIndex((header) => header.title === currentTab)
           ].content
         }
-      </>
     </main>
   );
 }
