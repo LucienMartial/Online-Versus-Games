@@ -4,14 +4,7 @@ import { BoxShape } from "../physics/index.js";
 import { PlayerState } from "../state/index.js";
 import { Inputs, SyncTimer } from "../utils/index.js";
 import { Disc } from "./index.js";
-import { getItem } from "../configs/shop-config.js";
-import { Item } from "../types/index.js";
-
-interface PLayerCosmetics {
-  skinID: number;
-  hatID: number;
-  faceID: number;
-}
+import { ApiSelectedItems } from "../../app-shared/types/api-types.js";
 
 // shape
 export const WIDTH = 60;
@@ -34,7 +27,7 @@ class Player extends BodyEntity {
   private isPuppet: boolean;
 
   // cosmetics
-  cosmetics: PLayerCosmetics;
+  cosmetics: ApiSelectedItems;
 
   // stats
   deathCounter: number;
@@ -74,8 +67,8 @@ class Player extends BodyEntity {
     // cosmetics
     this.cosmetics = {
       skinID: -1,
-      hatID: -1,
-      faceID: -1,
+      hatID: -2,
+      faceID: -3,
     };
 
     // stat
@@ -208,25 +201,6 @@ class Player extends BodyEntity {
     }
   }
 
-  setCosmetics(id: number): void {
-    const item = getItem(id);
-    if (!item) return;
-
-    switch (item.category) {
-      case "skin":
-        this.cosmetics.skinID = id;
-        break;
-      case "hat":
-        this.cosmetics.hatID = id;
-        break;
-      case "face":
-        this.cosmetics.faceID = id;
-        break;
-      default:
-        break;
-    }
-  }
-
   update(dt: number): void {
     if (this.isPuppet) return;
 
@@ -244,4 +218,3 @@ class Player extends BodyEntity {
 }
 
 export { Player };
-export type { PLayerCosmetics };

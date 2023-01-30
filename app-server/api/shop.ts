@@ -1,13 +1,44 @@
 import { Router } from "express";
 import { Database } from "../database/database.js";
-import { ApiShopData } from "../../app-shared/types/api-types.js";
+import {
+  ApiShopData,
+  ApiSelectedItems,
+} from "../../app-shared/types/api-types.js";
 import { getItem } from "../../app-shared/configs/shop-config.js";
 import { Item } from "../../app-shared/types/index.js";
 
 // put all that in the database
 let userCoins: number = 4;
-let userItems: number[] = [0, 3];
-const userItemsConfig: ApiShopData = { coins: userCoins, items: userItems };
+let userItems: number[] = [-1, -2, -3];
+let userSelectedItems: ApiSelectedItems = {
+  skinID: -1,
+  hatID: -2,
+  faceID: -3,
+};
+
+// *********************************************************** //
+
+function setUserSelectedItems(id: number): string | null {
+  const item = getItem(id);
+  if (!item) return "Item not found";
+  if (!userItems.includes(id)) return "You don't have this item";
+
+  switch (item.category) {
+    case "skin":
+      userSelectedItems.skinID = id;
+      break;
+    case "hat":
+      userSelectedItems.hatID = id;
+      break;
+    case "face":
+      userSelectedItems.faceID = id;
+      break;
+    default:
+      break;
+  }
+
+  return null;
+}
 
 function buyItem(id: number): string | null {
   const item: Item = getItem(id);
@@ -43,6 +74,11 @@ export default function (db: Database): Router {
   // response to the request to get user coins
 
   router.get("/shop", (req, res) => {
+    const userItemsConfig: ApiShopData = {
+      coins: userCoins,
+      items: userItems,
+      selectedItems: userSelectedItems,
+    };
     res.status(200).json(userItemsConfig);
   });
 
@@ -50,6 +86,15 @@ export default function (db: Database): Router {
 
   router.post("/shop-buy", (req, res) => {
     const error: string | null = buyItem(req.body.id);
+    if (!error) {
+      res.status(200).json({ status: 0, error: "no error" });
+    } else {
+      res.status(400).json({ status: -1, error: error });
+    }
+  });
+
+  router.post("/shop-select", (req, res) => {
+    const error = setUserSelectedItems(req.body.id);
     if (!error) {
       res.status(200).json({ status: 0, error: "no error" });
     } else {

@@ -2,6 +2,12 @@ import { Item } from "../types/index.js";
 
 const SHOP_ITEMS: Item[] = [
   {
+    id: -1,
+    name: "Regular skin",
+    price: 0,
+    category: "skin",
+  },
+  {
     id: 0,
     name: "Red skin",
     price: 1,
@@ -26,6 +32,12 @@ const SHOP_ITEMS: Item[] = [
     category: "skin",
   },
   {
+    id: -2,
+    name: "No hat",
+    price: 0,
+    category: "hat",
+  },
+  {
     id: 20,
     name: "Melon hat",
     price: 1,
@@ -36,6 +48,12 @@ const SHOP_ITEMS: Item[] = [
     name: "Blue cap",
     price: 1,
     category: "hat",
+  },
+  {
+    id: -3,
+    name: "No face",
+    price: 0,
+    category: "face",
   },
   {
     id: 40,
@@ -49,18 +67,20 @@ const SHOP_ITEMS: Item[] = [
     price: 1,
     category: "face",
   },
+  {
+    id: 42,
+    name: "Red eyes",
+    price: 1,
+    category: "face",
+  },
 ];
+
+// const SHOP_ITEM_MAP
 
 const DEFAULT_SKIN = 0x009999;
 
 function getItem(id: number): Item | null {
-  for (let i = 0; i < SHOP_ITEMS.length; i++) {
-    const item = SHOP_ITEMS[i];
-    if (item.id === id) {
-      return item;
-    }
-  }
-  return null;
+  return SHOP_ITEMS.find((item) => item.id === id) || null;
 }
 
 export { SHOP_ITEMS, DEFAULT_SKIN, getItem };

@@ -91,7 +91,7 @@ class Cosmetics {
         this.faceContainer.position.set(WIDTH / 2, HEIGHT / 4);
         this.faceContainer.addChild(sprite41);
         break;
-      default:
+      case 42:
         const eye1 = new Sprite(this.cosmeticsAssets.default_eye);
         const eye2 = new Sprite(this.cosmeticsAssets.default_eye);
         eye1.pivot.set(eye1.width / 2, eye1.height / 2);
@@ -102,6 +102,8 @@ class Cosmetics {
         eye2.position.set(WIDTH / 2 + WIDTH / 4, HEIGHT / 4);
         this.faceContainer.addChild(eye1);
         this.faceContainer.addChild(eye2);
+        break;
+      default:
         break;
     }
   }

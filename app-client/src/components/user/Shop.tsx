@@ -1,10 +1,29 @@
 import { StrictMode, useEffect, useState } from "react";
 import { ShopItem } from "./ShopItem";
-import { ApiShopData } from "../../../../app-shared/types";
+import { ApiShopData, ApiSelectedItems } from "../../../../app-shared/types";
 import {
   SHOP_ITEMS,
   getItem,
 } from "../../../../app-shared/configs/shop-config";
+
+function replaceSelectedItem(
+  id: number,
+  selectedItems: ApiSelectedItems
+): ApiSelectedItems {
+  const IDItem = getItem(id);
+  const category = IDItem?.category;
+
+  switch (category) {
+    case "skin":
+      return { ...selectedItems, skinID: id };
+    case "hat":
+      return { ...selectedItems, hatID: id };
+    case "face":
+      return { ...selectedItems, faceID: id };
+  }
+
+  return selectedItems;
+}
 
 export default function Shop() {
   const [shopData, setShopData] = useState<ApiShopData | null>(null);
@@ -34,16 +53,14 @@ export default function Shop() {
       body: JSON.stringify({ id: id }),
     });
     const data = await res.json();
-    console.log(data);
     if (res.status === 200) {
       return true;
     }
     return false;
   }
 
-  async function tryBuy(id: number) {
+  async function tryBuy(id: number): Promise<void> {
     const item = getItem(id);
-    console.log("item", item);
     if (item && shopData) {
       if (shopData.coins >= item.price) {
         const success = await tryBuyServer(id);
@@ -51,23 +68,59 @@ export default function Shop() {
           setShopData({
             coins: shopData.coins - item.price,
             items: [...shopData.items, item.id],
+            selectedItems: replaceSelectedItem(id, shopData.selectedItems),
           });
         }
       }
     }
   }
 
+  async function trySelectServer(id: number): Promise<boolean> {
+    const res = await fetch("/api/shop-select", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ id: id }),
+    });
+    const data = await res.json();
+    if (res.status === 200) {
+      return true;
+    }
+    return false;
+  }
+
+  async function trySelect(id: number): Promise<void> {
+    const item = getItem(id);
+    if (item && shopData) {
+      const success = await trySelectServer(id);
+      if (success) {
+        setShopData({
+          ...shopData,
+          selectedItems: replaceSelectedItem(id, shopData.selectedItems),
+        });
+      }
+    }
+  }
+
   function renderItems() {
     const itemSet = new Set(shopData?.items);
+    const selectedItems = shopData?.selectedItems;
     return SHOP_ITEMS.map((item) => {
       const owned = itemSet.has(item.id);
+      const selected =
+        selectedItems?.skinID === item.id ||
+        selectedItems?.hatID === item.id ||
+        selectedItems?.faceID === item.id;
       return (
         <ShopItem
           id={item.id}
           name={item.name}
           price={item.price}
           owned={owned}
+          selected={selected}
           tryBuy={tryBuy}
+          trySelect={trySelect}
           key={item.id}
         />
       );

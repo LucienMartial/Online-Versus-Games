@@ -1,5 +1,4 @@
 import { ObjectId } from "mongodb";
-import { FriendRequest, Friends } from "./db-types.js";
 
 interface Message {
   content: string;
@@ -25,6 +24,21 @@ interface Error {
 interface ApiShopData {
   coins: number;
   items: number[];
+  selectedItems: ApiSelectedItems;
 }
 
-export type { Error, Message, Login, UserTarget, ApiShopData, RequestTarget };
+interface ApiSelectedItems {
+  skinID: number;
+  hatID: number;
+  faceID: number;
+}
+
+export type {
+  Error,
+  Message,
+  Login,
+  UserTarget,
+  ApiShopData,
+  RequestTarget,
+  ApiSelectedItems,
+};

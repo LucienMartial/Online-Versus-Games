@@ -1,3 +1,4 @@
+import { AiOutlineSelect } from "react-icons/ai";
 import { FiShoppingCart } from "react-icons/fi";
 
 interface ItemProps {
@@ -5,10 +6,20 @@ interface ItemProps {
   name: string;
   price: number;
   owned: boolean;
+  selected: boolean;
   tryBuy: (id: number) => Promise<void>;
+  trySelect: (id: number) => Promise<void>;
 }
 
-function ShopItem({ id, name, price, owned, tryBuy }: ItemProps) {
+function ShopItem({
+  id,
+  name,
+  price,
+  owned,
+  selected,
+  tryBuy,
+  trySelect,
+}: ItemProps) {
   return (
     <div
       className={"flex flex-row justify-between items-center p-3 border-b-2"}
@@ -18,13 +29,17 @@ function ShopItem({ id, name, price, owned, tryBuy }: ItemProps) {
         <p className={"ml-2"}>{name}</p>
       </div>
       <div className={"flex flex-row justify-end items-center"}>
-        <p className={"mr-2"}>{price}</p>
-        <FiShoppingCart
-          className={"h-6 w-6 cursor-pointer"}
-          onClick={() => tryBuy(id)}
-        />
+        {owned ? "" : <p className={"mr-2"}>{price}</p>}
+        {owned ? (
+          <AiOutlineSelect onClick={() => trySelect(id)} />
+        ) : (
+          <FiShoppingCart
+            className={"h-6 w-6 cursor-pointer"}
+            onClick={() => tryBuy(id)}
+          />
+        )}
       </div>
-      {owned ? "OWNED" : "NOT OWNED"}
+      {selected ? "SELECTED" : "NOT SELECTED"}
     </div>
   );
 }
