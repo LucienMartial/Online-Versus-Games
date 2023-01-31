@@ -1,4 +1,4 @@
-import { Friend } from "../../../app-shared/types";
+import { Friend } from "../../../../../app-shared/types";
 import { FiXCircle } from "react-icons/fi";
 import UserField from "./UserField";
 import { ObjectId } from "mongodb";

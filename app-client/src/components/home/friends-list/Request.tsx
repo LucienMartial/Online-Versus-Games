@@ -1,6 +1,6 @@
 import { ObjectId } from "mongodb";
 import { WithId } from "mongodb";
-import { FriendRequest } from "../../../app-shared/types";
+import { FriendRequest } from "../../../../../app-shared/types";
 import { FiX, FiCheck } from "react-icons/fi";
 import UserField from "./UserField";
 

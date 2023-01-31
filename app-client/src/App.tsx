@@ -15,14 +15,14 @@ import useSocial, { useSocialRes } from "./hooks/useSocial";
 const Game = lazy(() => import("./components/game/Game"));
 const Login = lazy(() => import("./components/forms/Login"));
 const Register = lazy(() => import("./components/forms/Register"));
-const Home = lazy(() => import("./components/user/Home"));
+const Home = lazy(() => import("./components/home/Home"));
 const Page404 = lazy(() => import("./components/Page404"));
 const Privacy = lazy(() => import("./components/static-pages/Privacy"));
 const Acknowledgement = lazy(
   () => import("./components/static-pages/Acknowledgment")
 );
 const User = lazy(() => import("./components/user/User"));
-const Shop = lazy(() => import("./components/user/Shop"));
+const Shop = lazy(() => import("./components/user/shop/Shop"));
 const MainUI = lazy(() => import("./components/lib/MainUI"));
 
 // user context

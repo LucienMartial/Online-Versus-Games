@@ -2,7 +2,7 @@ import { StrictMode } from "react";
 import Footer from "../lib/Footer";
 import Navbar from "../lib/Navbar";
 import AppButton from "../lib/AppButton";
-import FriendList from "../../friends-list/FriendList";
+import FriendList from "./friends-list/FriendList";
 import { Client } from "colyseus.js";
 
 interface HomeProps {

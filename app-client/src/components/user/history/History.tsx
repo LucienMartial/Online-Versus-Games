@@ -1,6 +1,6 @@
 import { StrictMode, useCallback, useEffect, useState } from "react";
-import { Game } from "../../../../app-shared/types";
-import LoadingPage from "../LoadingPage";
+import { Game } from "../../../../../app-shared/types";
+import LoadingPage from "../../LoadingPage";
 import HistoryList from "./HistoryList";
 
 interface HistoryProps {

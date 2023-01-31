@@ -1,16 +1,16 @@
 import { StrictMode, useEffect, useState } from "react";
-import { ShopItem } from "./ShopItem";
-import { UserShop, SelectedItems } from "../../../../app-shared/types";
+import { ShopItem } from "../ShopItem";
+import { UserShop, SelectedItems } from "../../../../../app-shared/types";
 import {
   SHOP_ITEMS,
   getItem,
-} from "../../../../app-shared/configs/shop-config";
-import { ItemTarget } from "../../../../app-shared/types";
-import AppButton from "../lib/AppButton";
+} from "../../../../../app-shared/configs/shop-config";
+import { ItemTarget } from "../../../../../app-shared/types";
+import AppButton from "../../lib/AppButton";
 import { AiFillSkin } from "react-icons/ai";
 import { FaHatCowboy } from "react-icons/fa";
 import { BsEmojiSunglasses } from "react-icons/bs";
-import Tabs from "../lib/Tabs";
+import Tabs from "../../lib/Tabs";
 
 function replaceSelectedItem(
   id: number,

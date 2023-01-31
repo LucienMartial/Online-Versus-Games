@@ -1,14 +1,14 @@
 import { useCallback, useContext, useEffect, useState } from "react";
-import { Friend } from "../../../app-shared/types";
-import { FriendsContext, SocialContext } from "../App";
-import LoadingPage from "../components/LoadingPage";
+import { Friend } from "../../../../../app-shared/types";
+import { FriendsContext, SocialContext } from "../../../App";
+import LoadingPage from "../../LoadingPage";
 import FriendRequestsList from "./FriendRequestsList";
 import FriendTab from "./FriendTab";
 import FriendUser from "./FriendUser";
 import { FiRotateCw } from "react-icons/fi";
 import { Client } from "colyseus.js";
 import { ObjectId } from "mongodb";
-import { SocialState } from "../../../app-shared/state";
+import { SocialState } from "../../../../../app-shared/state";
 
 interface FriendListProps {
   client: Client | undefined;

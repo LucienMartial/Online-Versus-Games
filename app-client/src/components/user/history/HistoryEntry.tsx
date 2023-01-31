@@ -1,4 +1,4 @@
-import { Game } from "../../../../app-shared/types";
+import { Game } from "../../../../../app-shared/types";
 
 interface HistoryEntryProps {
   game: Game;

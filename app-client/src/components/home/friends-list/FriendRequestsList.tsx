@@ -1,7 +1,7 @@
 import { ObjectId, WithId } from "mongodb";
 import { useCallback, useContext, useEffect, useState } from "react";
-import { FriendRequest } from "../../../app-shared/types";
-import { FriendsContext, UserContext } from "../App";
+import { FriendRequest } from "../../../../../app-shared/types";
+import { FriendsContext, UserContext } from "../../../App";
 import Request from "./Request";
 
 interface FriendRequestsListProps {
