@@ -13,12 +13,15 @@ export default function (games: Collection<Game>) {
           user_id: new ObjectId(state.id),
           username: state.username,
           victory: state.victory,
-          deaths: state.deaths,
-          straightShots: state.straightShots,
-          curveShots: state.curveShots,
-          shields: state.shields,
-          shieldCatches: state.shieldCatches,
-          dashes: state.dashes,
+          stats: {
+            deaths: state.deaths,
+            kills: state.kills,
+            lineShots: state.straightShots,
+            curveShots: state.curveShots,
+            shields: state.shields,
+            shieldCatches: state.shieldCatches,
+            dashes: state.dashes,
+          },
         });
       });
       const res = await games.insertOne({

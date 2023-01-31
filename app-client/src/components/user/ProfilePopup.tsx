@@ -1,5 +1,5 @@
 import { Dispatch, StrictMode } from "react";
-import Profile from "./Profile";
+import Profile from "./ProfileView";
 import { FiArrowLeftCircle } from "react-icons/fi";
 
 interface UserProps {

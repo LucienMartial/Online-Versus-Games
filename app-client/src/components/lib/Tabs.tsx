@@ -18,26 +18,24 @@ export default function Tabs({ tabsDatas }: TabsProps) {
 
   return (
     <main className="h-full flex flex-col min-h-0">
-        <div className={`flex w-full text-lg`}>
-          {tabsDatas.map((data) => (
-            <div
-              className={`w-full flex flex-row justify-center items-center cursor-pointer p-3 border-b-2 ${
-                currentTab === data.title ? activeTabStyle : inactiveTabStyle
-              }`}
-              onClick={() => setCurrentTab(data.title)}
-            >
-              {data.logo && (
-                <div className="inline-block mr-2">{data.logo}</div>
-              )}
-              <h2>{data.title}</h2>
-            </div>
-          ))}
-        </div>
-        {
-          tabsDatas[
-            tabsDatas.findIndex((header) => header.title === currentTab)
-          ].content
-        }
+      <div className={`flex w-full text-lg`}>
+        {tabsDatas.map((data) => (
+          <div
+            key={data.title}
+            className={`w-full flex flex-row justify-center items-center cursor-pointer p-3 border-b-2 ${
+              currentTab === data.title ? activeTabStyle : inactiveTabStyle
+            }`}
+            onClick={() => setCurrentTab(data.title)}
+          >
+            {data.logo && <div className="inline-block mr-2">{data.logo}</div>}
+            <h2>{data.title}</h2>
+          </div>
+        ))}
+      </div>
+      {
+        tabsDatas[tabsDatas.findIndex((header) => header.title === currentTab)]
+          .content
+      }
     </main>
   );
 }

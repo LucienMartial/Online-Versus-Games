@@ -9,13 +9,19 @@ import { FriendsContext, SocialContext, UserContext } from "../../../App";
 import LoadingPage from "../../LoadingPage";
 import { FiUserPlus, FiTrash } from "react-icons/fi";
 import StatCard from "./StatCard";
+import { Profile } from "../../../../../app-shared/types";
 
 interface OverviewProps {
   username: string;
   handleRemoveAccount?: () => Promise<void>;
+  profileData: Profile;
 }
 
-function Overview({ username, handleRemoveAccount }: OverviewProps) {
+function Overview({
+  username,
+  handleRemoveAccount,
+  profileData,
+}: OverviewProps) {
   const { friendsRequestsData, tryGetFriends, sendFriendRequest } =
     useContext(FriendsContext);
   const [alreadyFriend, setAlreadyFriend] = useState(false);
@@ -54,7 +60,7 @@ function Overview({ username, handleRemoveAccount }: OverviewProps) {
   const removeAccount = () => {
     if (confirm("Are you sure you want to delete your account?"))
       handleRemoveAccount?.().catch((e) => console.log(e));
-  }
+  };
 
   // real time update of friend status
   const { socialRoom } = useContext(SocialContext);
@@ -83,6 +89,23 @@ function Overview({ username, handleRemoveAccount }: OverviewProps) {
     };
     load();
   }, []);
+
+  // useful for stats
+  const average = (stat: number) => {
+    return Number.parseFloat(
+      (stat / (profileData.games > 0 ? profileData.games : 1)).toFixed(1)
+    );
+  };
+  const winrate =
+    profileData.games > 0
+      ? Number.parseFloat(
+          ((profileData.wins / profileData.games) * 100).toFixed(2)
+        )
+      : 100;
+  const score = `${average(profileData.stats.kills)}/${average(
+    profileData.stats.deaths
+  )}/${average(profileData.stats.shieldCatches)}`;
+  const shots = profileData.stats.lineShots + profileData.stats.curveShots;
 
   const pageStyle = "grow flex flex-col justify-center items-center mt-4 px-2 ";
 
@@ -128,28 +151,56 @@ function Overview({ username, handleRemoveAccount }: OverviewProps) {
           <section className="rounded-md grid grid-cols-2 bg-slate-700 gap-2 col-span-3 row-span-1 p-2">
             <div className="flex flex-col justify-center rounded-md gap-2 bg-slate-800 p-2">
               <h2 className="text-5xl">Winrate</h2>
-              <span className="text-5xl">42%</span>
+              <span className="text-5xl">{winrate}%</span>
             </div>
             <div className="flex flex-col justify-center rounded-md gap-2 bg-slate-800 p-2">
               <h2 className="text-5xl">Game</h2>
-              <span className="text-5xl">47</span>
+              <span className="text-5xl">{profileData.games}</span>
             </div>
             <div className="flex flex-col col-span-2 justify-center rounded-md gap-2 bg-slate-800 p-2">
               <h2 className="text-5xl">Score</h2>
-              <span className="text-5xl">1/2/4</span>
+              <span className="text-5xl">{score}</span>
             </div>
           </section>
           <section className="bg-slate-700 rounded-md col-span-3 md:col-span-2 grid grid-cols-2 gap-2 p-2">
-            <StatCard name="Death" average={1.1} total={4} />
-            <StatCard name="Kill" average={2.4} total={8} />
-            <StatCard name="Shield" average={3} total={13} />
-            <StatCard name="Dash" average={8} total={23} />
+            <StatCard
+              name="Death"
+              average={average(profileData.stats.deaths)}
+              total={profileData.stats.deaths}
+            />
+            <StatCard
+              name="Kill"
+              average={average(profileData.stats.kills)}
+              total={profileData.stats.kills}
+            />
+            <StatCard
+              name="Dash"
+              average={average(profileData.stats.dashes)}
+              total={profileData.stats.dashes}
+            />
+            <StatCard name="Shot" average={average(shots)} total={shots} />
           </section>
           <section className="grow bg-slate-700 p-2 col-span-3 md:col-span-5 rounded-md grid grid-cols-2 md:grid-cols-4 gap-2">
-            <StatCard name="Shot" average={1.1} total={4} />
-            <StatCard name="Curve Shot" average={2.4} total={8} />
-            <StatCard name="Shield" average={3} total={13} />
-            <StatCard name="Shield Catch" average={8} total={23} />
+            <StatCard
+              name="Line Shot"
+              average={average(profileData.stats.lineShots)}
+              total={profileData.stats.lineShots}
+            />
+            <StatCard
+              name="Curve Shot"
+              average={average(profileData.stats.curveShots)}
+              total={profileData.stats.curveShots}
+            />
+            <StatCard
+              name="Shield"
+              average={average(profileData.stats.shields)}
+              total={profileData.stats.shields}
+            />
+            <StatCard
+              name="Shield Catch"
+              average={average(profileData.stats.shieldCatches)}
+              total={profileData.stats.shieldCatches}
+            />
           </section>
         </section>
       </div>

@@ -1,16 +1,21 @@
 import { Dispatcher } from "@colyseus/command";
 import { Client, Room, matchMaker } from "colyseus";
 import { DiscWarEngine } from "../../app-shared/disc-war/disc-war.js";
-import { EndGameState, GameState } from "../../app-shared/state/index.js";
+import {
+  EndGamePlayerState,
+  EndGameState,
+  GameState,
+} from "../../app-shared/state/index.js";
 import {
   OnJoinCommand,
   OnLeaveCommand,
   OnInputCommand,
   OnSyncCommand,
 } from "../commands/index.js";
-import { InputsData } from "../../app-shared/types/index.js";
+import { InputsData, Profile } from "../../app-shared/types/index.js";
 import { CBuffer } from "../../app-shared/utils/cbuffer.js";
 import { Request } from "express";
+import { ObjectId } from "mongodb";
 
 // maximum number of inputs saved for each client
 const MAX_INPUTS = 50;
@@ -22,6 +27,12 @@ const MAX_DEATH = 3;
 
 interface GameParams {
   dbCreateGame: (state: EndGameState) => Promise<void>;
+  dbGetProfile: (userId: ObjectId) => Promise<Profile | null>;
+  dbUpdateProfile: (
+    userId: ObjectId,
+    profile: Profile,
+    userState: EndGamePlayerState
+  ) => Promise<boolean>;
 }
 
 /**
@@ -38,7 +49,7 @@ class GameRoom extends Room<GameState> {
   maxClients = 2;
   clientsMap: Map<string, string> = new Map();
 
-  onCreate({ dbCreateGame }: GameParams) {
+  onCreate({ dbCreateGame, dbGetProfile, dbUpdateProfile }: GameParams) {
     this.setState(new GameState());
     this.gameEngine = new DiscWarEngine(true);
     this.gameEngine.maxDeath = this.maxDeath;
@@ -51,7 +62,22 @@ class GameRoom extends Room<GameState> {
       this.gameEnded = true;
       const chatEndGameRoom = await matchMaker.createRoom("chat-room", {});
       const state = new EndGameState(this.gameEngine, this);
-      dbCreateGame(state);
+      await dbCreateGame(state);
+
+      // update profile of clients
+      for (const client of this.clients) {
+        try {
+          const objectId = new ObjectId(client.userData.id);
+          const profile = await dbGetProfile(objectId);
+          const playerState = state.players.get(client.id);
+          await dbUpdateProfile(objectId, profile, playerState);
+        } catch (e) {
+          if (e instanceof Error)
+            console.error("could not update user profile", e.message);
+        }
+      }
+
+      // send event to clients
       for (const client of this.clients) {
         const reservation = await matchMaker.reserveSeatFor(
           chatEndGameRoom,

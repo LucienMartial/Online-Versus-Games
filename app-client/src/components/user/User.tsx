@@ -2,7 +2,7 @@ import { useParams } from "react-router-dom";
 import { StrictMode, useContext } from "react";
 import Navbar from "../lib/Navbar";
 import Footer from "../lib/Footer";
-import Profile from "./Profile";
+import Profile from "./ProfileView";
 
 // import { UserContext } from "../../App";
 

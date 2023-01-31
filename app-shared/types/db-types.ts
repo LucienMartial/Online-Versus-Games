@@ -18,16 +18,21 @@ interface Game {
   players: GamePlayer[];
 }
 
+interface GameStats {
+  deaths: number;
+  kills: number;
+  dashes: number;
+  lineShots: number;
+  curveShots: number;
+  shields: number;
+  shieldCatches: number;
+}
+
 interface GamePlayer {
   user_id: ObjectId;
   username: string;
   victory: boolean;
-  deaths: number;
-  straightShots: number;
-  curveShots: number;
-  shields: number;
-  shieldCatches: number;
-  dashes: number;
+  stats: GameStats;
 }
 
 /**
@@ -69,7 +74,11 @@ interface FriendsRequestsData {
  * User Profile
  */
 
-interface Profile {}
+interface Profile {
+  games: number;
+  wins: number;
+  stats: GameStats;
+}
 
 /**
  * User Shop data
@@ -95,6 +104,7 @@ export type {
   Friends,
   FriendRequest,
   FriendsRequestsData,
+  GameStats,
   Profile,
   UserShop,
   SelectedItems,

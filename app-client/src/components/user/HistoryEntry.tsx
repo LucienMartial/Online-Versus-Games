@@ -28,7 +28,7 @@ export default function HistoryEntry({ game, username }: HistoryEntryProps) {
       </span>
       <div className={"grid grid-cols-5 sm:gap-20"}>
         <span className={"text-left"}>{player1.username}</span>
-        <span>{player1.deaths}</span>-<span>{player2.deaths}</span>
+        <span>{player1.stats.deaths}</span>-<span>{player2.stats.deaths}</span>
         <span className={"text-right"}>{player2.username}</span>
       </div>
     </li>

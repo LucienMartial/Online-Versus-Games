@@ -53,6 +53,8 @@ import SocialRoom from "./app-server/rooms/social-room.js";
 
 gameServer.define("game", GameRoom, {
   dbCreateGame: db.createGame,
+  dbGetProfile: db.getProfile,
+  dbUpdateProfile: db.updateProfile,
 });
 gameServer.define("social", SocialRoom);
 gameServer.define("chat-room", ChatRoom);

@@ -1,5 +1,8 @@
 import { Collection, Db, MongoClient, WithId } from "mongodb";
-import { EndGameState } from "../../app-shared/state/end-game-state.js";
+import {
+  EndGamePlayerState,
+  EndGameState,
+} from "../../app-shared/state/end-game-state.js";
 import ClientMethods from "./db-user.js";
 import GameMethods from "./db-game.js";
 import FriendMethods from "./db-friends.js";
@@ -34,6 +37,11 @@ class Database {
 
   // profiles
   getProfile: (userId: ObjectId) => Promise<Profile | null>;
+  updateProfile: (
+    userId: ObjectId,
+    profile: Profile,
+    playerState: EndGamePlayerState
+  ) => Promise<boolean>;
 
   // games
   createGame: (state: EndGameState) => Promise<void>;
@@ -109,8 +117,9 @@ class Database {
     this.removeFriend = removeFriend;
 
     // profiles
-    const { getProfile } = ProfileMethods(this.profiles);
+    const { getProfile, updateProfile } = ProfileMethods(this.profiles);
     this.getProfile = getProfile;
+    this.updateProfile = updateProfile;
 
     // user shop
     const { getUserShop, buyUserShopItem, selectUserShopItem } =
@@ -137,6 +146,8 @@ class Database {
         expeditor: userId,
         recipient: userId,
       });
+      await this.userShops.deleteOne({ _id: userId });
+      await this.profiles.deleteOne({ _id: userId });
       return true;
     } catch (e) {
       if (e instanceof Error) console.error("user deletion error", e.message);

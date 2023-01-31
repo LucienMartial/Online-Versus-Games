@@ -118,7 +118,8 @@ class Player extends BodyEntity {
     // collision with disc
     if (!other.static) {
       // did try to counter
-      if (this.counterTimer.active) {
+      if (this.counterTimer.active && !this.possesDisc) {
+        console.log("shield catch", this.successfulShieldCounter);
         this.successfulShieldCounter += 1;
         this.disc.attach(this);
       }
