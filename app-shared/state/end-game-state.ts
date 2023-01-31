@@ -1,6 +1,4 @@
 import { Schema, type, MapSchema } from "@colyseus/schema";
-import { Client } from "colyseus";
-import { ObjectId } from "mongodb";
 import { GameRoom } from "../../app-server/rooms/game-room.js";
 import { DiscWarEngine, Player } from "../disc-war/index.js";
 
@@ -30,7 +28,14 @@ class EndGameState extends Schema {
 
     for (const client of room.clients) {
       const player = engine.getPlayer(client.id);
-      const otherPlayer = players.find((p) => p.id !== player.id);
+
+      /* cannot do "(p) => p.id !== player.id && p" to check if p is undefined because p can be another value than 0
+        same thing for player
+      */
+      const otherPlayer = players.find((p) => {
+        if (p === undefined || player === undefined) return false;
+        return p.id !== player.id;
+      });
       if (!player || !otherPlayer) continue;
 
       // player state

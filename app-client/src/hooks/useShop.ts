@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Item, ApiShopData } from "../../../app-shared/types";
+import { Item } from "../../../app-shared/types";
 
 // function getItems(): Item[] {
 //   // dont forget to ask the server for the list of items
@@ -11,6 +11,8 @@ import { Item, ApiShopData } from "../../../app-shared/types";
 //     { id: 4, name: "Test item 4", price: 1, color: undefined },
 //   ];
 // }
+
+// TODO :  get rid of this dead code
 
 function useShop() {
   //   const items: Item[] = getItems();
