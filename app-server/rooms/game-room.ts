@@ -69,15 +69,9 @@ class GameRoom extends Room<GameState> {
         try {
           const objectId = new ObjectId(client.userData.id);
           const profile = await dbGetProfile(objectId);
+          if (!profile) throw new Error("could not get profile");
           const playerState = state.players.get(client.id);
-          // TODO not sure about the next line
-          if (
-            profile === null ||
-            profile === undefined ||
-            playerState === null ||
-            playerState === undefined
-          )
-            continue;
+          if (!playerState) continue;
           await dbUpdateProfile(objectId, profile, playerState);
         } catch (e) {
           if (e instanceof Error)

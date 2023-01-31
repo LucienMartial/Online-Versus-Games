@@ -154,7 +154,7 @@ function Overview({
               <span className="text-5xl">{winrate}%</span>
             </div>
             <div className="flex flex-col justify-center rounded-md gap-2 bg-slate-800 p-2">
-              <h2 className="text-5xl">Game</h2>
+              <h2 className="text-5xl">Games</h2>
               <span className="text-5xl">{profileData.games}</span>
             </div>
             <div className="flex flex-col col-span-2 justify-center rounded-md gap-2 bg-slate-800 p-2">

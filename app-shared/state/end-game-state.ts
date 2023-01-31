@@ -28,15 +28,9 @@ class EndGameState extends Schema {
 
     for (const client of room.clients) {
       const player = engine.getPlayer(client.id);
-
-      /* cannot do "(p) => p.id !== player.id && p" to check if p is undefined because p can be another value than 0
-        same thing for player
-      */
-      const otherPlayer = players.find((p) => {
-        if (p === undefined || player === undefined) return false;
-        return p.id !== player.id;
-      });
-      if (!player || !otherPlayer) continue;
+      if (!player) continue;
+      const otherPlayer = players.find((p) => p?.id !== player.id);
+      if (!otherPlayer) continue;
 
       // player state
       const state = new EndGamePlayerState();
