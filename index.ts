@@ -1,5 +1,5 @@
 import http from "http";
-import { Server } from "colyseus";
+import { LobbyRoom, Server } from "colyseus";
 import { WebSocketTransport } from "@colyseus/ws-transport";
 
 // dirname
@@ -51,13 +51,16 @@ import { GameRoom } from "./app-server/rooms/game-room.js";
 import { ChatRoom } from "./app-server/rooms/chat-room.js";
 import SocialRoom from "./app-server/rooms/social-room.js";
 
-gameServer.define("game", GameRoom, {
-  dbCreateGame: db.createGame,
-  dbGetProfile: db.getProfile,
-  dbUpdateProfile: db.updateProfile,
-});
 gameServer.define("social", SocialRoom);
 gameServer.define("chat-room", ChatRoom);
+gameServer.define("lobby", LobbyRoom);
+gameServer
+  .define("game", GameRoom, {
+    dbCreateGame: db.createGame,
+    dbGetProfile: db.getProfile,
+    dbUpdateProfile: db.updateProfile,
+  })
+  .enableRealtimeListing();
 
 server.listen(port, () => {
   console.log(`local: http://localhost:${port}`);

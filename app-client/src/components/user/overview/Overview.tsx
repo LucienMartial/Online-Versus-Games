@@ -36,7 +36,7 @@ function Overview({
     } catch (e) {
       if (e instanceof Error) console.log(e.message);
     }
-  }, []);
+  }, [username]);
 
   // check if it's own user profile
   const userData = useContext(UserContext);
@@ -55,7 +55,7 @@ function Overview({
             request.recipientName === username
         )
     );
-  }, [username]);
+  }, [username, profileData]);
 
   const removeAccount = () => {
     if (confirm("Are you sure you want to delete your account?"))
@@ -67,7 +67,6 @@ function Overview({
   useEffect(() => {
     if (!socialRoom) return;
     socialRoom.removeAllListeners();
-
     socialRoom.onMessage("*", async (type, message) => {
       switch (type) {
         case "request:new":
@@ -78,7 +77,7 @@ function Overview({
           break;
       }
     });
-  }, [socialRoom]);
+  }, [socialRoom, profileData]);
 
   // load page
   useEffect(() => {
@@ -88,7 +87,10 @@ function Overview({
       setLoading(false);
     };
     load();
-  }, []);
+    return () => {
+      setLoading(true);
+    };
+  }, [profileData]);
 
   // useful for stats
   const average = (stat: number) => {

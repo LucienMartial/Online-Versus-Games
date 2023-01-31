@@ -1,5 +1,5 @@
 import { StrictMode, useEffect, useState } from "react";
-import { ShopItem } from "../ShopItem";
+import { ShopItem } from "./ShopItem";
 import { UserShop, SelectedItems } from "../../../../../app-shared/types";
 import {
   SHOP_ITEMS,
