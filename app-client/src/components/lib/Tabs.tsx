@@ -17,7 +17,7 @@ export default function Tabs({ tabsDatas }: TabsProps) {
   const [currentTab, setCurrentTab] = useState(tabsDatas[0].title);
 
   return (
-    <main className="h-full flex flex-col min-h-0">
+    <main className={"h-full flex flex-col min-h-0"}>
       <div className={`flex w-full text-lg`}>
         {tabsDatas.map((data) => (
           <div

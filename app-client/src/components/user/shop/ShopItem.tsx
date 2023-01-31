@@ -2,6 +2,7 @@ import { AiOutlineSelect } from "react-icons/ai";
 import { FiShoppingCart } from "react-icons/fi";
 import { FaRegAngry } from "react-icons/fa";
 import { FaEuroSign } from "react-icons/fa";
+import { ShopButton } from "./ShopButton";
 
 interface ItemProps {
   id: number;
@@ -24,34 +25,42 @@ function ShopItem({
   tryBuy,
   trySelect,
 }: ItemProps) {
+  function itemStyle() {
+    if (owned && selected) {
+      return "grid grid-raws-3 p-5 rounded-xl m-3 border-2 border-pink-900 animate-pulse";
+    }
+
+    return "grid grid-raws-3 p-5 rounded-xl m-3 border-2 border-blue-400";
+  }
+
   return (
-    <div className={"border-2"}>
+    <div className={itemStyle()}>
       <div className={""}>
-        {owned ? (
-          ""
-        ) : (
-          <p className={"mr-2"}>
-            {price} <FaEuroSign />
-          </p>
-        )}
+        <p className={"font-bold"}>{name}</p>
+      </div>
+      <div className={"my-3"}>
+        {/*Here will be the image of the item*/ "IMAGE"}
+      </div>
+      <div
+        className={
+          owned && selected
+            ? "bg-pink-900 text-white font-bold py-2.5 px-5 rounded w-full"
+            : "w-full"
+        }
+      >
         {owned ? (
           selected ? (
-            <FaRegAngry />
+            "Selected"
           ) : (
-            <AiOutlineSelect
-              className={"cursor-pointer"}
-              onClick={() => trySelect(id)}
-            />
+            <ShopButton onClick={() => trySelect(id)} feature={"select"}>
+              Select
+            </ShopButton>
           )
         ) : (
-          <FiShoppingCart
-            className={"h-6 w-6 cursor-pointer"}
-            onClick={() => tryBuy(id)}
-          />
+          <ShopButton onClick={() => tryBuy(id)} feature={"buy"}>
+            Buy ({price} {price > 1 ? "coins" : "coin"})
+          </ShopButton>
         )}
-      </div>
-      <div className={""}>
-        <p className={"ml-2"}>{name}</p>
       </div>
     </div>
   );

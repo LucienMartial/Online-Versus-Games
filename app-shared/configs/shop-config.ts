@@ -3,7 +3,7 @@ import { Item } from "../types/index.js";
 const SHOP_ITEMS: Item[] = [
   {
     id: -1,
-    name: "Regular skin",
+    name: "Basic skin",
     price: 0,
     category: "skin",
   },

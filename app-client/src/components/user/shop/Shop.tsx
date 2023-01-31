@@ -185,12 +185,12 @@ export default function Shop() {
         <section className={""}>
           <p className={"text-2xl"}>You have {shopData?.coins} coins</p>
         </section>
-        <section className={"grid grid-cols-1 sm:grid-cols-2 h-full"}>
+        <section className={"grid grid-cols-1 sm:grid-cols-2 h-full min-h-0"}>
           <div className={"grid grid-rows-2 h-full"}>
             <div>HERE WILL APEAR THE SKIN PREVIEW</div>
             <div>
               <AppButton
-                className={"col-span-3"}
+                className={"font-bold h-16 w-52"}
                 color={"regular"}
                 onClick={selectCharacterServer}
                 grayedOut={grayedOut}
@@ -199,14 +199,18 @@ export default function Shop() {
               </AppButton>
             </div>
           </div>
-          <div className={""}>
+          <div className={"h-full min-h-0"}>
             <Tabs
               tabsDatas={[
                 {
                   title: "Skin",
                   logo: <AiFillSkin />,
                   content: (
-                    <div className={"grid grid-cols-2 h-full"}>
+                    <div
+                      className={
+                        "grid grid-cols-2 overflow-y-scroll max-h-full min-h-0"
+                      }
+                    >
                       {renderItems("skin")}
                     </div>
                   ),
@@ -214,12 +218,28 @@ export default function Shop() {
                 {
                   title: "Hat",
                   logo: <FaHatCowboy />,
-                  content: renderItems("hat"),
+                  content: (
+                    <div
+                      className={
+                        "grid grid-cols-2 max-h-full overflow-y-scroll min-h-0"
+                      }
+                    >
+                      {renderItems("hat")}
+                    </div>
+                  ),
                 },
                 {
                   title: "Face",
                   logo: <BsEmojiSunglasses />,
-                  content: renderItems("face"),
+                  content: (
+                    <div
+                      className={
+                        "grid grid-cols-2 h-full overflow-y-scroll max-h-96"
+                      }
+                    >
+                      {renderItems("face")}
+                    </div>
+                  ),
                 },
               ]}
             />
