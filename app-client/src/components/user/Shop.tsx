@@ -7,6 +7,10 @@ import {
 } from "../../../../app-shared/configs/shop-config";
 import { ItemTarget } from "../../../../app-shared/types";
 import AppButton from "../lib/AppButton";
+import { AiFillSkin } from "react-icons/ai";
+import { FaHatCowboy } from "react-icons/fa";
+import { BsEmojiSunglasses } from "react-icons/bs";
+import Tabs from "../lib/Tabs";
 
 function replaceSelectedItem(
   id: number,
@@ -27,14 +31,10 @@ function replaceSelectedItem(
   return selectedItems;
 }
 
-const activeTabStyle = "border-blue-400 text-blue-400";
-const inactiveTabStyle = "border-blue-900";
-
 export default function Shop() {
   const [shopData, setShopData] = useState<UserShop | null>(null);
   const [serverSelectedItems, setServerSelectedItems] =
     useState<SelectedItems | null>(null);
-  const [currentTab, setCurrentTab] = useState<string>("skin");
   const [grayedOut, setGrayedOut] = useState<boolean>(true);
 
   useEffect(() => {
@@ -54,7 +54,67 @@ export default function Shop() {
     load();
   }, []);
 
+  useEffect(() => {
+    if (!shopData) return;
+    if (serverSelectedItems) {
+      if (
+        shopData.selectedItems.faceID === serverSelectedItems.faceID &&
+        shopData.selectedItems.hatID === serverSelectedItems.hatID &&
+        shopData.selectedItems.skinID === serverSelectedItems.skinID
+      ) {
+        setGrayedOut(true);
+      } else {
+        setGrayedOut(false);
+      }
+    }
+  }, [shopData]);
+
+  async function selectJsonPostRequest(data: SelectedItems): Promise<Response> {
+    const res = await fetch("/api/shop-select", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data satisfies SelectedItems),
+    });
+
+    return res;
+  }
+
+  async function selectCharacterServer(
+    replacedItems: SelectedItems | null = null
+  ): Promise<boolean> {
+    if (!shopData) return false;
+    let res = null;
+    if (replacedItems === null) {
+      res = await selectJsonPostRequest(shopData.selectedItems);
+    } else {
+      res = await selectJsonPostRequest(replacedItems);
+    }
+    if (res === null) return false;
+    if (res.status === 200) {
+      replacedItems
+        ? setServerSelectedItems(replacedItems)
+        : setServerSelectedItems(shopData.selectedItems);
+      setGrayedOut(true);
+      return true;
+    }
+    const err: Error = await res.json();
+    console.log(err);
+    return false;
+  }
+
+  function trySelect(id: number): void {
+    if (!shopData) return;
+    const newSelectedItems = replaceSelectedItem(id, shopData.selectedItems);
+    setShopData({
+      ...shopData,
+      selectedItems: newSelectedItems,
+    });
+  }
+
   async function tryBuyServer(id: number): Promise<boolean> {
+    if (!shopData) return false;
     const res = await fetch("/api/shop-buy", {
       method: "POST",
       headers: {
@@ -63,6 +123,14 @@ export default function Shop() {
       body: JSON.stringify({ itemId: id } satisfies ItemTarget),
     });
     if (res.status === 200) {
+      const replacedItems = replaceSelectedItem(id, shopData.selectedItems);
+      const resSelectCharacter = await selectCharacterServer(replacedItems);
+      if (resSelectCharacter) {
+        setShopData({
+          ...shopData,
+          selectedItems: replaceSelectedItem(id, shopData.selectedItems),
+        });
+      }
       return true;
     }
     const err: Error = await res.json();
@@ -86,46 +154,7 @@ export default function Shop() {
     }
   }
 
-  async function selectCharacterServer(): Promise<boolean> {
-    if (!shopData) return false;
-    const res = await fetch("/api/shop-select", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(shopData.selectedItems satisfies SelectedItems),
-    });
-    if (res.status === 200) {
-      setServerSelectedItems(shopData.selectedItems);
-      setGrayedOut(true);
-      return true;
-    }
-    const err: Error = await res.json();
-    console.log(err);
-    return false;
-  }
-
-  function trySelect(id: number): void {
-    if (!shopData) return;
-    setShopData({
-      ...shopData,
-      selectedItems: replaceSelectedItem(id, shopData.selectedItems),
-    });
-
-    if (serverSelectedItems) {
-      if (
-        shopData.selectedItems.faceID === serverSelectedItems.faceID &&
-        shopData.selectedItems.hatID === serverSelectedItems.hatID &&
-        shopData.selectedItems.skinID === serverSelectedItems.skinID
-      ) {
-        setGrayedOut(false);
-      } else {
-        setGrayedOut(true);
-      }
-    }
-  }
-
-  function renderItems() {
+  function renderItems(category: string) {
     const itemSet = new Set(shopData?.items);
     const selectedItems = shopData?.selectedItems;
     return SHOP_ITEMS.map((item) => {
@@ -134,7 +163,7 @@ export default function Shop() {
         selectedItems?.skinID === item.id ||
         selectedItems?.hatID === item.id ||
         selectedItems?.faceID === item.id;
-      return item.category === currentTab ? (
+      return item.category === category ? (
         <ShopItem
           id={item.id}
           name={item.name}
@@ -156,34 +185,10 @@ export default function Shop() {
         <section className={""}>
           <p className={"text-2xl"}>You have {shopData?.coins} coins</p>
         </section>
-        <section className={""}>
-          <div className={"float-left"}>HERE WILL APEAR THE SKIN PREVIEW</div>
-          <div className={"float-right"}>
-            <div className={"grid grid-cols-3 text-lg"}>
-              <div
-                className={`flex flex-row justify-center items-center cursor-pointer p-3 border-b-2 ${
-                  currentTab === "skin" ? activeTabStyle : inactiveTabStyle
-                }`}
-                onClick={() => setCurrentTab("skin")}
-              >
-                SKIN
-              </div>
-              <div
-                className={`flex flex-row justify-center items-center cursor-pointer p-3 border-b-2 ${
-                  currentTab === "hat" ? activeTabStyle : inactiveTabStyle
-                }`}
-                onClick={() => setCurrentTab("hat")}
-              >
-                HAT
-              </div>
-              <div
-                className={`flex flex-row justify-center items-center cursor-pointer p-3 border-b-2 ${
-                  currentTab === "face" ? activeTabStyle : inactiveTabStyle
-                }`}
-                onClick={() => setCurrentTab("face")}
-              >
-                FACE
-              </div>
+        <section className={"grid grid-cols-1 sm:grid-cols-2 h-full"}>
+          <div className={"grid grid-rows-2 h-full"}>
+            <div>HERE WILL APEAR THE SKIN PREVIEW</div>
+            <div>
               <AppButton
                 className={"col-span-3"}
                 color={"regular"}
@@ -193,7 +198,31 @@ export default function Shop() {
                 Select character
               </AppButton>
             </div>
-            <div className={"min-h-0 grow flex flex-col"}>{renderItems()}</div>
+          </div>
+          <div className={""}>
+            <Tabs
+              tabsDatas={[
+                {
+                  title: "Skin",
+                  logo: <AiFillSkin />,
+                  content: (
+                    <div className={"grid grid-cols-2 h-full"}>
+                      {renderItems("skin")}
+                    </div>
+                  ),
+                },
+                {
+                  title: "Hat",
+                  logo: <FaHatCowboy />,
+                  content: renderItems("hat"),
+                },
+                {
+                  title: "Face",
+                  logo: <BsEmojiSunglasses />,
+                  content: renderItems("face"),
+                },
+              ]}
+            />
           </div>
         </section>
       </main>

@@ -25,13 +25,8 @@ function ShopItem({
   trySelect,
 }: ItemProps) {
   return (
-    <div
-      className={"flex flex-row justify-between items-center p-3 border-b-2"}
-    >
-      <div className={"flex flex-row justify-start items-center"}>
-        <p className={"ml-2"}>{name}</p>
-      </div>
-      <div className={"flex flex-row justify-end items-center"}>
+    <div className={"border-2"}>
+      <div className={""}>
         {owned ? (
           ""
         ) : (
@@ -43,7 +38,10 @@ function ShopItem({
           selected ? (
             <FaRegAngry />
           ) : (
-            <AiOutlineSelect onClick={() => trySelect(id)} />
+            <AiOutlineSelect
+              className={"cursor-pointer"}
+              onClick={() => trySelect(id)}
+            />
           )
         ) : (
           <FiShoppingCart
@@ -51,6 +49,9 @@ function ShopItem({
             onClick={() => tryBuy(id)}
           />
         )}
+      </div>
+      <div className={""}>
+        <p className={"ml-2"}>{name}</p>
       </div>
     </div>
   );
