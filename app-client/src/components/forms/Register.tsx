@@ -36,11 +36,11 @@ export default function Register({ tryRegister }: RegisterProps) {
   };
 
   return (
-    <div className="flex flex-col w-screen justify-between">
+    <div className="flex flex-col w-screen justify-between items-center">
       <form
         action=""
         onSubmit={register}
-        className={"flex grow justify-center items-center flex-col gap-8 mx-4 sm:mx-0"}
+        className={"text-blue-800 flex justify-center items-center flex-col gap-8 mx-4 sm:mx-0 my-auto w-fit h-fit bg-gray-100 border border-white/10 p-10 rounded"}
       >
         <h1>Create an account</h1>
         <AnimatedInput

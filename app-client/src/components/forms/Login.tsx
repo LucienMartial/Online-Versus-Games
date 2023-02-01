@@ -28,11 +28,11 @@ function Login({ tryLogin }: LoginProps) {
 
   return (
     <React.StrictMode>
-      <div className="flex flex-col w-screen justify-between">
+      <div className="flex flex-col w-screen justify-between items-center">
         <form
           action=""
           onSubmit={login}
-          className={"flex grow justify-center items-center flex-col gap-8 mx-4 sm:mx-0"}
+          className={"text-blue-800 flex justify-center items-center flex-col gap-8 mx-4 sm:mx-0 my-auto w-fit h-fit bg-gray-100 border border-white/10 p-10 rounded"}
         >
           <h1>WELCOME !</h1>
           <AnimatedInput
