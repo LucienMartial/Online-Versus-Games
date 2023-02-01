@@ -57,7 +57,7 @@ function Login({ tryLogin }: LoginProps) {
           </AppButton>
           <p>
             No account yet ?{" "}
-            <AppLink to={"/register"}>Create an account</AppLink>
+            <AppLink className={"text-blue-500"} to={"/register"}>Create an account</AppLink>
           </p>
         </form>
         <Footer />

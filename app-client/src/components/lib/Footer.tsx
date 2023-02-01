@@ -12,10 +12,10 @@ function Footer() {
             <FiGithub strokeWidth={2.5} className="text-blue-200" />
           </a>
           <li>
-            <AppLink to={"/privacy"}>Privacy Policy</AppLink>
+            <AppLink className={"text-blue-200"} to={"/privacy"}>Privacy Policy</AppLink>
           </li>
           <li>
-            <AppLink to={"/acknowledgment"}>Acknowledgment</AppLink>
+            <AppLink className={"text-blue-200"} to={"/acknowledgment"}>Acknowledgment</AppLink>
           </li>
         </ul>
       </footer>

@@ -76,7 +76,7 @@ export default function Register({ tryRegister }: RegisterProps) {
           />
           <label htmlFor={"privacyCheckbox"}>
             I have read and accept the{" "}
-            <AppLink to={"/privacy"}>privacy policy</AppLink>
+            <AppLink className={"text-blue-500"} to={"/privacy"}>privacy policy</AppLink>
           </label>
         </p>
         {invalidPassword && <AppError>Passwords must match</AppError>}
@@ -85,7 +85,7 @@ export default function Register({ tryRegister }: RegisterProps) {
           Register
         </AppButton>
         <p>
-          Already have an account ? <AppLink to={"/login"}>Login</AppLink>
+          Already have an account ? <AppLink className={"text-blue-500"} to={"/login"}>Login</AppLink>
         </p>
       </form>
       <Footer />
