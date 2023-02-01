@@ -32,7 +32,7 @@ function Login({ tryLogin }: LoginProps) {
         <form
           action=""
           onSubmit={login}
-          className={"flex grow justify-center items-center flex-col gap-8"}
+          className={"flex grow justify-center items-center flex-col gap-8 mx-4 sm:mx-0"}
         >
           <h1>WELCOME !</h1>
           <AnimatedInput

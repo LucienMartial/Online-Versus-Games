@@ -40,7 +40,7 @@ export default function Register({ tryRegister }: RegisterProps) {
       <form
         action=""
         onSubmit={register}
-        className={"flex grow justify-center items-center flex-col gap-8"}
+        className={"flex grow justify-center items-center flex-col gap-8 mx-4 sm:mx-0"}
       >
         <h1>Create an account</h1>
         <AnimatedInput
