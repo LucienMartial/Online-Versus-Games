@@ -135,7 +135,7 @@ function FriendList({ client }: FriendListProps) {
     });
   }, [socialRoom, friends]);
 
-  const mainClasses = "bg-slate-800 grow max-w-xs mx-auto h-full ";
+  const mainClasses = "backdrop-blur grow max-w-xs mx-auto h-full shadow-lg shadow-slate-600/50 rounded-xl";
 
   if (loading) {
     return (

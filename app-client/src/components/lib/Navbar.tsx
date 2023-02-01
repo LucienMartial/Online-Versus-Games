@@ -21,7 +21,7 @@ function Navbar({ tryLogout }: NavbarProps) {
 
   return (
     <StrictMode>
-      <header className="z-10 flex w-screen flex-row justify-start border-b-2 border-slate-700 p-2 sm:justify-between">
+      <header className="z-10 flex w-screen flex-row justify-start border-slate-700 border-b p-2 sm:justify-between backdrop-blur">
         <input
           id="navToggler"
           type={"checkbox"}
