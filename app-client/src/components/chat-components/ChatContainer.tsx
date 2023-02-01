@@ -78,7 +78,7 @@ function ChatContainer({ chatRoom }: ChatContainerProperties) {
                 type="text"
                 placeholder="Type your message here"
                 className={
-                  "placeholder:text-xl rounded box-border m-0 py-3 px-5 w-full h-1/4 bg-blue-800"
+                  "placeholder:text-xl rounded box-border m-0 py-3 px-5 w-full h-1/4 bg-blue-800 outline-none"
                 }
               />
             </form>
