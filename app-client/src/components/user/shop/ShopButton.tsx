@@ -2,7 +2,7 @@ import { ReactNode } from "react";
 
 interface ShopButtonProps {
   onClick?: () => void;
-  feature: "buy" | "select";
+  feature: "buy" | "select" | "preview";
   children?: ReactNode;
   className?: string;
 }
@@ -19,6 +19,8 @@ function ShopButton({
         return "bg-lime-800 hover:bg-lime-900 ";
       case "select":
         return "bg-blue-800 hover:bg-blue-900 ";
+      case "preview":
+        return "bg-purple-800 hover:bg-purple-900 ";
     }
   }
 

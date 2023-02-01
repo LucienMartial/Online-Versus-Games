@@ -10,25 +10,25 @@ const SHOP_ITEMS: Item[] = [
   {
     id: 0,
     name: "Red skin",
-    price: 1,
+    price: 10,
     category: "skin",
   },
   {
     id: 1,
     name: "Blue skin",
-    price: 1,
+    price: 10,
     category: "skin",
   },
   {
     id: 2,
     name: "Green skin",
-    price: 1,
+    price: 10,
     category: "skin",
   },
   {
     id: 3,
     name: "Yellow skin",
-    price: 1,
+    price: 10,
     category: "skin",
   },
   {
@@ -40,13 +40,13 @@ const SHOP_ITEMS: Item[] = [
   {
     id: 20,
     name: "Melon hat",
-    price: 1,
+    price: 50,
     category: "hat",
   },
   {
     id: 21,
     name: "Blue cap",
-    price: 1,
+    price: 20,
     category: "hat",
   },
   {
@@ -58,19 +58,19 @@ const SHOP_ITEMS: Item[] = [
   {
     id: 40,
     name: "Black sunglasses",
-    price: 1,
+    price: 50,
     category: "face",
   },
   {
     id: 41,
     name: "Pink sunglasses",
-    price: 1,
+    price: 10,
     category: "face",
   },
   {
     id: 42,
     name: "Red eyes",
-    price: 1,
+    price: 40,
     category: "face",
   },
 ];

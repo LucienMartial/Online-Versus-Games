@@ -4,6 +4,7 @@ import {
   UserShop,
   SelectedItems,
   ItemTarget,
+  Item,
 } from "../../app-shared/types/index.js";
 import { getItem } from "../../app-shared/configs/shop-config.js";
 import { AppError } from "../utils/error.js";
@@ -34,27 +35,56 @@ export default function (db: Database): Router {
   router.post("/shop-buy", async (req: Request, res: Response) => {
     // get user data
     const data: ItemTarget = req.body;
-    const item = getItem(data.itemId);
-    console.log(data.itemId, item);
-    if (data.itemId === undefined || data.itemId === null || !item)
+    const items: Item[] = [];
+    for (const item of data.itemId) {
+      const itemGet = getItem(item);
+      if (itemGet !== null) {
+        items.push(itemGet);
+      } else {
+        throw new AppError(400, "Bad item ID");
+      }
+    }
+    if (
+      data.itemId === undefined ||
+      data.itemId === null ||
+      items.length === 0 ||
+      items.length > 3
+    ) {
       throw new AppError(400, "Client body shall be a valid item target");
+    }
 
     // get user shop
     const userShop = await getShopData(req);
 
     // verify purchase
-    const remainingCoins = userShop.coins - item.price;
-    if (remainingCoins < 0)
-      throw new AppError(400, "Not enough coin to buy item");
+    let remainingCoins = userShop.coins;
 
-    // pursue transaction
-    const result = await db.buyUserShopItem(
-      userShop._id,
-      item.id,
-      remainingCoins
-    );
-    if (!result)
-      throw new AppError(500, "Could not pursue user shop transaction");
+    for (const item of items) {
+      if (
+        !userShop.items.every((shopItem) => {
+          return shopItem !== item.id;
+        })
+      ) {
+        throw new AppError(400, "Item(s) already owned");
+      }
+
+      remainingCoins -= item.price;
+    }
+
+    if (remainingCoins < 0) {
+      throw new AppError(400, "Not enough coin to buy item");
+    }
+
+    for (const item of items) {
+      // pursue transaction
+      const result = await db.buyUserShopItem(
+        userShop._id,
+        item.id,
+        remainingCoins
+      );
+      if (!result)
+        throw new AppError(500, "Could not pursue user shop transaction");
+    }
 
     res.status(200).end();
   });
@@ -85,8 +115,9 @@ export default function (db: Database): Router {
         userShop.items.includes(cosmeticData.hatID) &&
         userShop.items.includes(cosmeticData.skinID)
       )
-    )
+    ) {
       throw new AppError(400, "Cosmetics selection not posseded");
+    }
 
     // select new cosmetic items
     const result = await db.selectUserShopItem(userShop._id, cosmeticData);

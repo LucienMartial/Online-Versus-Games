@@ -22,7 +22,7 @@ interface Error {
 }
 
 interface ItemTarget {
-  itemId: number;
+  itemId: number[];
 }
 
 export type { Error, Message, Login, UserTarget, ItemTarget, RequestTarget };

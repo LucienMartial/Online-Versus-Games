@@ -1,6 +1,6 @@
 import { StrictMode, useEffect, useState } from "react";
 import { ShopItem } from "./ShopItem";
-import { UserShop, SelectedItems } from "../../../../../app-shared/types";
+import { UserShop, SelectedItems, Item } from "../../../../../app-shared/types";
 import {
   SHOP_ITEMS,
   getItem,
@@ -36,6 +36,8 @@ export default function Shop() {
   const [serverSelectedItems, setServerSelectedItems] =
     useState<SelectedItems | null>(null);
   const [grayedOut, setGrayedOut] = useState<boolean>(true);
+  const [previewItem, setPreviewItem] = useState<SelectedItems | null>(null);
+  const [payingSkin, setPayingSkin] = useState<number>(0);
 
   useEffect(() => {
     async function load() {
@@ -49,25 +51,47 @@ export default function Shop() {
         const data: UserShop = await res.json();
         setShopData(data);
         setServerSelectedItems(data.selectedItems);
+        setPreviewItem(data.selectedItems);
       }
     }
     load();
   }, []);
 
   useEffect(() => {
-    if (!shopData) return;
-    if (serverSelectedItems) {
+    if (serverSelectedItems && previewItem) {
       if (
-        shopData.selectedItems.faceID === serverSelectedItems.faceID &&
-        shopData.selectedItems.hatID === serverSelectedItems.hatID &&
-        shopData.selectedItems.skinID === serverSelectedItems.skinID
+        previewItem.faceID === serverSelectedItems.faceID &&
+        previewItem.hatID === serverSelectedItems.hatID &&
+        previewItem.skinID === serverSelectedItems.skinID
       ) {
         setGrayedOut(true);
       } else {
         setGrayedOut(false);
       }
     }
-  }, [shopData]);
+  }, [shopData, previewItem, serverSelectedItems]);
+
+  useEffect(() => {
+    if (previewItem) {
+      let payingSkinPrice = 0;
+      const faceItem = getItem(previewItem.faceID);
+      const hatItem = getItem(previewItem.hatID);
+      const skinItem = getItem(previewItem.skinID);
+
+      if (previewItem.faceID !== shopData?.selectedItems.faceID && faceItem) {
+        payingSkinPrice += faceItem.price;
+      }
+
+      if (previewItem.hatID !== shopData?.selectedItems.hatID && hatItem) {
+        payingSkinPrice += hatItem.price;
+      }
+
+      if (previewItem.skinID !== shopData?.selectedItems.skinID && skinItem) {
+        payingSkinPrice += skinItem.price;
+      }
+      setPayingSkin(payingSkinPrice);
+    }
+  }, [previewItem]);
 
   async function selectJsonPostRequest(data: SelectedItems): Promise<Response> {
     const res = await fetch("/api/shop-select", {
@@ -84,19 +108,51 @@ export default function Shop() {
   async function selectCharacterServer(
     replacedItems: SelectedItems | null = null
   ): Promise<boolean> {
-    if (!shopData) return false;
+    if (!shopData || !previewItem) return false;
     let res = null;
+    const itemsToBuy: number[] = [];
     if (replacedItems === null) {
-      res = await selectJsonPostRequest(shopData.selectedItems);
+      if (previewItem.faceID !== shopData?.selectedItems.faceID) {
+        itemsToBuy.push(previewItem.faceID);
+      }
+      if (previewItem.hatID !== shopData?.selectedItems.hatID) {
+        itemsToBuy.push(previewItem.hatID);
+      }
+      if (previewItem.skinID !== shopData?.selectedItems.skinID) {
+        itemsToBuy.push(previewItem.skinID);
+      }
+      const resBuySkin =
+        itemsToBuy.length === 0 ? true : await tryBuySkinServer(itemsToBuy);
+      if (!resBuySkin) {
+        return false;
+      }
+      res = await selectJsonPostRequest(previewItem);
     } else {
       res = await selectJsonPostRequest(replacedItems);
     }
     if (res === null) return false;
     if (res.status === 200) {
-      replacedItems
-        ? setServerSelectedItems(replacedItems)
-        : setServerSelectedItems(shopData.selectedItems);
-      setGrayedOut(true);
+      if (replacedItems) {
+        setServerSelectedItems(replacedItems);
+      } else {
+        setServerSelectedItems(previewItem);
+
+        let totalCoins = shopData.coins;
+        let replacedItems = shopData.selectedItems;
+
+        for (const itemId of itemsToBuy) {
+          const itemData = getItem(itemId);
+          if (itemData) {
+            totalCoins -= itemData.price;
+          }
+          replacedItems = replaceSelectedItem(itemId, replacedItems);
+        }
+        setShopData({
+          coins: totalCoins,
+          items: [...shopData.items, ...itemsToBuy],
+          selectedItems: replacedItems,
+        });
+      }
       return true;
     }
     const err: Error = await res.json();
@@ -111,25 +167,41 @@ export default function Shop() {
       ...shopData,
       selectedItems: newSelectedItems,
     });
+    if (!previewItem) return;
+    const newPreviewItem = replaceSelectedItem(id, previewItem);
+    setPreviewItem(newPreviewItem);
   }
 
-  async function tryBuyServer(id: number): Promise<boolean> {
-    if (!shopData) return false;
+  function tryPreview(id: number): void {
+    if (!previewItem) return;
+    const newPreviewItem = replaceSelectedItem(id, previewItem);
+    setPreviewItem(newPreviewItem);
+  }
+
+  async function buyJsonPosetRequest(ids: number[]): Promise<Response> {
     const res = await fetch("/api/shop-buy", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ itemId: id } satisfies ItemTarget),
+      body: JSON.stringify({ itemId: ids } satisfies ItemTarget),
     });
+
+    return res;
+  }
+
+  async function tryBuyServer(id: number): Promise<boolean> {
+    if (!shopData) return false;
+    const res = await buyJsonPosetRequest([id]);
     if (res.status === 200) {
       const replacedItems = replaceSelectedItem(id, shopData.selectedItems);
       const resSelectCharacter = await selectCharacterServer(replacedItems);
       if (resSelectCharacter) {
         setShopData({
           ...shopData,
-          selectedItems: replaceSelectedItem(id, shopData.selectedItems),
+          selectedItems: replacedItems,
         });
+        setPreviewItem(replacedItems);
       }
       return true;
     }
@@ -154,6 +226,17 @@ export default function Shop() {
     }
   }
 
+  async function tryBuySkinServer(ids: number[]): Promise<boolean> {
+    if (!shopData) return false;
+    const res = await buyJsonPosetRequest(ids);
+    if (res.status === 200) {
+      return true;
+    }
+    const err: Error = await res.json();
+    console.log(err);
+    return false;
+  }
+
   function renderItems(category: string) {
     const itemSet = new Set(shopData?.items);
     const selectedItems = shopData?.selectedItems;
@@ -163,6 +246,10 @@ export default function Shop() {
         selectedItems?.skinID === item.id ||
         selectedItems?.hatID === item.id ||
         selectedItems?.faceID === item.id;
+      const previewed =
+        previewItem?.skinID === item.id ||
+        previewItem?.hatID === item.id ||
+        previewItem?.faceID === item.id;
       return item.category === category ? (
         <ShopItem
           id={item.id}
@@ -171,23 +258,53 @@ export default function Shop() {
           category={item.category}
           owned={owned}
           selected={selected}
+          previewed={previewed}
           tryBuy={tryBuy}
           trySelect={trySelect}
+          tryPreview={tryPreview}
           key={item.id}
         />
       ) : null;
     });
   }
 
+  function renderPayingSkin(): string {
+    if (payingSkin === 0) {
+      return "";
+    }
+
+    if (payingSkin === 1) {
+      return "(" + payingSkin + " coin)";
+    }
+
+    return "(" + payingSkin + " coins)";
+  }
+
   return (
     <StrictMode>
       <main className={"h-full flex flex-col min-h-0 grow"}>
         <section className={""}>
-          <p className={"text-2xl"}>You have {shopData?.coins} coins</p>
+          <p className={"text-2xl"}>
+            You have {shopData?.coins ? shopData.coins : "0 coins"}{" "}
+            {shopData?.coins && shopData?.coins > 1 ? "coins" : "coin"}
+          </p>
         </section>
         <section className={"grid grid-cols-1 sm:grid-cols-2 h-full min-h-0"}>
           <div className={"grid grid-rows-2 h-full"}>
-            <div>HERE WILL APEAR THE SKIN PREVIEW</div>
+            <div>
+              HERE WILL APEAR THE SKIN PREVIEW
+              <br />
+              <br />
+              PREVIEWED ITEMS
+              <br />
+              {"Skin: " + previewItem?.skinID}
+              <br />
+              {"Hat: " + previewItem?.hatID}
+              <br />
+              {"Face: " + previewItem?.faceID}
+              <br />
+              <br />
+            </div>
             <div>
               <AppButton
                 className={"font-bold h-16 w-52"}
@@ -195,7 +312,7 @@ export default function Shop() {
                 onClick={selectCharacterServer}
                 grayedOut={grayedOut}
               >
-                Select character
+                Choose character {renderPayingSkin()}
               </AppButton>
             </div>
           </div>
@@ -221,7 +338,7 @@ export default function Shop() {
                   content: (
                     <div
                       className={
-                        "grid grid-cols-2 max-h-full overflow-y-scroll min-h-0"
+                        "grid grid-cols-2 overflow-y-scroll max-h-full min-h-0"
                       }
                     >
                       {renderItems("hat")}
@@ -234,7 +351,7 @@ export default function Shop() {
                   content: (
                     <div
                       className={
-                        "grid grid-cols-2 h-full overflow-y-scroll max-h-96"
+                        "grid grid-cols-2 overflow-y-scroll max-h-full min-h-0"
                       }
                     >
                       {renderItems("face")}
