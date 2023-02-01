@@ -11,7 +11,7 @@ function AppLink({ to, children }: AppLinkProps) {
     <StrictMode>
       <Link
         to={to}
-        className="text-blue-300 decoration-0 font-semibold cursor-pointer hover:text-blue-400"
+        className="text-blue-300 decoration-0 font-semibold cursor-pointer hover:text-blue-400 whitespace-nowrap"
       >
         {children}
       </Link>
