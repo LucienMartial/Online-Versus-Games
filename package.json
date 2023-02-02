@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "type": "module",
   "engines": {
-    "node": ">=18"
+    "node": "16.14.1"
   },
   "scripts": {
     "start": "NODE_ENV=production node dist/index.js",
