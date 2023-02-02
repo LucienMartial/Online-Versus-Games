@@ -50,17 +50,17 @@ import { createApp } from "./app-server/app.js";
 import { GameRoom } from "./app-server/rooms/game-room.js";
 import { ChatRoom } from "./app-server/rooms/chat-room.js";
 import SocialRoom from "./app-server/rooms/social-room.js";
+import QueueRoom from "./app-server/rooms/queue-room.js";
 
 gameServer.define("social", SocialRoom);
 gameServer.define("chat-room", ChatRoom);
 gameServer.define("lobby", LobbyRoom);
-gameServer
-  .define("game", GameRoom, {
-    dbCreateGame: db.createGame,
-    dbGetProfile: db.getProfile,
-    dbUpdateProfile: db.updateProfile,
-  })
-  .enableRealtimeListing();
+gameServer.define("game", GameRoom, {
+  dbCreateGame: db.createGame,
+  dbGetProfile: db.getProfile,
+  dbUpdateProfile: db.updateProfile,
+});
+gameServer.define("queue", QueueRoom).enableRealtimeListing();
 
 server.listen(port, () => {
   console.log(`local: http://localhost:${port}`);

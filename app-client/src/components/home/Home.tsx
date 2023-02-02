@@ -1,8 +1,9 @@
 import { StrictMode, useCallback, useEffect, useRef, useState } from "react";
 import FriendList from "./friends-list/FriendList";
 import { Client } from "colyseus.js";
-import GameList from "./GameList";
+import GameList from "./GameQueue";
 import { Room, RoomAvailable } from "colyseus.js";
+import GameQueue from "./GameQueue";
 
 declare module "colyseus.js" {
   interface RoomAvailable {
@@ -17,13 +18,15 @@ interface HomeProps {
 
 function Home({ tryConnection, client }: HomeProps) {
   const [lobbyRoom, setLobbyRoom] = useState<Room>();
-  const [gameRooms, setGameRooms] = useState<RoomAvailable[]>();
+  const [nbClients, setNbClients] = useState(0);
+  let queueRoomId = useRef("");
 
   const connectToLobby = useCallback(async () => {
     if (!client) return;
     try {
       const room = await client.joinOrCreate("lobby");
       setLobbyRoom(room);
+      console.log("sucessfuly joined lobby room");
     } catch (e) {
       if (e instanceof Error)
         console.error("Could not connect to lobby", e.message);
@@ -43,32 +46,32 @@ function Home({ tryConnection, client }: HomeProps) {
     lobbyRoom.removeAllListeners();
 
     lobbyRoom.onMessage("rooms", (rooms: RoomAvailable[]) => {
-      setGameRooms(
-        rooms.filter((room) => {
-          return room.name === "game";
-        })
-      );
-      console.log(rooms.forEach((room) => console.log(room.clients)));
+      const queueRoom = rooms.find((room) => room.name === "queue");
+      if (!queueRoom) return;
+      queueRoomId.current = queueRoom.roomId;
+      setNbClients(queueRoom.clients);
     });
 
     lobbyRoom.onMessage("+", ([roomId, room]) => {
-      console.log("ROOMS", gameRooms);
-      if (!gameRooms) return;
-      const roomIndex = gameRooms.findIndex((room) => room.roomId === roomId);
-      if (roomIndex < 0) return;
-      setGameRooms([...gameRooms, room]);
+      if (room.name !== "queue") return;
+      queueRoomId.current = room.roomId;
+      setNbClients(room.clients);
     });
 
     lobbyRoom.onMessage("-", (roomId) => {
-      if (!gameRooms) return;
-      setGameRooms(gameRooms.filter((room) => room.roomId !== roomId));
+      if (roomId !== queueRoomId.current) return;
+      setNbClients(0);
     });
   }, [lobbyRoom]);
 
   return (
     <StrictMode>
       <main className="flex grow">
-        <GameList tryConnection={tryConnection} gameRooms={gameRooms} />
+        <GameQueue
+          tryConnection={tryConnection}
+          nbClients={nbClients}
+          client={client}
+        />
         <FriendList client={client} />
       </main>
     </StrictMode>
