@@ -16,6 +16,10 @@ import { InputsData, Profile, UserShop } from "../../app-shared/types/index.js";
 import { CBuffer } from "../../app-shared/utils/cbuffer.js";
 import { Request } from "express";
 import { ObjectId, WithId } from "mongodb";
+import {
+  COINS_PER_LOSE,
+  COINS_PER_WIN,
+} from "../../app-shared/utils/constants.js";
 
 // maximum number of inputs saved for each client
 const MAX_INPUTS = 50;
@@ -34,6 +38,7 @@ interface GameParams {
     userState: EndGamePlayerState
   ) => Promise<boolean>;
   dbGetUserShop: (userID: ObjectId) => Promise<WithId<UserShop> | null>;
+  dbAddCoins: (userId: ObjectId, coins: number) => Promise<boolean>;
 }
 
 /**
@@ -56,6 +61,7 @@ class GameRoom extends Room<GameState> {
     dbGetProfile,
     dbUpdateProfile,
     dbGetUserShop,
+    dbAddCoins,
   }: GameParams) {
     this.dbGetUserShop = dbGetUserShop;
     this.setState(new GameState());
@@ -81,9 +87,13 @@ class GameRoom extends Room<GameState> {
           const playerState = state.players.get(client.id);
           if (!playerState) continue;
           await dbUpdateProfile(objectId, profile, playerState);
+          await dbAddCoins(
+            objectId,
+            playerState.victory ? COINS_PER_WIN : COINS_PER_LOSE
+          );
         } catch (e) {
           if (e instanceof Error)
-            console.error("could not update user profile", e.message);
+            console.error("could not update user profile / shop", e.message);
         }
       }
 

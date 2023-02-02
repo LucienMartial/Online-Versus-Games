@@ -9,7 +9,7 @@ import { Viewport } from "pixi-viewport";
 import { Cosmetics } from "./cosmetics/cosmetics";
 import { CosmeticAssets } from "../configs/assets-config";
 import { DEFAULT_SKIN } from "../../../../app-shared/configs/shop-config";
-import { Container, DisplayObject } from "pixi.js";
+import { Container } from "pixi.js";
 
 class PlayerRender extends RenderObject {
   player: Player;
@@ -22,6 +22,7 @@ class PlayerRender extends RenderObject {
   deathAnim: DeathAnimManager;
   cosmetics: Cosmetics;
   reflection: PIXI.Graphics;
+  reflectionContainer: PIXI.Container;
 
   constructor(
     player: Player,
@@ -52,33 +53,30 @@ class PlayerRender extends RenderObject {
     this.shield.alpha = 0;
     this.addChild(this.shield);
 
-    // reflection
-    this.reflection = Graphics.createMirror(
-      this.display,
-      shape.height * 2,
-      false
-    );
-    this.reflection.tint = DEFAULT_SKIN;
-    this.display.addChild(this.reflection);
-    Graphics.createMirror(this.shield, shape.height);
+    // player display reflection
+    this.reflection = this.display.clone();
+    this.reflection.tint = 0x555555;
 
     // cosmetics
     this.cosmetics = new Cosmetics(this, cosmeticsAssets);
-    this.cosmetics.loadSkins(player.cosmetics.skinID);
-    this.cosmetics.loadHats(player.cosmetics.hatID);
-    this.cosmetics.loadFaces(player.cosmetics.faceID);
+    this.cosmetics.loadCosmetics(player.cosmetics);
     this.cosmetics.container.zIndex = 1;
     this.container.addChild(this.cosmetics.container);
 
-    // cosmetics reflection
-    const cosmeticReflection = Object.create(this.cosmetics.container);
-    cosmeticReflection.scale.y = -1;
-    cosmeticReflection.pivot.y = shape.height * 2;
-    cosmeticReflection.alpha = 0.2;
-    cosmeticReflection.zIndex = -1;
-    this.display.addChild(cosmeticReflection);
+    // alpha filter for uniform transparency with multiple objects
+    const reflectionAlpha = new PIXI.filters.AlphaFilter();
+    reflectionAlpha.alpha = 0.3;
 
-    // dash
+    // final reflection
+    this.reflectionContainer = new Container();
+    this.reflectionContainer.filters = [reflectionAlpha];
+    this.reflectionContainer.scale.y = -1;
+    this.reflectionContainer.pivot.y = shape.height * 2;
+    this.reflectionContainer.addChild(this.reflection);
+    this.reflectionContainer.addChild(this.cosmetics.reflection);
+    this.display.addChild(this.reflectionContainer);
+    Graphics.createMirror(this.shield, shape.height);
+
     this.dashAnim = dashAnim;
 
     // death

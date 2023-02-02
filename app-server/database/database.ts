@@ -66,6 +66,7 @@ class Database {
 
   // shop
   getUserShop: (userId: ObjectId) => Promise<WithId<UserShop> | null>;
+  addCoins: (userId: ObjectId, coins: number) => Promise<boolean>;
   selectUserShopItem: (
     userId: ObjectId,
     selectedItems: SelectedItems
@@ -122,11 +123,12 @@ class Database {
     this.updateProfile = updateProfile;
 
     // user shop
-    const { getUserShop, buyUserShopItem, selectUserShopItem } =
+    const { getUserShop, buyUserShopItem, selectUserShopItem, addCoins } =
       UserShopMethods(this.userShops);
     this.getUserShop = getUserShop;
     this.buyUserShopItem = buyUserShopItem;
     this.selectUserShopItem = selectUserShopItem;
+    this.addCoins = addCoins;
   }
 
   /**

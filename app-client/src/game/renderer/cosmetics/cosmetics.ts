@@ -1,8 +1,9 @@
 import { PlayerRender } from "../player-render";
 import { CosmeticAssets } from "../../configs/assets-config";
-import { Container, Sprite } from "pixi.js";
+import { Container, Sprite, Texture } from "pixi.js";
 import { WIDTH, HEIGHT } from "../../../../../app-shared/disc-war";
 import { SelectedItems } from "../../../../../app-shared/types";
+import { BoxShape } from "../../../../../app-shared/physics";
 
 class Cosmetics {
   playerRender: PlayerRender;
@@ -32,6 +33,7 @@ class Cosmetics {
   }
 
   loadCosmetics(cosmetics: SelectedItems) {
+    console.log("LOAD cosmetics", cosmetics);
     this.loadSkins(cosmetics.skinID);
     this.loadHats(cosmetics.hatID);
     this.loadFaces(cosmetics.faceID);
@@ -64,23 +66,33 @@ class Cosmetics {
     }
   }
 
+  addTextureReflection(sprite: Sprite, container: Container) {
+    const spriteReflection = new Sprite(sprite.texture);
+    sprite.pivot.copyTo(spriteReflection.pivot);
+    sprite.scale.copyTo(spriteReflection.scale);
+    sprite.position.copyTo(spriteReflection.position);
+    container.addChild(spriteReflection);
+  }
+
   loadHats(hatID: number) {
     this.hatContainer.removeChildren();
 
     switch (hatID) {
       case 20:
         const sprite20 = new Sprite(this.cosmeticsAssets.melon_hat);
-        this.hatContainer.pivot.set(sprite20.width / 2, sprite20.height / 2);
-        this.hatContainer.scale.set(0.035, 0.035);
-        this.hatContainer.position.set(WIDTH / 2, -HEIGHT / 10);
+        sprite20.pivot.set(sprite20.width / 2, sprite20.height / 2);
+        sprite20.scale.set(0.035, 0.035);
+        sprite20.position.set(WIDTH / 2, -HEIGHT / 10);
         this.hatContainer.addChild(sprite20);
+        this.addTextureReflection(sprite20, this.hatReflection);
         break;
       case 21:
         const sprite21 = new Sprite(this.cosmeticsAssets.blue_cap);
-        this.hatContainer.pivot.set(sprite21.width / 2, sprite21.height / 2);
-        this.hatContainer.scale.set(0.1, 0.1);
-        this.hatContainer.position.set(WIDTH / 2 - WIDTH / 8, -HEIGHT / 20);
+        sprite21.pivot.set(sprite21.width / 2, sprite21.height / 2);
+        sprite21.scale.set(0.1, 0.1);
+        sprite21.position.set(WIDTH / 2 - WIDTH / 8, -HEIGHT / 20);
         this.hatContainer.addChild(sprite21);
+        this.addTextureReflection(sprite21, this.hatReflection);
         break;
       default:
         break;
@@ -93,18 +105,20 @@ class Cosmetics {
     switch (faceID) {
       case 40:
         const sprite40 = new Sprite(this.cosmeticsAssets.black_sunglasses);
-        this.faceContainer.pivot.set(sprite40.width / 2, sprite40.height / 2);
-        this.faceContainer.scale.set(0.02, 0.02);
-        this.faceContainer.position.set(WIDTH / 2, HEIGHT / 4);
+        sprite40.pivot.set(sprite40.width / 2, sprite40.height / 2);
+        sprite40.scale.set(0.02, 0.02);
+        sprite40.position.set(WIDTH / 2, HEIGHT / 4);
         this.faceContainer.addChild(sprite40);
+        this.addTextureReflection(sprite40, this.faceReflection);
         break;
 
       case 41:
         const sprite41 = new Sprite(this.cosmeticsAssets.pink_sunglasses);
-        this.faceContainer.pivot.set(sprite41.width / 2, sprite41.height / 2);
-        this.faceContainer.scale.set(0.1, 0.1);
-        this.faceContainer.position.set(WIDTH / 2, HEIGHT / 4);
+        sprite41.pivot.set(sprite41.width / 2, sprite41.height / 2);
+        sprite41.scale.set(0.1, 0.1);
+        sprite41.position.set(WIDTH / 2, HEIGHT / 4);
         this.faceContainer.addChild(sprite41);
+        this.addTextureReflection(sprite41, this.faceReflection);
         break;
       case 42:
         const eye1 = new Sprite(this.cosmeticsAssets.default_eye);
@@ -115,8 +129,11 @@ class Cosmetics {
         eye2.scale.set(0.1, 0.1);
         eye1.position.set(WIDTH / 2 - WIDTH / 4, HEIGHT / 4);
         eye2.position.set(WIDTH / 2 + WIDTH / 4, HEIGHT / 4);
+        this.addTextureReflection(eye1, this.faceReflection);
+        this.addTextureReflection(eye2, this.faceReflection);
         this.faceContainer.addChild(eye1);
         this.faceContainer.addChild(eye2);
+
         break;
       default:
         break;

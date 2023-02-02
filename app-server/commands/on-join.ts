@@ -46,6 +46,7 @@ class OnJoinCommand extends Command<GameRoom, Data> {
     }
 
     // set cosmetics
+    console.log("cosmetics for ", client.userData.username, cosmetics);
     playerState.skinID = cosmetics.skinID;
     playerState.hatID = cosmetics.hatID;
     playerState.faceID = cosmetics.faceID;

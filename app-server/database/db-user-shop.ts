@@ -30,6 +30,23 @@ export default function (userShops: Collection<UserShop>) {
     }
   }
 
+  async function addCoins(userId: ObjectId, coins: number): Promise<boolean> {
+    try {
+      const shopData = await userShops.findOneAndUpdate(
+        { _id: userId },
+        {
+          $inc: { coins: coins },
+        },
+        { upsert: true, returnDocument: "after" }
+      );
+      return shopData.ok === 1;
+    } catch (e) {
+      if (e instanceof Error)
+        console.log("user shop add coins error", e.message);
+      return false;
+    }
+  }
+
   async function selectUserShopItem(
     userId: ObjectId,
     selectedItems: SelectedItems
@@ -67,5 +84,5 @@ export default function (userShops: Collection<UserShop>) {
     }
   }
 
-  return { getUserShop, selectUserShopItem, buyUserShopItem };
+  return { getUserShop, selectUserShopItem, buyUserShopItem, addCoins };
 }

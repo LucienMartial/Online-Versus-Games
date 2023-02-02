@@ -60,6 +60,7 @@ gameServer.define("game", GameRoom, {
   dbGetProfile: db.getProfile,
   dbUpdateProfile: db.updateProfile,
   dbGetUserShop: db.getUserShop,
+  dbAddCoins: db.addCoins,
 });
 gameServer.define("queue", QueueRoom).enableRealtimeListing();
 
