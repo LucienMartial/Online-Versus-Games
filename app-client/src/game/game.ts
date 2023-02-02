@@ -23,6 +23,7 @@ import { DASH_ANIMATION } from "./effects/configs/dash-anim-config";
 import { DEATH_ANIMATION } from "./effects/configs/death-anim-config";
 import { DeathAnimManager } from "./effects/death-anim-manager";
 import { CosmeticAssets } from "./configs/assets-config";
+import { SelectedItems } from "../../../app-shared/types";
 
 const PLAYER_GHOST = false;
 const DISC_GHOST = false;
@@ -198,6 +199,12 @@ class GameScene extends Scene {
     this.mapFiltered.addChild(discRender.mirror);
     this.mapFiltered.addChild(discRender.container);
 
+    // update cosmetics
+    this.room.onMessage("player-cosmetics", (data: any) => {
+      console.log("EVENT");
+      console.log("got cosmetics from player", data);
+    });
+
     // init game, add, remove players
     this.room.onStateChange.once((state) => {
       this.lastState = state;
@@ -257,6 +264,8 @@ class GameScene extends Scene {
     const player = this.gameEngine.getPlayer(id);
     if (!player) {
       const player = this.gameEngine.addPlayer(id, state.isLeft);
+      // setup cosmetics
+      console.log("PLAYER ADDED", id, state.skinID, state.faceID, state.hatID);
       const playerRender = new PlayerRender(
         player,
         id,

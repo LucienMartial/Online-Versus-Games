@@ -14,6 +14,10 @@ class PlayerState extends Schema {
   @type(SyncTimerState) counterCooldownTimer = new SyncTimerState();
   // stat
   @type("number") deathCounter = 0;
+  // cosmetics
+  @type("number") skinID = 0;
+  @type("number") hatID = 0;
+  @type("number") faceID = 0;
 
   constructor() {
     super();
