@@ -4,6 +4,7 @@ import { PlayerState } from "../../app-shared/state/index.js";
 import { Client } from "colyseus";
 import { DiscWarEngine } from "../../app-shared/disc-war/index.js";
 import { SelectedItems } from "../../app-shared/types/db-types.js";
+import { ObjectId } from "mongodb";
 
 interface Data {
   client: Client;
@@ -11,7 +12,7 @@ interface Data {
 }
 
 class OnJoinCommand extends Command<GameRoom, Data> {
-  execute({ client, gameEngine } = this.payload) {
+  async execute({ client, gameEngine } = this.payload) {
     // new client joined
     this.room.nbClient += 1;
     console.log("client joined", client.id);
@@ -28,16 +29,26 @@ class OnJoinCommand extends Command<GameRoom, Data> {
     playerState.sync(player);
 
     // get cosmetics
-    const cosmetics: SelectedItems = {
-      skinID: 0,
+    let cosmetics: SelectedItems = {
+      skinID: -1,
       hatID: -2,
       faceID: -3,
     };
+    try {
+      const objectId = new ObjectId(client.userData.id);
+      const userShop = await this.room.dbGetUserShop(objectId);
+      if (userShop) {
+        cosmetics = userShop.selectedItems;
+      }
+    } catch (e) {
+      if (e instanceof Error)
+        console.error("could not fetch cosmetics", e.message);
+    }
 
     // set cosmetics
     playerState.skinID = cosmetics.skinID;
     playerState.hatID = cosmetics.hatID;
-    playerState.faceID = cosmetics.skinID;
+    playerState.faceID = cosmetics.faceID;
 
     // set state
     this.state.players.set(client.id, playerState);

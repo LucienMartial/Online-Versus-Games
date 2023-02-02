@@ -2,6 +2,7 @@ import { PlayerRender } from "../player-render";
 import { CosmeticAssets } from "../../configs/assets-config";
 import { Container, Sprite } from "pixi.js";
 import { WIDTH, HEIGHT } from "../../../../../app-shared/disc-war";
+import { SelectedItems } from "../../../../../app-shared/types";
 
 class Cosmetics {
   playerRender: PlayerRender;
@@ -28,6 +29,12 @@ class Cosmetics {
     this.hatReflection = new Container();
     this.reflection.addChild(this.hatReflection);
     this.reflection.addChild(this.faceReflection);
+  }
+
+  loadCosmetics(cosmetics: SelectedItems) {
+    this.loadSkins(cosmetics.skinID);
+    this.loadHats(cosmetics.hatID);
+    this.loadFaces(cosmetics.faceID);
   }
 
   loadSkins(skinID: number) {

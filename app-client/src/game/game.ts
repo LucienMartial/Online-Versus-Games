@@ -37,6 +37,7 @@ const ANIMATION_ASSETS_PATH = "../assets/animations/";
 class GameScene extends Scene {
   gameEngine: DiscWarEngine;
   mainPlayer: Player;
+  mainPlayerRender?: PlayerRender;
   predictor: Predictor;
   client: Client;
   room: Room<GameState>;
@@ -178,7 +179,7 @@ class GameScene extends Scene {
     }
 
     // main player render
-    const mainPlayerRender = new PlayerRender(
+    this.mainPlayerRender = new PlayerRender(
       this.mainPlayer,
       this.id,
       this.dashAnimManager,
@@ -186,9 +187,9 @@ class GameScene extends Scene {
       this.viewport,
       this.cosmeticsAssets!
     );
-    mainPlayerRender.container.zIndex = 10;
-    this.add(mainPlayerRender, false);
-    this.mapFiltered.addChild(mainPlayerRender.container);
+    this.mainPlayerRender.container.zIndex = 10;
+    this.add(this.mainPlayerRender, false);
+    this.mapFiltered.addChild(this.mainPlayerRender.container);
 
     // disc render
     const disc = this.gameEngine.getOne<Disc>("disc");
@@ -258,14 +259,25 @@ class GameScene extends Scene {
    * Add a player it to the game engine and renderer when he joined
    */
   addPlayer(id: string, state: PlayerState) {
-    if (this.id === id) return;
+    // setup client player cosmetics
+    if (this.id === id) {
+      this.mainPlayer.cosmetics.faceID = state.faceID;
+      this.mainPlayer.cosmetics.skinID = state.skinID;
+      this.mainPlayer.cosmetics.hatID = state.hatID;
+      this.mainPlayerRender?.cosmetics.loadCosmetics(this.mainPlayer.cosmetics);
+      return;
+    }
+    // server
     if (this.gameEngine.getById("players", id)) return;
     console.log("new player has joined", id);
     const player = this.gameEngine.getPlayer(id);
     if (!player) {
       const player = this.gameEngine.addPlayer(id, state.isLeft);
       // setup cosmetics
-      console.log("PLAYER ADDED", id, state.skinID, state.faceID, state.hatID);
+      player.cosmetics.faceID = state.faceID;
+      player.cosmetics.skinID = state.skinID;
+      player.cosmetics.hatID = state.hatID;
+      // create renderer
       const playerRender = new PlayerRender(
         player,
         id,

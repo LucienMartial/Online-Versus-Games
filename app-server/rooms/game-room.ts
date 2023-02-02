@@ -12,10 +12,10 @@ import {
   OnInputCommand,
   OnSyncCommand,
 } from "../commands/index.js";
-import { InputsData, Profile } from "../../app-shared/types/index.js";
+import { InputsData, Profile, UserShop } from "../../app-shared/types/index.js";
 import { CBuffer } from "../../app-shared/utils/cbuffer.js";
 import { Request } from "express";
-import { ObjectId } from "mongodb";
+import { ObjectId, WithId } from "mongodb";
 
 // maximum number of inputs saved for each client
 const MAX_INPUTS = 50;
@@ -33,6 +33,7 @@ interface GameParams {
     profile: Profile,
     userState: EndGamePlayerState
   ) => Promise<boolean>;
+  dbGetUserShop: (userID: ObjectId) => Promise<WithId<UserShop> | null>;
 }
 
 /**
@@ -48,8 +49,15 @@ class GameRoom extends Room<GameState> {
   gameEnded = false;
   maxClients = 2;
   clientsMap: Map<string, string> = new Map();
+  dbGetUserShop!: (userID: ObjectId) => Promise<WithId<UserShop> | null>;
 
-  onCreate({ dbCreateGame, dbGetProfile, dbUpdateProfile }: GameParams) {
+  onCreate({
+    dbCreateGame,
+    dbGetProfile,
+    dbUpdateProfile,
+    dbGetUserShop,
+  }: GameParams) {
+    this.dbGetUserShop = dbGetUserShop;
     this.setState(new GameState());
     this.gameEngine = new DiscWarEngine(true);
     this.gameEngine.maxDeath = this.maxDeath;
