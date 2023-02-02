@@ -56,21 +56,24 @@ function useGameConnect() {
     console.log("reconnected successfuly");
   }, [client]);
 
-  // try to join or create a game
-  const tryConnection = useCallback(async () => {
-    try {
-      if (!client) throw new Error("client is not defined");
+  // try to join game using a reservation
+  const tryConnection = useCallback(
+    async (reservation: any) => {
+      try {
+        if (!client) throw new Error("client is not defined");
 
-      console.log("try to join");
-      const room = await client.joinOrCreate(GAME_NAME);
+        console.log("try to join using reservation", reservation);
+        const room = await client.consumeSeatReservation(reservation);
 
-      setGameRoom(room);
-      saveConnectionData(room);
-      console.log("joined a game successfully");
-    } catch (e) {
-      console.error("join error", e);
-    }
-  }, [client]);
+        setGameRoom(room);
+        saveConnectionData(room);
+        console.log("joined a game successfully");
+      } catch (e) {
+        console.error("join error", e);
+      }
+    },
+    [client]
+  );
 
   return { gameRoom, client, tryReconnection, tryConnection, setGameRoom };
 }

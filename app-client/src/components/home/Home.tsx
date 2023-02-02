@@ -12,7 +12,7 @@ declare module "colyseus.js" {
 }
 
 interface HomeProps {
-  tryConnection: () => Promise<void>;
+  tryConnection: (reservation: any) => Promise<void>;
   client: Client | undefined;
 }
 

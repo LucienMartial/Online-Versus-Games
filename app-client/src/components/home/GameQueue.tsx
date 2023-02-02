@@ -4,7 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 import { Room } from "colyseus.js";
 
 interface GameProps {
-  tryConnection: () => Promise<void>;
+  tryConnection: (reservation: any) => Promise<void>;
   nbClients: number;
   client: Client | undefined;
 }
@@ -35,23 +35,31 @@ function GameQueue({ client, tryConnection, nbClients }: GameProps) {
   }, [queueRoom]);
 
   useEffect(() => {
-    if (!queueRoom) return;
+    if (!client || !queueRoom) return;
     queueRoom.removeAllListeners();
+    // reservation for game
+    queueRoom.onMessage("game-found", async (reservation: any) => {
+      tryConnection(reservation);
+    });
   }, [queueRoom]);
 
   return (
     <section className="grow">
       <h1>Game</h1>
-      {!queueRoom ? (
+      {!queueRoom && (
         <AppButton color="regular" onClick={connectToQueue}>
           Play
         </AppButton>
-      ) : (
-        <AppButton color="regular" onClick={leaveQueue}>
-          Leave
-        </AppButton>
       )}
-      <p>{nbClients}</p>
+      {queueRoom && (
+        <section>
+          <p>Searching for a game...</p>
+          <AppButton color="regular" onClick={leaveQueue}>
+            Leave
+          </AppButton>
+        </section>
+      )}
+      <p>In queue: {nbClients}</p>
     </section>
   );
 }
