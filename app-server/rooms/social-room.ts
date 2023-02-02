@@ -40,9 +40,10 @@ class SocialRoom extends Room {
         case "state":
           const state = new SocialState([...this.userIdMap.values()]);
           client.send("state", state);
+          break;
 
         default:
-          console.error("invalid message in social room");
+          console.error("invalid message in social room", type);
           break;
       }
     });

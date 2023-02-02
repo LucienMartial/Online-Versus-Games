@@ -38,7 +38,8 @@ class OnLeaveCommand extends Command<
       // could not reconnect
       this.room.gameEngine.removePlayer(client.id);
       this.state.players.delete(client.id);
-      console.log("client could not reconnect", e);
+      if (e instanceof Error)
+        console.log("client could not reconnect", e.message);
 
       // player left or right
       if (client.id === this.room.leftId) {

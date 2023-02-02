@@ -4,7 +4,7 @@ import { Request } from "express";
 class QueueRoom extends Room {
   /** map session id to client id */
   clientsMap: Map<string, string> = new Map();
-  alreadyMatched: Set<string> = new Set();
+  alreadyMatched = 0;
 
   onCreate() {
     this.setPatchRate(0);
@@ -32,21 +32,42 @@ class QueueRoom extends Room {
     console.log("client joined queue");
 
     // no matchmaking, not enough players
-    if (this.clients.length <= 1) return;
-    console.log("try to match 2 players");
+    if (this.clients.length - this.alreadyMatched <= 1) {
+      console.error(
+        "not enough players to match",
+        this.alreadyMatched,
+        this.clients.length
+      );
+      return;
+    }
 
     // matchmaking if there is more than 1 player
+    // take 2 random players, wait 5 second before matching
     // take the 2 first players
-    const firstClient = this.clients[0];
-    const secondClient = this.clients[1];
+    this.alreadyMatched += 2;
+    const randomPlayers = this.clients.sort(() => Math.random() - 0.5);
+    const firstClient = randomPlayers[0];
+    const secondClient = randomPlayers[1];
     if (!firstClient || !secondClient) return;
 
-    // create game, send reservation
-    const gameRoom = await matchMaker.createRoom("game", {});
-    const firstReservation = await matchMaker.reserveSeatFor(gameRoom, {});
-    const secondReservation = await matchMaker.reserveSeatFor(gameRoom, {});
-    firstClient.send("game-found", firstReservation);
-    secondClient.send("game-found", secondReservation);
+    setTimeout(async () => {
+      this.alreadyMatched -= 2;
+      console.log("try to match 2 players");
+
+      // check if client still connected
+      if (
+        !this.clientsMap.has(firstClient.sessionId) ||
+        !this.clientsMap.has(secondClient.sessionId)
+      )
+        return;
+
+      // create game, send reservation
+      const gameRoom = await matchMaker.createRoom("game", {});
+      const firstReservation = await matchMaker.reserveSeatFor(gameRoom, {});
+      const secondReservation = await matchMaker.reserveSeatFor(gameRoom, {});
+      firstClient.send("game-found", firstReservation);
+      secondClient.send("game-found", secondReservation);
+    }, 5000);
   }
 
   async onLeave(client: Client, consented: boolean) {

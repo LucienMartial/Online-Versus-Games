@@ -80,7 +80,7 @@ function FriendList({ client }: FriendListProps) {
   useEffect(() => {
     if (!refresh) return;
     setRefresh(false);
-    loadPage();
+    loadPage(false);
   }, [refresh]);
 
   useEffect(() => {

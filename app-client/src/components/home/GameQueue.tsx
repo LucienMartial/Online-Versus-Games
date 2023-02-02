@@ -23,9 +23,6 @@ function GameQueue({ client, tryConnection, nbClients }: GameProps) {
         console.error("Could not connect to queue", e.message);
       return;
     }
-    return () => {
-      queueRoom?.leave();
-    };
   }, [client]);
 
   const leaveQueue = useCallback(async () => {
@@ -37,10 +34,15 @@ function GameQueue({ client, tryConnection, nbClients }: GameProps) {
   useEffect(() => {
     if (!client || !queueRoom) return;
     queueRoom.removeAllListeners();
+
     // reservation for game
     queueRoom.onMessage("game-found", async (reservation: any) => {
       tryConnection(reservation);
     });
+
+    return () => {
+      leaveQueue();
+    };
   }, [queueRoom]);
 
   return (
