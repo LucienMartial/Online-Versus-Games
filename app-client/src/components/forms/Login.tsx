@@ -1,9 +1,10 @@
-import React from "react";
+import React, { useEffect } from "react";
 import AnimatedInput from "./AnimatedInput";
 import AppLink from "../lib/AppLink";
 import AppError from "./AppError";
 import Footer from "../lib/Footer";
 import AppButton from "../lib/AppButton";
+import { useLocation } from "react-router-dom";
 
 interface LoginProps {
   tryLogin: (username: string, password: string) => Promise<void>;
@@ -13,6 +14,11 @@ function Login({ tryLogin }: LoginProps) {
   const [username, setUsername] = React.useState("");
   const [password, setPassword] = React.useState("");
   const [errorMessage, setErrorMessage] = React.useState("");
+  const { state } = useLocation();
+
+  useEffect(() => {
+    if (state?.params?.username) setUsername(state.params.username);
+  }, [state]);
 
   const login = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -42,6 +48,7 @@ function Login({ tryLogin }: LoginProps) {
             autofocus={true}
             required={true}
             onChange={(e) => setUsername(e.target.value)}
+            defaultValue={state?.params?.username || ""}
           />
           <AnimatedInput
             type={"password"}
@@ -60,7 +67,7 @@ function Login({ tryLogin }: LoginProps) {
             <AppLink className={"text-blue-500"} to={"/register"}>Create an account</AppLink>
           </p>
         </form>
-        <Footer />
+        <Footer returnURL={{ url: "/login", params: { username: username } }} />
       </div>
     </React.StrictMode>
   );

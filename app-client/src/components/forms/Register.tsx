@@ -1,11 +1,10 @@
-import React from "react";
+import React, {useEffect} from "react";
 import AnimatedInput from "./AnimatedInput";
 import AppLink from "../lib/AppLink";
 import AppError from "./AppError";
 import Footer from "../lib/Footer";
 import AppButton from "../lib/AppButton";
-// TODO: checkbox stating that the user agree to the privacy policy
-// TODO: footer component
+import {useLocation} from "react-router-dom";
 
 interface RegisterProps {
   tryRegister: (username: string, password: string) => Promise<void>;
@@ -17,6 +16,11 @@ export default function Register({ tryRegister }: RegisterProps) {
   const [password2, setPassword2] = React.useState("");
   const [invalidPassword, setInvalidPassword] = React.useState(false);
   const [registerError, setRegisterError] = React.useState("");
+  const {state} = useLocation();
+
+  useEffect(() => {
+    if (state?.params?.username) setUsername(state.params.username);
+  }, [state]);
 
   const register = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -50,6 +54,7 @@ export default function Register({ tryRegister }: RegisterProps) {
           autofocus={true}
           required={true}
           onChange={(e) => setUsername(e.target.value)}
+          defaultValue={state?.params?.username || ""}
         />
         <AnimatedInput
           type={"password"}
@@ -76,7 +81,7 @@ export default function Register({ tryRegister }: RegisterProps) {
           />
           <label htmlFor={"privacyCheckbox"}>
             I have read and accept the{" "}
-            <AppLink className={"text-blue-500"} to={"/privacy"}>privacy policy</AppLink>
+            <AppLink className={"text-blue-500"} to={"/privacy"} returnURL={{url:"/register", params:{username:username}}}>privacy policy</AppLink>
           </label>
         </p>
         {invalidPassword && <AppError>Passwords must match</AppError>}
@@ -88,7 +93,7 @@ export default function Register({ tryRegister }: RegisterProps) {
           Already have an account ? <AppLink className={"text-blue-500"} to={"/login"}>Login</AppLink>
         </p>
       </form>
-      <Footer />
+      <Footer returnURL={{url:"/register", params:{username:username}}} />
     </div>
   );
 }

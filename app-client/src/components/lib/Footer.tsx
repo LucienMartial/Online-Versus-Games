@@ -1,8 +1,13 @@
 import { StrictMode } from "react";
 import AppLink from "./AppLink";
+import returnURL from "../../types/returnURL";
 import { FiGithub } from "react-icons/fi";
 
-function Footer() {
+interface FooterProps {
+  returnURL?: returnURL;
+}
+
+function Footer({ returnURL }: FooterProps) {
   return (
     <StrictMode>
       <footer className="w-full flex justify-center sm:justify-between px-8 py-5 flex-wrap gap-5">
@@ -12,10 +17,10 @@ function Footer() {
             <FiGithub strokeWidth={2.5} className="text-blue-200" />
           </a>
           <li>
-            <AppLink className={"text-blue-200"} to={"/privacy"}>Privacy Policy</AppLink>
+            <AppLink className={"text-blue-200"} to={"/privacy"} returnURL={returnURL}>Privacy Policy</AppLink>
           </li>
           <li>
-            <AppLink className={"text-blue-200"} to={"/acknowledgment"}>Acknowledgment</AppLink>
+            <AppLink className={"text-blue-200"} to={"/acknowledgment"} returnURL={returnURL}>Acknowledgment</AppLink>
           </li>
         </ul>
       </footer>

@@ -1,10 +1,12 @@
 import { StrictMode } from "react";
 import StaticPage from "./StaticPage";
+import {useLocation} from "react-router-dom";
 
 function Privacy() {
+  const {state} = useLocation();
   return (
     <StrictMode>
-      <StaticPage>
+      <StaticPage returnURL={state}>
         <h1>Privacy Policy</h1>
         <h2>What is this website</h2>
         <p>
