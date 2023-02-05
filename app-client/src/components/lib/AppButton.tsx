@@ -15,7 +15,7 @@ export default function AppButton({
   type,
   children,
   className,
-  grayedOut,
+  grayedOut = false,
 }: AppButtonProps) {
   function buttonStyle() {
     switch (color) {

@@ -12,6 +12,7 @@ interface ItemProps {
   owned: boolean;
   selected: boolean;
   previewed: boolean;
+  ableToBuy: boolean;
   tryBuy: (id: number) => Promise<void>;
   trySelect: (id: number) => void;
   tryPreview: (id: number) => void;
@@ -25,13 +26,18 @@ function ShopItem({
   owned,
   selected,
   previewed,
+  ableToBuy,
   tryBuy,
   trySelect,
   tryPreview,
 }: ItemProps) {
   function buyButton() {
     return (
-      <ShopButton onClick={() => tryBuy(id)} feature={"buy"}>
+      <ShopButton
+        onClick={() => tryBuy(id)}
+        feature={"buy"}
+        grayedOut={!ableToBuy}
+      >
         Buy ({price} {price > 1 ? "coins" : "coin"})
       </ShopButton>
     );
@@ -66,7 +72,9 @@ function ShopItem({
 
   return (
     <div className={itemStyle()}>
-      <div className={"font-bold"}>{name}</div>
+      <div className={"font-bold"}>
+        {name + (!owned && !previewed ? " (" + price + " coins)" : "")}
+      </div>
       <div className={"my-3"}>
         {/*Here will be the image of the item*/ "IMAGE"}
       </div>

@@ -111,7 +111,6 @@ class Cosmetics {
         this.faceContainer.addChild(sprite40);
         this.addTextureReflection(sprite40, this.faceReflection);
         break;
-
       case 41:
         const sprite41 = new Sprite(this.cosmeticsAssets.pink_sunglasses);
         sprite41.pivot.set(sprite41.width / 2, sprite41.height / 2);
