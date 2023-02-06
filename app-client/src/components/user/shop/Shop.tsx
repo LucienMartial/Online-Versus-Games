@@ -17,6 +17,8 @@ import Tabs from "../../lib/Tabs";
 import { ShopCategory } from "./ShopCategory";
 import { GiCoins } from "react-icons/gi";
 import { ShopPreview } from "./ShopPreview";
+import { CosmeticAssets } from "../../../game/configs/assets-config";
+import { Assets } from "@pixi/assets";
 
 function replaceSelectedItem(
   id: number,
@@ -39,6 +41,9 @@ function replaceSelectedItem(
 
 export default function Shop() {
   const [shopData, setShopData] = useState<UserShop | null>(null);
+  const [cosmeticsAssets, setCosmeticsAssets] = useState<CosmeticAssets | null>(
+    null
+  );
   const [serverSelectedItems, setServerSelectedItems] =
     useState<SelectedItems | null>(null);
   const [grayedOut, setGrayedOut] = useState<boolean>(true);
@@ -60,7 +65,16 @@ export default function Shop() {
         setPreviewItem(data.selectedItems);
       }
     }
+    async function loadAssets() {
+      const cosmetics = await Assets.get("cosmetics");
+      if (!cosmetics) {
+        setCosmeticsAssets(await Assets.loadBundle("cosmetics"));
+      } else {
+        setCosmeticsAssets(cosmetics);
+      }
+    }
     load();
+    loadAssets();
   }, []);
 
   useEffect(() => {
@@ -286,7 +300,7 @@ export default function Shop() {
       <main className={"h-full flex flex-col min-h-0 grow"}>
         <section className={"m-4"}>
           <div className={"font-black text-4xl"}>
-            <p className={""}>
+            {/* <p className={""}>
               You've got{" "}
               {shopData?.coins === undefined || shopData?.coins < 0
                 ? "0 coins"
@@ -294,9 +308,9 @@ export default function Shop() {
               {shopData?.coins !== undefined && shopData.coins === 1
                 ? "coin"
                 : "coins"}{" "}
-            </p>
-            <div className={""}>
-              <GiCoins className={"yellow"} />
+            </p> */}
+            <div className={"flex justify-end"}>
+              {shopData?.coins} <GiCoins className="ml-2" />
             </div>
           </div>
         </section>
@@ -311,6 +325,7 @@ export default function Shop() {
                     ? { skinID: -1, hatID: -2, faceID: -3 }
                     : previewItem
                 }
+                cosmeticsAssets={cosmeticsAssets}
               />
             </div>
             <div>

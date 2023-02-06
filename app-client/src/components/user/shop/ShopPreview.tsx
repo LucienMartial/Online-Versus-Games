@@ -4,7 +4,6 @@ import { SelectedItems } from "../../../../../app-shared/types";
 import { Application, Graphics, Sprite, Container } from "pixi.js";
 import { CosmeticAssets } from "../../../game/configs/assets-config";
 import { DEFAULT_SKIN } from "../../../../../app-shared/configs/shop-config";
-import { Assets, ResolverAssetsArray } from "@pixi/assets";
 
 interface Position {
   x: number;
@@ -15,37 +14,38 @@ interface ShopPreviewProps {
   width: number;
   height: number;
   selectedItems: SelectedItems | null;
+  cosmeticsAssets: CosmeticAssets | null;
 }
 
-function ShopPreview({ width, height, selectedItems }: ShopPreviewProps) {
+function ShopPreview({
+  width,
+  height,
+  selectedItems,
+  cosmeticsAssets,
+}: ShopPreviewProps) {
   const [app, setApp] = useState<Application>();
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const [cosmeticsAssets, setCosmeticsAssets] =
-    useState<CosmeticAssets | null>();
   const [rectPos, setRectPos] = useState<Position>({
     x: width / 2 - WIDTH / 2,
     y: height / 2 - HEIGHT / 3,
   });
 
   useEffect(() => {
-    async function loadAssets() {
-      const cosmetics = await Assets.loadBundle("cosmetics");
-      console.log(cosmetics);
-      setCosmeticsAssets(cosmetics);
-    }
     const application = new Application({
       width,
       height,
       backgroundAlpha: 0,
+      autoDensity: true,
       view: canvasRef.current === null ? undefined : canvasRef.current,
     });
     setApp(application);
-    loadAssets();
   }, []);
 
   useEffect(() => {
-    loadCharacter();
-  }, [selectedItems]);
+    if (cosmeticsAssets) {
+      loadCharacter();
+    }
+  }, [cosmeticsAssets, selectedItems]);
 
   function loadCharacter() {
     if (app === undefined || selectedItems === null) return;
@@ -64,11 +64,9 @@ function ShopPreview({ width, height, selectedItems }: ShopPreviewProps) {
       case 0:
         color = 0x990000;
         break;
-
       case 1:
         color = 0x000099;
         break;
-
       case 2:
         color = 0x009900;
         break;

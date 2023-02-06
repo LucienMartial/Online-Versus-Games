@@ -137,8 +137,6 @@ class Cosmetics {
         break;
     }
   }
-
-  // setup position with "offset" method
 }
 
 export { Cosmetics };
