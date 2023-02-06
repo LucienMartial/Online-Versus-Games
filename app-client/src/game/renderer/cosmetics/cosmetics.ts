@@ -1,9 +1,8 @@
 import { PlayerRender } from "../player-render";
 import { CosmeticAssets } from "../../configs/assets-config";
-import { Container, Sprite, Texture } from "pixi.js";
+import { Container, Sprite } from "pixi.js";
 import { WIDTH, HEIGHT } from "../../../../../app-shared/disc-war";
 import { SelectedItems } from "../../../../../app-shared/types";
-import { BoxShape } from "../../../../../app-shared/physics";
 
 class Cosmetics {
   playerRender: PlayerRender;
@@ -120,8 +119,8 @@ class Cosmetics {
         this.addTextureReflection(sprite41, this.faceReflection);
         break;
       case 42:
-        const eye1 = new Sprite(this.cosmeticsAssets.default_eye);
-        const eye2 = new Sprite(this.cosmeticsAssets.default_eye);
+        const eye1 = new Sprite(this.cosmeticsAssets.red_eye);
+        const eye2 = new Sprite(this.cosmeticsAssets.red_eye);
         eye1.pivot.set(eye1.width / 2, eye1.height / 2);
         eye2.pivot.set(eye2.width / 2, eye2.height / 2);
         eye1.scale.set(0.1, 0.1);

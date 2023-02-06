@@ -29,8 +29,6 @@ function Game({ client, gameRoom, setGameRoom }: GameProps) {
   const [chatRoom, setChatRoom] = useState<Room | null>(null);
 
   const load = async () => {
-    await Assets.init({ manifest: manifest });
-
     const app = new Application({
       view: canvasRef.current!,
       resolution: window.devicePixelRatio || 1,

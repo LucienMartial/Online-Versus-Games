@@ -15,6 +15,8 @@ import { FaHatCowboy } from "react-icons/fa";
 import { BsEmojiSunglasses } from "react-icons/bs";
 import Tabs from "../../lib/Tabs";
 import { ShopCategory } from "./ShopCategory";
+import { GiCoins } from "react-icons/gi";
+import { ShopPreview } from "./ShopPreview";
 
 function replaceSelectedItem(
   id: number,
@@ -63,21 +65,6 @@ export default function Shop() {
 
   useEffect(() => {
     if (serverSelectedItems && previewItem) {
-      if (
-        (previewItem.faceID === serverSelectedItems.faceID &&
-          previewItem.hatID === serverSelectedItems.hatID &&
-          previewItem.skinID === serverSelectedItems.skinID) ||
-        (shopData && shopData.coins <= 0 && payingSkin > 0)
-      ) {
-        setGrayedOut(true);
-      } else {
-        setGrayedOut(false);
-      }
-    }
-  }, [shopData, previewItem, serverSelectedItems]);
-
-  useEffect(() => {
-    if (previewItem) {
       let payingSkinPrice = 0;
       const faceItem = getItem(previewItem.faceID);
       const hatItem = getItem(previewItem.hatID);
@@ -95,8 +82,19 @@ export default function Shop() {
         payingSkinPrice += skinItem.price;
       }
       setPayingSkin(payingSkinPrice);
+
+      if (
+        (previewItem.faceID === serverSelectedItems.faceID &&
+          previewItem.hatID === serverSelectedItems.hatID &&
+          previewItem.skinID === serverSelectedItems.skinID) ||
+        (shopData && shopData.coins - payingSkinPrice < 0)
+      ) {
+        setGrayedOut(true);
+      } else {
+        setGrayedOut(false);
+      }
     }
-  }, [previewItem]);
+  }, [shopData, serverSelectedItems, previewItem]);
 
   async function selectJsonPostRequest(data: SelectedItems): Promise<Response> {
     const res = await fetch("/api/shop-select", {
@@ -286,32 +284,34 @@ export default function Shop() {
   return (
     <StrictMode>
       <main className={"h-full flex flex-col min-h-0 grow"}>
-        <section className={""}>
-          <p className={"text-2xl"}>
-            You have{" "}
-            {shopData?.coins === undefined || shopData?.coins < 0
-              ? "0 coins"
-              : shopData.coins}{" "}
-            {shopData?.coins !== undefined && shopData.coins === 1
-              ? "coin"
-              : "coins"}
-          </p>
+        <section className={"m-4"}>
+          <div className={"font-black text-4xl"}>
+            <p className={""}>
+              You've got{" "}
+              {shopData?.coins === undefined || shopData?.coins < 0
+                ? "0 coins"
+                : shopData.coins}{" "}
+              {shopData?.coins !== undefined && shopData.coins === 1
+                ? "coin"
+                : "coins"}{" "}
+            </p>
+            <div className={""}>
+              <GiCoins className={"yellow"} />
+            </div>
+          </div>
         </section>
         <section className={"grid grid-cols-1 sm:grid-cols-2 h-full min-h-0"}>
-          <div className={"grid grid-rows-2 h-full"}>
-            <div>
-              HERE WILL APEAR THE SKIN PREVIEW
-              <br />
-              <br />
-              PREVIEWED ITEMS
-              <br />
-              {"Skin: " + previewItem?.skinID}
-              <br />
-              {"Hat: " + previewItem?.hatID}
-              <br />
-              {"Face: " + previewItem?.faceID}
-              <br />
-              <br />
+          <div className={"grid grid-rows-2 h-full min-h-0"}>
+            <div className={"place-items-center"}>
+              <ShopPreview
+                width={200}
+                height={200}
+                selectedItems={
+                  previewItem === null
+                    ? { skinID: -1, hatID: -2, faceID: -3 }
+                    : previewItem
+                }
+              />
             </div>
             <div>
               <AppButton

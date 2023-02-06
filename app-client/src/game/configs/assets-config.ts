@@ -19,8 +19,8 @@ const manifest = {
       name: "cosmetics",
       assets: [
         {
-          name: "default_eye",
-          srcs: "../assets/cosmetics/default_eye.png",
+          name: "red_eye",
+          srcs: "../assets/cosmetics/red_eye.png",
         },
         {
           name: "melon_hat",
@@ -44,7 +44,7 @@ const manifest = {
 };
 
 interface CosmeticAssets {
-  default_eye: Texture;
+  red_eye: Texture;
   melon_hat: Texture;
   blue_cap: Texture;
   black_sunglasses: Texture;
