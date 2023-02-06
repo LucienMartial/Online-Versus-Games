@@ -22,7 +22,7 @@ function FriendTab({
     <div className={className}>
       <div
         className={
-          "flex items-center select-none cursor-pointer mx-4 mt-2 px-2 py-1 bg-black"
+          "flex items-center select-none cursor-pointer mx-4 mt-2 px-2 py-1 bg-slate-200 dark:bg-black"
         }
         onClick={() => setExpanded(!expanded)}
       >

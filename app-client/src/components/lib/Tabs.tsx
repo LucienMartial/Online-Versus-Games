@@ -10,7 +10,7 @@ interface TabsProps {
   tabsDatas: TabData[];
 }
 
-const activeTabStyle = "border-blue-400 text-blue-400";
+const activeTabStyle = "border-blue-700 dark:border-blue-400 text-blue-700 dark:text-blue-400";
 const inactiveTabStyle = "border-blue-900";
 
 export default function Tabs({ tabsDatas }: TabsProps) {

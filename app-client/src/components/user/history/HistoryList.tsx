@@ -19,7 +19,7 @@ export default function HistoryList({ games, username }: HistoryListProps) {
     });
   }
   return (
-    <ul className={"flex flex-col w-screen min-h-0 max-h-full overflow-auto"}>
+    <ul className={"flex flex-col w-screen min-h-0 max-h-full overflow-auto text-slate-200"}>
       {renderGames()}
     </ul>
   );
