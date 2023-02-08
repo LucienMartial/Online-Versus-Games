@@ -110,12 +110,21 @@ class PolylineShape extends CollisionShape {
   p2: SAT.Vector;
   thickness: number;
 
-  constructor(x1: number, y1: number, x2: number, y2: number, thickness: number) {
+  constructor(
+    x1: number,
+    y1: number,
+    x2: number,
+    y2: number,
+    thickness: number
+  ) {
     super(ShapeType.Polygon);
     this.p1 = new SAT.Vector(x1, y1);
     this.p2 = new SAT.Vector(x2, y2);
     this.thickness = thickness;
-    let perpVector = new SAT.Vector(this.p2.y - this.p1.y, this.p1.x - this.p2.x);
+    let perpVector = new SAT.Vector(
+      this.p2.y - this.p1.y,
+      this.p1.x - this.p2.x
+    );
     perpVector.normalize();
     perpVector.scale(thickness / 2);
     const points = [

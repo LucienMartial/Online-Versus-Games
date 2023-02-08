@@ -13,6 +13,7 @@ import useFriends, { useFriendsRes } from "./hooks/useFriends";
 import useSocial, { useSocialRes } from "./hooks/useSocial";
 import { Assets } from "@pixi/assets";
 import { manifest } from "./game/configs/assets-config";
+import ChatContainer from "./components/chat-components/ChatContainer";
 
 const Game = lazy(() => import("./components/game/Game"));
 const Login = lazy(() => import("./components/forms/Login"));
@@ -41,6 +42,7 @@ const FriendsContext = createContext<useFriendsRes>({} as useFriendsRes);
 const SocialContext = createContext<useSocialRes>({} as useSocialRes);
 
 function App() {
+  return <ChatContainer chatRoom={undefined} />;
   const [userData, setUserData] = useState<UserContextType>(
     {} as UserContextType
   );

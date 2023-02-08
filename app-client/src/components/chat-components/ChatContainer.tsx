@@ -58,7 +58,7 @@ function ChatContainer({ chatRoom }: ChatContainerProperties) {
           <section
             ref={chatBoxRef}
             className={
-              "border-solid border-t overflow-y-scroll border-white h-80 max-h-80 rounded-xl"
+              "border-solid border-t overflow-y-scroll border-white h-full max-h-80 rounded-xl"
             }
           >
             {renderChatElements()}
