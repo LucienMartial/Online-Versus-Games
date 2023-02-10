@@ -1,9 +1,10 @@
-import { useRef, useEffect, useState, useMemo } from "react";
-import { WIDTH, HEIGHT } from "../../../../../app-shared/disc-war/player";
+import { useRef, useEffect, useState } from "react";
+import { PLAYER_RATIO } from "../../../../../app-shared/disc-war/player";
 import { SelectedItems } from "../../../../../app-shared/types";
-import { Application, Graphics, Sprite, Container } from "pixi.js";
+import { Application, Graphics, Sprite, Container, Loader } from "pixi.js";
 import { CosmeticAssets } from "../../../game/configs/assets-config";
 import { DEFAULT_SKIN } from "../../../../../app-shared/configs/shop-config";
+import LoadingPage from "../../LoadingPage";
 
 interface Position {
   x: number;
@@ -11,41 +12,47 @@ interface Position {
 }
 
 interface ShopPreviewProps {
-  width: number;
-  height: number;
+  initWidth: number;
+  initHeight: number;
   selectedItems: SelectedItems | null;
   cosmeticsAssets: CosmeticAssets | null;
 }
 
 function ShopPreview({
-  width,
-  height,
+  initWidth,
+  initHeight,
   selectedItems,
   cosmeticsAssets,
 }: ShopPreviewProps) {
   const [app, setApp] = useState<Application>();
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const [canvWidth, setcanvWidth] = useState<number>(initWidth);
+  const [canHeight, setcanHeight] = useState<number>(initHeight);
+  const [playerHeight, setPlayerHeight] = useState<number>(initHeight / 2);
+  const [playerWidth, setPlayerWidth] = useState<number>(
+    playerHeight * PLAYER_RATIO
+  );
   const [rectPos, setRectPos] = useState<Position>({
-    x: width / 2 - WIDTH / 2,
-    y: height / 2 - HEIGHT / 3,
+    x: canvWidth / 2 - playerWidth / 2,
+    y: canHeight / 2 - playerHeight / 3,
   });
 
   useEffect(() => {
     const application = new Application({
-      width,
-      height,
+      width: canvWidth,
+      height: canHeight,
       backgroundAlpha: 0,
-      autoDensity: true,
       view: canvasRef.current === null ? undefined : canvasRef.current,
     });
     setApp(application);
   }, []);
 
   useEffect(() => {
-    if (cosmeticsAssets) {
+    if (cosmeticsAssets && app) {
+      console.log("app", app);
       loadCharacter();
     }
-  }, [cosmeticsAssets, selectedItems]);
+  }, [app, cosmeticsAssets, selectedItems, canvWidth, canHeight]);
 
   function loadCharacter() {
     if (app === undefined || selectedItems === null) return;
@@ -78,7 +85,7 @@ function ShopPreview({
         break;
     }
     skin.beginFill(color);
-    skin.drawRect(rectPos.x, rectPos.y, WIDTH, HEIGHT);
+    skin.drawRect(rectPos.x, rectPos.y, playerWidth, playerHeight);
     skin.endFill();
     skinContainer.addChild(skin);
     app.stage.addChild(skinContainer);
@@ -92,15 +99,18 @@ function ShopPreview({
       case 20:
         const sprite20 = new Sprite(cosmeticsAssets?.melon_hat);
         sprite20.pivot.set(sprite20.width / 2, sprite20.height / 2);
-        sprite20.scale.set(0.035, 0.035);
-        sprite20.position.set(WIDTH / 2, -HEIGHT / 10);
+        sprite20.position.set(playerWidth / 2, -playerHeight / 14);
+        sprite20.scale.set(0.035 / PLAYER_RATIO, 0.035 / PLAYER_RATIO);
         hatContainer.addChild(sprite20);
         break;
       case 21:
         const sprite21 = new Sprite(cosmeticsAssets?.blue_cap);
         sprite21.pivot.set(sprite21.width / 2, sprite21.height / 2);
-        sprite21.scale.set(0.1, 0.1);
-        sprite21.position.set(WIDTH / 2 - WIDTH / 8, -HEIGHT / 20);
+        sprite21.position.set(
+          playerWidth / 2 - playerWidth / 8,
+          -playerHeight / 20
+        );
+        sprite21.scale.set(0.1 / PLAYER_RATIO, 0.1 / PLAYER_RATIO);
         hatContainer.addChild(sprite21);
         break;
       default:
@@ -118,15 +128,15 @@ function ShopPreview({
       case 40:
         const sprite40 = new Sprite(cosmeticsAssets?.black_sunglasses);
         sprite40.pivot.set(sprite40.width / 2, sprite40.height / 2);
-        sprite40.scale.set(0.02, 0.02);
-        sprite40.position.set(WIDTH / 2, HEIGHT / 4);
+        sprite40.position.set(playerWidth / 2, playerHeight / 4.5);
+        sprite40.scale.set(0.022 / PLAYER_RATIO, 0.022 / PLAYER_RATIO);
         faceContainer.addChild(sprite40);
         break;
       case 41:
         const sprite41 = new Sprite(cosmeticsAssets?.pink_sunglasses);
         sprite41.pivot.set(sprite41.width / 2, sprite41.height / 2);
-        sprite41.scale.set(0.1, 0.1);
-        sprite41.position.set(WIDTH / 2, HEIGHT / 4);
+        sprite41.position.set(playerWidth / 2, playerWidth / 2.5);
+        sprite41.scale.set(0.11 / PLAYER_RATIO, 0.11 / PLAYER_RATIO);
         faceContainer.addChild(sprite41);
         break;
       case 42:
@@ -134,10 +144,10 @@ function ShopPreview({
         const eye2 = new Sprite(cosmeticsAssets?.red_eye);
         eye1.pivot.set(eye1.width / 2, eye1.height / 2);
         eye2.pivot.set(eye2.width / 2, eye2.height / 2);
-        eye1.scale.set(0.1, 0.1);
-        eye2.scale.set(0.1, 0.1);
-        eye1.position.set(WIDTH / 2 - WIDTH / 4, HEIGHT / 4);
-        eye2.position.set(WIDTH / 2 + WIDTH / 4, HEIGHT / 4);
+        eye1.position.set(playerWidth / 2 - playerWidth / 4, playerHeight / 4);
+        eye2.position.set(playerWidth / 2 + playerWidth / 4, playerHeight / 4);
+        eye1.scale.set(0.12 / PLAYER_RATIO, 0.12 / PLAYER_RATIO);
+        eye2.scale.set(0.12 / PLAYER_RATIO, 0.12 / PLAYER_RATIO);
         faceContainer.addChild(eye1);
         faceContainer.addChild(eye2);
         break;
@@ -148,14 +158,7 @@ function ShopPreview({
     app.stage.addChild(faceContainer);
   }
 
-  return (
-    <canvas
-      className={"border-2 border-gray-400"}
-      ref={canvasRef}
-      width={width}
-      height={height}
-    />
-  );
+  return <canvas ref={canvasRef} className={"aspect-[2/3] my-10"}></canvas>;
 }
 
 export { ShopPreview };

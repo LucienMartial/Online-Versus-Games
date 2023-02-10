@@ -62,12 +62,12 @@ function ShopItem({
   function itemStyle() {
     if (previewed) {
       if (selected) {
-        return "grid grid-raws-3 p-5 rounded-xl m-3 border-2 animate-pulse border-pink-900";
+        return "text-xl grid grid-raws-3 p-5 rounded-xl m-3 border-2 animate-pulse border-pink-900";
       }
-      return "grid grid-raws-3 p-5 rounded-xl m-3 border-2 animate-pulse border-lime-900";
+      return "text-xl grid grid-raws-3 p-5 rounded-xl m-3 border-2 animate-pulse border-lime-900";
     }
 
-    return "grid grid-raws-3 p-5 rounded-xl m-3 border-2 border-blue-400";
+    return "text-lg grid grid-raws-3 p-5 rounded-xl m-3 border-2 border-blue-400";
   }
 
   return (

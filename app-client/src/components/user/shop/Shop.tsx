@@ -19,6 +19,7 @@ import { GiCoins } from "react-icons/gi";
 import { ShopPreview } from "./ShopPreview";
 import { CosmeticAssets } from "../../../game/configs/assets-config";
 import { Assets } from "@pixi/assets";
+import LoadingPage from "../../LoadingPage";
 
 function replaceSelectedItem(
   id: number,
@@ -49,6 +50,8 @@ export default function Shop() {
   const [grayedOut, setGrayedOut] = useState<boolean>(true);
   const [previewItem, setPreviewItem] = useState<SelectedItems | null>(null);
   const [payingSkin, setPayingSkin] = useState<number>(0);
+
+  let loaded: boolean = false;
 
   useEffect(() => {
     async function load() {
@@ -295,77 +298,71 @@ export default function Shop() {
     return "(" + payingSkin + " coins)";
   }
 
+  if (!shopData || !cosmeticsAssets) return <LoadingPage />;
+
   return (
-    <StrictMode>
-      <main className={"h-full flex flex-col min-h-0 grow"}>
-        <section className={"m-4"}>
-          <div className={"font-black text-4xl"}>
-            {/* <p className={""}>
-              You've got{" "}
-              {shopData?.coins === undefined || shopData?.coins < 0
-                ? "0 coins"
-                : shopData.coins}{" "}
-              {shopData?.coins !== undefined && shopData.coins === 1
-                ? "coin"
-                : "coins"}{" "}
-            </p> */}
-            <div className={"flex justify-end"}>
-              {shopData?.coins} <GiCoins className="ml-2" />
+    <main className={"h-full flex flex-col min-h-0 grow"}>
+      <section
+        className={
+          "grid grid-cols-1 sm:grid-cols-2 h-full min-h-0 pt-2 border-y-2 border-t-blue-500/50 border-b-gray-600/40 backdrop-blur-sm bg-slate-600/30"
+        }
+      >
+        <div className={"flex flex-col max-h-full min-h-0 mt-3"}>
+          <div className={"flex max-h-full"}>
+            <div
+              className={
+                "flex font-black text-5xl border-2 rounded-md px-4 pt-4 pb-1 mt-2 ml-6 min-h-0 h-fit"
+              }
+            >
+              {shopData?.coins} <GiCoins className="ml-2 pb-2" />
             </div>
           </div>
-        </section>
-        <section className={"grid grid-cols-1 sm:grid-cols-2 h-full min-h-0"}>
-          <div className={"grid grid-rows-2 h-full min-h-0"}>
-            <div className={"place-items-center"}>
-              <ShopPreview
-                width={200}
-                height={200}
-                selectedItems={
-                  previewItem === null
-                    ? { skinID: -1, hatID: -2, faceID: -3 }
-                    : previewItem
-                }
-                cosmeticsAssets={cosmeticsAssets}
-              />
-            </div>
-            <div>
-              <AppButton
-                className={"font-bold h-16 w-52"}
-                color={"regular"}
-                onClick={selectCharacterServer}
-                grayedOut={grayedOut}
-              >
-                Choose character {renderPayingSkin()}
-              </AppButton>
-            </div>
-          </div>
-          <div className={"h-full min-h-0"}>
-            <Tabs
-              tabsDatas={[
-                {
-                  title: "Skin",
-                  logo: <AiFillSkin />,
-                  content: (
-                    <ShopCategory items={getItemsFromCategory("skin")} />
-                  ),
-                },
-                {
-                  title: "Hat",
-                  logo: <FaHatCowboy />,
-                  content: <ShopCategory items={getItemsFromCategory("hat")} />,
-                },
-                {
-                  title: "Face",
-                  logo: <BsEmojiSunglasses />,
-                  content: (
-                    <ShopCategory items={getItemsFromCategory("face")} />
-                  ),
-                },
-              ]}
+
+          <div className={"flex justify-center min-h-0 max-h-full"}>
+            <ShopPreview
+              initWidth={300}
+              initHeight={450}
+              selectedItems={
+                previewItem === null
+                  ? { skinID: -1, hatID: -2, faceID: -3 }
+                  : previewItem
+              }
+              cosmeticsAssets={cosmeticsAssets}
             />
           </div>
-        </section>
-      </main>
-    </StrictMode>
+          <div className={"flex justify-center align-middle"}>
+            <AppButton
+              className={"text-2xl mt-8 h-24 w-96"}
+              color={"regular"}
+              onClick={selectCharacterServer}
+              grayedOut={grayedOut}
+            >
+              Choose character {renderPayingSkin()}
+            </AppButton>
+          </div>
+        </div>
+        <div className={"h-full min-h-0"}>
+          <Tabs
+            tabsDatas={[
+              {
+                title: "Skin",
+                logo: <AiFillSkin />,
+                content: <ShopCategory items={getItemsFromCategory("skin")} />,
+              },
+              {
+                title: "Hat",
+                logo: <FaHatCowboy />,
+                content: <ShopCategory items={getItemsFromCategory("hat")} />,
+              },
+              {
+                title: "Face",
+                logo: <BsEmojiSunglasses />,
+                content: <ShopCategory items={getItemsFromCategory("face")} />,
+              },
+            ]}
+          />
+        </div>
+      </section>
+    </main>
   );
 }
