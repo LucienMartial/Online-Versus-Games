@@ -1,7 +1,3 @@
-import { AiOutlineSelect } from "react-icons/ai";
-import { FiShoppingCart } from "react-icons/fi";
-import { FaRegAngry } from "react-icons/fa";
-import { FaEuroSign } from "react-icons/fa";
 import { ShopButton } from "./ShopButton";
 
 interface ItemProps {

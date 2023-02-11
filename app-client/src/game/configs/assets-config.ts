@@ -28,16 +28,16 @@ const manifest = {
       name: "cosmetics",
       assets: [
         {
-          name: "red_eye",
-          srcs: "../assets/cosmetics/red_eye.png",
+          name: "red_eyes",
+          srcs: "../assets/cosmetics/red_eyes.png",
         },
         {
-          name: "melon_hat",
-          srcs: "../assets/cosmetics/melon_hat.png",
+          name: "gray_hat",
+          srcs: "../assets/cosmetics/gray_hat.png",
         },
         {
-          name: "blue_cap",
-          srcs: "../assets/cosmetics/blue_cap.png",
+          name: "red_cap",
+          srcs: "../assets/cosmetics/red_cap.png",
         },
         {
           name: "black_sunglasses",
@@ -47,17 +47,37 @@ const manifest = {
           name: "pink_sunglasses",
           srcs: "../assets/cosmetics/pink_sunglasses.png",
         },
+        {
+          name: "gas_mask",
+          srcs: "../assets/cosmetics/gas_mask.png",
+        },
+        {
+          name: "gray_sunglasses",
+          srcs: "../assets/cosmetics/gray_sunglasses.png",
+        },
+        {
+          name: "brown_diving_mask",
+          srcs: "../assets/cosmetics/brown_diving_mask.png",
+        },
+        {
+          name: "black_hat",
+          srcs: "../assets/cosmetics/black_hat.png",
+        },
       ],
     },
   ],
 };
 
 interface CosmeticAssets {
-  red_eye: Texture;
-  melon_hat: Texture;
-  blue_cap: Texture;
+  red_eyes: Texture;
+  gray_hat: Texture;
+  red_cap: Texture;
   black_sunglasses: Texture;
   pink_sunglasses: Texture;
+  gas_mask: Texture;
+  gray_sunglasses: Texture;
+  brown_diving_mask: Texture;
+  black_hat: Texture;
 }
 
 export { manifest };

@@ -1,7 +1,14 @@
 import { useRef, useEffect, useState } from "react";
 import { PLAYER_RATIO } from "../../../../../app-shared/disc-war/player";
 import { SelectedItems } from "../../../../../app-shared/types";
-import { Application, Graphics, Sprite, Container, Loader } from "pixi.js";
+import {
+  Application,
+  Graphics,
+  Sprite,
+  Container,
+  Loader,
+  Texture,
+} from "pixi.js";
 import { CosmeticAssets } from "../../../game/configs/assets-config";
 import { DEFAULT_SKIN } from "../../../../../app-shared/configs/shop-config";
 import LoadingPage from "../../LoadingPage";
@@ -49,7 +56,6 @@ function ShopPreview({
 
   useEffect(() => {
     if (cosmeticsAssets && app) {
-      console.log("app", app);
       loadCharacter();
     }
   }, [app, cosmeticsAssets, selectedItems, canvWidth, canHeight]);
@@ -58,8 +64,8 @@ function ShopPreview({
     if (app === undefined || selectedItems === null) return;
     app.stage.removeChildren();
     loadSkin(selectedItems.skinID);
-    loadHat(selectedItems.hatID);
     loadFace(selectedItems.faceID);
+    loadHat(selectedItems.hatID);
   }
 
   function loadSkin(skinID: number): void {
@@ -92,64 +98,65 @@ function ShopPreview({
   }
 
   function loadHat(hatID: number): void {
-    if (app === undefined) return;
+    if (app === undefined || cosmeticsAssets === null) return;
     const hatContainer = new Container();
     hatContainer.position.set(rectPos.x, rectPos.y);
+
+    function loadFaceSprite(texture: Texture): void {
+      const sprite = new Sprite(texture);
+      sprite.pivot.set(sprite.width / 2, sprite.height / 2);
+      sprite.position.set(playerWidth / 2, -playerHeight / 12);
+      sprite.scale.set(0.16 / PLAYER_RATIO, (0.16 * 0.75) / PLAYER_RATIO);
+      hatContainer.addChild(sprite);
+    }
+
     switch (hatID) {
       case 20:
-        const sprite20 = new Sprite(cosmeticsAssets?.melon_hat);
-        sprite20.pivot.set(sprite20.width / 2, sprite20.height / 2);
-        sprite20.position.set(playerWidth / 2, -playerHeight / 14);
-        sprite20.scale.set(0.035 / PLAYER_RATIO, 0.035 / PLAYER_RATIO);
-        hatContainer.addChild(sprite20);
+        loadFaceSprite(cosmeticsAssets.gray_hat);
         break;
       case 21:
-        const sprite21 = new Sprite(cosmeticsAssets?.blue_cap);
-        sprite21.pivot.set(sprite21.width / 2, sprite21.height / 2);
-        sprite21.position.set(
-          playerWidth / 2 - playerWidth / 8,
-          -playerHeight / 20
-        );
-        sprite21.scale.set(0.1 / PLAYER_RATIO, 0.1 / PLAYER_RATIO);
-        hatContainer.addChild(sprite21);
+        loadFaceSprite(cosmeticsAssets.red_cap);
+        break;
+      case 22:
+        loadFaceSprite(cosmeticsAssets.black_hat);
         break;
       default:
         break;
     }
-
     app.stage.addChild(hatContainer);
   }
 
   function loadFace(faceID: number): void {
-    if (app === undefined) return;
+    if (app === undefined || cosmeticsAssets === null) return;
     const faceContainer = new Container();
     faceContainer.position.set(rectPos.x, rectPos.y);
+
+    function loadFaceSprite(texture: Texture): void {
+      const sprite = new Sprite(texture);
+      sprite.pivot.set(sprite.width / 2, sprite.height / 2);
+      sprite.position.set(playerWidth / 2, playerWidth / 2.5);
+      sprite.scale.set(0.134 / PLAYER_RATIO, 0.134 / PLAYER_RATIO);
+      faceContainer.addChild(sprite);
+    }
+
     switch (faceID) {
       case 40:
-        const sprite40 = new Sprite(cosmeticsAssets?.black_sunglasses);
-        sprite40.pivot.set(sprite40.width / 2, sprite40.height / 2);
-        sprite40.position.set(playerWidth / 2, playerHeight / 4.5);
-        sprite40.scale.set(0.022 / PLAYER_RATIO, 0.022 / PLAYER_RATIO);
-        faceContainer.addChild(sprite40);
+        loadFaceSprite(cosmeticsAssets.black_sunglasses);
         break;
       case 41:
-        const sprite41 = new Sprite(cosmeticsAssets?.pink_sunglasses);
-        sprite41.pivot.set(sprite41.width / 2, sprite41.height / 2);
-        sprite41.position.set(playerWidth / 2, playerWidth / 2.5);
-        sprite41.scale.set(0.11 / PLAYER_RATIO, 0.11 / PLAYER_RATIO);
-        faceContainer.addChild(sprite41);
+        loadFaceSprite(cosmeticsAssets.pink_sunglasses);
         break;
       case 42:
-        const eye1 = new Sprite(cosmeticsAssets?.red_eye);
-        const eye2 = new Sprite(cosmeticsAssets?.red_eye);
-        eye1.pivot.set(eye1.width / 2, eye1.height / 2);
-        eye2.pivot.set(eye2.width / 2, eye2.height / 2);
-        eye1.position.set(playerWidth / 2 - playerWidth / 4, playerHeight / 4);
-        eye2.position.set(playerWidth / 2 + playerWidth / 4, playerHeight / 4);
-        eye1.scale.set(0.12 / PLAYER_RATIO, 0.12 / PLAYER_RATIO);
-        eye2.scale.set(0.12 / PLAYER_RATIO, 0.12 / PLAYER_RATIO);
-        faceContainer.addChild(eye1);
-        faceContainer.addChild(eye2);
+        loadFaceSprite(cosmeticsAssets.red_eyes);
+        break;
+      case 43:
+        loadFaceSprite(cosmeticsAssets.gray_sunglasses);
+        break;
+      case 44:
+        loadFaceSprite(cosmeticsAssets.gas_mask);
+        break;
+      case 45:
+        loadFaceSprite(cosmeticsAssets.brown_diving_mask);
         break;
       default:
         break;
