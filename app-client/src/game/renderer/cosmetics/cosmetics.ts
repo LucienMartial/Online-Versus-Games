@@ -84,7 +84,7 @@ class Cosmetics {
       const sprite = new Sprite(texture);
       sprite.pivot.set(sprite.width / 2, sprite.height / 2);
       sprite.position.set(WIDTH / 2, -HEIGHT / 24);
-      sprite.scale.set(0.07 / PLAYER_RATIO, (0.07 * 0.8) / PLAYER_RATIO);
+      sprite.scale.set(0.07 / PLAYER_RATIO, (0.07 * 0.75) / PLAYER_RATIO);
       return sprite;
     }
 
