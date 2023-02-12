@@ -1,3 +1,5 @@
+import { CosmeticAssets } from "../../app-client/src/game/configs/assets-config.js";
+
 type ItemCategory = "skin" | "hat" | "face";
 
 interface Item {
@@ -7,4 +9,15 @@ interface Item {
   category: ItemCategory;
 }
 
-export type { Item };
+interface ItemDisplay extends Item {
+  owned: boolean;
+  selected: boolean;
+  previewed: boolean;
+  ableToBuy: boolean;
+  cosmetics: CosmeticAssets | null;
+  tryBuy: (id: number) => Promise<void>;
+  trySelect: (id: number) => void;
+  tryPreview: (id: number) => void;
+}
+
+export type { Item, ItemDisplay };

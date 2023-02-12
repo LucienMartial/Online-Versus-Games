@@ -11,6 +11,8 @@ import useAccount from "./hooks/useAccount";
 import { ObjectId } from "mongodb";
 import useFriends, { useFriendsRes } from "./hooks/useFriends";
 import useSocial, { useSocialRes } from "./hooks/useSocial";
+import { Assets } from "@pixi/assets";
+import { manifest } from "./game/configs/assets-config";
 
 const Game = lazy(() => import("./components/game/Game"));
 const Login = lazy(() => import("./components/forms/Login"));
@@ -69,6 +71,9 @@ function App() {
       if (!userDataString) return;
       const userData: UserContextType = JSON.parse(userDataString);
       setUserData(userData);
+
+      // load assets
+      await Assets.init({ manifest: manifest });
 
       // websocket connections
       if (client) {

@@ -21,7 +21,7 @@ function Navbar({ tryLogout }: NavbarProps) {
 
   return (
     <StrictMode>
-      <header className="z-10 flex w-screen flex-row justify-start border-slate-700 border-b p-2 sm:justify-between backdrop-blur">
+      <header className="z-10 flex w-screen flex-row justify-start border-slate-400 dark:border-slate-700 border-b p-2 sm:justify-between backdrop-blur">
         <input
           id="navToggler"
           type={"checkbox"}
@@ -35,7 +35,7 @@ function Navbar({ tryLogout }: NavbarProps) {
         >
           <div
             className={
-              'duration-150 dash-c w-full bg-slate-300 h-1 absolute top-[50%] -translate-y-1/2 before:content-[""] before:absolute before:bottom-3 before:left-0 before:bg-slate-300 before:w-full before:h-full before:duration-150 after:content-[""] after:absolute after:top-3 after:left-0 after:bg-slate-300 after:w-full after:h-full after:duration-150'
+              'duration-150 dash-c w-full bg-slate-700 dark:bg-slate-300 h-1 absolute top-[50%] -translate-y-1/2 before:content-[""] before:absolute before:bottom-3 before:left-0 before:bg-slate-700 dark:before:bg-slate-300 before:w-full before:h-full before:duration-150 after:content-[""] after:absolute after:top-3 after:left-0 after:bg-slate-700 dark:after:bg-slate-300 after:w-full after:h-full after:duration-150'
             }
           ></div>
         </label>
@@ -58,7 +58,7 @@ function Navbar({ tryLogout }: NavbarProps) {
               <input
                 type="text"
                 className={
-                  "h-full bg-slate-800 rounded outline-none text-white pl-2 py-2 sm:py-0"
+                  "h-full bg-slate-300 dark:bg-slate-800 rounded outline-none text-slate-900 dark:text-white pl-2 py-2 sm:py-0"
                 }
                 placeholder={"Search a user"}
                 ref={searchbarRef}

@@ -1,6 +1,9 @@
 import { StrictMode, useEffect, useState } from "react";
-import { ShopItem } from "./ShopItem";
-import { UserShop, SelectedItems, Item } from "../../../../../app-shared/types";
+import {
+  UserShop,
+  SelectedItems,
+  ItemDisplay,
+} from "../../../../../app-shared/types";
 import {
   SHOP_ITEMS,
   getItem,
@@ -11,6 +14,12 @@ import { AiFillSkin } from "react-icons/ai";
 import { FaHatCowboy } from "react-icons/fa";
 import { BsEmojiSunglasses } from "react-icons/bs";
 import Tabs from "../../lib/Tabs";
+import { ShopCategory } from "./ShopCategory";
+import { GiCoins } from "react-icons/gi";
+import { ShopPreview } from "./ShopPreview";
+import { CosmeticAssets } from "../../../game/configs/assets-config";
+import { Assets } from "@pixi/assets";
+import LoadingPage from "../../LoadingPage";
 
 function replaceSelectedItem(
   id: number,
@@ -33,11 +42,16 @@ function replaceSelectedItem(
 
 export default function Shop() {
   const [shopData, setShopData] = useState<UserShop | null>(null);
+  const [cosmeticsAssets, setCosmeticsAssets] = useState<CosmeticAssets | null>(
+    null
+  );
   const [serverSelectedItems, setServerSelectedItems] =
     useState<SelectedItems | null>(null);
   const [grayedOut, setGrayedOut] = useState<boolean>(true);
   const [previewItem, setPreviewItem] = useState<SelectedItems | null>(null);
   const [payingSkin, setPayingSkin] = useState<number>(0);
+
+  let loaded: boolean = false;
 
   useEffect(() => {
     async function load() {
@@ -54,25 +68,20 @@ export default function Shop() {
         setPreviewItem(data.selectedItems);
       }
     }
+    async function loadAssets() {
+      const cosmetics = await Assets.get("cosmetics");
+      if (!cosmetics) {
+        setCosmeticsAssets(await Assets.loadBundle("cosmetics"));
+      } else {
+        setCosmeticsAssets(cosmetics);
+      }
+    }
     load();
+    loadAssets();
   }, []);
 
   useEffect(() => {
     if (serverSelectedItems && previewItem) {
-      if (
-        previewItem.faceID === serverSelectedItems.faceID &&
-        previewItem.hatID === serverSelectedItems.hatID &&
-        previewItem.skinID === serverSelectedItems.skinID
-      ) {
-        setGrayedOut(true);
-      } else {
-        setGrayedOut(false);
-      }
-    }
-  }, [shopData, previewItem, serverSelectedItems]);
-
-  useEffect(() => {
-    if (previewItem) {
       let payingSkinPrice = 0;
       const faceItem = getItem(previewItem.faceID);
       const hatItem = getItem(previewItem.hatID);
@@ -90,8 +99,19 @@ export default function Shop() {
         payingSkinPrice += skinItem.price;
       }
       setPayingSkin(payingSkinPrice);
+
+      if (
+        (previewItem.faceID === serverSelectedItems.faceID &&
+          previewItem.hatID === serverSelectedItems.hatID &&
+          previewItem.skinID === serverSelectedItems.skinID) ||
+        (shopData && shopData.coins - payingSkinPrice < 0)
+      ) {
+        setGrayedOut(true);
+      } else {
+        setGrayedOut(false);
+      }
     }
-  }, [previewItem]);
+  }, [shopData, serverSelectedItems, previewItem]);
 
   async function selectJsonPostRequest(data: SelectedItems): Promise<Response> {
     const res = await fetch("/api/shop-select", {
@@ -237,34 +257,33 @@ export default function Shop() {
     return false;
   }
 
-  function renderItems(category: string) {
+  function getItemsFromCategory(category: string): ItemDisplay[] {
     const itemSet = new Set(shopData?.items);
     const selectedItems = shopData?.selectedItems;
-    return SHOP_ITEMS.map((item) => {
-      const owned = itemSet.has(item.id);
-      const selected =
-        selectedItems?.skinID === item.id ||
-        selectedItems?.hatID === item.id ||
-        selectedItems?.faceID === item.id;
-      const previewed =
-        previewItem?.skinID === item.id ||
-        previewItem?.hatID === item.id ||
-        previewItem?.faceID === item.id;
-      return item.category === category ? (
-        <ShopItem
-          id={item.id}
-          name={item.name}
-          price={item.price}
-          category={item.category}
-          owned={owned}
-          selected={selected}
-          previewed={previewed}
-          tryBuy={tryBuy}
-          trySelect={trySelect}
-          tryPreview={tryPreview}
-          key={item.id}
-        />
-      ) : null;
+    const categoryItems = SHOP_ITEMS.filter(
+      (item) => item.category === category
+    );
+    return categoryItems.map((item) => {
+      return {
+        ...item,
+        owned: itemSet.has(item.id),
+        selected:
+          selectedItems?.skinID === item.id ||
+          selectedItems?.hatID === item.id ||
+          selectedItems?.faceID === item.id,
+        previewed:
+          previewItem?.skinID === item.id ||
+          previewItem?.hatID === item.id ||
+          previewItem?.faceID === item.id,
+        ableToBuy:
+          shopData !== undefined &&
+          shopData !== null &&
+          shopData.coins - item.price >= 0,
+        cosmetics: cosmeticsAssets,
+        tryBuy: tryBuy,
+        trySelect: trySelect,
+        tryPreview: tryPreview,
+      };
     });
   }
 
@@ -280,34 +299,52 @@ export default function Shop() {
     return "(" + payingSkin + " coins)";
   }
 
+  if (!shopData || !cosmeticsAssets) return <LoadingPage />;
+
   return (
-    <StrictMode>
-      <main className={"h-full flex flex-col min-h-0 grow"}>
-        <section className={""}>
-          <p className={"text-2xl"}>
-            You have {shopData?.coins ? shopData.coins : "0 coins"}{" "}
-            {shopData?.coins && shopData?.coins > 1 ? "coins" : "coin"}
-          </p>
-        </section>
-        <section className={"grid grid-cols-1 sm:grid-cols-2 h-full min-h-0"}>
-          <div className={"grid grid-rows-2 h-full"}>
-            <div>
-              HERE WILL APEAR THE SKIN PREVIEW
-              <br />
-              <br />
-              PREVIEWED ITEMS
-              <br />
-              {"Skin: " + previewItem?.skinID}
-              <br />
-              {"Hat: " + previewItem?.hatID}
-              <br />
-              {"Face: " + previewItem?.faceID}
-              <br />
-              <br />
+    <main className={"h-full flex flex-col min-h-0 grow"}>
+      <section
+        className={
+          "grid grid-cols-1 sm:grid-cols-2 h-full min-h-0 pt-2 border-y-2 border-t-blue-500/50 border-b-gray-600/40 backdrop-blur-sm bg-slate-600/30"
+        }
+      >
+        <div className={"flex flex-col max-h-full min-h-0 mt-3"}>
+          <div
+            className={
+              "flex sm:justify-start justify-center sm:mb-3 mb-0 max-h-full"
+            }
+          >
+            <div
+              className={
+                "flex font-black sm:text-5xl text-3xl sm:border-2 border rounded-md sm:px-4 sm:pt-4 sm:pb-1 sm:mt-2 sm:ml-6 px-2 pt-1 min-h-0 h-fit"
+              }
+            >
+              {shopData?.coins} <GiCoins className="ml-2 sm:pb-2" />
             </div>
-            <div>
+          </div>
+
+          <div
+            className={
+              "flex sm:flex-col flex-row-reverse justify-center min-h-0 max-h-full"
+            }
+          >
+            <div className={"flex justify-center overflow-y-auto"}>
+              <ShopPreview
+                initWidth={300}
+                initHeight={450}
+                selectedItems={
+                  previewItem === null
+                    ? { skinID: -1, hatID: -2, faceID: -3 }
+                    : previewItem
+                }
+                cosmeticsAssets={cosmeticsAssets}
+              />
+            </div>
+            <div className={"flex sm:justify-center sm:align-middle"}>
               <AppButton
-                className={"font-bold h-16 w-52"}
+                className={
+                  "text-sm sm:text-2xl sm:h-24 h-16 sm:w-96 w-32 sm:my-8 my-auto mx-4"
+                }
                 color={"regular"}
                 onClick={selectCharacterServer}
                 grayedOut={grayedOut}
@@ -316,53 +353,29 @@ export default function Shop() {
               </AppButton>
             </div>
           </div>
-          <div className={"h-full min-h-0"}>
-            <Tabs
-              tabsDatas={[
-                {
-                  title: "Skin",
-                  logo: <AiFillSkin />,
-                  content: (
-                    <div
-                      className={
-                        "grid grid-cols-2 overflow-y-scroll max-h-full min-h-0"
-                      }
-                    >
-                      {renderItems("skin")}
-                    </div>
-                  ),
-                },
-                {
-                  title: "Hat",
-                  logo: <FaHatCowboy />,
-                  content: (
-                    <div
-                      className={
-                        "grid grid-cols-2 overflow-y-scroll max-h-full min-h-0"
-                      }
-                    >
-                      {renderItems("hat")}
-                    </div>
-                  ),
-                },
-                {
-                  title: "Face",
-                  logo: <BsEmojiSunglasses />,
-                  content: (
-                    <div
-                      className={
-                        "grid grid-cols-2 overflow-y-scroll max-h-full min-h-0"
-                      }
-                    >
-                      {renderItems("face")}
-                    </div>
-                  ),
-                },
-              ]}
-            />
-          </div>
-        </section>
-      </main>
-    </StrictMode>
+        </div>
+        <div className={"h-full min-h-0"}>
+          <Tabs
+            tabsDatas={[
+              {
+                title: "Skin",
+                logo: <AiFillSkin />,
+                content: <ShopCategory items={getItemsFromCategory("skin")} />,
+              },
+              {
+                title: "Hat",
+                logo: <FaHatCowboy />,
+                content: <ShopCategory items={getItemsFromCategory("hat")} />,
+              },
+              {
+                title: "Face",
+                logo: <BsEmojiSunglasses />,
+                content: <ShopCategory items={getItemsFromCategory("face")} />,
+              },
+            ]}
+          />
+        </div>
+      </section>
+    </main>
   );
 }

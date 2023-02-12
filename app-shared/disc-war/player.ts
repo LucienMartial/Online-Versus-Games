@@ -9,6 +9,7 @@ import { SelectedItems } from "../types/db-types.js";
 // shape
 export const WIDTH = 60;
 export const HEIGHT = 110;
+export const PLAYER_RATIO = WIDTH / HEIGHT;
 
 // movement. 0 friction mean full determinism
 const FRICTION = 0;

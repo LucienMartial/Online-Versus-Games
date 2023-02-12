@@ -47,7 +47,7 @@ function GameQueue({ client, tryConnection, nbClients }: GameProps) {
 
   return (
     <section className="grow">
-      <h1>Game</h1>
+      <h1 className="text-3xl">Game</h1>
       {!queueRoom && (
         <AppButton color="regular" onClick={connectToQueue}>
           Play

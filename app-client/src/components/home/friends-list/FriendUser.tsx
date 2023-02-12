@@ -13,7 +13,7 @@ function FriendUser({
   online: boolean;
 }) {
   return (
-    <li className="flex items-center justify-between px-2 py-3 mt-1 mx-4 bg-slate-900">
+    <li className="flex items-center justify-between px-2 py-3 mt-1 mx-4 bg-slate-300 dark:bg-slate-900">
       <div className="flex ml-1 items-center gap-2">
         <span
           className={
