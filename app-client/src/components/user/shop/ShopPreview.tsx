@@ -165,7 +165,16 @@ function ShopPreview({
     app.stage.addChild(faceContainer);
   }
 
-  return <canvas ref={canvasRef} className={"aspect-[2/3] my-10"}></canvas>;
+  return (
+    <div
+      className={"flex justify-center max-h-full min-h-[175px] aspect-[2/3]"}
+    >
+      <canvas
+        ref={canvasRef}
+        className={"aspect-[2/3] sm:my-10 my-0 min-h-0 max-h-full"}
+      ></canvas>
+    </div>
+  );
 }
 
 export { ShopPreview };

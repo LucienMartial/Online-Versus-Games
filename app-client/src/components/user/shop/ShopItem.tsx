@@ -1,8 +1,16 @@
-import { Application, Container, Graphics, Sprite, Texture } from "pixi.js";
+import {
+  Application,
+  Container,
+  Graphics,
+  Loader,
+  Sprite,
+  Texture,
+} from "pixi.js";
 import { CosmeticAssets } from "../../../game/configs/assets-config";
 import { ShopButton } from "./ShopButton";
 import { useEffect, useRef, useState } from "react";
 import { DEFAULT_SKIN } from "../../../../../app-shared/configs/shop-config";
+import LoadingPage from "../../LoadingPage";
 
 interface ItemProps {
   id: number;
@@ -49,10 +57,17 @@ function ShopItem({
       view: canvasRef.current === null ? undefined : canvasRef.current,
     });
     setApp(application);
+
+    return () => {
+      if (application) {
+        application.destroy(true);
+      }
+      setApp(undefined);
+    };
   }, []);
 
   useEffect(() => {
-    if (cosmetics && app) {
+    if (cosmetics && app && app.stage) {
       app.stage.removeChildren();
       if (category === "skin") {
         loadColor();
@@ -63,7 +78,7 @@ function ShopItem({
   }, [app, cosmetics]);
 
   function loadColor() {
-    if (app === undefined) return;
+    if (!app) return;
     const container = new Container();
     const skin = new Graphics();
 
@@ -94,7 +109,7 @@ function ShopItem({
   }
 
   function loadImage() {
-    if (app === undefined || cosmetics === null) return;
+    if (!app || cosmetics === null) return;
     const container = new Container();
 
     function loadSprite(texture: Texture): void {

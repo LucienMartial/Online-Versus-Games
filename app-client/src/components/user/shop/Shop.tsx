@@ -309,37 +309,49 @@ export default function Shop() {
         }
       >
         <div className={"flex flex-col max-h-full min-h-0 mt-3"}>
-          <div className={"flex max-h-full"}>
+          <div
+            className={
+              "flex sm:justify-start justify-center sm:mb-3 mb-0 max-h-full"
+            }
+          >
             <div
               className={
-                "flex font-black text-5xl border-2 rounded-md px-4 pt-4 pb-1 mt-2 ml-6 min-h-0 h-fit"
+                "flex font-black sm:text-5xl text-3xl sm:border-2 border rounded-md sm:px-4 sm:pt-4 sm:pb-1 sm:mt-2 sm:ml-6 px-2 pt-1 min-h-0 h-fit"
               }
             >
-              {shopData?.coins} <GiCoins className="ml-2 pb-2" />
+              {shopData?.coins} <GiCoins className="ml-2 sm:pb-2" />
             </div>
           </div>
 
-          <div className={"flex justify-center min-h-0 max-h-full"}>
-            <ShopPreview
-              initWidth={300}
-              initHeight={450}
-              selectedItems={
-                previewItem === null
-                  ? { skinID: -1, hatID: -2, faceID: -3 }
-                  : previewItem
-              }
-              cosmeticsAssets={cosmeticsAssets}
-            />
-          </div>
-          <div className={"flex justify-center align-middle"}>
-            <AppButton
-              className={"text-2xl mt-8 h-24 w-96"}
-              color={"regular"}
-              onClick={selectCharacterServer}
-              grayedOut={grayedOut}
-            >
-              Choose character {renderPayingSkin()}
-            </AppButton>
+          <div
+            className={
+              "flex sm:flex-col flex-row-reverse justify-center min-h-0 max-h-full"
+            }
+          >
+            <div className={"flex justify-center overflow-y-auto"}>
+              <ShopPreview
+                initWidth={300}
+                initHeight={450}
+                selectedItems={
+                  previewItem === null
+                    ? { skinID: -1, hatID: -2, faceID: -3 }
+                    : previewItem
+                }
+                cosmeticsAssets={cosmeticsAssets}
+              />
+            </div>
+            <div className={"flex sm:justify-center sm:align-middle"}>
+              <AppButton
+                className={
+                  "text-sm sm:text-2xl sm:h-24 h-16 sm:w-96 w-32 sm:my-8 my-auto mx-4"
+                }
+                color={"regular"}
+                onClick={selectCharacterServer}
+                grayedOut={grayedOut}
+              >
+                Choose character {renderPayingSkin()}
+              </AppButton>
+            </div>
           </div>
         </div>
         <div className={"h-full min-h-0"}>
