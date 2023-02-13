@@ -3,13 +3,13 @@ import { useEffect, useRef } from "react";
 import { Application, Ticker } from "pixi.js";
 import { Viewport } from "pixi-viewport";
 import "./Game.css";
-import { GameScene } from "../../game/game";
+import { GameScene } from "../../disc-war/game";
 import { Client, Room } from "colyseus.js";
 import {
   WORLD_WIDTH,
   WORLD_HEIGHT,
 } from "../../../../app-shared/utils/constants";
-import GameUI from "./GameUI";
+import GameUI from "../../disc-war/components/GameUI";
 import EndScreen from "./EndScreen";
 import { EndGameState, GameState } from "../../../../app-shared/state";
 import { Assets } from "@pixi/assets";

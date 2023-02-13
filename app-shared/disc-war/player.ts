@@ -1,7 +1,7 @@
 import SAT from "sat";
 import { BodyEntity } from "../game/index.js";
 import { BoxShape } from "../physics/index.js";
-import { PlayerState } from "../state/index.js";
+import { PlayerState } from "./state/index.js";
 import { Inputs, SyncTimer } from "../utils/index.js";
 import { Disc } from "./index.js";
 import { SelectedItems } from "../types/db-types.js";

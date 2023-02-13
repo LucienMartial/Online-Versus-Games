@@ -1,13 +1,8 @@
 import { Room } from "colyseus.js";
 import { Vector } from "sat";
 import { Disc, DiscWarEngine } from "../../../../app-shared/disc-war";
-import { GameState } from "../../../../app-shared/state/game-state";
-import {
-  CBuffer,
-  GAME_RATE,
-  InputsData,
-  lerp,
-} from "../../../../app-shared/utils";
+import { GameState } from "../../../../app-shared/disc-war/state/game-state";
+import { CBuffer, InputsData, lerp } from "../../../../app-shared/utils";
 
 const MAX_RESIMU_STEP = 75;
 const MAX_DESYNC_DEVIATION = 100;

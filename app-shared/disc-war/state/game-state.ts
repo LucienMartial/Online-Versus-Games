@@ -1,8 +1,8 @@
 import { Schema, MapSchema, type } from "@colyseus/schema";
-import { DiscWarEngine } from "../disc-war/index.js";
+import { DiscWarEngine } from "../index.js";
 import { DiscState } from "./disc-state.js";
 import { PlayerState } from "./player-state.js";
-import { SyncTimerState } from "./sync-timer-state.js";
+import { SyncTimerState } from "../../state/sync-timer-state.js";
 
 /**
  * Game data on the server, shared with each clients

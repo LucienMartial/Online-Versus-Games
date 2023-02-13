@@ -2,11 +2,11 @@ import { Collection, Db, MongoClient, WithId } from "mongodb";
 import {
   EndGamePlayerState,
   EndGameState,
-} from "../../app-shared/state/end-game-state.js";
+} from "../../app-shared/disc-war/state/end-game-state.js";
 import ClientMethods from "./db-user.js";
-import GameMethods from "./db-game.js";
+import GameMethods from "../disc-war/database/db-game.js";
 import FriendMethods from "./db-friends.js";
-import ProfileMethods from "./db-profile.js";
+import ProfileMethods from "../disc-war/database/db-profile.js";
 import UserShopMethods from "./db-user-shop.js";
 import {
   FriendRequest,

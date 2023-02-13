@@ -1,6 +1,6 @@
 import { Command } from "@colyseus/command";
 import { Client } from "colyseus";
-import { GameRoom } from "../rooms/game-room.js";
+import { GameRoom } from "../disc-war/room/game-room.js";
 
 const RECONNECTION_TIME = 5;
 

@@ -1,6 +1,6 @@
 import { Schema, type } from "@colyseus/schema";
-import { Player } from "../disc-war/player.js";
-import { SyncTimerState } from "./sync-timer-state.js";
+import { Player } from "../player.js";
+import { SyncTimerState } from "../../state/sync-timer-state.js";
 
 class PlayerState extends Schema {
   @type("boolean") isLeft: boolean;

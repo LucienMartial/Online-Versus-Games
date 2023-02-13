@@ -1,13 +1,13 @@
-import { BodyEntity } from "../../../../app-shared/game";
-import { PolylineShape } from "../../../../app-shared/physics";
-import { Graphics } from "../utils/graphics";
-import { RenderObject } from "./render-object";
-import { DiscWarEngine, Map } from "../../../../app-shared/disc-war";
+import { BodyEntity } from "../../../app-shared/game";
+import { PolylineShape } from "../../../app-shared/physics";
+import { Graphics } from "../game/utils/graphics";
+import { RenderObject } from "../game/renderer/render-object";
+import { DiscWarEngine, Map } from "../../../app-shared/disc-war";
 import * as PIXI from "pixi.js";
-import { PERSPECTIVE_OFFSET } from "../../../../app-shared/disc-war";
+import { PERSPECTIVE_OFFSET } from "../../../app-shared/disc-war";
 import { Vector } from "sat";
 import { Container } from "pixi.js";
-import { MAP_COLOR_CONFIGS } from "../configs/map-configs";
+import { MAP_COLOR_CONFIGS } from "../game/configs/map-configs";
 
 // walls
 const TOP_WALL_HEIGHT = 138;

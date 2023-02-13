@@ -6,7 +6,7 @@ import {
   useState,
   useContext,
 } from "react";
-import { GameScene } from "../../game/game";
+import { GameScene } from "../../disc-war/game";
 import {
   EndGamePlayerState,
   EndGameState,

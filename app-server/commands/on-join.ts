@@ -1,6 +1,6 @@
 import { Command } from "@colyseus/command";
-import { GameRoom } from "../rooms/game-room.js";
-import { PlayerState } from "../../app-shared/state/index.js";
+import { GameRoom } from "../disc-war/room/game-room.js";
+import { PlayerState } from "../../app-shared/disc-war/state/index.js";
 import { Client } from "colyseus";
 import { DiscWarEngine } from "../../app-shared/disc-war/index.js";
 import { SelectedItems } from "../../app-shared/types/db-types.js";

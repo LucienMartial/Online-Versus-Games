@@ -1,7 +1,7 @@
 import { Collection, ObjectId } from "mongodb";
-import { EndGameState } from "../../app-shared/state/end-game-state.js";
-import { AppError } from "../utils/error.js";
-import { Game, GamePlayer } from "../../app-shared/types/index.js";
+import { EndGameState } from "../../../app-shared/disc-war/state/end-game-state.js";
+import { AppError } from "../../utils/error.js";
+import { Game, GamePlayer } from "../../../app-shared/types/index.js";
 
 export default function (games: Collection<Game>) {
   async function createGame(state: EndGameState): Promise<void> {

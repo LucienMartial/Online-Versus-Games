@@ -1,6 +1,6 @@
 import { Schema, type } from "@colyseus/schema";
-import { Disc } from "../disc-war/disc.js";
-import { SyncTimerState } from "./sync-timer-state.js";
+import { Disc } from "../disc.js";
+import { SyncTimerState } from "../../state/sync-timer-state.js";
 
 class DiscState extends Schema {
   @type("number") x: number;

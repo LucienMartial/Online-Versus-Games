@@ -1,18 +1,15 @@
 import { Assets } from "@pixi/assets";
-import { Container, Sprite, Texture } from "pixi.js";
+import { Container } from "pixi.js";
 import { DiscWarEngine } from "../../../app-shared/disc-war/disc-war";
-import { Scene } from "./scene";
-import { Graphics } from "./utils/graphics";
-import { DiscRender, PlayerRender, RenderObject } from "./renderer";
+import { Scene } from "../game/scene";
+import { Graphics } from "../game/utils/graphics";
+import { PlayerRender, RenderObject } from "../game/renderer";
+import { DiscRender } from "./disc-render";
 import { Client, Room } from "colyseus.js";
-import { GameState, PlayerState } from "../../../app-shared/state";
-import {
-  InputsData,
-  WORLD_HEIGHT,
-  WORLD_WIDTH,
-} from "../../../app-shared/utils";
-import { Predictor } from "./sync/predictor";
-import { MapRender } from "./renderer/map-render";
+import { GameState, PlayerState } from "../../../app-shared/disc-war/state";
+import { InputsData } from "../../../app-shared/utils";
+import { Predictor } from "../game/sync/predictor";
+import { MapRender } from "./map-render";
 import { Viewport } from "pixi-viewport";
 import { Disc, Player } from "../../../app-shared/disc-war";
 import { AdvancedBloomFilter } from "@pixi/filter-advanced-bloom";
@@ -22,8 +19,7 @@ import { Emitter } from "pixi-particles";
 import { DASH_ANIMATION } from "./effects/configs/dash-anim-config";
 import { DEATH_ANIMATION } from "./effects/configs/death-anim-config";
 import { DeathAnimManager } from "./effects/death-anim-manager";
-import { CosmeticAssets } from "./configs/assets-config";
-import { SelectedItems } from "../../../app-shared/types";
+import { CosmeticAssets } from "../game/configs/assets-config";
 
 const PLAYER_GHOST = false;
 const DISC_GHOST = false;

@@ -1,6 +1,6 @@
 import SAT from "sat";
 import { GameEngine } from "../game/game-engine.js";
-import { GameState } from "../state/game-state.js";
+import { GameState } from "./state/game-state.js";
 import {
   WORLD_HEIGHT,
   WORLD_WIDTH,

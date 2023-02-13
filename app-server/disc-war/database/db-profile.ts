@@ -3,8 +3,8 @@ import { Collection } from "mongodb";
 import {
   EndGamePlayerState,
   EndGameState,
-} from "../../app-shared/state/index.js";
-import { GameStats, Profile } from "../../app-shared/types/db-types.js";
+} from "../../../app-shared/disc-war/state/index.js";
+import { GameStats, Profile } from "../../../app-shared/types/db-types.js";
 
 export default function (profiles: Collection<Profile>) {
   async function getProfile(userId: ObjectId): Promise<Profile | null> {
