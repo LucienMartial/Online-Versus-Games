@@ -14,7 +14,6 @@ interface ItemDisplay extends Item {
   selected: boolean;
   previewed: boolean;
   ableToBuy: boolean;
-  cosmetics: CosmeticAssets | null;
   tryBuy: (id: number) => Promise<void>;
   trySelect: (id: number) => void;
   tryPreview: (id: number) => void;

@@ -279,7 +279,6 @@ export default function Shop() {
           shopData !== undefined &&
           shopData !== null &&
           shopData.coins - item.price >= 0,
-        cosmetics: cosmeticsAssets,
         tryBuy: tryBuy,
         trySelect: trySelect,
         tryPreview: tryPreview,
