@@ -171,7 +171,7 @@ function ShopPreview({
     >
       <canvas
         ref={canvasRef}
-        className={"aspect-[2/3] sm:my-10 my-0 min-h-0 max-h-full"}
+        className={"aspect-[2/3] my-auto min-h-0 max-h-full"}
       ></canvas>
     </div>
   );

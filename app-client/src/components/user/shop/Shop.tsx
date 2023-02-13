@@ -325,10 +325,10 @@ export default function Shop() {
 
           <div
             className={
-              "flex sm:flex-col flex-row-reverse justify-center min-h-0 max-h-full"
+              "flex sm:flex-col flex-row-reverse justify-center min-h-0 max-h-full overflow-y-auto"
             }
           >
-            <div className={"flex justify-center overflow-y-auto"}>
+            <div className={"flex justify-center min-h-0"}>
               <ShopPreview
                 initWidth={300}
                 initHeight={450}
@@ -340,10 +340,14 @@ export default function Shop() {
                 cosmeticsAssets={cosmeticsAssets}
               />
             </div>
-            <div className={"flex sm:justify-center sm:align-middle"}>
+            <div
+              className={
+                "flex sm:justify-center sm:align-middle sm:my-auto lg:my-auto min-h-0 max-h-full"
+              }
+            >
               <AppButton
                 className={
-                  "text-sm sm:text-2xl sm:h-24 h-16 sm:w-96 w-32 sm:my-8 my-auto mx-4"
+                  "text-sm sm:text-2xl h-fit sm:w-60 w-32 my-auto mx-4"
                 }
                 color={"regular"}
                 onClick={selectCharacterServer}
