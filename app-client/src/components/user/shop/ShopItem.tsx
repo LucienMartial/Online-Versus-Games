@@ -21,16 +21,71 @@ interface ItemProps {
   selected: boolean;
   previewed: boolean;
   ableToBuy: boolean;
-  cosmetics: CosmeticAssets | null;
   tryBuy: (id: number) => Promise<void>;
   trySelect: (id: number) => void;
   tryPreview: (id: number) => void;
 }
 
-const CANVAS_WIDTH = 50;
+const IMG_WIDTH = 48;
+const IMG_HEIGHT = 48;
 const CANVAS_WIDTH_COLOR = 100;
-const CANVAS_HEIGHT = 50;
 const CANVAS_HEIGHT_COLOR = 25;
+
+function pickColorWithID(id: number, category: string): number {
+  if (category !== "skin") {
+    return DEFAULT_SKIN;
+  }
+
+  let color = DEFAULT_SKIN;
+
+  switch (id) {
+    case 0:
+      color = 0x990000;
+      break;
+    case 1:
+      color = 0x000099;
+      break;
+    case 2:
+      color = 0x009900;
+      break;
+    case 3:
+      color = 0x999900;
+      break;
+    default:
+      break;
+  }
+
+  return color;
+}
+
+function pickURLWithID(id: number, category: string): string {
+  if (category !== "hat" && category !== "face") {
+    return "";
+  }
+
+  switch (id) {
+    case 20:
+      return "../assets/cosmetics/gray_hat.png";
+    case 21:
+      return "../assets/cosmetics/red_cap.png";
+    case 22:
+      return "../assets/cosmetics/black_hat.png";
+    case 40:
+      return "../assets/cosmetics/black_sunglasses.png";
+    case 41:
+      return "../assets/cosmetics/pink_sunglasses.png";
+    case 42:
+      return "../assets/cosmetics/red_eyes.png";
+    case 43:
+      return "../assets/cosmetics/gray_sunglasses.png";
+    case 44:
+      return "../assets/cosmetics/gas_mask.png";
+    case 45:
+      return "../assets/cosmetics/brown_diving_mask.png";
+    default:
+      return "";
+  }
+}
 
 function ShopItem({
   id,
@@ -41,118 +96,30 @@ function ShopItem({
   selected,
   previewed,
   ableToBuy,
-  cosmetics,
   tryBuy,
   trySelect,
   tryPreview,
 }: ItemProps) {
-  const [app, setApp] = useState<Application>();
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
-  useEffect(() => {
-    const application = new Application({
-      width: category === "skin" ? CANVAS_WIDTH_COLOR : CANVAS_WIDTH,
-      height: category === "skin" ? CANVAS_HEIGHT_COLOR : CANVAS_HEIGHT,
-      backgroundAlpha: 0,
-      view: canvasRef.current === null ? undefined : canvasRef.current,
-    });
-    setApp(application);
+  const COSMETIC_URL: string = pickURLWithID(id, category);
+  const COLOR_NUMBER: number = pickColorWithID(id, category);
 
-    return () => {
-      if (application) {
-        application.destroy(true);
-      }
-      setApp(undefined);
-    };
+  useEffect(() => {
+    if (category === "skin") {
+      const canvas = canvasRef.current;
+      if (!canvas) return;
+
+      const ctx = canvas.getContext("2d");
+      if (!ctx) return;
+
+      const colorStr = COLOR_NUMBER.toString(16).padStart(6, "0");
+      ctx.fillStyle = `#${colorStr}`;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+    }
+
+    return () => {};
   }, []);
-
-  useEffect(() => {
-    if (cosmetics && app && app.stage) {
-      app.stage.removeChildren();
-      if (category === "skin") {
-        loadColor();
-      } else {
-        loadImage();
-      }
-    }
-  }, [app, cosmetics]);
-
-  function loadColor() {
-    if (!app) return;
-    const container = new Container();
-    const skin = new Graphics();
-
-    let color = DEFAULT_SKIN;
-
-    switch (id) {
-      case 0:
-        color = 0x990000;
-        break;
-      case 1:
-        color = 0x000099;
-        break;
-      case 2:
-        color = 0x009900;
-        break;
-      case 3:
-        color = 0x999900;
-        break;
-      default:
-        break;
-    }
-
-    skin.beginFill(color);
-    skin.drawRect(0, 0, CANVAS_WIDTH_COLOR, CANVAS_HEIGHT_COLOR);
-    skin.endFill();
-    container.addChild(skin);
-    app.stage.addChild(container);
-  }
-
-  function loadImage() {
-    if (!app || cosmetics === null) return;
-    const container = new Container();
-
-    function loadSprite(texture: Texture): void {
-      const sprite = new Sprite(texture);
-      sprite.pivot.set(sprite.width / 2, sprite.height / 2);
-      sprite.position.set(CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2);
-      sprite.scale.set(0.1, 0.1);
-      container.addChild(sprite);
-    }
-
-    switch (id) {
-      case 20:
-        loadSprite(cosmetics.gray_hat);
-        break;
-      case 21:
-        loadSprite(cosmetics.red_cap);
-        break;
-      case 22:
-        loadSprite(cosmetics.black_hat);
-        break;
-      case 40:
-        loadSprite(cosmetics.black_sunglasses);
-        break;
-      case 41:
-        loadSprite(cosmetics.pink_sunglasses);
-        break;
-      case 42:
-        loadSprite(cosmetics.red_eyes);
-        break;
-      case 43:
-        loadSprite(cosmetics.gray_sunglasses);
-        break;
-      case 44:
-        loadSprite(cosmetics.gas_mask);
-        break;
-      case 45:
-        loadSprite(cosmetics.brown_diving_mask);
-      default:
-        break;
-    }
-
-    app.stage.addChild(container);
-  }
 
   function buyButton() {
     return (
@@ -199,7 +166,22 @@ function ShopItem({
         {name + (!owned && !previewed ? " (" + price + " coins)" : "")}
       </div>
       <div className={"flex justify-center my-3"}>
-        <canvas ref={canvasRef} className={""}></canvas>
+        {category === "skin" ? (
+          <canvas
+            ref={canvasRef}
+            width={CANVAS_WIDTH_COLOR}
+            height={CANVAS_HEIGHT_COLOR}
+            className={"border border-gray-400 rounded-sm"}
+          ></canvas>
+        ) : COSMETIC_URL === "" ? (
+          <div
+            className={
+              "w-12 h-12 border border-gray-400 rounded bg-slate-500/50"
+            }
+          ></div>
+        ) : (
+          <img width={IMG_WIDTH} height={IMG_HEIGHT} src={COSMETIC_URL} />
+        )}
       </div>
       <div
         className={
