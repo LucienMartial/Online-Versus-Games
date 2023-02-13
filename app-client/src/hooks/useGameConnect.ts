@@ -3,7 +3,6 @@ import { Client, Room } from "colyseus.js";
 
 const COLYSEUS_ENDPOINT =
   process.env.NODE_ENV === "development" ? "ws://localhost:3000" : undefined;
-const GAME_NAME = "game";
 
 // connection data are saved on the local storage
 // they are retrieved to reconnect to leaved game

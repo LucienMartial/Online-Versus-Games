@@ -67,6 +67,7 @@ function Home({ tryConnection, client }: HomeProps) {
     <StrictMode>
       <main className="flex grow">
         <GameQueue
+          gameName="game"
           tryConnection={tryConnection}
           nbClients={nbClients}
           client={client}

@@ -5,7 +5,6 @@ import { Graphics } from "../utils/graphics";
 import { RenderObject } from "./render-object";
 import { Viewport } from "pixi-viewport";
 import { ShockwaveManager } from "../effects/shockwave-manager";
-import { convertToList } from "@pixi/assets";
 
 const COLOR = 0x00ffdd;
 const MAX_TIME_SHOCKWAVE = 2.5;
