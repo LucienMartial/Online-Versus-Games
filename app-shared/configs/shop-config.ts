@@ -39,14 +39,20 @@ const SHOP_ITEMS: Item[] = [
   },
   {
     id: 20,
-    name: "Melon hat",
+    name: "Gray hat",
     price: 50,
     category: "hat",
   },
   {
     id: 21,
-    name: "Blue cap",
+    name: "Red cap",
     price: 20,
+    category: "hat",
+  },
+  {
+    id: 22,
+    name: "Black hat",
+    price: 30,
     category: "hat",
   },
   {
@@ -71,6 +77,24 @@ const SHOP_ITEMS: Item[] = [
     id: 42,
     name: "Red eyes",
     price: 40,
+    category: "face",
+  },
+  {
+    id: 43,
+    name: "Gray sunglasses",
+    price: 30,
+    category: "face",
+  },
+  {
+    id: 44,
+    name: "Gas mask",
+    price: 100,
+    category: "face",
+  },
+  {
+    id: 45,
+    name: "Brown diving mask",
+    price: 100,
     category: "face",
   },
 ];

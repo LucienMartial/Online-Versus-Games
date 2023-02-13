@@ -40,9 +40,9 @@ export default function AppButton({
       className={
         `${
           !grayedOut
-            ? `${buttonStyle()} text-white font-bold py-2.5 px-5 rounded w-fit `
-            : `bg-gray-500 text-white font-bold py-2.5 px-5 rounded w-fit `
-        }` + className
+            ? `${buttonStyle()} `
+            : `bg-gray-500 `
+        } ${className??""} text-white font-bold py-2.5 px-5 rounded w-fit`
       }
       disabled={grayedOut}
     >

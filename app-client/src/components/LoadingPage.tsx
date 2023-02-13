@@ -2,7 +2,7 @@ export default function LoadingPage() {
   return (
     /* By Sam Herbert (@sherb), for everyone. More @ http://goo.gl/7AJzbL */
     <svg
-      className="w-1/6"
+      className="w-1/6 m-auto"
       viewBox="0 0 38 38"
       xmlns="http://www.w3.org/2000/svg"
     >

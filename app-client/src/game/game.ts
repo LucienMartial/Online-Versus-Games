@@ -70,18 +70,26 @@ class GameScene extends Scene {
    */
   async load(): Promise<void> {
     this.cosmeticsAssets = await Assets.loadBundle("cosmetics");
-    const assets = await Assets.loadBundle("basic");
+    const animationsAssets = await Assets.loadBundle("animations");
 
     // particle effects
     this.dashAnimManager = new DashAnimManager(
       this.gameEngine,
-      new Emitter(new Container(), assets.bubble, DASH_ANIMATION.CONFIG_1)
+      new Emitter(
+        new Container(),
+        animationsAssets.bubble,
+        DASH_ANIMATION.CONFIG_1
+      )
     );
 
     // death effect
     this.deathAnimManager = new DeathAnimManager(
       this.gameEngine,
-      new Emitter(new Container(), assets.bubble, DEATH_ANIMATION.CONFIG_1)
+      new Emitter(
+        new Container(),
+        animationsAssets.red_square,
+        DEATH_ANIMATION.CONFIG_1
+      )
     );
 
     // filters
@@ -111,24 +119,19 @@ class GameScene extends Scene {
     // dash animation
     const dashAnimContainer = new Container();
     this.mapFiltered.addChild(dashAnimContainer);
-    const bubbleTexture = Texture.from(ANIMATION_ASSETS_PATH + "bubble.png");
     const dashEmitter = new Emitter(
       dashAnimContainer,
-      bubbleTexture,
+      animationsAssets.bubble,
       DASH_ANIMATION.CONFIG_3
     );
     this.dashAnimManager = new DashAnimManager(this.gameEngine, dashEmitter);
 
     // death animation
     const deathAnimContainer = new Container();
-    // TODO we absolutly have to change that texture
-    const redSquareTexture = Texture.from(
-      ANIMATION_ASSETS_PATH + "redSquare.png"
-    );
     this.mapFiltered.addChild(deathAnimContainer);
     const deathEmitter = new Emitter(
       deathAnimContainer,
-      redSquareTexture,
+      animationsAssets.red_square,
       DEATH_ANIMATION.CONFIG_3
     );
     this.deathAnimManager = new DeathAnimManager(this.gameEngine, deathEmitter);
@@ -147,18 +150,18 @@ class GameScene extends Scene {
     this.stage.addChild(this.mapFiltered);
 
     // init character
-    const characterRender = new RenderObject();
-    characterRender.addChild(new Sprite(assets.character));
-    characterRender.setOffset(150, 150);
-    characterRender.onUpdate = (dt: number, now: number) => {
-      characterRender.rotate(-2.5 * dt);
-      characterRender.setPosition(
-        WORLD_WIDTH * 0.8,
-        WORLD_HEIGHT / 2 + Math.cos(now * 0.001) * 800
-      );
-    };
-    characterRender.update(0, 0);
-    this.add(characterRender, false);
+    // const characterRender = new RenderObject();
+    // characterRender.addChild(new Sprite(assets.character));
+    // characterRender.setOffset(150, 150);
+    // characterRender.onUpdate = (dt: number, now: number) => {
+    //   characterRender.rotate(-2.5 * dt);
+    //   characterRender.setPosition(
+    //     WORLD_WIDTH * 0.8,
+    //     WORLD_HEIGHT / 2 + Math.cos(now * 0.001) * 800
+    //   );
+    // };
+    // characterRender.update(0, 0);
+    // this.add(characterRender, false);
     // this.stage.addChild(characterRender.container);
 
     // ghosts
