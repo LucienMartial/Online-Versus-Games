@@ -1,7 +1,6 @@
 import { StrictMode, useCallback, useEffect, useRef, useState } from "react";
 import FriendList from "./friends-list/FriendList";
 import { Client } from "colyseus.js";
-import GameList from "./GameQueue";
 import { Room, RoomAvailable } from "colyseus.js";
 import GameQueue from "./GameQueue";
 
