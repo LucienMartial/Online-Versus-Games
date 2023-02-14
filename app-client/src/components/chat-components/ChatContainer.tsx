@@ -44,35 +44,41 @@ function ChatContainer({ chatRoom }: ChatContainerProperties) {
     }
   }, [messages]);
 
+  const TEST_MESSAGE: ServerMessage = {
+    content: "TEST",
+    sender: "ME",
+    date: new Date(),
+  };
+
+  const TEST_MESSAGE_2: ServerMessage = {
+    content: "TEST",
+    sender: "Macot",
+    date: new Date(),
+  };
+
   return (
     <StrictMode>
-      <main>
-        <section
+      <section className={"flex justify-center min-h-0 max-h-full"}>
+        <div
           className={
-            "border-solid border-2 border-white rounded-xl p-px relative left-1/2 w-96 -translate-x-1/2"
+            "border-2 border-black rounded-md min-h-0 max-h-full h-full"
           }
         >
-          <h1 className={"text-lg mx-0 my-2 text-center"}>
-            What do you want to talk about?
-          </h1>
-          <section
+          <div>
+            <h1 className={"font-bold text-lg mx-0 my-2 text-center"}>
+              What do you want to talk about?
+            </h1>
+          </div>
+          <div
             ref={chatBoxRef}
             className={
-              "border-solid border-t overflow-y-scroll border-white h-full max-h-80 rounded-xl"
+              "h-48 overflow-y-auto border-solid border-y border-white "
             }
           >
             {renderChatElements()}
-          </section>
-          <section
-            className={
-              "items-center justify-center mt-2 p-px w-full bg-blue-800 rounded-xl"
-            }
-          >
-            <form
-              action=""
-              onSubmit={submitMessage}
-              className={"h-full w-full"}
-            >
+          </div>
+          <div className={"m-0 rounded"}>
+            <form action="" onSubmit={submitMessage} className={"m-0 p-0"}>
               <input
                 ref={inputReference}
                 type="text"
@@ -82,9 +88,9 @@ function ChatContainer({ chatRoom }: ChatContainerProperties) {
                 }
               />
             </form>
-          </section>
-        </section>
-      </main>
+          </div>
+        </div>
+      </section>
     </StrictMode>
   );
 }
