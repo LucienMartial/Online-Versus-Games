@@ -44,14 +44,14 @@ class InputManager {
 
     document.body.onkeydown = this.handleKey.bind(this);
     document.body.onkeyup = this.handleKey.bind(this);
-    document.body.onmousedown = (e) => this.handleMouse({ activate : true, target : e.target, button : e.button, x : e.x, y : e.y });
-    document.body.onmouseup = (e) => this.handleMouse({ activate : false, target : e.target, button : e.button, x : e.x, y : e.y });
-    document.body.ontouchstart = (e) => this.handleMouse({ activate : true, target : e.target, button : 0, x : e.touches[0].clientX, y : e.touches[0].clientY });
-    document.body.ontouchend = (e) => this.handleMouse({ activate : false, target : e.target, button : 0, x : e.changedTouches[0].clientX, y : e.changedTouches[0].clientY });
+    document.body.onmousedown = (e) => this.handleMouseOrTouch({ activate : true, target : e.target, button : e.button, x : e.x, y : e.y });
+    document.body.onmouseup = (e) => this.handleMouseOrTouch({ activate : false, target : e.target, button : e.button, x : e.x, y : e.y });
+    document.body.ontouchstart = (e) => this.handleMouseOrTouch({ activate : true, target : e.target, button : 0, x : e.touches[0].clientX, y : e.touches[0].clientY });
+    document.body.ontouchend = (e) => this.handleMouseOrTouch({ activate : false, target : e.target, button : 0, x : e.changedTouches[0].clientX, y : e.changedTouches[0].clientY });
     gameElememt.oncontextmenu = (e) => e.preventDefault();
   }
 
-  handleMouse(e: gameInputEvent) {
+  handleMouseOrTouch(e: gameInputEvent) {
     e = e || window.event;
     // left click
     if (this.inputButtons) {
@@ -75,11 +75,11 @@ class InputManager {
         case this.inputButtons.dash: {
           this.keyInputs.dash = e.activate;
           return;
-        }/*
-        case this.inputButtons.shield: {
-          this.keyInputs.shield = e.type === "mousedown";
+        }
+        case this.inputButtons.counter: {
+          this.keyInputs.counter = e.activate;
           return;
-        }*/
+        }
         default:
           break;
       }

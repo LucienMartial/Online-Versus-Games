@@ -4,6 +4,6 @@ interface inputButtons{
     up: HTMLButtonElement | null;
     down: HTMLButtonElement | null;
     dash: HTMLButtonElement | null;
-    shield: HTMLButtonElement | null;
+    counter: HTMLButtonElement | null;
 }
 export default inputButtons;

@@ -35,7 +35,7 @@ function Game({ client, gameRoom, setGameRoom }: GameProps) {
   const upButton = useRef<HTMLButtonElement>(null);
   const downButton = useRef<HTMLButtonElement>(null);
   const dashButton = useRef<HTMLButtonElement>(null);
-  const shieldButton = useRef<HTMLButtonElement>(null);
+  const counterButton = useRef<HTMLButtonElement>(null);
 
   const load = async () => {
     const app = new Application({
@@ -66,7 +66,7 @@ function Game({ client, gameRoom, setGameRoom }: GameProps) {
         up: upButton.current!,
         down: downButton.current!,
         dash: dashButton.current!,
-        shield: shieldButton.current!,
+        counter: counterButton.current!,
       } as inputButtons
     );
     setGameScene(gameScene);
@@ -170,7 +170,7 @@ function Game({ client, gameRoom, setGameRoom }: GameProps) {
         upButton={upButton}
         downButton={downButton}
         dashButton={dashButton}
-        shieldButton={shieldButton}
+        shieldButton={counterButton}
       />
     </main>
   );
