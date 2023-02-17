@@ -11,9 +11,11 @@ import {
 } from "../../../../app-shared/utils/constants";
 import GameUI from "../../disc-war/components/GameUI";
 import EndScreen from "./EndScreen";
-import { EndGameState, GameState } from "../../../../app-shared/state";
+import { EndGameState, GameState } from "../../../../app-shared/disc-war/state";
 import { Assets } from "@pixi/assets";
 import { manifest } from "../../game/configs/assets-config";
+import inputButtons from "../../types/inputButtons";
+import GameKeyboard from "./GameKeyboard";
 
 export interface GameProps {
   client: Client;
@@ -27,6 +29,13 @@ function Game({ client, gameRoom, setGameRoom }: GameProps) {
   const [gameScene, setGameScene] = useState<GameScene | undefined>();
   const [endGameState, setEndGameState] = useState<EndGameState>();
   const [chatRoom, setChatRoom] = useState<Room | null>(null);
+
+  const leftButton = useRef<HTMLButtonElement>(null);
+  const rightButton = useRef<HTMLButtonElement>(null);
+  const upButton = useRef<HTMLButtonElement>(null);
+  const downButton = useRef<HTMLButtonElement>(null);
+  const dashButton = useRef<HTMLButtonElement>(null);
+  const shieldButton = useRef<HTMLButtonElement>(null);
 
   const load = async () => {
     const app = new Application({
@@ -50,7 +59,15 @@ function Game({ client, gameRoom, setGameRoom }: GameProps) {
       viewport,
       canvasRef.current!,
       client,
-      gameRoom
+      gameRoom,
+      {
+        left: leftButton.current!,
+        right: rightButton.current!,
+        up: upButton.current!,
+        down: downButton.current!,
+        dash: dashButton.current!,
+        shield: shieldButton.current!,
+      } as inputButtons
     );
     setGameScene(gameScene);
 
@@ -118,6 +135,9 @@ function Game({ client, gameRoom, setGameRoom }: GameProps) {
   useEffect(() => {
     if (chatRoom) return;
     load();
+    leftButton.current?.addEventListener("keydown", (e) => {
+      console.log(e);
+    });
   }, []);
 
   // end of game?
@@ -144,6 +164,14 @@ function Game({ client, gameRoom, setGameRoom }: GameProps) {
         </div>
       </React.StrictMode>
       <canvas ref={canvasRef}></canvas>
+      <GameKeyboard
+        leftButton={leftButton}
+        rightButton={rightButton}
+        upButton={upButton}
+        downButton={downButton}
+        dashButton={dashButton}
+        shieldButton={shieldButton}
+      />
     </main>
   );
 }

@@ -20,6 +20,7 @@ import { DASH_ANIMATION } from "./effects/configs/dash-anim-config";
 import { DEATH_ANIMATION } from "./effects/configs/death-anim-config";
 import { DeathAnimManager } from "./effects/death-anim-manager";
 import { CosmeticAssets } from "../game/configs/assets-config";
+import inputButtons from "../types/inputButtons";
 
 const PLAYER_GHOST = false;
 const DISC_GHOST = false;
@@ -48,9 +49,10 @@ class GameScene extends Scene {
     viewport: Viewport,
     sceneElement: HTMLElement,
     client: Client,
-    room: Room<GameState>
+    room: Room<GameState>,
+    inputButtons?: inputButtons,
   ) {
-    super(viewport, sceneElement);
+    super(viewport, sceneElement, inputButtons);
     this.client = client;
     this.room = room;
     this.id = this.room.sessionId;
