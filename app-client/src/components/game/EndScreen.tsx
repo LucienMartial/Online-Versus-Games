@@ -11,7 +11,7 @@ import {
   EndGamePlayerState,
   EndGameState,
   GameState,
-} from "../../../../app-shared/state";
+} from "../../../../app-shared/disc-war/state";
 import { useNavigate } from "react-router-dom";
 import ChatContainer from "../chat-components/ChatContainer";
 import { Room } from "colyseus.js";
