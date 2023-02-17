@@ -18,7 +18,7 @@ export default function GameKeyboard({
   shieldButton,
 }: GameKeyboardProps) {
   return (
-    <div className="flex w-screen justify-evenly sm:hidden absolute bottom-0 left-0 z-10">
+    <div className="flex w-screen justify-evenly absolute bottom-0 left-0 z-10">
       <div className="flex aspect-[2/1]">
         <div className="flex flex-row items-center">
           <button ref={leftButton}>LEFT</button>

@@ -37,6 +37,9 @@ function Game({ client, gameRoom, setGameRoom }: GameProps) {
   const dashButton = useRef<HTMLButtonElement>(null);
   const counterButton = useRef<HTMLButtonElement>(null);
 
+  const screenIsTouchable =
+    "ontouchstart" in window || navigator.maxTouchPoints > 0;
+
   const load = async () => {
     const app = new Application({
       view: canvasRef.current!,
@@ -164,14 +167,16 @@ function Game({ client, gameRoom, setGameRoom }: GameProps) {
         </div>
       </React.StrictMode>
       <canvas ref={canvasRef}></canvas>
-      <GameKeyboard
-        leftButton={leftButton}
-        rightButton={rightButton}
-        upButton={upButton}
-        downButton={downButton}
-        dashButton={dashButton}
-        shieldButton={counterButton}
-      />
+      {screenIsTouchable && (
+        <GameKeyboard
+          leftButton={leftButton}
+          rightButton={rightButton}
+          upButton={upButton}
+          downButton={downButton}
+          dashButton={dashButton}
+          shieldButton={counterButton}
+        />
+      )}
     </main>
   );
 }
