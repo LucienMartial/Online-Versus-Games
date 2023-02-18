@@ -39,7 +39,7 @@ export default function GameKeyboard({
   }, [curveButton]);
 
   return (
-    <div className="flex w-screen justify-evenly items-center absolute bottom-10 left-0 z-10 text-slate-900 flex-wrap">
+    <div className="flex w-screen justify-evenly items-center text-slate-900 flex-wrap">
       <div className="grid grid-cols-3 grid-rows-3">
         <span></span>
         <button className="bg-slate-300 aspect-[1/1] rounded-tl-2xl rounded-tr-2xl w-[12vw]" ref={upButton}></button>

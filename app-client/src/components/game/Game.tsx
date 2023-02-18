@@ -98,9 +98,10 @@ function Game({ client, gameRoom, setGameRoom }: GameProps) {
 
     // resize
     const resize = () => {
-      app.renderer.resize(window.innerWidth, window.innerHeight);
+      const desiredHeight = screenIsTouchable ? window.innerHeight / 1.5 : window.innerHeight;
+      app.renderer.resize(window.innerWidth, desiredHeight);
       gameScene.stage.filterArea = app.renderer.screen;
-      viewport.resize(window.innerWidth, window.innerHeight);
+      viewport.resize(window.innerWidth, desiredHeight);
       viewport.fit();
       viewport.moveCenter(WORLD_WIDTH / 2, WORLD_HEIGHT / 2);
     };
@@ -158,7 +159,7 @@ function Game({ client, gameRoom, setGameRoom }: GameProps) {
   }
 
   return (
-    <main id="game">
+    <main id="game" className="bg-[#000011]">
       <React.StrictMode>
         <div id="gui" ref={guiRef}>
           {gameScene && (
