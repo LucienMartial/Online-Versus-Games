@@ -36,6 +36,7 @@ function Game({ client, gameRoom, setGameRoom }: GameProps) {
   const downButton = useRef<HTMLButtonElement>(null);
   const dashButton = useRef<HTMLButtonElement>(null);
   const counterButton = useRef<HTMLButtonElement>(null);
+  const curveButton = useRef<HTMLButtonElement>(null);
 
   const screenIsTouchable =
     "ontouchstart" in window || navigator.maxTouchPoints > 0;
@@ -70,6 +71,7 @@ function Game({ client, gameRoom, setGameRoom }: GameProps) {
         down: downButton.current!,
         dash: dashButton.current!,
         counter: counterButton.current!,
+        curve: curveButton.current!,
       } as inputButtons
     );
     setGameScene(gameScene);
@@ -174,7 +176,8 @@ function Game({ client, gameRoom, setGameRoom }: GameProps) {
           upButton={upButton}
           downButton={downButton}
           dashButton={dashButton}
-          shieldButton={counterButton}
+          counterButton={counterButton}
+          curveButton={curveButton}
         />
       )}
     </main>

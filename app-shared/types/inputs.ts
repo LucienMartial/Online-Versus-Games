@@ -1,11 +1,11 @@
 import SAT from "sat";
 
-type KeyInputs = "left" | "right" | "up" | "down" | "dash" | "counter";
+type KeyInputs = "left" | "right" | "up" | "down" | "dash" | "counter" | "curve";
 
 interface Inputs {
   keys: Record<KeyInputs, boolean>;
-  mouseLeft: boolean;
-  mouseRight: boolean;
+  mainShootAction: boolean;
+  secondaryShootAction: boolean;
   mousePos: SAT.Vector;
 }
 

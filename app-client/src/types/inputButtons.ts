@@ -5,5 +5,6 @@ interface inputButtons{
     down: HTMLButtonElement | null;
     dash: HTMLButtonElement | null;
     counter: HTMLButtonElement | null;
+    curve: HTMLButtonElement | null;
 }
 export default inputButtons;

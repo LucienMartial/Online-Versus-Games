@@ -11,6 +11,7 @@ const KeyBind: Record<KeyInputs, string[]> = {
   down: ["KeyS", "ArrowDown"],
   dash: ["Space"],
   counter: ["ShiftLeft"],
+  curve: ["KeyE"],
 };
 
 class InputManager {
@@ -32,12 +33,13 @@ class InputManager {
       down: false,
       dash: false,
       counter: false,
+      curve: false,
     };
 
     this.inputs = {
       keys: this.keyInputs,
-      mouseLeft: false,
-      mouseRight: false,
+      mainShootAction: false,
+      secondaryShootAction: false,
       mousePos: new SAT.Vector(0, 0),
     };
     this.inputButtons = inputButtons;
@@ -46,14 +48,13 @@ class InputManager {
     document.body.onkeyup = this.handleKey.bind(this);
     document.body.onmousedown = (e) => this.handleMouseOrTouch({ activate : true, target : e.target, button : e.button, x : e.x, y : e.y });
     document.body.onmouseup = (e) => this.handleMouseOrTouch({ activate : false, target : e.target, button : e.button, x : e.x, y : e.y });
-    document.body.ontouchstart = (e) => this.handleMouseOrTouch({ activate : true, target : e.target, button : 0, x : e.touches[0].clientX, y : e.touches[0].clientY });
+    document.body.ontouchstart = (e) => this.handleMouseOrTouch({ activate : true, target : e.target, button : 0, x : e.touches[e.touches.length - 1].clientX, y : e.touches[e.touches.length - 1].clientY });
     document.body.ontouchend = (e) => this.handleMouseOrTouch({ activate : false, target : e.target, button : 0, x : e.changedTouches[0].clientX, y : e.changedTouches[0].clientY });
     gameElememt.oncontextmenu = (e) => e.preventDefault();
   }
 
   handleMouseOrTouch(e: gameInputEvent) {
     e = e || window.event;
-    // left click
     if (this.inputButtons) {
       switch (e.target) {
         case this.inputButtons.left: {
@@ -80,14 +81,18 @@ class InputManager {
           this.keyInputs.counter = e.activate;
           return;
         }
+        case this.inputButtons.curve: {
+          this.keyInputs.curve = e.activate;
+          return;
+        }
         default:
           break;
       }
     }
-    if (e.button === 0) {
-      this.inputs.mouseLeft = e.activate;
-    } else if (e.button === 2) {
-      this.inputs.mouseRight = e.activate;
+    if (e.button === 0 && !this.keyInputs.curve) {
+      this.inputs.mainShootAction = e.activate;
+    } else if (e.button === 2 || (e.button === 0 && this.keyInputs.curve)) {
+      this.inputs.secondaryShootAction = e.activate;
     }
     const mousePos = this.viewport.toWorld(e.x, e.y);
     this.inputs.mousePos = new Vector(mousePos.x, mousePos.y);
