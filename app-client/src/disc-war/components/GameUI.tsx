@@ -76,36 +76,34 @@ function DiscWarUI({ gameScene }: GameUIProps) {
   }, []);
 
   return (
-    <StrictMode>
-      <>
-        {shieldText && <p id="counter">Shield in {shieldText}</p>}
-        {isRespawning && (
-          <div className="score-wrapper">
-            <p className="score" id="score-left">
-              {score[0]}
-            </p>
-            <p id="respawn">{respawnText}</p>
-            <p className="score" id="score-right">
-              {" "}
-              {score[1]}
-            </p>
-          </div>
-        )}
-        {screenIsTouchable && (
-          <div id="keyboard">
-            <GameKeyboard
-              leftButton={leftButton}
-              rightButton={rightButton}
-              upButton={upButton}
-              downButton={downButton}
-              dashButton={dashButton}
-              counterButton={counterButton}
-              curveButton={curveButton}
-            />
-          </div>
-        )}
-      </>
-    </StrictMode>
+    <>
+      {shieldText && <p id="counter">Shield in {shieldText}</p>}
+      {isRespawning && (
+        <div className="score-wrapper">
+          <p className="score" id="score-left">
+            {score[0]}
+          </p>
+          <p id="respawn">{respawnText}</p>
+          <p className="score" id="score-right">
+            {" "}
+            {score[1]}
+          </p>
+        </div>
+      )}
+      {screenIsTouchable && (
+        <div id="keyboard">
+          <GameKeyboard
+            leftButton={leftButton}
+            rightButton={rightButton}
+            upButton={upButton}
+            downButton={downButton}
+            dashButton={dashButton}
+            counterButton={counterButton}
+            curveButton={curveButton}
+          />
+        </div>
+      )}
+    </>
   );
 }
 

@@ -16,6 +16,9 @@ import { manifest } from "./game/configs/assets-config";
 import { DiscWarScene } from "./disc-war/game";
 import DiscWarUI from "./disc-war/components/GameUI";
 import EndScreen from "./disc-war/components/EndScreen";
+import { TagWarScene } from "./tag-war/game";
+import { TagWarUI } from "./tag-war/components/TagWarUI";
+import TagWarEndScreen from "./tag-war/components/TagWarEndScreen";
 
 const Game: any = lazy(() => import("./components/game/Game"));
 const Login = lazy(() => import("./components/forms/Login"));
@@ -127,6 +130,22 @@ function App() {
   const renderGame = () => {
     if (!loggedIn) return <Navigate to={"/login"} />;
     if (!client || !gameRoom) return <Navigate to={"/home"} />;
+
+    // tag war
+    if (gameRoom.name == "tag-war") {
+      return (
+        <Game
+          client={client}
+          gameRoom={gameRoom}
+          setGameRoom={setGameRoom}
+          GameUI={TagWarUI}
+          EndScreen={TagWarEndScreen}
+          game={TagWarScene}
+        />
+      );
+    }
+
+    // disc war
     return (
       <Game
         client={client}

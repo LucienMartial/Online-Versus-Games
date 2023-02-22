@@ -9,7 +9,7 @@ import {
   OnJoinCommand,
   OnLeaveCommand,
   OnSyncCommand,
-} from "../../commands/index.js";
+} from "../commands.js";
 import { InputsData } from "../../../app-shared/types/index.js";
 import { CBuffer } from "../../../app-shared/utils/cbuffer.js";
 import {
@@ -85,7 +85,6 @@ class DiscWarRoom extends GameRoom<GameState, DiscWarEngine, DiscWarStats> {
     };
     this.dispatcher.dispatch(new OnJoinCommand(), {
       client: client,
-      gameEngine: this.gameEngine,
     });
   }
 

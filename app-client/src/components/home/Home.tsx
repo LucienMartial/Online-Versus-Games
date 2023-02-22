@@ -27,8 +27,9 @@ function Home({ tryConnection, client }: HomeProps) {
       setLobbyRoom(room);
       console.log("sucessfuly joined lobby room");
     } catch (e) {
-      if (e instanceof Error)
+      if (e instanceof Error) {
         console.error("Could not connect to lobby", e.message);
+      }
       return;
     }
   }, [client]);
@@ -66,12 +67,20 @@ function Home({ tryConnection, client }: HomeProps) {
   return (
     <StrictMode>
       <main className="flex grow">
-        <GameQueue
-          gameName="game"
-          tryConnection={tryConnection}
-          nbClients={nbClients}
-          client={client}
-        />
+        <section className="grow">
+          <GameQueue
+            gameName="disc-war"
+            tryConnection={tryConnection}
+            nbClients={nbClients}
+            client={client}
+          />
+          <GameQueue
+            gameName="tag-war"
+            tryConnection={tryConnection}
+            nbClients={nbClients}
+            client={client}
+          />
+        </section>
         <FriendList client={client} />
       </main>
     </StrictMode>

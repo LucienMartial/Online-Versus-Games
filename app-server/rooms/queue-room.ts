@@ -28,7 +28,7 @@ class QueueRoom extends Room {
     return true;
   }
 
-  async onJoin(_client: Client) {
+  async onJoin(_client: Client, options: { game: string }) {
     console.log("client joined queue");
 
     // no matchmaking, not enough players
@@ -63,7 +63,7 @@ class QueueRoom extends Room {
       }
 
       // create game, send reservation
-      const gameRoom = await matchMaker.createRoom("game", {});
+      const gameRoom = await matchMaker.createRoom(options.game, {});
       const firstReservation = await matchMaker.reserveSeatFor(gameRoom, {});
       const secondReservation = await matchMaker.reserveSeatFor(gameRoom, {});
       firstClient.send("game-found", firstReservation);

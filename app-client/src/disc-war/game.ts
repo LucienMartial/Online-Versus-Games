@@ -175,12 +175,6 @@ class DiscWarScene extends GameScene<GameState> {
     this.mapFiltered.addChild(discRender.mirror);
     this.mapFiltered.addChild(discRender.container);
 
-    // update cosmetics
-    this.room.onMessage("player-cosmetics", (data: any) => {
-      console.log("EVENT");
-      console.log("got cosmetics from player", data);
-    });
-
     // init game, add, remove players
     this.room.onStateChange.once((state) => {
       this.lastState = state;
@@ -236,9 +230,9 @@ class DiscWarScene extends GameScene<GameState> {
   addPlayer(id: string, state: PlayerState) {
     // setup client player cosmetics
     if (this.id === id) {
-      this.mainPlayer.cosmetics.faceID = state.faceID;
-      this.mainPlayer.cosmetics.skinID = state.skinID;
-      this.mainPlayer.cosmetics.hatID = state.hatID;
+      this.mainPlayer.cosmetics.faceID = state.cosmetic.faceID;
+      this.mainPlayer.cosmetics.skinID = state.cosmetic.skinID;
+      this.mainPlayer.cosmetics.hatID = state.cosmetic.hatID;
       this.mainPlayerRender?.cosmetics.loadCosmetics(this.mainPlayer.cosmetics);
       return;
     }
@@ -249,9 +243,9 @@ class DiscWarScene extends GameScene<GameState> {
     if (!player) {
       const player = this.gameEngine.addPlayer(id, state.isLeft);
       // setup cosmetics
-      player.cosmetics.faceID = state.faceID;
-      player.cosmetics.skinID = state.skinID;
-      player.cosmetics.hatID = state.hatID;
+      player.cosmetics.faceID = state.cosmetic.faceID;
+      player.cosmetics.skinID = state.cosmetic.skinID;
+      player.cosmetics.hatID = state.cosmetic.hatID;
       // create renderer
       const playerRender = new PlayerRender(
         player,

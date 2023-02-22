@@ -1,23 +1,35 @@
 import { Schema, type } from "@colyseus/schema";
 import { Player } from "../player.js";
 import { SyncTimerState } from "../../state/sync-timer-state.js";
+import { CosmeticState } from "../../state/cosmetic-state.js";
 
 class PlayerState extends Schema {
-  @type("boolean") isLeft: boolean;
-  @type("boolean") isDead: boolean;
-  @type("boolean") possesDisc: boolean;
-  @type("number") x: number;
-  @type("number") y: number;
-  @type(SyncTimerState) dashTimer = new SyncTimerState();
-  @type(SyncTimerState) dashCooldownTimer = new SyncTimerState();
-  @type(SyncTimerState) counterTimer = new SyncTimerState();
-  @type(SyncTimerState) counterCooldownTimer = new SyncTimerState();
-  // stat
-  @type("number") deathCounter = 0;
+  @type("boolean")
+  isLeft: boolean;
+  @type("boolean")
+  isDead: boolean;
+  @type("boolean")
+  possesDisc: boolean;
+  @type("number")
+  x: number;
+  @type("number")
+  y: number;
+  @type(SyncTimerState)
+  dashTimer = new SyncTimerState();
+  @type(SyncTimerState)
+  dashCooldownTimer = new SyncTimerState();
+  @type(SyncTimerState)
+  counterTimer = new SyncTimerState();
+  @type(SyncTimerState)
+  counterCooldownTimer = new SyncTimerState();
+
+  // stats
+  @type("number")
+  deathCounter = 0;
+
   // cosmetics
-  @type("number") skinID = 0;
-  @type("number") hatID = 0;
-  @type("number") faceID = 0;
+  @type(CosmeticState)
+  cosmetic = new CosmeticState();
 
   constructor() {
     super();

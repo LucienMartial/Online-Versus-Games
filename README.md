@@ -31,7 +31,7 @@ npm run test
 
 ## Custom Game
 
-### Server
+### Database
 
 Firstly, a game room must be created.
 
@@ -53,7 +53,7 @@ Then, we initialize a database object for user game history and profile.
 
 ```ts
 // in user section of  database.ts
-class Databse {
+class Database {
   ..
   customGame: DatabaseGame<CustomGameStats>;
   async add_games() {

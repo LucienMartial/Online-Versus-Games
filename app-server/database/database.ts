@@ -13,6 +13,7 @@ import {
 import { ObjectId } from "mongodb";
 import { DiscWarStats } from "../../app-shared/disc-war/types.js";
 import { DatabaseGame } from "./db-games.js";
+import { TagWarStats } from "../../app-shared/tag-war/types.js";
 
 class Database {
   private client: MongoClient;
@@ -29,10 +30,13 @@ class Database {
 
   // games
   discWar: DatabaseGame<DiscWarStats>;
+  tagWar: DatabaseGame<TagWarStats>;
 
   async add_games() {
     this.discWar = new DatabaseGame(this.database, "games", "profiles");
     this.customGames.push(this.discWar);
+    this.tagWar = new DatabaseGame(this.database, "tag-games", "tag-profiles");
+    this.customGames.push(this.tagWar);
   }
 
   /*

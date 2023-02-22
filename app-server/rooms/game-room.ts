@@ -68,6 +68,7 @@ class GameRoom<T, G extends GameEngine, S> extends Room<T> {
     this.setPatchRate(20);
     this.gameEngine = new engine(true);
     this.gameEngine.onEndGame = () => {
+      console.log("end game from game room");
       this.onEndGame();
     };
   }
