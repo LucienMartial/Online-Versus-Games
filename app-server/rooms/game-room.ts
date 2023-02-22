@@ -5,13 +5,18 @@ import { GameEngine } from "../../app-shared/game/index.js";
 import { Profile, UserShop } from "../../app-shared/types/db-types.js";
 import { Request } from "express";
 
-interface GameParams<G extends GameEngine> {
+// S represent game stats
+interface GameParams<G extends GameEngine, S> {
   dbCreateGame: (state: any) => Promise<void>;
-  dbGetProfile: (userId: ObjectId) => Promise<Profile | null>;
+  dbGetProfile: (
+    userId: ObjectId,
+    defaultStats: S,
+  ) => Promise<Profile<S> | null>;
   dbUpdateProfile: (
     userId: ObjectId,
-    profile: Profile,
-    userState: any,
+    profile: Profile<S>,
+    victory: boolean,
+    stats: S,
   ) => Promise<boolean>;
   dbGetUserShop: (userID: ObjectId) => Promise<WithId<UserShop> | null>;
   dbAddCoins: (userId: ObjectId, coins: number) => Promise<boolean>;
@@ -22,16 +27,20 @@ interface GameParams<G extends GameEngine> {
   };
 }
 
-// Generic game room, take state and game engine as parameteris
+// Generic game room, take state, game engine and game stats as parameteris
 // client data is populated with username and id by default
-class GameRoom<T, G extends GameEngine> extends Room<T> {
+class GameRoom<T, G extends GameEngine, S> extends Room<T> {
   dbGetUserShop!: (userID: ObjectId) => Promise<WithId<UserShop> | null>;
   dbCreateGame!: (state: any) => Promise<void>;
-  dbGetProfile!: (userId: ObjectId) => Promise<Profile | null>;
+  dbGetProfile!: (
+    userId: ObjectId,
+    defaultStats: S,
+  ) => Promise<Profile<S> | null>;
   dbUpdateProfile!: (
     userId: ObjectId,
-    profile: Profile,
-    userState: any,
+    profile: Profile<S>,
+    victory: boolean,
+    stats: S,
   ) => Promise<boolean>;
   dbAddCoins!: (userId: ObjectId, coins: number) => Promise<boolean>;
   gameEngine!: G;
@@ -48,7 +57,7 @@ class GameRoom<T, G extends GameEngine> extends Room<T> {
     dbUpdateProfile,
     dbAddCoins,
     engine,
-  }: GameParams<G>) {
+  }: GameParams<G, S>) {
     this.dbGetUserShop = dbGetUserShop;
     this.dbCreateGame = dbCreateGame;
     this.dbGetProfile = dbGetProfile;
@@ -93,7 +102,13 @@ class GameRoom<T, G extends GameEngine> extends Room<T> {
 
   // used in onEndGame implementation to pass data to parent (ugly)
   async endGame(
-    endState: { players: Map<string, { victory: boolean }> },
+    endState: {
+      players: Map<
+        string,
+        { username: string; id: string; victory: boolean; stats: any }
+      >;
+    },
+    defaultStats: S,
     coins_win: number,
     coins_lose: number,
   ) {
@@ -106,12 +121,17 @@ class GameRoom<T, G extends GameEngine> extends Room<T> {
     for (const client of this.clients) {
       try {
         const objectId = new ObjectId(client.userData.id);
-        const profile = await this.dbGetProfile(objectId);
+        const profile = await this.dbGetProfile(objectId, defaultStats);
         if (!profile) throw new Error("could not get profile");
         console.log(endState.players);
         const playerState = endState.players.get(client.id);
         if (!playerState) continue;
-        await this.dbUpdateProfile(objectId, profile, playerState);
+        await this.dbUpdateProfile(
+          objectId,
+          profile,
+          playerState.victory,
+          playerState.stats,
+        );
         await this.dbAddCoins(
           objectId,
           playerState.victory ? coins_win : coins_lose,

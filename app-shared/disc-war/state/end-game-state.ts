@@ -2,14 +2,7 @@ import { MapSchema, Schema, type } from "@colyseus/schema";
 import { DiscWarRoom } from "../../../app-server/disc-war/room/game-room.js";
 import { DiscWarEngine } from "../index.js";
 
-// stat
-class EndGamePlayerState extends Schema {
-  @type("string")
-  id = "";
-  @type("string")
-  username = "";
-  @type("boolean")
-  victory = false;
+class Stats extends Schema {
   @type("number")
   deaths = 0;
   @type("number")
@@ -24,6 +17,18 @@ class EndGamePlayerState extends Schema {
   straightShots = 0;
   @type("number")
   curveShots = 0;
+}
+
+// stat
+class EndGamePlayerState extends Schema {
+  @type("string")
+  id = "";
+  @type("string")
+  username = "";
+  @type("boolean")
+  victory = false;
+  @type(Stats)
+  stats = new Stats();
 }
 
 class EndGameState extends Schema {
@@ -51,15 +56,15 @@ class EndGameState extends Schema {
       state.victory = player.deathCounter !== room.maxDeath;
 
       // based on other player stats
-      state.kills = otherPlayer.deathCounter;
+      state.stats.kills = otherPlayer.deathCounter;
 
       // stats
-      state.deaths = player.deathCounter;
-      state.dashes = player.dashCounter;
-      state.shields = player.shieldCounter;
-      state.shieldCatches = player.successfulShieldCounter;
-      state.straightShots = player.straightShotCounter;
-      state.curveShots = player.curveShotCounter;
+      state.stats.deaths = player.deathCounter;
+      state.stats.dashes = player.dashCounter;
+      state.stats.shields = player.shieldCounter;
+      state.stats.shieldCatches = player.successfulShieldCounter;
+      state.stats.straightShots = player.straightShotCounter;
+      state.stats.curveShots = player.curveShotCounter;
 
       // set player in map
       this.players.set(player.id, state);

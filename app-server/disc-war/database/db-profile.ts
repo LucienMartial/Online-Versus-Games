@@ -2,12 +2,14 @@ import { ObjectId } from "mongodb";
 import { Collection } from "mongodb";
 import {
   EndGamePlayerState,
-  EndGameState,
 } from "../../../app-shared/disc-war/state/index.js";
-import { GameStats, Profile } from "../../../app-shared/types/db-types.js";
+import { DiscWarStats } from "../../../app-shared/disc-war/types.js";
+import { Profile } from "../../../app-shared/types/db-types.js";
 
-export default function (profiles: Collection<Profile>) {
-  async function getProfile(userId: ObjectId): Promise<Profile | null> {
+export default function (profiles: Collection<Profile<DiscWarStats>>) {
+  async function getProfile(
+    userId: ObjectId,
+  ): Promise<Profile<DiscWarStats> | null> {
     try {
       const res = await profiles.findOneAndUpdate(
         { _id: userId },
@@ -24,12 +26,12 @@ export default function (profiles: Collection<Profile>) {
               shields: 0,
               shieldCatches: 0,
             },
-          } satisfies Profile,
+          } satisfies Profile<DiscWarStats>,
         },
         {
           upsert: true,
           returnDocument: "after",
-        }
+        },
       );
       if (res.ok) return res.value;
       return null;
@@ -41,19 +43,19 @@ export default function (profiles: Collection<Profile>) {
 
   async function updateProfile(
     userId: ObjectId,
-    profile: Profile,
-    state: EndGamePlayerState
+    profile: Profile<DiscWarStats>,
+    state: EndGamePlayerState,
   ): Promise<boolean> {
     try {
       profile.games += 1;
       if (state.victory) profile.wins += 1;
-      profile.stats.deaths += state.deaths;
-      profile.stats.kills += state.kills;
-      profile.stats.dashes += state.dashes;
-      profile.stats.lineShots += state.straightShots;
-      profile.stats.curveShots += state.curveShots;
-      profile.stats.shields += state.shields;
-      profile.stats.shieldCatches += state.shieldCatches;
+      profile.stats.deaths += state.stats.deaths;
+      profile.stats.kills += state.stats.kills;
+      profile.stats.dashes += state.stats.dashes;
+      profile.stats.lineShots += state.stats.straightShots;
+      profile.stats.curveShots += state.stats.curveShots;
+      profile.stats.shields += state.stats.shields;
+      profile.stats.shieldCatches += state.stats.shieldCatches;
       const res = await profiles.updateOne({ _id: userId }, { $set: profile });
       return res.modifiedCount === 1;
     } catch (e) {

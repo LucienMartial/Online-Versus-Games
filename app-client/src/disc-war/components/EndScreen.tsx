@@ -45,12 +45,12 @@ function PlayerRow({
           <span className="ml-4">{player.username}</span>
         </div>
       </td>
-      <td>{player.deaths}</td>
-      <td>{player.straightShots}</td>
-      <td>{player.curveShots}</td>
-      <td>{player.shields}</td>
-      <td>{player.shieldCatches}</td>
-      <td>{player.dashes}</td>
+      <td>{player.stats.deaths}</td>
+      <td>{player.stats.straightShots}</td>
+      <td>{player.stats.curveShots}</td>
+      <td>{player.stats.shields}</td>
+      <td>{player.stats.shieldCatches}</td>
+      <td>{player.stats.dashes}</td>
     </tr>
   );
 }

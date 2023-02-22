@@ -57,11 +57,11 @@ gameServer.define("social", SocialRoom);
 gameServer.define("chat-room", ChatRoom);
 gameServer.define("lobby", LobbyRoom);
 gameServer.define("game", DiscWarRoom, {
-  dbCreateGame: db.createGame,
-  dbGetProfile: db.getProfile,
-  dbUpdateProfile: db.updateProfile,
-  dbGetUserShop: db.getUserShop,
-  dbAddCoins: db.addCoins,
+  dbCreateGame: db.discWar.createGame.bind(db.discWar),
+  dbGetProfile: db.discWar.getProfile.bind(db.discWar),
+  dbUpdateProfile: db.discWar.updateProfile.bind(db.discWar),
+  dbGetUserShop: db.getUserShop.bind(db),
+  dbAddCoins: db.addCoins.bind(db),
   engine: DiscWarEngine,
 });
 gameServer.define("queue", QueueRoom).enableRealtimeListing();
