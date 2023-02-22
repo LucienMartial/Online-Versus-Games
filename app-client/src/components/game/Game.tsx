@@ -9,6 +9,13 @@ import {
   WORLD_HEIGHT,
   WORLD_WIDTH,
 } from "../../../../app-shared/utils/constants";
+import GameUI from "../../disc-war/components/GameUI";
+import EndScreen from "./EndScreen";
+import { EndGameState, GameState } from "../../../../app-shared/disc-war/state";
+import { Assets } from "@pixi/assets";
+import { manifest } from "../../game/configs/assets-config";
+import inputButtons from "../../types/inputButtons";
+import GameKeyboard from "./GameKeyboard";
 
 export interface GameProps<T, G extends GameScene<T>> {
   client: Client;
@@ -43,6 +50,17 @@ function Game<T, E, G extends GameScene<T>>(
   const [endGameState, setEndGameState] = useState<E>();
   const [chatRoom, setChatRoom] = useState<Room | null>(null);
 
+  const leftButton = useRef<HTMLButtonElement>(null);
+  const rightButton = useRef<HTMLButtonElement>(null);
+  const upButton = useRef<HTMLButtonElement>(null);
+  const downButton = useRef<HTMLButtonElement>(null);
+  const dashButton = useRef<HTMLButtonElement>(null);
+  const counterButton = useRef<HTMLButtonElement>(null);
+  const curveButton = useRef<HTMLButtonElement>(null);
+
+  const screenIsTouchable =
+    "ontouchstart" in window || navigator.maxTouchPoints > 0;
+
   const load = async () => {
     const app = new Application({
       view: canvasRef.current!,
@@ -66,6 +84,15 @@ function Game<T, E, G extends GameScene<T>>(
       canvasRef.current!,
       client,
       gameRoom,
+      {
+        left: leftButton.current!,
+        right: rightButton.current!,
+        up: upButton.current!,
+        down: downButton.current!,
+        dash: dashButton.current!,
+        counter: counterButton.current!,
+        curve: curveButton.current!,
+      } as inputButtons
     );
     setGameScene(gameScene);
 
@@ -91,9 +118,10 @@ function Game<T, E, G extends GameScene<T>>(
 
     // resize
     const resize = () => {
-      app.renderer.resize(window.innerWidth, window.innerHeight);
+      const desiredHeight = screenIsTouchable ? window.innerHeight / 1.5 : window.innerHeight;
+      app.renderer.resize(window.innerWidth, desiredHeight);
       gameScene.stage.filterArea = app.renderer.screen;
-      viewport.resize(window.innerWidth, window.innerHeight);
+      viewport.resize(window.innerWidth, desiredHeight);
       viewport.fit();
       viewport.moveCenter(WORLD_WIDTH / 2, WORLD_HEIGHT / 2);
     };
@@ -133,6 +161,9 @@ function Game<T, E, G extends GameScene<T>>(
   useEffect(() => {
     if (chatRoom) return;
     load();
+    leftButton.current?.addEventListener("keydown", (e) => {
+      console.log(e);
+    });
   }, []);
 
   // end of game?
@@ -148,7 +179,7 @@ function Game<T, E, G extends GameScene<T>>(
   }
 
   return (
-    <main id="game">
+    <main id="game" className="bg-[#000011]">
       <React.StrictMode>
         <div id="gui" ref={guiRef}>
           {gameScene && (
@@ -159,6 +190,17 @@ function Game<T, E, G extends GameScene<T>>(
         </div>
       </React.StrictMode>
       <canvas ref={canvasRef}></canvas>
+      {screenIsTouchable && (
+        <GameKeyboard
+          leftButton={leftButton}
+          rightButton={rightButton}
+          upButton={upButton}
+          downButton={downButton}
+          dashButton={dashButton}
+          counterButton={counterButton}
+          curveButton={curveButton}
+        />
+      )}
     </main>
   );
 }

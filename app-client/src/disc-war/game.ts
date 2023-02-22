@@ -20,6 +20,7 @@ import { DASH_ANIMATION } from "./effects/configs/dash-anim-config";
 import { DEATH_ANIMATION } from "./effects/configs/death-anim-config";
 import { DeathAnimManager } from "./effects/death-anim-manager";
 import { CosmeticAssets } from "../game/configs/assets-config";
+import inputButtons from "../types/inputButtons";
 
 const PLAYER_GHOST = false;
 const DISC_GHOST = false;
@@ -44,7 +45,8 @@ class DiscWarScene extends GameScene<GameState> {
     viewport: Viewport,
     sceneElement: HTMLElement,
     client: Client,
-    room: Room<GameState>
+    room: Room<GameState>,
+    inputButtons?: inputButtons,
   ) {
     super(viewport, sceneElement, client, room);
     this.gameEngine = new DiscWarEngine(false, this.id);

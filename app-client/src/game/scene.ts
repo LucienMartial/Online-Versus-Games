@@ -3,6 +3,7 @@ import { Viewport } from "pixi-viewport";
 import { Container, DisplayObject } from "pixi.js";
 import { RenderObject } from "./renderer";
 import { InputManager } from "./utils/inputs";
+import inputButtons from "../types/inputButtons";
 
 /**
  * Abstract game scene using colyseus state as generic parameter
@@ -16,11 +17,17 @@ abstract class GameScene<T> {
   room: Room<T>;
   id: string;
 
-  constructor(viewport: Viewport, sceneElement: HTMLElement, client: Client, room: Room<T>) {
+  constructor(
+    viewport: Viewport,
+    sceneElement: HTMLElement,
+    client: Client,
+    room: Room<T>,
+    inputButtons?: inputButtons,
+  ) {
     this.viewport = viewport;
     this.stage = new Container();
     this.stage.sortableChildren = true;
-    this.inputManager = new InputManager(viewport, sceneElement);
+    this.inputManager = new InputManager(viewport, sceneElement, inputButtons);
     this.renderables = new Set<RenderObject>();
     this.client = client;
     this.room = room;
