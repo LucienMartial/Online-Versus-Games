@@ -1,11 +1,11 @@
 import { Command } from "@colyseus/command";
 import { Client } from "colyseus";
-import { GameRoom } from "../disc-war/room/game-room.js";
+import { DiscWarRoom } from "../disc-war/room/game-room.js";
 
 const RECONNECTION_TIME = 5;
 
 class OnLeaveCommand extends Command<
-  GameRoom,
+  DiscWarRoom,
   { client: Client; consented: boolean }
 > {
   async execute({ client, consented } = this.payload) {
@@ -18,14 +18,15 @@ class OnLeaveCommand extends Command<
       "room",
       this.room.roomId,
       "nb players remaining",
-      this.room.nbClient
+      this.room.nbClient,
     );
     // this.state.players.get(client.sessionId).connected = false;
 
     // try to reconnect
     try {
-      if (this.room.gameEnded)
+      if (this.room.gameEnded) {
         throw new Error("game is finished, no reconnection");
+      }
       if (consented) throw new Error("consented leave");
       if (this.room.nbClient <= 0) throw new Error("no players left");
 
@@ -38,8 +39,9 @@ class OnLeaveCommand extends Command<
       // could not reconnect
       this.room.gameEngine.removePlayer(client.id);
       this.state.players.delete(client.id);
-      if (e instanceof Error)
+      if (e instanceof Error) {
         console.log("client could not reconnect", e.message);
+      }
 
       // player left or right
       if (client.id === this.room.leftId) {

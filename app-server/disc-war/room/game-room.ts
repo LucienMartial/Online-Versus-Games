@@ -1,117 +1,46 @@
-import { Dispatcher } from "@colyseus/command";
-import { Client, Room, matchMaker } from "colyseus";
+import { Client } from "colyseus";
 import { DiscWarEngine } from "../../../app-shared/disc-war/disc-war.js";
+import { Request } from "express";
 import {
-  EndGamePlayerState,
   EndGameState,
   GameState,
 } from "../../../app-shared/disc-war/state/index.js";
 import {
+  OnInputCommand,
   OnJoinCommand,
   OnLeaveCommand,
-  OnInputCommand,
   OnSyncCommand,
 } from "../../commands/index.js";
-import {
-  InputsData,
-  Profile,
-  UserShop,
-} from "../../../app-shared/types/index.js";
+import { InputsData } from "../../../app-shared/types/index.js";
 import { CBuffer } from "../../../app-shared/utils/cbuffer.js";
-import { Request } from "express";
-import { ObjectId, WithId } from "mongodb";
 import {
   COINS_PER_LOSE,
   COINS_PER_WIN,
 } from "../../../app-shared/utils/constants.js";
+import { GameParams, GameRoom } from "../../rooms/game-room.js";
 
 // maximum number of inputs saved for each client
 const MAX_INPUTS = 50;
-interface UserData {
-  inputBuffer: CBuffer<InputsData>;
-}
-
 const MAX_DEATH = 3;
 
-interface GameParams {
-  dbCreateGame: (state: EndGameState) => Promise<void>;
-  dbGetProfile: (userId: ObjectId) => Promise<Profile | null>;
-  dbUpdateProfile: (
-    userId: ObjectId,
-    profile: Profile,
-    userState: EndGamePlayerState
-  ) => Promise<boolean>;
-  dbGetUserShop: (userID: ObjectId) => Promise<WithId<UserShop> | null>;
-  dbAddCoins: (userId: ObjectId, coins: number) => Promise<boolean>;
+interface UserData {
+  inputBuffer: CBuffer<InputsData>;
 }
 
 /**
  * Server room for the disc war game
  */
-class GameRoom extends Room<GameState> {
-  dispatcher = new Dispatcher(this);
-  gameEngine!: DiscWarEngine;
+class DiscWarRoom extends GameRoom<GameState, DiscWarEngine> {
   leftId: string | null = null;
   rightId: string | null = null;
-  nbClient = 0;
   maxDeath = MAX_DEATH;
-  gameEnded = false;
   maxClients = 2;
-  clientsMap: Map<string, string> = new Map();
-  dbGetUserShop!: (userID: ObjectId) => Promise<WithId<UserShop> | null>;
 
-  onCreate({
-    dbCreateGame,
-    dbGetProfile,
-    dbUpdateProfile,
-    dbGetUserShop,
-    dbAddCoins,
-  }: GameParams) {
-    this.dbGetUserShop = dbGetUserShop;
+  onCreate(params: GameParams<DiscWarEngine>) {
+    super.onCreate(params);
     this.setState(new GameState());
-    this.gameEngine = new DiscWarEngine(true);
     this.gameEngine.maxDeath = this.maxDeath;
     this.gameEngine.paused = true;
-    this.setSimulationInterval((dt: number) => this.update(dt), 1000 / 60);
-    this.setPatchRate(20);
-
-    // end of game
-    this.gameEngine.onEndGame = async () => {
-      this.gameEnded = true;
-      const chatEndGameRoom = await matchMaker.createRoom("chat-room", {});
-      const state = new EndGameState(this.gameEngine, this);
-      await dbCreateGame(state);
-
-      // update profile of clients
-      for (const client of this.clients) {
-        try {
-          const objectId = new ObjectId(client.userData.id);
-          const profile = await dbGetProfile(objectId);
-          if (!profile) throw new Error("could not get profile");
-          const playerState = state.players.get(client.id);
-          if (!playerState) continue;
-          await dbUpdateProfile(objectId, profile, playerState);
-          await dbAddCoins(
-            objectId,
-            playerState.victory ? COINS_PER_WIN : COINS_PER_LOSE
-          );
-        } catch (e) {
-          if (e instanceof Error)
-            console.error("could not update user profile / shop", e.message);
-        }
-      }
-
-      // send event to clients
-      for (const client of this.clients) {
-        const reservation = await matchMaker.reserveSeatFor(
-          chatEndGameRoom,
-          {}
-        );
-        // important/mandatory !
-        client.send("end-game-chat-reservation", reservation);
-        client.send("end-game", state);
-      }
-    };
 
     // register event
     this.onMessage("*", (client, type, message) => {
@@ -135,30 +64,18 @@ class GameRoom extends Room<GameState> {
     });
   }
 
-  // verify token, etc..
-  async onAuth(client: Client, options: unknown, request: Request) {
-    // check if authentified
-    if (!request.session || !request.session.authenticated) return false;
-    // check if already in a room
-    const id = request.session.id;
-    const username = request.session.username;
-    const alreadyExist = [...this.clientsMap.values()].includes(username);
-    if (!username || !id || alreadyExist) {
-      return false;
-    }
-    // add username
-    this.clientsMap.set(client.id, username);
-    console.log("client authenticated", username, id);
-    // client data
-    client.userData = {
-      inputBuffer: new CBuffer<InputsData>(MAX_INPUTS),
-      username: username,
-      id: id,
-    };
-    return true;
+  async onEndGame() {
+    console.log("end game?");
+    const endState = new EndGameState(this.gameEngine, this);
+    super.endGame(endState, COINS_PER_WIN, COINS_PER_LOSE);
   }
 
   onJoin(client: Client) {
+    // contains username and id by default
+    client.userData = {
+      inputBuffer: new CBuffer<InputsData>(MAX_INPUTS),
+      ...client.userData,
+    };
     this.dispatcher.dispatch(new OnJoinCommand(), {
       client: client,
       gameEngine: this.gameEngine,
@@ -170,10 +87,6 @@ class GameRoom extends Room<GameState> {
       client: client,
       consented: consented,
     });
-  }
-
-  onDispose(): void | Promise<any> {
-    this.dispatcher.stop();
   }
 
   // simulation update, 60 hertz
@@ -198,4 +111,4 @@ class GameRoom extends Room<GameState> {
   }
 }
 
-export { GameRoom };
+export { DiscWarRoom };

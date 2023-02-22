@@ -1,6 +1,6 @@
 import { PhysicEngine } from "../physics/index.js";
 import { Inputs } from "../utils/index.js";
-import { Entity, BodyEntity, CollectionManager } from "./index.js";
+import { BodyEntity, CollectionManager, Entity } from "./index.js";
 import { GAME_RATE } from "../utils/index.js";
 
 /**
@@ -11,15 +11,26 @@ class GameEngine {
   physicEngine: PhysicEngine;
   accumulator: number;
   reenact: boolean;
+  playerId: string;
+  isServer: boolean;
 
-  constructor() {
+  // end of game
+  onEndGame?: { (): void };
+
+  constructor(isServer: boolean, playerId: string) {
+    this.playerId = playerId;
+    this.isServer = isServer;
     this.physicEngine = new PhysicEngine();
     this.collections = new CollectionManager();
     this.accumulator = 0;
     this.reenact = false;
   }
 
-  processInput(inputs: Inputs, id: string) {}
+  processInput(_inputs: Inputs, _id: string) {}
+
+  endGame() {
+    this.onEndGame?.();
+  }
 
   fixedUpdate(dt: number) {
     this.accumulator += Math.max(dt, GAME_RATE);
@@ -55,7 +66,7 @@ class GameEngine {
 
   getById<T extends Entity>(
     collectionName = "default",
-    id: string
+    id: string,
   ): T | undefined {
     return this.collections.getById<T>(collectionName, id);
   }

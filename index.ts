@@ -47,20 +47,22 @@ if (process.env.NODE_ENV !== "production") {
 
 // rooms
 import { createApp } from "./app-server/app.js";
-import { GameRoom } from "./app-server/disc-war/room/game-room.js";
+import { DiscWarRoom } from "./app-server/disc-war/room/game-room.js";
 import { ChatRoom } from "./app-server/rooms/chat-room.js";
 import SocialRoom from "./app-server/rooms/social-room.js";
 import QueueRoom from "./app-server/rooms/queue-room.js";
+import { DiscWarEngine } from "./app-shared/disc-war/index.js";
 
 gameServer.define("social", SocialRoom);
 gameServer.define("chat-room", ChatRoom);
 gameServer.define("lobby", LobbyRoom);
-gameServer.define("game", GameRoom, {
+gameServer.define("game", DiscWarRoom, {
   dbCreateGame: db.createGame,
   dbGetProfile: db.getProfile,
   dbUpdateProfile: db.updateProfile,
   dbGetUserShop: db.getUserShop,
   dbAddCoins: db.addCoins,
+  engine: DiscWarEngine,
 });
 gameServer.define("queue", QueueRoom).enableRealtimeListing();
 

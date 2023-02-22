@@ -3,7 +3,7 @@ import EndScreen from "../disc-war/components/EndScreen";
 import { MemoryRouter } from "react-router-dom";
 
 export default {
-  title: "game/EndScreen",
+  title: "discwar/EndScreen",
   component: EndScreen,
   decorators: [
     (Story) => (

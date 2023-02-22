@@ -4,13 +4,13 @@ import {
   DiscWarEngine,
   Player,
 } from "../../app-shared/disc-war/index.js";
-import { GameRoom } from "../disc-war/room/game-room.js";
+import { DiscWarRoom } from "../disc-war/room/game-room.js";
 
 interface Data {
   gameEngine: DiscWarEngine;
 }
 
-class OnSyncCommand extends Command<GameRoom, Data> {
+class OnSyncCommand extends Command<DiscWarRoom, Data> {
   execute({ gameEngine } = this.payload) {
     // engine
     this.state.sync(gameEngine);

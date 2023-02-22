@@ -50,8 +50,6 @@ function DiscWarUI({ gameScene }: GameUIProps) {
     setScore([gameScene.gameEngine.leftScore, gameScene.gameEngine.rightScore]);
   }, [isRespawning]);
 
-  console.log("reload");
-
   // shield
   gameScene.mainPlayer.counterCooldownTimer.onActive = (
     ticks: number,

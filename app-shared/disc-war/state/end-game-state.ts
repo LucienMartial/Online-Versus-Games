@@ -1,26 +1,36 @@
-import { Schema, type, MapSchema } from "@colyseus/schema";
-import { GameRoom } from "../../../app-server/disc-war/room/game-room.js";
+import { MapSchema, Schema, type } from "@colyseus/schema";
+import { DiscWarRoom } from "../../../app-server/disc-war/room/game-room.js";
 import { DiscWarEngine } from "../index.js";
 
 // stat
 class EndGamePlayerState extends Schema {
-  @type("string") id = "";
-  @type("string") username = "";
-  @type("boolean") victory = false;
-  @type("number") deaths = 0;
-  @type("number") kills = 0;
-  @type("number") dashes = 0;
-  @type("number") shields = 0;
-  @type("number") shieldCatches = 0;
-  @type("number") straightShots = 0;
-  @type("number") curveShots = 0;
+  @type("string")
+  id = "";
+  @type("string")
+  username = "";
+  @type("boolean")
+  victory = false;
+  @type("number")
+  deaths = 0;
+  @type("number")
+  kills = 0;
+  @type("number")
+  dashes = 0;
+  @type("number")
+  shields = 0;
+  @type("number")
+  shieldCatches = 0;
+  @type("number")
+  straightShots = 0;
+  @type("number")
+  curveShots = 0;
 }
 
 class EndGameState extends Schema {
-  @type({ map: EndGamePlayerState }) players =
-    new MapSchema<EndGamePlayerState>();
+  @type({ map: EndGamePlayerState })
+  players = new MapSchema<EndGamePlayerState>();
 
-  constructor(engine: DiscWarEngine, room: GameRoom) {
+  constructor(engine: DiscWarEngine, room: DiscWarRoom) {
     super();
 
     // 2 players game
@@ -57,4 +67,4 @@ class EndGameState extends Schema {
   }
 }
 
-export { EndGameState, EndGamePlayerState };
+export { EndGamePlayerState, EndGameState };

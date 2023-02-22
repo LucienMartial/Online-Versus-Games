@@ -20,8 +20,9 @@ function GameQueue({ client, gameName, tryConnection, nbClients }: GameProps) {
       setQueueRoom(room);
       console.log("sucessfuly joined queue room");
     } catch (e) {
-      if (e instanceof Error)
+      if (e instanceof Error) {
         console.error("Could not connect to queue", e.message);
+      }
       return;
     }
   }, [client]);
@@ -39,6 +40,10 @@ function GameQueue({ client, gameName, tryConnection, nbClients }: GameProps) {
     // reservation for game
     queueRoom.onMessage("game-found", async (reservation: any) => {
       tryConnection(reservation);
+    });
+
+    queueRoom.onLeave(() => {
+      leaveQueue();
     });
 
     return () => {

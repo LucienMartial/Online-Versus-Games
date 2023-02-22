@@ -1,5 +1,5 @@
 import { Command } from "@colyseus/command";
-import { GameRoom } from "../disc-war/room/game-room.js";
+import { DiscWarRoom } from "../disc-war/room/game-room.js";
 import { PlayerState } from "../../app-shared/disc-war/state/index.js";
 import { Client } from "colyseus";
 import { DiscWarEngine } from "../../app-shared/disc-war/index.js";
@@ -11,7 +11,7 @@ interface Data {
   gameEngine: DiscWarEngine;
 }
 
-class OnJoinCommand extends Command<GameRoom, Data> {
+class OnJoinCommand extends Command<DiscWarRoom, Data> {
   async execute({ client, gameEngine } = this.payload) {
     // new client joined
     this.room.nbClient += 1;
@@ -41,8 +41,9 @@ class OnJoinCommand extends Command<GameRoom, Data> {
         cosmetics = userShop.selectedItems;
       }
     } catch (e) {
-      if (e instanceof Error)
+      if (e instanceof Error) {
         console.error("could not fetch cosmetics", e.message);
+      }
     }
 
     // set cosmetics

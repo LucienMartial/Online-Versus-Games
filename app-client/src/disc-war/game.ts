@@ -20,7 +20,6 @@ import { DASH_ANIMATION } from "./effects/configs/dash-anim-config";
 import { DEATH_ANIMATION } from "./effects/configs/death-anim-config";
 import { DeathAnimManager } from "./effects/death-anim-manager";
 import { CosmeticAssets } from "../game/configs/assets-config";
-import inputButtons from "../types/inputButtons";
 
 const PLAYER_GHOST = false;
 const DISC_GHOST = false;
@@ -46,7 +45,6 @@ class DiscWarScene extends GameScene<GameState> {
     sceneElement: HTMLElement,
     client: Client,
     room: Room<GameState>,
-    inputButtons?: inputButtons,
   ) {
     super(viewport, sceneElement, client, room);
     this.gameEngine = new DiscWarEngine(false, this.id);
@@ -69,8 +67,8 @@ class DiscWarScene extends GameScene<GameState> {
       new Emitter(
         new Container(),
         animationsAssets.bubble,
-        DASH_ANIMATION.CONFIG_1
-      )
+        DASH_ANIMATION.CONFIG_1,
+      ),
     );
 
     // death effect
@@ -79,15 +77,15 @@ class DiscWarScene extends GameScene<GameState> {
       new Emitter(
         new Container(),
         animationsAssets.red_square,
-        DEATH_ANIMATION.CONFIG_1
-      )
+        DEATH_ANIMATION.CONFIG_1,
+      ),
     );
 
     // filters
     const shockwaveManager = new ShockwaveManager(
       this.gameEngine,
       this.viewport,
-      15
+      15,
     );
     const shockWaveFilters = shockwaveManager.exportShockwaves();
     this.stage.filters = [
@@ -111,7 +109,7 @@ class DiscWarScene extends GameScene<GameState> {
     const dashEmitter = new Emitter(
       dashAnimContainer,
       animationsAssets.bubble,
-      DASH_ANIMATION.CONFIG_3
+      DASH_ANIMATION.CONFIG_3,
     );
     this.dashAnimManager = new DashAnimManager(this.gameEngine, dashEmitter);
 
@@ -121,7 +119,7 @@ class DiscWarScene extends GameScene<GameState> {
     const deathEmitter = new Emitter(
       deathAnimContainer,
       animationsAssets.red_square,
-      DEATH_ANIMATION.CONFIG_3
+      DEATH_ANIMATION.CONFIG_3,
     );
     this.deathAnimManager = new DeathAnimManager(this.gameEngine, deathEmitter);
 
@@ -162,7 +160,7 @@ class DiscWarScene extends GameScene<GameState> {
       this.dashAnimManager,
       this.deathAnimManager,
       this.viewport,
-      this.cosmeticsAssets!
+      this.cosmeticsAssets!,
     );
     this.mainPlayerRender.container.zIndex = 10;
     this.add(this.mainPlayerRender, false);
@@ -191,7 +189,7 @@ class DiscWarScene extends GameScene<GameState> {
     this.room.state.players.onAdd = (state, id) => {
       this.addPlayer(id, state);
     };
-    this.room.state.players.onRemove = (state, id: string) => {
+    this.room.state.players.onRemove = (_, id: string) => {
       this.removePlayer(id);
     };
 
@@ -261,7 +259,7 @@ class DiscWarScene extends GameScene<GameState> {
         this.dashAnimManager,
         this.deathAnimManager,
         this.viewport,
-        this.cosmeticsAssets!
+        this.cosmeticsAssets!,
       );
       this.add(playerRender, false);
       this.mapFiltered.addChild(playerRender.container);

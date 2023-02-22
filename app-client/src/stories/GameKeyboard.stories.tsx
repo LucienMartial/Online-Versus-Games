@@ -1,9 +1,9 @@
-import { ComponentStory, ComponentMeta } from "@storybook/react";
+import { ComponentMeta, ComponentStory } from "@storybook/react";
 import GameKeyboard from "../components/game/GameKeyboard";
 import { MemoryRouter } from "react-router-dom";
 
 export default {
-  title: "game/GameKeyboard",
+  title: "discwar/GameKeyboard",
   component: GameKeyboard,
   decorators: [
     (Story) => (

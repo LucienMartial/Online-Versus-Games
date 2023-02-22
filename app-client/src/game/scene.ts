@@ -47,7 +47,7 @@ abstract class GameScene<T> {
   /**
    * Update logic
    */
-  update(dt: number, now: number): void {}
+  update(_dt: number, _now: number): void {}
 
   /**
    * Update renderable objects
