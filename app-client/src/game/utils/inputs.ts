@@ -1,7 +1,7 @@
 import { Viewport } from "pixi-viewport";
 import SAT, { Vector } from "sat";
 import type { Inputs, KeyInputs } from "../../../../app-shared/utils";
-import inputButtons from "../../types/inputButtons";
+import InputButtons from "../../types/inputButtons";
 import gameInputEvent from "../../types/gameInputEvent";
 
 const KeyBind: Record<KeyInputs, string[]> = {
@@ -18,12 +18,11 @@ class InputManager {
   inputs: Inputs;
   keyInputs: Record<KeyInputs, boolean>;
   viewport: Viewport;
-  inputButtons?: inputButtons;
+  inputButtons?: InputButtons;
 
   constructor(
     viewport: Viewport,
     gameElememt: HTMLElement,
-    inputButtons?: inputButtons
   ) {
     this.viewport = viewport;
     this.keyInputs = {
@@ -42,15 +41,46 @@ class InputManager {
       secondaryShootAction: false,
       mousePos: new SAT.Vector(0, 0),
     };
-    this.inputButtons = inputButtons;
 
     document.body.onkeydown = this.handleKey.bind(this);
     document.body.onkeyup = this.handleKey.bind(this);
-    document.body.onmousedown = (e) => this.handleMouseOrTouch({ activate : true, target : e.target, button : e.button, x : e.x, y : e.y });
-    document.body.onmouseup = (e) => this.handleMouseOrTouch({ activate : false, target : e.target, button : e.button, x : e.x, y : e.y });
-    document.body.ontouchstart = (e) => this.handleMouseOrTouch({ activate : true, target : e.target, button : 0, x : e.touches[e.touches.length - 1].clientX, y : e.touches[e.touches.length - 1].clientY });
-    document.body.ontouchend = (e) => this.handleMouseOrTouch({ activate : false, target : e.target, button : 0, x : e.changedTouches[0].clientX, y : e.changedTouches[0].clientY });
+    document.body.onmousedown = (e) =>
+      this.handleMouseOrTouch({
+        activate: true,
+        target: e.target,
+        button: e.button,
+        x: e.x,
+        y: e.y,
+      });
+    document.body.onmouseup = (e) =>
+      this.handleMouseOrTouch({
+        activate: false,
+        target: e.target,
+        button: e.button,
+        x: e.x,
+        y: e.y,
+      });
+    document.body.ontouchstart = (e) =>
+      this.handleMouseOrTouch({
+        activate: true,
+        target: e.target,
+        button: 0,
+        x: e.touches[e.touches.length - 1].clientX,
+        y: e.touches[e.touches.length - 1].clientY,
+      });
+    document.body.ontouchend = (e) =>
+      this.handleMouseOrTouch({
+        activate: false,
+        target: e.target,
+        button: 0,
+        x: e.changedTouches[0].clientX,
+        y: e.changedTouches[0].clientY,
+      });
     gameElememt.oncontextmenu = (e) => e.preventDefault();
+  }
+
+  feedInputButtons(inputButton: InputButtons) {
+    this.inputButtons = inputButton;
   }
 
   handleMouseOrTouch(e: gameInputEvent) {

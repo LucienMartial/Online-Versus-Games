@@ -70,3 +70,14 @@
 #score-right {
   transform: perspective(2em) rotateY(5deg);
 }
+
+/*
+  * Keyboard
+*/
+
+#keyboard {
+  position: absolute;
+  pointer-events: all;
+  bottom: 0;
+  margin-bottom: 1rem;
+}

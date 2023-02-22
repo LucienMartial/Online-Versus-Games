@@ -1,7 +1,8 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { DiscWarScene } from "../game";
 import { StrictMode } from "react";
 import "./GameUI.css";
+import GameKeyboard from "../../components/game/GameKeyboard";
 
 interface GameUIProps {
   gameScene: DiscWarScene;
@@ -13,10 +14,21 @@ function DiscWarUI({ gameScene }: GameUIProps) {
   const [isRespawning, setIsRespawning] = useState(false);
   const [score, setScore] = useState([0, 0]);
 
+  const leftButton = useRef<HTMLButtonElement>(null);
+  const rightButton = useRef<HTMLButtonElement>(null);
+  const upButton = useRef<HTMLButtonElement>(null);
+  const downButton = useRef<HTMLButtonElement>(null);
+  const dashButton = useRef<HTMLButtonElement>(null);
+  const counterButton = useRef<HTMLButtonElement>(null);
+  const curveButton = useRef<HTMLButtonElement>(null);
+
+  const screenIsTouchable = "ontouchstart" in window ||
+    navigator.maxTouchPoints > 0;
+
   // respawn
   gameScene.gameEngine.respawnTimer.onActive = (
     ticks: number,
-    duration: number
+    duration: number,
   ) => {
     if (ticks === (duration / 4) * 2) setRespawnText("2");
     else if (ticks === (duration / 4) * 3) setRespawnText("1");
@@ -38,10 +50,12 @@ function DiscWarUI({ gameScene }: GameUIProps) {
     setScore([gameScene.gameEngine.leftScore, gameScene.gameEngine.rightScore]);
   }, [isRespawning]);
 
+  console.log("reload");
+
   // shield
   gameScene.mainPlayer.counterCooldownTimer.onActive = (
     ticks: number,
-    duration: number
+    duration: number,
   ) => {
     if (ticks <= duration / 3) setShieldText("3");
     else if (ticks <= (duration / 3) * 2) setShieldText("2");
@@ -50,6 +64,18 @@ function DiscWarUI({ gameScene }: GameUIProps) {
   gameScene.mainPlayer.counterTimer.onInactive = () => {
     setShieldText(undefined);
   };
+
+  useEffect(() => {
+    gameScene.inputManager.feedInputButtons({
+      left: leftButton.current!,
+      right: rightButton.current!,
+      up: upButton.current!,
+      down: downButton.current!,
+      dash: dashButton.current!,
+      counter: counterButton.current!,
+      curve: curveButton.current!,
+    });
+  }, []);
 
   return (
     <StrictMode>
@@ -65,6 +91,19 @@ function DiscWarUI({ gameScene }: GameUIProps) {
               {" "}
               {score[1]}
             </p>
+          </div>
+        )}
+        {screenIsTouchable && (
+          <div id="keyboard">
+            <GameKeyboard
+              leftButton={leftButton}
+              rightButton={rightButton}
+              upButton={upButton}
+              downButton={downButton}
+              dashButton={dashButton}
+              counterButton={counterButton}
+              curveButton={curveButton}
+            />
           </div>
         )}
       </>
