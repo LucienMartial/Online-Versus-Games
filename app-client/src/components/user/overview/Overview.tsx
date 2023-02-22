@@ -7,14 +7,15 @@ import {
 } from "react";
 import { FriendsContext, SocialContext, UserContext } from "../../../App";
 import LoadingPage from "../../LoadingPage";
-import { FiUserPlus, FiTrash } from "react-icons/fi";
+import { FiTrash, FiUserPlus } from "react-icons/fi";
 import StatCard from "./StatCard";
 import { Profile } from "../../../../../app-shared/types";
+import { DiscWarStats } from "../../../../../app-shared/disc-war/types";
 
 interface OverviewProps {
   username: string;
   handleRemoveAccount?: () => Promise<void>;
-  profileData: Profile;
+  profileData: Profile<DiscWarStats>;
 }
 
 function Overview({
@@ -22,8 +23,9 @@ function Overview({
   handleRemoveAccount,
   profileData,
 }: OverviewProps) {
-  const { friendsRequestsData, tryGetFriends, sendFriendRequest } =
-    useContext(FriendsContext);
+  const { friendsRequestsData, tryGetFriends, sendFriendRequest } = useContext(
+    FriendsContext,
+  );
   const [alreadyFriend, setAlreadyFriend] = useState(false);
   const [loading, setLoading] = useState(true);
 
@@ -47,19 +49,20 @@ function Overview({
     setAlreadyFriend(
       sameUser ||
         friendsRequestsData.current.friendsData.friends.some(
-          (friend) => friend.username === username
+          (friend) => friend.username === username,
         ) ||
         friendsRequestsData.current.requestsData.some(
           (request) =>
             request.expeditorName === username ||
-            request.recipientName === username
-        )
+            request.recipientName === username,
+        ),
     );
   }, [username, profileData]);
 
   const removeAccount = () => {
-    if (confirm("Are you sure you want to delete your account?"))
+    if (confirm("Are you sure you want to delete your account?")) {
       handleRemoveAccount?.().catch((e) => console.log(e));
+    }
   };
 
   // real time update of friend status
@@ -95,18 +98,19 @@ function Overview({
   // useful for stats
   const average = (stat: number) => {
     return Number.parseFloat(
-      (stat / (profileData.games > 0 ? profileData.games : 1)).toFixed(1)
+      (stat / (profileData.games > 0 ? profileData.games : 1)).toFixed(1),
     );
   };
-  const winrate =
-    profileData.games > 0
-      ? Number.parseFloat(
-          ((profileData.wins / profileData.games) * 100).toFixed(2)
-        )
-      : 100;
-  const score = `${average(profileData.stats.kills)}/${average(
-    profileData.stats.deaths
-  )}/${average(profileData.stats.shieldCatches)}`;
+  const winrate = profileData.games > 0
+    ? Number.parseFloat(
+      ((profileData.wins / profileData.games) * 100).toFixed(2),
+    )
+    : 100;
+  const score = `${average(profileData.stats.kills)}/${
+    average(
+      profileData.stats.deaths,
+    )
+  }/${average(profileData.stats.shieldCatches)}`;
   const shots = profileData.stats.lineShots + profileData.stats.curveShots;
 
   const pageStyle = "grow flex flex-col justify-center items-center mt-4 px-2 ";
@@ -122,10 +126,8 @@ function Overview({
   return (
     <StrictMode>
       <div
-        className={
-          pageStyle +
-          "md:px-6 w-full max-w-screen-xl h-screen justify-between self-center overflow-auto"
-        }
+        className={pageStyle +
+          "md:px-6 w-full max-w-screen-xl h-screen justify-between self-center overflow-auto"}
       >
         <section className="flex justify-between items-center  gap-1 mt-2 w-full">
           <div className="flex gap-5 items-center">

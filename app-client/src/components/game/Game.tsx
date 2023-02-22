@@ -3,30 +3,48 @@ import { useEffect, useRef } from "react";
 import { Application, Ticker } from "pixi.js";
 import { Viewport } from "pixi-viewport";
 import "./Game.css";
-import { GameScene } from "../../game/game";
+import { GameScene } from "../../game/scene";
 import { Client, Room } from "colyseus.js";
 import {
-  WORLD_WIDTH,
   WORLD_HEIGHT,
+  WORLD_WIDTH,
 } from "../../../../app-shared/utils/constants";
-import GameUI from "./GameUI";
-import EndScreen from "./EndScreen";
-import { EndGameState, GameState } from "../../../../app-shared/state";
-import { Assets } from "@pixi/assets";
-import { manifest } from "../../game/configs/assets-config";
 
-export interface GameProps {
+export interface GameProps<T, G extends GameScene<T>> {
   client: Client;
-  gameRoom: Room<GameState>;
-  setGameRoom: Dispatch<Room<GameState> | undefined>;
+  gameRoom: Room<T>;
+  setGameRoom: Dispatch<Room<T> | undefined>;
+  GameUI: React.FC<{ gameScene: GameScene<T> }>;
+  EndScreen: React.FC<
+    {
+      gameScene: GameScene<T>;
+      endGameState: any;
+      setGameRoom: any;
+      chatRoom: any;
+    }
+  >;
+  game: {
+    new (
+      viewport: Viewport,
+      sceneElement: HTMLElement,
+      client: Client,
+      room: Room<T>,
+    ): G;
+  };
 }
 
-function Game({ client, gameRoom, setGameRoom }: GameProps) {
+// T: game state, E: end game state, G: game scene
+function Game<T, E, G extends GameScene<T>>(
+  { client, gameRoom, setGameRoom, GameUI, EndScreen, game }: GameProps<T, G>,
+) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const guiRef = useRef<HTMLDivElement>(null);
-  const [gameScene, setGameScene] = useState<GameScene | undefined>();
-  const [endGameState, setEndGameState] = useState<EndGameState>();
+  const [gameScene, setGameScene] = useState<GameScene<T> | undefined>();
+  const [endGameState, setEndGameState] = useState<E>();
   const [chatRoom, setChatRoom] = useState<Room | null>(null);
+
+  const screenIsTouchable = "ontouchstart" in window ||
+    navigator.maxTouchPoints > 0;
 
   const load = async () => {
     const app = new Application({
@@ -46,11 +64,11 @@ function Game({ client, gameRoom, setGameRoom }: GameProps) {
     app.stage.addChild(viewport);
 
     // create game
-    const gameScene = new GameScene(
+    const gameScene = new game(
       viewport,
       canvasRef.current!,
       client,
-      gameRoom
+      gameRoom,
     );
     setGameScene(gameScene);
 
@@ -76,9 +94,12 @@ function Game({ client, gameRoom, setGameRoom }: GameProps) {
 
     // resize
     const resize = () => {
-      app.renderer.resize(window.innerWidth, window.innerHeight);
+      const desiredHeight = screenIsTouchable
+        ? window.innerHeight / 1.5
+        : window.innerHeight;
+      app.renderer.resize(window.innerWidth, desiredHeight);
       gameScene.stage.filterArea = app.renderer.screen;
-      viewport.resize(window.innerWidth, window.innerHeight);
+      viewport.resize(window.innerWidth, desiredHeight);
       viewport.fit();
       viewport.moveCenter(WORLD_WIDTH / 2, WORLD_HEIGHT / 2);
     };
@@ -96,11 +117,11 @@ function Game({ client, gameRoom, setGameRoom }: GameProps) {
         } catch (e) {
           console.error("join error", e);
         }
-      }
+      },
     );
 
     // end of game
-    gameRoom.onMessage("end-game", (state: EndGameState) => {
+    gameRoom.onMessage("end-game", (state: E) => {
       ticker.stop();
       gameRoom.removeAllListeners();
       gameRoom.leave();
@@ -133,7 +154,7 @@ function Game({ client, gameRoom, setGameRoom }: GameProps) {
   }
 
   return (
-    <main id="game">
+    <main id="game" className="bg-[#000011]">
       <React.StrictMode>
         <div id="gui" ref={guiRef}>
           {gameScene && (

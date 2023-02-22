@@ -18,7 +18,7 @@ export default function (users: Collection<User>) {
 
   async function createUser(
     username: string,
-    password: string
+    password: string,
   ): Promise<ObjectId | null> {
     try {
       const salt = await bcrypt.genSalt(saltRounds);

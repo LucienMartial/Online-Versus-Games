@@ -1,4 +1,5 @@
-import { StrictMode, useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+import { DiscWarStats } from "../../../../../app-shared/disc-war/types";
 import { Game } from "../../../../../app-shared/types";
 import LoadingPage from "../../LoadingPage";
 import HistoryList from "./HistoryList";
@@ -8,7 +9,7 @@ interface HistoryProps {
 }
 
 function History({ username }: HistoryProps) {
-  const [history, setHistory] = useState<Game[] | null>(null);
+  const [history, setHistory] = useState<Game<DiscWarStats>[] | null>(null);
   const [error, setError] = useState<null | string>(null);
 
   const getHistory = useCallback(async () => {
@@ -56,7 +57,10 @@ function History({ username }: HistoryProps) {
   return (
     <>
       {history.length > 0 && (
-        <HistoryList games={history} username={username} />
+        <HistoryList
+          games={history}
+          username={username}
+        />
       )}
       {history.length === 0 && (
         <div className="flex flex-col grow justify-center">

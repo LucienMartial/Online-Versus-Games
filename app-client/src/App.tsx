@@ -1,9 +1,9 @@
-import { useEffect, useState, Suspense, lazy, createContext } from "react";
+import { createContext, lazy, Suspense, useEffect, useState } from "react";
 import {
   BrowserRouter as Router,
-  Routes,
-  Route,
   Navigate,
+  Route,
+  Routes,
 } from "react-router-dom";
 import LoadingPage from "./components/LoadingPage";
 import { useGameConnect } from "./hooks/useGameConnect";
@@ -13,15 +13,21 @@ import useFriends, { useFriendsRes } from "./hooks/useFriends";
 import useSocial, { useSocialRes } from "./hooks/useSocial";
 import { Assets } from "@pixi/assets";
 import { manifest } from "./game/configs/assets-config";
+import { DiscWarScene } from "./disc-war/game";
+import DiscWarUI from "./disc-war/components/GameUI";
+import EndScreen from "./disc-war/components/EndScreen";
+import { TagWarScene } from "./tag-war/game";
+import { TagWarUI } from "./tag-war/components/TagWarUI";
+import TagWarEndScreen from "./tag-war/components/TagWarEndScreen";
 
-const Game = lazy(() => import("./components/game/Game"));
+const Game: any = lazy(() => import("./components/game/Game"));
 const Login = lazy(() => import("./components/forms/Login"));
 const Register = lazy(() => import("./components/forms/Register"));
 const Home = lazy(() => import("./components/home/Home"));
 const Page404 = lazy(() => import("./components/Page404"));
 const Privacy = lazy(() => import("./components/static-pages/Privacy"));
 const Acknowledgement = lazy(
-  () => import("./components/static-pages/Acknowledgment")
+  () => import("./components/static-pages/Acknowledgment"),
 );
 const User = lazy(() => import("./components/user/User"));
 const Shop = lazy(() => import("./components/user/shop/Shop"));
@@ -42,7 +48,7 @@ const SocialContext = createContext<useSocialRes>({} as useSocialRes);
 
 function App() {
   const [userData, setUserData] = useState<UserContextType>(
-    {} as UserContextType
+    {} as UserContextType,
   );
   const [loaded, setLoaded] = useState(false);
   const { loggedIn, tryLogin, tryLogout, tryRegister, tryRemoveAccount } =
@@ -83,8 +89,9 @@ function App() {
         try {
           await tryReconnection();
         } catch (e) {
-          if (e instanceof Error)
+          if (e instanceof Error) {
             console.error("could not reconnect", e.message);
+          }
         }
       }
 
@@ -123,8 +130,31 @@ function App() {
   const renderGame = () => {
     if (!loggedIn) return <Navigate to={"/login"} />;
     if (!client || !gameRoom) return <Navigate to={"/home"} />;
+
+    // tag war
+    if (gameRoom.name == "tag-war") {
+      return (
+        <Game
+          client={client}
+          gameRoom={gameRoom}
+          setGameRoom={setGameRoom}
+          GameUI={TagWarUI}
+          EndScreen={TagWarEndScreen}
+          game={TagWarScene}
+        />
+      );
+    }
+
+    // disc war
     return (
-      <Game client={client} gameRoom={gameRoom} setGameRoom={setGameRoom} />
+      <Game
+        client={client}
+        gameRoom={gameRoom}
+        setGameRoom={setGameRoom}
+        GameUI={DiscWarUI}
+        EndScreen={EndScreen}
+        game={DiscWarScene}
+      />
     );
   };
 
@@ -191,5 +221,5 @@ function App() {
 }
 
 export default App;
-export { UserContext, FriendsContext, SocialContext };
+export { FriendsContext, SocialContext, UserContext };
 export type { UserContextType };

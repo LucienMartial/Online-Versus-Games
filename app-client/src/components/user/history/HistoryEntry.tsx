@@ -1,7 +1,8 @@
+import { DiscWarStats } from "../../../../../app-shared/disc-war/types";
 import { Game } from "../../../../../app-shared/types";
 
 interface HistoryEntryProps {
-  game: Game;
+  game: Game<DiscWarStats>;
   username: string;
 }
 
@@ -9,8 +10,7 @@ export default function HistoryEntry({ game, username }: HistoryEntryProps) {
   const player1 = game.players[0];
   const player2 = game.players[1];
   const date = new Date(game.timestamp);
-  const won =
-    (player1.username === username && player1.victory) ||
+  const won = (player1.username === username && player1.victory) ||
     (player2.username === username && player2.victory);
 
   return (

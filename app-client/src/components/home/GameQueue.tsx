@@ -1,26 +1,28 @@
 import AppButton from "../lib/AppButton";
-import { Client, RoomAvailable } from "colyseus.js";
+import { Client } from "colyseus.js";
 import { useCallback, useEffect, useState } from "react";
 import { Room } from "colyseus.js";
 
 interface GameProps {
   tryConnection: (reservation: any) => Promise<void>;
+  gameName: string;
   nbClients: number;
   client: Client | undefined;
 }
 
-function GameQueue({ client, tryConnection, nbClients }: GameProps) {
+function GameQueue({ client, gameName, tryConnection, nbClients }: GameProps) {
   const [queueRoom, setQueueRoom] = useState<Room>();
 
   const connectToQueue = useCallback(async () => {
     if (!client) return;
     try {
-      const room = await client.joinOrCreate("queue");
+      const room = await client.joinOrCreate("queue", { game: gameName });
       setQueueRoom(room);
       console.log("sucessfuly joined queue room");
     } catch (e) {
-      if (e instanceof Error)
+      if (e instanceof Error) {
         console.error("Could not connect to queue", e.message);
+      }
       return;
     }
   }, [client]);
@@ -38,6 +40,10 @@ function GameQueue({ client, tryConnection, nbClients }: GameProps) {
     // reservation for game
     queueRoom.onMessage("game-found", async (reservation: any) => {
       tryConnection(reservation);
+    });
+
+    queueRoom.onLeave(() => {
+      leaveQueue();
     });
 
     return () => {

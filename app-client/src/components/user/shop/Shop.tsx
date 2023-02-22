@@ -279,7 +279,6 @@ export default function Shop() {
           shopData !== undefined &&
           shopData !== null &&
           shopData.coins - item.price >= 0,
-        cosmetics: cosmeticsAssets,
         tryBuy: tryBuy,
         trySelect: trySelect,
         tryPreview: tryPreview,
@@ -305,46 +304,38 @@ export default function Shop() {
     <main className={"h-full flex flex-col min-h-0 grow"}>
       <section
         className={
-          "grid grid-cols-1 sm:grid-cols-2 h-full min-h-0 pt-2 border-y-2 border-t-blue-500/50 border-b-gray-600/40 backdrop-blur-sm bg-slate-600/30"
+          "grid grid-cols-1 lg:grid-cols-2 h-full min-h-0 pt-2 border-y-2 border-t-blue-500/50 border-b-gray-600/40 backdrop-blur-sm bg-slate-600/30"
         }
       >
-        <div className={"flex flex-col max-h-full min-h-0 mt-3"}>
-          <div
-            className={
-              "flex sm:justify-start justify-center sm:mb-3 mb-0 max-h-full"
-            }
-          >
+        <div className={"flex flex-col min-h-0 mt-3"}>
+          <div className={"flex lg:justify-start justify-center"}>
             <div
               className={
-                "flex font-black sm:text-5xl text-3xl sm:border-2 border rounded-md sm:px-4 sm:pt-4 sm:pb-1 sm:mt-2 sm:ml-6 px-2 pt-1 min-h-0 h-fit"
+                "flex font-black lg:text-5xl sm:text-4xl text-3xl sm:border-2 border rounded-md min-h-0 lg:p-2 p-1 lg:ml-6"
               }
             >
-              {shopData?.coins} <GiCoins className="ml-2 sm:pb-2" />
+              <p>{shopData?.coins}</p> <GiCoins className={"ml-2"} />
             </div>
           </div>
 
           <div
             className={
-              "flex sm:flex-col flex-row-reverse justify-center min-h-0 max-h-full"
+              "flex flex-row justify-evenly min-h-0 overflow-y-auto my-auto"
             }
           >
-            <div className={"flex justify-center overflow-y-auto"}>
-              <ShopPreview
-                initWidth={300}
-                initHeight={450}
-                selectedItems={
-                  previewItem === null
-                    ? { skinID: -1, hatID: -2, faceID: -3 }
-                    : previewItem
-                }
-                cosmeticsAssets={cosmeticsAssets}
-              />
-            </div>
-            <div className={"flex sm:justify-center sm:align-middle"}>
+            <ShopPreview
+              initWidth={300}
+              initHeight={450}
+              selectedItems={
+                previewItem === null
+                  ? { skinID: -1, hatID: -2, faceID: -3 }
+                  : previewItem
+              }
+              cosmeticsAssets={cosmeticsAssets}
+            />
+            <div className={"flex items-center min-h-0 h-full"}>
               <AppButton
-                className={
-                  "text-sm sm:text-2xl sm:h-24 h-16 sm:w-96 w-32 sm:my-8 my-auto mx-4"
-                }
+                className={"text-sm lg:text-2xl h-fit w-fit sm:w-72 sm:h-16"}
                 color={"regular"}
                 onClick={selectCharacterServer}
                 grayedOut={grayedOut}

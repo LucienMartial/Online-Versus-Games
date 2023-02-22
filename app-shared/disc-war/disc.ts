@@ -1,7 +1,7 @@
 import SAT from "sat";
 import { BodyEntity } from "../game/body-entity.js";
 import { CircleShape } from "../physics/collision.js";
-import { DiscState } from "../state/disc-state.js";
+import { DiscState } from "./state/disc-state.js";
 import { MIDDLE_LINE_ID } from "../utils/constants.js";
 import { Player } from "./player.js";
 import { DiscWarEngine } from "./index.js";

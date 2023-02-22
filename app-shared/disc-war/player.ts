@@ -1,7 +1,7 @@
 import SAT from "sat";
 import { BodyEntity } from "../game/index.js";
 import { BoxShape } from "../physics/index.js";
-import { PlayerState } from "../state/index.js";
+import { PlayerState } from "./state/index.js";
 import { Inputs, SyncTimer } from "../utils/index.js";
 import { Disc } from "./index.js";
 import { SelectedItems } from "../types/db-types.js";
@@ -158,17 +158,17 @@ class Player extends BodyEntity {
     }
 
     // shoot ability
-    if ((inputs.mouseLeft || inputs.mouseRight) && this.possesDisc) {
+    if ((inputs.mainShootAction || inputs.secondaryShootAction) && this.possesDisc) {
       // if shooting
       // stats
-      if (inputs.mouseRight) this.curveShotCounter += 1;
+      if (inputs.secondaryShootAction) this.curveShotCounter += 1;
       else this.straightShotCounter += 1;
       // logic
       const dir = new SAT.Vector();
       dir.x = inputs.mousePos.x - this.position.x;
       dir.y = inputs.mousePos.y - this.position.y;
       dir.normalize();
-      this.disc.shoot(dir, inputs.mouseRight);
+      this.disc.shoot(dir, inputs.secondaryShootAction);
     }
 
     // movements

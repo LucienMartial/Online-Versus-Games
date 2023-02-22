@@ -1,20 +1,20 @@
 import SAT from "sat";
 import { GameEngine } from "../game/game-engine.js";
-import { GameState } from "../state/game-state.js";
+import { GameState } from "./state/game-state.js";
 import {
-  WORLD_HEIGHT,
-  WORLD_WIDTH,
   Inputs,
   SyncTimer,
+  WORLD_HEIGHT,
+  WORLD_WIDTH,
 } from "../utils/index.js";
-import { Map, Player, Disc } from "./index.js";
+import { Disc, Map, Player } from "./index.js";
 
 const DISC_VELOCITY = new SAT.Vector(700, 700);
 const DISC_POSITION = new SAT.Vector(WORLD_WIDTH / 2, WORLD_HEIGHT / 2);
 const PLAYER_LEFT_POS = new SAT.Vector(WORLD_WIDTH / 4, WORLD_HEIGHT / 2);
 const PLAYER_RIGHT_POS = new SAT.Vector(
   WORLD_WIDTH - WORLD_WIDTH / 4,
-  WORLD_HEIGHT / 2
+  WORLD_HEIGHT / 2,
 );
 
 // times
@@ -26,20 +26,13 @@ const START_DURATION = 3 * 60;
  */
 class DiscWarEngine extends GameEngine {
   respawnTimer: SyncTimer;
-  playerId: string;
-  isServer: boolean;
   leftScore: number;
   rightScore: number;
   paused: boolean;
-
-  // end of game
-  onEndGame?: { (): void };
   maxDeath: number;
 
   constructor(isServer = false, playerId = "") {
-    super();
-    this.playerId = playerId;
-    this.isServer = isServer;
+    super(isServer, playerId);
     this.leftScore = 0;
     this.rightScore = 0;
     this.paused = true;
@@ -92,15 +85,15 @@ class DiscWarEngine extends GameEngine {
       }
 
       // visual effect
-      if (playerState.dashTimer.active)
+      if (playerState.dashTimer.active) {
         player.onDash?.(player.position.x, player.position.y);
+      }
     }
   }
 
-  // end the game
   endGame() {
     this.paused = true;
-    this.onEndGame?.();
+    super.endGame();
   }
 
   // start the game

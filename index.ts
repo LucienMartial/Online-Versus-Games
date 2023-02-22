@@ -47,21 +47,36 @@ if (process.env.NODE_ENV !== "production") {
 
 // rooms
 import { createApp } from "./app-server/app.js";
-import { GameRoom } from "./app-server/rooms/game-room.js";
+import { DiscWarRoom } from "./app-server/disc-war/room/game-room.js";
 import { ChatRoom } from "./app-server/rooms/chat-room.js";
 import SocialRoom from "./app-server/rooms/social-room.js";
 import QueueRoom from "./app-server/rooms/queue-room.js";
+import { DiscWarEngine } from "./app-shared/disc-war/index.js";
+import { TagWarEngine } from "./app-shared/tag-war/tag-war.js";
+import { TagWarRoom } from "./app-server/tag-war/tagwar-room.js";
 
 gameServer.define("social", SocialRoom);
 gameServer.define("chat-room", ChatRoom);
 gameServer.define("lobby", LobbyRoom);
-gameServer.define("game", GameRoom, {
-  dbCreateGame: db.createGame,
-  dbGetProfile: db.getProfile,
-  dbUpdateProfile: db.updateProfile,
-  dbGetUserShop: db.getUserShop,
-  dbAddCoins: db.addCoins,
+
+gameServer.define("disc-war", DiscWarRoom, {
+  dbCreateGame: db.discWar.createGame.bind(db.discWar),
+  dbGetProfile: db.discWar.getProfile.bind(db.discWar),
+  dbUpdateProfile: db.discWar.updateProfile.bind(db.discWar),
+  dbGetUserShop: db.getUserShop.bind(db),
+  dbAddCoins: db.addCoins.bind(db),
+  engine: DiscWarEngine,
 });
+
+gameServer.define("tag-war", TagWarRoom, {
+  dbCreateGame: db.tagWar.createGame.bind(db.tagWar),
+  dbGetProfile: db.tagWar.getProfile.bind(db.tagWar),
+  dbUpdateProfile: db.tagWar.updateProfile.bind(db.tagWar),
+  dbGetUserShop: db.getUserShop.bind(db),
+  dbAddCoins: db.addCoins.bind(db),
+  engine: TagWarEngine,
+});
+
 gameServer.define("queue", QueueRoom).enableRealtimeListing();
 
 server.listen(port, () => {

@@ -21,7 +21,7 @@ function Navbar({ tryLogout }: NavbarProps) {
 
   return (
     <StrictMode>
-      <header className="z-10 flex w-screen flex-row justify-start border-slate-400 dark:border-slate-700 border-b p-2 sm:justify-between backdrop-blur">
+      <header className="z-10 flex w-screen flex-row justify-start border-slate-400 dark:border-slate-700 border-b p-2 sm:justify-between">
         <input
           id="navToggler"
           type={"checkbox"}
@@ -30,7 +30,7 @@ function Navbar({ tryLogout }: NavbarProps) {
         <label
           htmlFor="navToggler"
           className={
-            "relative block aspect-[1/1] h-10 sm:hidden peer-checked:[&>.dash-c]:bg-transparent peer-checked:[&>.dash-c]:before:bottom-0 peer-checked:[&>.dash-c]:before:-rotate-45 peer-checked:[&>.dash-c]:after:top-0 peer-checked:[&>.dash-c]:after:rotate-45"
+            "z-20 relative block aspect-[1/1] h-10 sm:hidden peer-checked:[&>.dash-c]:bg-transparent peer-checked:[&>.dash-c]:before:bottom-0 peer-checked:[&>.dash-c]:before:-rotate-45 peer-checked:[&>.dash-c]:after:top-0 peer-checked:[&>.dash-c]:after:rotate-45"
           }
         >
           <div
@@ -41,24 +41,26 @@ function Navbar({ tryLogout }: NavbarProps) {
         </label>
         <nav
           className={
-            "flex h-0 w-full flex-col gap-3 overflow-hidden duration-150 peer-checked:h-full sm:h-full sm:flex-row sm:justify-between"
+            "absolute top-0 left-0 flex h-screen min-h-0 w-0 flex-col justify-center gap-3 overflow-hidden backdrop-blur duration-150 peer-checked:h-screen peer-checked:w-full peer-checked:px-20 sm:static sm:h-full sm:w-full sm:flex-row sm:justify-between sm:px-0 sm:backdrop-blur-0"
           }
         >
-          <section
-            className={"flex h-full flex-col items-center gap-3 sm:flex-row"}
-          >
-            <AppButton color={"regular"} onClick={() => navigate("/home")}>
+          <section className={"flex flex-col items-center gap-3 sm:flex-row"}>
+            <AppButton
+              className="!w-full sm:w-fit"
+              color={"regular"}
+              onClick={() => navigate("/home")}
+            >
               Home
             </AppButton>
             <form
-              className={"flex h-full"}
+              className={"flex h-fit sm:h-full w-full"}
               action=""
               onSubmit={handleUserSearch}
             >
               <input
                 type="text"
                 className={
-                  "h-full bg-slate-300 dark:bg-slate-800 rounded outline-none text-slate-900 dark:text-white pl-2 py-2 sm:py-0"
+                  "h-full bg-slate-300 dark:bg-slate-800 rounded outline-none text-slate-900 dark:text-white pl-2 py-2.5 sm:py-0 grow"
                 }
                 placeholder={"Search a user"}
                 ref={searchbarRef}
@@ -69,13 +71,25 @@ function Navbar({ tryLogout }: NavbarProps) {
             </form>
           </section>
           <section className="flex flex-col items-center gap-3 sm:flex-row">
-            <AppButton color={"regular"} onClick={() => navigate("/shop")}>
+            <AppButton
+              className="!w-full sm:w-fit"
+              color={"regular"}
+              onClick={() => navigate("/shop")}
+            >
               Shop
             </AppButton>
-            <AppButton color={"regular"} onClick={() => navigate("/user")}>
+            <AppButton
+              className="!w-full sm:w-fit"
+              color={"regular"}
+              onClick={() => navigate("/user")}
+            >
               Profile
             </AppButton>
-            <AppButton color={"regular"} onClick={tryLogout}>
+            <AppButton
+              className="!w-full sm:w-fit"
+              color={"regular"}
+              onClick={tryLogout}
+            >
               Logout
             </AppButton>
           </section>

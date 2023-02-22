@@ -13,26 +13,28 @@ interface User {
  * Game
  */
 
-interface Game {
+// stats are generic
+interface Game<T> {
   timestamp: Date;
-  players: GamePlayer[];
+  players: GamePlayer<T>[];
 }
 
-interface GameStats {
-  deaths: number;
-  kills: number;
-  dashes: number;
-  lineShots: number;
-  curveShots: number;
-  shields: number;
-  shieldCatches: number;
-}
-
-interface GamePlayer {
+interface GamePlayer<T> {
   user_id: ObjectId;
   username: string;
   victory: boolean;
-  stats: GameStats;
+  stats: T;
+}
+
+/**
+ * User Profile
+ */
+
+// stats are generic
+interface Profile<T> {
+  games: number;
+  wins: number;
+  stats: T;
 }
 
 /**
@@ -71,16 +73,6 @@ interface FriendsRequestsData {
 }
 
 /**
- * User Profile
- */
-
-interface Profile {
-  games: number;
-  wins: number;
-  stats: GameStats;
-}
-
-/**
  * User Shop data
  */
 
@@ -97,15 +89,14 @@ interface UserShop {
 }
 
 export type {
-  User,
+  Friend,
+  FriendRequest,
+  Friends,
+  FriendsRequestsData,
   Game,
   GamePlayer,
-  Friend,
-  Friends,
-  FriendRequest,
-  FriendsRequestsData,
-  GameStats,
   Profile,
-  UserShop,
   SelectedItems,
+  User,
+  UserShop,
 };

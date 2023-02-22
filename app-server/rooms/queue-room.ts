@@ -1,4 +1,4 @@
-import { Client, Room, matchMaker } from "colyseus";
+import { Client, matchMaker, Room } from "colyseus";
 import { Request } from "express";
 
 class QueueRoom extends Room {
@@ -10,8 +10,8 @@ class QueueRoom extends Room {
     this.setPatchRate(0);
   }
 
-  onAuth(client: Client, options: unknown, request: Request) {
-    // nom, username, options delete profile and history
+  onAuth(client: Client, _options: unknown, request: Request) {
+    // username, options delete profile and history
     if (!request.session || !request.session.authenticated) return false;
 
     // check if already in a room
@@ -28,7 +28,7 @@ class QueueRoom extends Room {
     return true;
   }
 
-  async onJoin(client: Client) {
+  async onJoin(_client: Client, options: { game: string }) {
     console.log("client joined queue");
 
     // no matchmaking, not enough players
@@ -36,7 +36,7 @@ class QueueRoom extends Room {
       console.error(
         "not enough players to match",
         this.alreadyMatched,
-        this.clients.length
+        this.clients.length,
       );
       return;
     }
@@ -58,11 +58,12 @@ class QueueRoom extends Room {
       if (
         !this.clientsMap.has(firstClient.sessionId) ||
         !this.clientsMap.has(secondClient.sessionId)
-      )
+      ) {
         return;
+      }
 
       // create game, send reservation
-      const gameRoom = await matchMaker.createRoom("game", {});
+      const gameRoom = await matchMaker.createRoom(options.game, {});
       const firstReservation = await matchMaker.reserveSeatFor(gameRoom, {});
       const secondReservation = await matchMaker.reserveSeatFor(gameRoom, {});
       firstClient.send("game-found", firstReservation);
@@ -70,7 +71,7 @@ class QueueRoom extends Room {
     }, 5000);
   }
 
-  async onLeave(client: Client, consented: boolean) {
+  async onLeave(client: Client, _consented: boolean) {
     console.log("client leaved queue");
     this.clientsMap.delete(client.id);
   }

@@ -11,10 +11,10 @@ const MAX_SPEED = 2000;
  */
 class BodyEntity extends Entity {
   velocity: SAT.Vector;
-  friction: SAT.Vector;
-  maxSpeed: number;
   offset: SAT.Vector;
   rotation: number;
+  friction: SAT.Vector;
+  maxSpeed: number;
   static: boolean;
   collisionShape: CollisionShape;
 

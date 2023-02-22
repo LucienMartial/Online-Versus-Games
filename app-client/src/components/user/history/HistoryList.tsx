@@ -1,8 +1,9 @@
+import { DiscWarStats } from "../../../../../app-shared/disc-war/types";
 import { Game } from "../../../../../app-shared/types";
 import HistoryEntry from "./HistoryEntry";
 
 interface HistoryListProps {
-  games: Game[];
+  games: Game<DiscWarStats>[];
   username: string;
 }
 
@@ -19,7 +20,9 @@ export default function HistoryList({ games, username }: HistoryListProps) {
     });
   }
   return (
-    <ul className={"flex flex-col w-screen min-h-0 max-h-full overflow-auto text-slate-200"}>
+    <ul
+      className={"flex flex-col w-screen min-h-0 max-h-full overflow-auto text-slate-200"}
+    >
       {renderGames()}
     </ul>
   );

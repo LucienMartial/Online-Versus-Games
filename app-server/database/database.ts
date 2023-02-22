@@ -1,66 +1,67 @@
 import { Collection, Db, MongoClient, WithId } from "mongodb";
-import {
-  EndGamePlayerState,
-  EndGameState,
-} from "../../app-shared/state/end-game-state.js";
 import ClientMethods from "./db-user.js";
-import GameMethods from "./db-game.js";
 import FriendMethods from "./db-friends.js";
-import ProfileMethods from "./db-profile.js";
 import UserShopMethods from "./db-user-shop.js";
 import {
   FriendRequest,
   Friends,
   FriendsRequestsData,
-  Game,
-  Profile,
+  SelectedItems,
   User,
   UserShop,
-  SelectedItems,
 } from "../../app-shared/types/index.js";
 import { ObjectId } from "mongodb";
+import { DiscWarStats } from "../../app-shared/disc-war/types.js";
+import { DatabaseGame } from "./db-games.js";
+import { TagWarStats } from "../../app-shared/tag-war/types.js";
 
 class Database {
   private client: MongoClient;
   private database: Db;
   private users: Collection<User>;
-  private games: Collection<Game>;
   private friends: Collection<Friends>;
   private friendRequests: Collection<FriendRequest>;
-  private profiles: Collection<Profile>;
   private userShops: Collection<UserShop>;
+  private customGames: DatabaseGame<any>[];
+
+  /*
+    Define here you game's history and profiles collection
+  */
+
+  // games
+  discWar: DatabaseGame<DiscWarStats>;
+  tagWar: DatabaseGame<TagWarStats>;
+
+  async add_games() {
+    this.discWar = new DatabaseGame(this.database, "games", "profiles");
+    this.customGames.push(this.discWar);
+    this.tagWar = new DatabaseGame(this.database, "tag-games", "tag-profiles");
+    this.customGames.push(this.tagWar);
+  }
+
+  /*
+    End of user definition
+  */
 
   // users
   searchUser: (username: string) => Promise<WithId<User> | null>;
   createUser: (username: string, password: string) => Promise<ObjectId | null>;
   matchPassword: (password: string, user: User) => Promise<boolean>;
 
-  // profiles
-  getProfile: (userId: ObjectId) => Promise<Profile | null>;
-  updateProfile: (
-    userId: ObjectId,
-    profile: Profile,
-    playerState: EndGamePlayerState
-  ) => Promise<boolean>;
-
-  // games
-  createGame: (state: EndGameState) => Promise<void>;
-  getGames: (id: ObjectId, skip: number, limit: number) => Promise<Game[]>;
-
   // friends
   getFriendsAndRequests: (
-    userId: ObjectId
+    userId: ObjectId,
   ) => Promise<FriendsRequestsData | null>;
   addFriendRequest: (
     userId: ObjectId,
     username: string,
     otherId: ObjectId,
-    othername: string
+    othername: string,
   ) => Promise<FriendRequest | null>;
   removeFriendRequest: (requestId: ObjectId) => Promise<boolean>;
   acceptFriendRequest: (
     userId: ObjectId,
-    requestId: ObjectId
+    requestId: ObjectId,
   ) => Promise<boolean>;
   removeFriend: (userId: ObjectId, otherId: ObjectId) => Promise<boolean>;
 
@@ -69,12 +70,12 @@ class Database {
   addCoins: (userId: ObjectId, coins: number) => Promise<boolean>;
   selectUserShopItem: (
     userId: ObjectId,
-    selectedItems: SelectedItems
+    selectedItems: SelectedItems,
   ) => Promise<boolean>;
   buyUserShopItem: (
     userId: ObjectId,
     itemId: number,
-    remainingCoins: number
+    remainingCoins: number,
   ) => Promise<boolean>;
 
   constructor() {
@@ -86,22 +87,19 @@ class Database {
     await this.client.connect();
     this.database = this.client.db("online-versus-game");
     this.users = this.database.collection("Users");
-    this.games = this.database.collection("games");
     this.friends = this.database.collection("friends");
     this.friendRequests = this.database.collection("friend-requests");
-    this.profiles = this.database.collection("profiles");
     this.userShops = this.database.collection("user-shops");
+
+    // add user games
+    this.customGames = [];
+    this.add_games();
 
     // users
     const { searchUser, createUser, matchPassword } = ClientMethods(this.users);
     this.searchUser = searchUser;
     this.createUser = createUser;
     this.matchPassword = matchPassword;
-
-    // games
-    const { createGame, getGames } = GameMethods(this.games);
-    this.createGame = createGame;
-    this.getGames = getGames;
 
     // friends
     const {
@@ -116,11 +114,6 @@ class Database {
     this.removeFriendRequest = removeFriendRequest;
     this.acceptFriendRequest = acceptFriendRequest;
     this.removeFriend = removeFriend;
-
-    // profiles
-    const { getProfile, updateProfile } = ProfileMethods(this.profiles);
-    this.getProfile = getProfile;
-    this.updateProfile = updateProfile;
 
     // user shop
     const { getUserShop, buyUserShopItem, selectUserShopItem, addCoins } =
@@ -142,14 +135,19 @@ class Database {
         {
           friends: { $elemMatch: { user_id: userId } },
         },
-        { $pull: { friends: { user_id: userId } } }
+        { $pull: { friends: { user_id: userId } } },
       );
       await this.friendRequests.deleteMany({
         expeditor: userId,
         recipient: userId,
       });
       await this.userShops.deleteOne({ _id: userId });
-      await this.profiles.deleteOne({ _id: userId });
+
+      // remove from all games
+      for (const game of this.customGames) {
+        await game.profiles.deleteOne({ _id: userId });
+      }
+
       return true;
     } catch (e) {
       if (e instanceof Error) console.error("user deletion error", e.message);
