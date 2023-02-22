@@ -6,6 +6,7 @@ import { FaHistory } from "react-icons/all";
 import LoadingPage from "../LoadingPage";
 import Tabs from "../lib/Tabs";
 import { Profile } from "../../../../app-shared/types";
+import { DiscWarStats } from "../../../../app-shared/disc-war/types";
 
 interface ProfileProps {
   username: string;
@@ -16,7 +17,9 @@ export default function ProfileView({
   username,
   handleRemoveAccount,
 }: ProfileProps) {
-  const [profileData, setProfileData] = useState<Profile | null>();
+  const [profileData, setProfileData] = useState<
+    Profile<DiscWarStats> | null
+  >();
 
   useEffect(() => {
     const load = async () => {
@@ -30,7 +33,7 @@ export default function ProfileView({
         setProfileData(null);
         return;
       }
-      const profile: Profile = await res.json();
+      const profile: Profile<DiscWarStats> = await res.json();
       setProfileData(profile);
     };
     load();
