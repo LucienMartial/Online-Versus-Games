@@ -6,7 +6,7 @@ import { AppError } from "../../app-server/utils/error";
 
 const searchUser = vi.fn();
 const getGames = vi.fn();
-const app = initApp({ searchUser, getGames });
+const app = initApp({ searchUser, discWar: { getGames } });
 
 function games(): Promise<request.Response> {
   return request(app).get("/api/history/riri");
@@ -28,7 +28,7 @@ describe("GET /games", () => {
     it("error while fetching game", async () => {
       searchUser.mockReturnValue({ _id: new ObjectId(0) });
       getGames.mockRejectedValue(
-        new AppError(500, "Error while fetching game")
+        new AppError(500, "Error while fetching game"),
       );
       const res = await games();
       expect(res.status).toEqual(500);
