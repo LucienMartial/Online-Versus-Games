@@ -5,7 +5,7 @@ import { SelectedItems, UserShop } from "../../app-shared/types/db-types.js";
 async function syncCosmetics(
   client: Client,
   playerState: { cosmetic: { sync: (cosmetics: SelectedItems) => void } },
-  dbGetUserShop: (id: ObjectId) => Promise<UserShop | undefined>,
+  dbGetUserShop: (id: ObjectId) => Promise<UserShop | null>,
 ) {
   {
     let cosmetics: SelectedItems = {
