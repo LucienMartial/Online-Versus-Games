@@ -1,31 +1,24 @@
 import {
-  StrictMode,
   Dispatch,
+  StrictMode,
   useCallback,
+  useContext,
   useEffect,
   useState,
-  useContext,
 } from "react";
-import { GameScene } from "../../disc-war/game";
+import { DiscWarScene } from "../../disc-war/game";
 import {
   EndGamePlayerState,
   EndGameState,
   GameState,
-} from "../../../../app-shared/state";
+} from "../../../../app-shared/disc-war/state";
 import { useNavigate } from "react-router-dom";
-import ChatContainer from "../chat-components/ChatContainer";
+import ChatContainer from "../../components/chat-components/ChatContainer";
 import { Room } from "colyseus.js";
 import { FiUser } from "react-icons/fi";
-import ProfilePopup from "../user/ProfilePopup";
-import AppButton from "../lib/AppButton";
+import ProfilePopup from "../../components/user/ProfilePopup";
+import AppButton from "../../components/lib/AppButton";
 import { UserContext } from "../../App";
-
-interface EndScreenProps {
-  gameScene: GameScene;
-  endGameState: EndGameState;
-  setGameRoom: Dispatch<Room<GameState> | undefined>;
-  chatRoom: Room;
-}
 
 function PlayerRow({
   player,
@@ -41,7 +34,8 @@ function PlayerRow({
     <tr className="group hover:bg-slate-800">
       <td className="text-left py-5">
         <div className="flex items-center">
-          <span className="border-l-4 h-16 -mt-6 -mb-6 border-blue-900 group-hover:border-blue-400"></span>
+          <span className="border-l-4 h-16 -mt-6 -mb-6 border-blue-900 group-hover:border-blue-400">
+          </span>
           <button
             className="ml-4 text-lg"
             onClick={() => setProfileName(player.username)}
@@ -59,6 +53,13 @@ function PlayerRow({
       <td>{player.dashes}</td>
     </tr>
   );
+}
+
+interface EndScreenProps {
+  gameScene: DiscWarScene;
+  endGameState: EndGameState;
+  setGameRoom: Dispatch<Room<GameState> | undefined>;
+  chatRoom: Room;
 }
 
 function EndScreen({
@@ -84,7 +85,7 @@ function EndScreen({
         player={state}
         himself={id === gameScene.id}
         setProfileName={setProfileName}
-      />
+      />,
     );
   });
 

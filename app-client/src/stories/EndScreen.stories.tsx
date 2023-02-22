@@ -1,5 +1,5 @@
-import { ComponentStory, ComponentMeta } from "@storybook/react";
-import EndScreen from "../components/game/EndScreen";
+import { ComponentMeta, ComponentStory } from "@storybook/react";
+import EndScreen from "../disc-war/components/EndScreen";
 import { MemoryRouter } from "react-router-dom";
 
 export default {

@@ -107,6 +107,7 @@ class GameRoom extends Room<GameState> {
           chatEndGameRoom,
           {}
         );
+        // important/mandatory !
         client.send("end-game-chat-reservation", reservation);
         client.send("end-game", state);
       }

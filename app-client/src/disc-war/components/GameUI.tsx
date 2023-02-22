@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
-import { GameScene } from "../game";
+import { DiscWarScene } from "../game";
 import { StrictMode } from "react";
 import "./GameUI.css";
 
 interface GameUIProps {
-  gameScene: GameScene;
+  gameScene: DiscWarScene;
 }
 
-function GameUI({ gameScene }: GameUIProps) {
+function DiscWarUI({ gameScene }: GameUIProps) {
   const [respawnText, setRespawnText] = useState<string | undefined>();
   const [shieldText, setShieldText] = useState<string | undefined>();
   const [isRespawning, setIsRespawning] = useState(false);
@@ -23,7 +23,7 @@ function GameUI({ gameScene }: GameUIProps) {
     if (gameScene.lastState?.respawnTimer.active) setIsRespawning(true);
   };
 
-  gameScene.gameEngine.respawnTimer.onInactive = (ticks: number) => {
+  gameScene.gameEngine.respawnTimer.onInactive = () => {
     if (!gameScene.lastState?.respawnTimer.active) setIsRespawning(false);
   };
 
@@ -67,10 +67,9 @@ function GameUI({ gameScene }: GameUIProps) {
             </p>
           </div>
         )}
-        {/* <p id="test">Hello from GUI</p> */}
       </>
     </StrictMode>
   );
 }
 
-export default GameUI;
+export default DiscWarUI;

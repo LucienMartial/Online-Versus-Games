@@ -1,7 +1,7 @@
 import { Assets } from "@pixi/assets";
 import { Container } from "pixi.js";
 import { DiscWarEngine } from "../../../app-shared/disc-war/disc-war";
-import { Scene } from "../game/scene";
+import { GameScene } from "../game/scene";
 import { Graphics } from "../game/utils/graphics";
 import { PlayerRender, RenderObject } from "../game/renderer";
 import { DiscRender } from "./disc-render";
@@ -23,21 +23,17 @@ import { CosmeticAssets } from "../game/configs/assets-config";
 
 const PLAYER_GHOST = false;
 const DISC_GHOST = false;
-const ANIMATION_ASSETS_PATH = "../assets/animations/";
 
 /**
  * Game scene for the disc war game.
  * Render and manage inputs, all logic is in
  * the disc war game engine class.
  */
-class GameScene extends Scene {
+class DiscWarScene extends GameScene<GameState> {
   gameEngine: DiscWarEngine;
   mainPlayer: Player;
   mainPlayerRender?: PlayerRender;
   predictor: Predictor;
-  client: Client;
-  room: Room<GameState>;
-  id: string;
   mapFiltered: Container;
   lastState?: GameState;
   dashAnimManager!: DashAnimManager;
@@ -50,10 +46,7 @@ class GameScene extends Scene {
     client: Client,
     room: Room<GameState>
   ) {
-    super(viewport, sceneElement);
-    this.client = client;
-    this.room = room;
-    this.id = this.room.sessionId;
+    super(viewport, sceneElement, client, room);
     this.gameEngine = new DiscWarEngine(false, this.id);
     this.predictor = new Predictor(this.gameEngine, this.id, room);
     this.mainPlayer = this.gameEngine.addPlayer(this.id, true);
@@ -110,8 +103,6 @@ class GameScene extends Scene {
     this.mapFiltered = new Container();
     this.mapFiltered.sortableChildren = true;
 
-    // particles
-
     // dash animation
     const dashAnimContainer = new Container();
     this.mapFiltered.addChild(dashAnimContainer);
@@ -144,21 +135,6 @@ class GameScene extends Scene {
     this.mapFiltered.mask = mapRender.floorMask;
     this.mapFiltered.addChild(mapRender.floorMask);
     this.stage.addChild(this.mapFiltered);
-
-    // init character
-    // const characterRender = new RenderObject();
-    // characterRender.addChild(new Sprite(assets.character));
-    // characterRender.setOffset(150, 150);
-    // characterRender.onUpdate = (dt: number, now: number) => {
-    //   characterRender.rotate(-2.5 * dt);
-    //   characterRender.setPosition(
-    //     WORLD_WIDTH * 0.8,
-    //     WORLD_HEIGHT / 2 + Math.cos(now * 0.001) * 800
-    //   );
-    // };
-    // characterRender.update(0, 0);
-    // this.add(characterRender, false);
-    // this.stage.addChild(characterRender.container);
 
     // ghosts
     let discGhost: RenderObject;
@@ -322,4 +298,4 @@ class GameScene extends Scene {
   }
 }
 
-export { GameScene };
+export { DiscWarScene };

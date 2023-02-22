@@ -1,23 +1,30 @@
+import { Client, Room } from "colyseus.js";
 import { Viewport } from "pixi-viewport";
 import { Container, DisplayObject } from "pixi.js";
 import { RenderObject } from "./renderer";
 import { InputManager } from "./utils/inputs";
 
 /**
- * Abstract scene
+ * Abstract game scene using colyseus state as generic parameter
  */
-abstract class Scene {
+abstract class GameScene<T> {
   renderables: Set<RenderObject>;
   stage: Container<DisplayObject>;
   inputManager: InputManager;
   viewport: Viewport;
+  client: Client;
+  room: Room<T>;
+  id: string;
 
-  constructor(viewport: Viewport, sceneElement: HTMLElement) {
+  constructor(viewport: Viewport, sceneElement: HTMLElement, client: Client, room: Room<T>) {
     this.viewport = viewport;
     this.stage = new Container();
     this.stage.sortableChildren = true;
     this.inputManager = new InputManager(viewport, sceneElement);
     this.renderables = new Set<RenderObject>();
+    this.client = client;
+    this.room = room;
+    this.id = this.room.sessionId;
   }
 
   /**
@@ -75,4 +82,4 @@ abstract class Scene {
   }
 }
 
-export { Scene };
+export { GameScene };

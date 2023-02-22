@@ -32,7 +32,7 @@ class DiscRender extends RenderObject {
     this.mirror = Graphics.createMirror(
       this.display,
       shape.radius * 1.5,
-      false
+      false,
     );
     this.mirror.position = this.position.clone();
 
