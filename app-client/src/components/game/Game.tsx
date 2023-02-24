@@ -94,12 +94,10 @@ function Game<T, E, G extends GameScene<T>>(
 
     // resize
     const resize = () => {
-      const desiredHeight = screenIsTouchable
-        ? window.innerHeight / 1.5
-        : window.innerHeight;
-      app.renderer.resize(window.innerWidth, desiredHeight);
+      const desiredHeight = screenIsTouchable ? window.innerHeight / 1.5 : window.innerHeight;
+      app.renderer.resize(document.documentElement.clientWidth, desiredHeight);
       gameScene.stage.filterArea = app.renderer.screen;
-      viewport.resize(window.innerWidth, desiredHeight);
+      viewport.resize(document.documentElement.clientWidth, desiredHeight);
       viewport.fit();
       viewport.moveCenter(WORLD_WIDTH / 2, WORLD_HEIGHT / 2);
     };
