@@ -1,6 +1,8 @@
 import { Client } from "colyseus";
+import { Player } from "../../app-shared/tag-war/player.js";
 import { EndGameState } from "../../app-shared/tag-war/state/end-game-state.js";
 import { GameState } from "../../app-shared/tag-war/state/game-state.js";
+import { PlayerState } from "../../app-shared/tag-war/state/player-state.js";
 import { TagWarEngine } from "../../app-shared/tag-war/tag-war.js";
 import {
   DEFAULT_TAGWAR_STATS,
@@ -13,6 +15,7 @@ import { GameParams, GameRoom } from "../rooms/game-room.js";
 const COINS_PER_LOSE = 10;
 const COINS_PER_WIN = 20;
 const MAX_INPUTS = 50;
+const RECONNECTION_TIME = 10;
 
 interface UserData {
   inputBuffer: CBuffer<InputsData>;
@@ -27,7 +30,7 @@ class TagWarRoom extends GameRoom<GameState, TagWarEngine, TagWarStats> {
     this.onMessage("*", (client, type, message) => {
       switch (type) {
         case "input":
-          console.log(client.id, message);
+          client.userData.inputBuffer.push(message);
           break;
         default:
           console.log("invalid message");
@@ -48,16 +51,38 @@ class TagWarRoom extends GameRoom<GameState, TagWarEngine, TagWarStats> {
   }
 
   onJoin(client: Client) {
+    console.log("tagwar: client joined", client.id);
     // contains username and id by default
     client.userData = {
       inputBuffer: new CBuffer<InputsData>(MAX_INPUTS),
       ...client.userData,
     };
-    console.log("tagwar: client joined", client.id);
+    const player = this.gameEngine.addPlayer(client.id);
+    const playerState = new PlayerState();
+    playerState.sync(player);
+    this.state.players.set(client.id, playerState);
+    this.nbClient += 1;
   }
 
-  async onLeave(client: Client, _consented: boolean) {
+  async onLeave(client: Client, consented: boolean) {
     console.log("tagwar: client leaved", client.id);
+    this.nbClient -= 1;
+    this.clientsMap.delete(client.id);
+    try {
+      if (consented) throw new Error("consented leave");
+      if (this.nbClient <= 0) throw new Error("no players left");
+      console.log("wait reconnection");
+      await this.allowReconnection(client, RECONNECTION_TIME);
+      console.log("client reconnected", client.id);
+      this.nbClient += 1;
+    } catch (e) {
+      console.log("remove player");
+      this.gameEngine.removePlayer(client.id);
+      this.state.players.delete(client.id);
+      if (e instanceof Error) {
+        console.log("client could not reconnect", e.message);
+      }
+    }
   }
 
   update(dt: number) {
@@ -68,8 +93,17 @@ class TagWarRoom extends GameRoom<GameState, TagWarEngine, TagWarStats> {
       this.gameEngine.processInput(inputData.inputs, client.id);
     }
 
-    // Update the game simulation
+    // update the game simulation
     this.gameEngine.fixedUpdate(dt * 0.001);
+
+    // sync and send new state to clients
+    this.state.sync(this.gameEngine);
+    for (const player of this.gameEngine.get<Player>("players")) {
+      const playerState = this.state.players.get(player.id);
+      if (!playerState) continue;
+      playerState.sync(player);
+      this.state.players.set(player.id, playerState);
+    }
   }
 }
 
