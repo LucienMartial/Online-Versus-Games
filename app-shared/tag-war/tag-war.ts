@@ -27,7 +27,7 @@ class TagWarEngine extends GameEngine {
     this.removeById("players", id);
   }
 
-  getPlayer(id: string): Player {
+  getPlayer(id: string): Player | undefined {
     return this.getById<Player>("players", id);
   }
 }

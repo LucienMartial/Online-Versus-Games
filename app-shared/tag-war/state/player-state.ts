@@ -4,9 +4,9 @@ import { Player } from "../player.js";
 
 class PlayerState extends Schema {
   @type("number")
-  x: number;
+  x: number = 0;
   @type("number")
-  y: number;
+  y: number = 0;
 
   // cosmetics
   @type(CosmeticState)
