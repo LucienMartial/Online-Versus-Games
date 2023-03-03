@@ -9,9 +9,8 @@ const KeyBind: Record<KeyInputs, string[]> = {
   right: ["KeyD", "ArrowRight"],
   up: ["KeyW", "KeyZ", "ArrowUp"],
   down: ["KeyS", "ArrowDown"],
-  dash: ["Space"],
-  counter: ["ShiftLeft"],
-  curve: ["KeyE"],
+  space: ["Space"],
+  shift: ["ShiftLeft"],
 };
 
 class InputManager {
@@ -19,6 +18,7 @@ class InputManager {
   keyInputs: Record<KeyInputs, boolean>;
   viewport: Viewport;
   inputButtons?: InputButtons;
+  rightClickSwitch: boolean;
 
   constructor(
     viewport: Viewport,
@@ -30,11 +30,9 @@ class InputManager {
       right: false,
       up: false,
       down: false,
-      dash: false,
-      counter: false,
-      curve: false,
+      space: false,
+      shift: false,
     };
-
     this.inputs = {
       keys: this.keyInputs,
       mainShootAction: false,
@@ -42,40 +40,45 @@ class InputManager {
       mousePos: new SAT.Vector(0, 0),
     };
 
+    this.rightClickSwitch = false;
     document.body.onkeydown = this.handleKey.bind(this);
     document.body.onkeyup = this.handleKey.bind(this);
-    document.body.onmousedown = (e) =>
+    document.body.onmousedown = (e) => {
       this.handleMouseOrTouch({
         activate: true,
         target: e.target,
         button: e.button,
         x: e.x,
         y: e.y,
-      });
-    document.body.onmouseup = (e) =>
+      }, true);
+    };
+    document.body.onmouseup = (e) => {
       this.handleMouseOrTouch({
         activate: false,
         target: e.target,
         button: e.button,
         x: e.x,
         y: e.y,
-      });
-    document.body.ontouchstart = (e) =>
+      }, true);
+    };
+    document.body.ontouchstart = (e) => {
       this.handleMouseOrTouch({
         activate: true,
         target: e.target,
         button: 0,
         x: e.touches[e.touches.length - 1].clientX,
         y: e.touches[e.touches.length - 1].clientY,
-      });
-    document.body.ontouchend = (e) =>
+      }, false);
+    };
+    document.body.ontouchend = (e) => {
       this.handleMouseOrTouch({
         activate: false,
         target: e.target,
         button: 0,
         x: e.changedTouches[0].clientX,
         y: e.changedTouches[0].clientY,
-      });
+      }, false);
+    };
     gameElememt.oncontextmenu = (e) => e.preventDefault();
   }
 
@@ -83,9 +86,9 @@ class InputManager {
     this.inputButtons = inputButton;
   }
 
-  handleMouseOrTouch(e: gameInputEvent) {
+  handleMouseOrTouch(e: gameInputEvent, mouse: boolean) {
     e = e || window.event;
-    if (this.inputButtons) {
+    if (this.inputButtons && !mouse) {
       switch (e.target) {
         case this.inputButtons.left: {
           this.keyInputs.left = e.activate;
@@ -103,25 +106,27 @@ class InputManager {
           this.keyInputs.down = e.activate;
           return;
         }
-        case this.inputButtons.dash: {
-          this.keyInputs.dash = e.activate;
+        case this.inputButtons.space: {
+          this.keyInputs.space = e.activate;
           return;
         }
-        case this.inputButtons.counter: {
-          this.keyInputs.counter = e.activate;
+        case this.inputButtons.shift: {
+          this.keyInputs.shift = e.activate;
           return;
         }
-        case this.inputButtons.curve: {
-          this.keyInputs.curve = e.activate;
+        case this.inputButtons.rightClick: {
+          if (e.activate === true) {
+            this.rightClickSwitch = !this.rightClickSwitch;
+          }
           return;
         }
         default:
           break;
       }
     }
-    if (e.button === 0 && !this.keyInputs.curve) {
+    if (e.button === 0 && !this.rightClickSwitch) {
       this.inputs.mainShootAction = e.activate;
-    } else if (e.button === 2 || (e.button === 0 && this.keyInputs.curve)) {
+    } else if (e.button === 2 || (e.button === 0 && this.rightClickSwitch)) {
       this.inputs.secondaryShootAction = e.activate;
     }
     const mousePos = this.viewport.toWorld(e.x, e.y);

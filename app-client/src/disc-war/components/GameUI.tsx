@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from "react";
 import { DiscWarScene } from "../game";
-import { StrictMode } from "react";
 import "./GameUI.css";
 import GameKeyboard from "../../components/game/GameKeyboard";
 
@@ -69,9 +68,9 @@ function DiscWarUI({ gameScene }: GameUIProps) {
       right: rightButton.current!,
       up: upButton.current!,
       down: downButton.current!,
-      dash: dashButton.current!,
-      counter: counterButton.current!,
-      curve: curveButton.current!,
+      space: dashButton.current!,
+      shift: counterButton.current!,
+      rightClick: curveButton.current!,
     });
   }, []);
 

@@ -24,8 +24,11 @@ class TagWarRoom extends GameRoom<GameState, TagWarEngine, TagWarStats> {
     this.setState(new GameState());
     console.log("tag war room created");
 
-    this.onMessage("*", (_client, type, _message) => {
+    this.onMessage("*", (client, type, message) => {
       switch (type) {
+        case "input":
+          console.log(client.id, message);
+          break;
         default:
           console.log("invalid message");
           break;
@@ -51,9 +54,6 @@ class TagWarRoom extends GameRoom<GameState, TagWarEngine, TagWarStats> {
       ...client.userData,
     };
     console.log("tagwar: client joined", client.id);
-    setTimeout(() => {
-      this.gameEngine.endGame();
-    }, 2000);
   }
 
   async onLeave(client: Client, _consented: boolean) {

@@ -1,6 +1,12 @@
 import SAT from "sat";
 
-type KeyInputs = "left" | "right" | "up" | "down" | "dash" | "counter" | "curve";
+type KeyInputs =
+  | "left"
+  | "right"
+  | "up"
+  | "down"
+  | "space"
+  | "shift";
 
 interface Inputs {
   keys: Record<KeyInputs, boolean>;
@@ -14,4 +20,4 @@ interface InputsData {
   inputs: Inputs;
 }
 
-export type { KeyInputs, InputsData, Inputs };
+export type { Inputs, InputsData, KeyInputs };
