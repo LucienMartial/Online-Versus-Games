@@ -9,8 +9,21 @@ class TagWarEngine extends GameEngine {
   }
 
   sync(_state: GameState) {}
-  processInput(_inputs: Inputs, _id: string) {}
-  step(_dt: number): void {}
+
+  processInput(inputs: Inputs, id: string) {
+    const player = this.getPlayer(id);
+    if (!player) return;
+    player.processInput(inputs);
+  }
+
+  step(dt: number): void {
+    // update players
+    for (const player of this.get<Player>("players")) {
+      player.update(dt);
+    }
+    // apply physics
+    this.physicEngine.step(dt);
+  }
 
   /**
    * Player

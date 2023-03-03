@@ -29,9 +29,10 @@ class TagWarScene extends GameScene<GameState> {
     this.add(this.mainPlayerRender, true);
 
     // room events
-    this.room.onStateChange.once(this.initGame);
-    this.room.state.players.onAdd = this.addPlayer;
-    this.room.state.players.onRemove = this.removePlayer;
+    this.room.onStateChange.once(this.initGame.bind(this));
+    this.room.state.players.onAdd = this.addPlayer.bind(this);
+    this.room.state.players.onRemove = this.removePlayer.bind(this);
+    this.room.onStateChange(this.sync.bind(this));
   }
 
   destroy() {
@@ -42,6 +43,15 @@ class TagWarScene extends GameScene<GameState> {
     console.log("basic state");
     for (const [id, playerState] of state.players.entries()) {
       this.addPlayer(playerState, id);
+    }
+  }
+
+  sync(state: GameState) {
+    // sync players
+    for (const [id, playerState] of state.players.entries()) {
+      const player = this.gameEngine.getPlayer(id);
+      if (!player) continue;
+      player.lerpTo(playerState.x, playerState.y, 0.8);
     }
   }
 
@@ -76,11 +86,11 @@ class TagWarScene extends GameScene<GameState> {
   }
 
   removePlayer(_state: PlayerState, id: string) {
+    console.log("leaved");
     if (this.id === id) return;
     console.log("player with id", id, "leaved the game");
     this.gameEngine.removePlayer(id);
-    const object = this.getById(id);
-    if (object) this.remove(object);
+    this.removeById(id);
   }
 }
 
