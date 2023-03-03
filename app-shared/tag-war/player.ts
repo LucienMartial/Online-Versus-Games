@@ -1,6 +1,7 @@
 import SAT from "sat";
 import { BodyEntity } from "../game/body-entity.js";
 import { BoxShape } from "../physics/collision.js";
+import { SelectedItems } from "../types/index.js";
 import { Inputs } from "../types/inputs.js";
 import { PlayerState } from "./state/player-state.js";
 
@@ -13,6 +14,9 @@ const MAX_SPEED = 400;
 class Player extends BodyEntity {
   private isPuppet: boolean;
 
+  // cosmetics
+  cosmetics: SelectedItems;
+
   // movement
   direction: SAT.Vector;
 
@@ -23,6 +27,9 @@ class Player extends BodyEntity {
     this.isPuppet = isPuppet;
     this.friction = new SAT.Vector();
     this.direction = new SAT.Vector();
+
+    // cosmetics
+    this.cosmetics = { skinID: -1, hatID: -2, faceID: -3 };
   }
 
   sync(state: PlayerState) {

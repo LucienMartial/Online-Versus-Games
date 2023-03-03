@@ -1,21 +1,34 @@
 import { BoxShape } from "../../../app-shared/physics";
 import { Player } from "../../../app-shared/tag-war/player";
+import { CosmeticAssets } from "../game/configs/assets-config";
 import { RenderObject } from "../game/renderer";
+import { Cosmetics } from "../game/renderer/cosmetics/cosmetics";
 import { Graphics } from "../game/utils/graphics";
+import * as PIXI from "pixi.js";
 
 class PlayerRender extends RenderObject {
   player: Player;
+  cosmetics: Cosmetics;
+  display: PIXI.Graphics;
 
-  constructor(player: Player, id: string) {
+  constructor(player: Player, id: string, cosmeticsAssets: CosmeticAssets) {
     super(id);
     this.player = player;
+
+    // display
     const shape = player.collisionShape as BoxShape;
-    const display = Graphics.createRectangle(
+    this.display = Graphics.createRectangle(
       shape.width,
       shape.height,
       0xffffff,
     );
-    this.addChild(display);
+    this.addChild(this.display);
+
+    // cosmetics
+    this.cosmetics = new Cosmetics(this, cosmeticsAssets);
+    this.cosmetics.loadCosmetics(player.cosmetics);
+    this.cosmetics.container.zIndex = 1;
+    this.addChild(this.cosmetics.container);
   }
 
   update(dt: number, now: number) {

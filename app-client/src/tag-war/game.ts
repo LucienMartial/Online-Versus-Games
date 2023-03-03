@@ -1,10 +1,13 @@
+import { Assets } from "@pixi/assets";
 import { Client, Room } from "colyseus.js";
 import { Viewport } from "pixi-viewport";
+import { CosmeticState } from "../../../app-shared/state/cosmetic-state";
 import { Player } from "../../../app-shared/tag-war/player";
 import { PlayerState } from "../../../app-shared/tag-war/state";
 import { GameState } from "../../../app-shared/tag-war/state";
 import { TagWarEngine } from "../../../app-shared/tag-war/tag-war";
 import { InputsData } from "../../../app-shared/types";
+import { CosmeticAssets } from "../game/configs/assets-config";
 import { GameScene } from "../game/scene";
 import { PlayerRender } from "./player-render";
 
@@ -12,6 +15,7 @@ class TagWarScene extends GameScene<GameState> {
   gameEngine: TagWarEngine;
   mainPlayer: Player;
   mainPlayerRender!: PlayerRender;
+  cosmeticsAssets!: CosmeticAssets;
 
   constructor(
     viewport: Viewport,
@@ -25,7 +29,14 @@ class TagWarScene extends GameScene<GameState> {
   }
 
   async load(): Promise<void> {
-    this.mainPlayerRender = new PlayerRender(this.mainPlayer, this.id);
+    this.cosmeticsAssets = await Assets.loadBundle("cosmetics");
+
+    // player
+    this.mainPlayerRender = new PlayerRender(
+      this.mainPlayer,
+      this.id,
+      this.cosmeticsAssets,
+    );
     this.add(this.mainPlayerRender, true);
 
     // room events
@@ -36,6 +47,7 @@ class TagWarScene extends GameScene<GameState> {
   }
 
   destroy() {
+    Assets.unload("cosmetics");
     super.destroy();
   }
 
@@ -74,14 +86,25 @@ class TagWarScene extends GameScene<GameState> {
    * Player
    */
 
-  addPlayer(_state: PlayerState, id: string) {
+  setupPlayerCosmetics(player: Player, cosmetic: CosmeticState) {
+    player.cosmetics.faceID = cosmetic.faceID;
+    player.cosmetics.skinID = cosmetic.skinID;
+    player.cosmetics.hatID = cosmetic.hatID;
+  }
+
+  addPlayer(state: PlayerState, id: string) {
     // player already exist
-    if (this.id === id) return;
+    if (this.id === id) {
+      this.setupPlayerCosmetics(this.mainPlayer, state.cosmetic);
+      this.mainPlayerRender.cosmetics.loadCosmetics(this.mainPlayer.cosmetics);
+      return;
+    }
     if (this.gameEngine.getPlayer(id)) return;
     // add player
     console.log("new player with id", id, "joined the game");
     const player = this.gameEngine.addPlayer(id);
-    const playerRender = new PlayerRender(player, id);
+    this.setupPlayerCosmetics(player, state.cosmetic);
+    const playerRender = new PlayerRender(player, id, this.cosmeticsAssets);
     this.add(playerRender, true);
   }
 

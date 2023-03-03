@@ -11,6 +11,7 @@ import {
 import { InputsData } from "../../app-shared/types/inputs.js";
 import { CBuffer } from "../../app-shared/utils/cbuffer.js";
 import { GameParams, GameRoom } from "../rooms/game-room.js";
+import { syncCosmetics } from "../utils/commands.js";
 
 const COINS_PER_LOSE = 10;
 const COINS_PER_WIN = 20;
@@ -50,7 +51,7 @@ class TagWarRoom extends GameRoom<GameState, TagWarEngine, TagWarStats> {
     );
   }
 
-  onJoin(client: Client) {
+  async onJoin(client: Client) {
     console.log("tagwar: client joined", client.id);
     // contains username and id by default
     client.userData = {
@@ -60,6 +61,7 @@ class TagWarRoom extends GameRoom<GameState, TagWarEngine, TagWarStats> {
     const player = this.gameEngine.addPlayer(client.id);
     const playerState = new PlayerState();
     playerState.sync(player);
+    await syncCosmetics(client, playerState, this.dbGetUserShop);
     this.state.players.set(client.id, playerState);
     this.nbClient += 1;
   }
@@ -76,7 +78,6 @@ class TagWarRoom extends GameRoom<GameState, TagWarEngine, TagWarStats> {
       console.log("client reconnected", client.id);
       this.nbClient += 1;
     } catch (e) {
-      console.log("remove player");
       this.gameEngine.removePlayer(client.id);
       this.state.players.delete(client.id);
       if (e instanceof Error) {
