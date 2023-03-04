@@ -30,6 +30,9 @@ class TagWarRoom extends GameRoom<GameState, TagWarEngine, TagWarStats> {
         case "input":
           client.userData.inputBuffer.push(message);
           break;
+        case "ping":
+          client.send("pong");
+          break;
         default:
           console.log("invalid message");
           break;

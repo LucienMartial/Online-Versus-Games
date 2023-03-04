@@ -1,4 +1,4 @@
-import { StrictMode } from "react";
+import { StrictMode, useState } from "react";
 import { TagWarScene } from "../game";
 
 interface GameUIProps {
@@ -6,9 +6,15 @@ interface GameUIProps {
 }
 
 function TagWarUI({ gameScene }: GameUIProps) {
-  <>
-    <p>Hello</p>
-  </>;
+  const [ping, setPing] = useState(gameScene.pingInterval);
+
+  setInterval(() => {
+    setPing(Math.floor(gameScene.pingInterval));
+  }, 200);
+
+  return (<>
+    <p>Ping {ping}</p>
+  </>);
 }
 
 export { TagWarUI };

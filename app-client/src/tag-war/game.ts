@@ -10,12 +10,16 @@ import { InputsData } from "../../../app-shared/types";
 import { CosmeticAssets } from "../game/configs/assets-config";
 import { GameScene } from "../game/scene";
 import { PlayerRender } from "./player-render";
+import { CBuffer } from "../../../app-shared/utils";
 
 class TagWarScene extends GameScene<GameState> {
   gameEngine: TagWarEngine;
   mainPlayer: Player;
   mainPlayerRender!: PlayerRender;
   cosmeticsAssets!: CosmeticAssets;
+  lastPingTime: Date = new Date();
+  pingInterval: number = 0;
+  averagePingBuffer: CBuffer<number> = new CBuffer(500);
 
   constructor(
     viewport: Viewport,
@@ -44,6 +48,19 @@ class TagWarScene extends GameScene<GameState> {
     this.room.state.players.onAdd = this.addPlayer.bind(this);
     this.room.state.players.onRemove = this.removePlayer.bind(this);
     this.room.onStateChange(this.sync.bind(this));
+
+    this.room.onMessage("pong", () => {
+      const now = new Date();
+      const ping = now.getTime() - this.lastPingTime.getTime();
+      this.averagePingBuffer.push(ping);
+      
+      // compute average ping
+      this.pingInterval = 0;
+      for (const ping of this.averagePingBuffer.toArray()) {
+        this.pingInterval += ping;
+      }
+      this.pingInterval /= this.averagePingBuffer.size();
+    });
   }
 
   destroy() {
@@ -63,7 +80,7 @@ class TagWarScene extends GameScene<GameState> {
     for (const [id, playerState] of state.players.entries()) {
       const player = this.gameEngine.getPlayer(id);
       if (!player) continue;
-      player.lerpTo(playerState.x, playerState.y, 0.8);
+      player.sync(playerState);
     }
   }
 
@@ -80,6 +97,10 @@ class TagWarScene extends GameScene<GameState> {
     // process input
     this.room.send("input", inputData);
     this.gameEngine.processInput(inputData.inputs, this.id);
+
+    // send ping to the room
+    this.lastPingTime = new Date();
+    this.room.send("ping");
   }
 
   /**

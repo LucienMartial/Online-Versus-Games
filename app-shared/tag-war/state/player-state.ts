@@ -7,6 +7,8 @@ class PlayerState extends Schema {
   x: number = 0;
   @type("number")
   y: number = 0;
+  @type("boolean")
+  collisionWithOther: boolean = false;
 
   // cosmetics
   @type(CosmeticState)
@@ -15,6 +17,7 @@ class PlayerState extends Schema {
   sync(player: Player) {
     this.x = player.position.x;
     this.y = player.position.y;
+    this.collisionWithOther = player.collisionWithOther;
   }
 }
 

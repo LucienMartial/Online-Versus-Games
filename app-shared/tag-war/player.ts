@@ -13,6 +13,7 @@ const MAX_SPEED = 400;
 
 class Player extends BodyEntity {
   private isPuppet: boolean;
+  collisionWithOther: boolean;
 
   // cosmetics
   cosmetics: SelectedItems;
@@ -27,6 +28,7 @@ class Player extends BodyEntity {
     this.isPuppet = isPuppet;
     this.friction = new SAT.Vector();
     this.direction = new SAT.Vector();
+    this.collisionWithOther = false;
 
     // cosmetics
     this.cosmetics = { skinID: -1, hatID: -2, faceID: -3 };
@@ -34,11 +36,18 @@ class Player extends BodyEntity {
 
   sync(state: PlayerState) {
     this.setPosition(state.x, state.y);
+    this.collisionWithOther = state.collisionWithOther;
+    if (this.collisionWithOther)
+      console.log("collision with other");
   }
 
   // will surely need collisions
-  onCollision(_response: SAT.Response, _other: BodyEntity) {
+  onCollision(response: SAT.Response, other: BodyEntity) {
     if (this.isPuppet) return;
+
+    if (!other.static) {
+      this.collisionWithOther = true;
+    }
   }
 
   processInput(inputs: Inputs) {
@@ -62,6 +71,7 @@ class Player extends BodyEntity {
 
   update(_dt: number) {
     if (this.isPuppet) return;
+    this.collisionWithOther = false;
   }
 }
 
