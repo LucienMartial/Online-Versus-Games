@@ -56,10 +56,10 @@ class Player extends BodyEntity {
 
     // get direction
     this.direction = new SAT.Vector();
-    if (inputs.keys.left) this.direction.x = -1;
-    else if (inputs.keys.right) this.direction.x = 1;
-    if (inputs.keys.up) this.direction.y = -1;
-    else if (inputs.keys.down) this.direction.y = 1;
+    if (inputs.keys.left) this.direction.x -= 1;
+    if (inputs.keys.right) this.direction.x += 1;
+    if (inputs.keys.up) this.direction.y -= 1;
+    if (inputs.keys.down) this.direction.y += 1;
 
     // do not continue if there is no movement
     if (!(this.direction.len() > 0)) return;
