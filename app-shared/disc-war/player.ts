@@ -58,7 +58,7 @@ class Player extends BodyEntity {
     id: string,
     isPuppet: boolean,
     deadCallback: Function,
-    disc: Disc
+    disc: Disc,
   ) {
     // default
     const collisionShape = new BoxShape(WIDTH, HEIGHT);
@@ -146,7 +146,7 @@ class Player extends BodyEntity {
 
     // counter ability
     if (
-      inputs.keys.counter &&
+      inputs.keys.shift &&
       !this.counterTimer.active &&
       !this.counterCooldownTimer.active &&
       !this.possesDisc
@@ -158,7 +158,9 @@ class Player extends BodyEntity {
     }
 
     // shoot ability
-    if ((inputs.mainShootAction || inputs.secondaryShootAction) && this.possesDisc) {
+    if (
+      (inputs.mainShootAction || inputs.secondaryShootAction) && this.possesDisc
+    ) {
       // if shooting
       // stats
       if (inputs.secondaryShootAction) this.curveShotCounter += 1;
@@ -191,7 +193,7 @@ class Player extends BodyEntity {
     this.setVelocity(force.x, force.y);
 
     // dash ability
-    if (inputs.keys.dash && !this.dashCooldownTimer.active) {
+    if (inputs.keys.space && !this.dashCooldownTimer.active) {
       this.dashCounter += 1;
       this.maxSpeed = DASH_SPEED;
       this.dashForce = this.direction.clone().scale(DASH_SPEED);

@@ -1,7 +1,7 @@
 import { Player } from "../../../../app-shared/disc-war";
 import { BoxShape } from "../../../../app-shared/physics";
 import { RenderObject } from "./render-object";
-import { Watcher, Graphics } from "../utils";
+import { Graphics, Watcher } from "../utils";
 import * as PIXI from "pixi.js";
 import { DashAnimManager } from "../../disc-war/effects/dash-anim-manager";
 import { DeathAnimManager } from "../../disc-war/effects/death-anim-manager";
@@ -30,7 +30,7 @@ class PlayerRender extends RenderObject {
     dashAnim: DashAnimManager,
     deathAnim: DeathAnimManager,
     viewports: Viewport,
-    cosmeticsAssets: CosmeticAssets
+    cosmeticsAssets: CosmeticAssets,
   ) {
     super(id);
     this.viewports = viewports;
@@ -39,7 +39,7 @@ class PlayerRender extends RenderObject {
     this.display = Graphics.createRectangle(
       shape.width,
       shape.height,
-      0xffffff
+      0xffffff,
     );
     this.display.tint = DEFAULT_SKIN;
     this.addChild(this.display);
@@ -112,7 +112,7 @@ class PlayerRender extends RenderObject {
       posX: number,
       posY: number,
       width: number,
-      height: number
+      height: number,
     ) => {
       this.deathAnim.newDeathAnim(posX, posY);
     };

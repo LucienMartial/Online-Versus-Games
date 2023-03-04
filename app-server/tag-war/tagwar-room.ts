@@ -9,10 +9,10 @@ import {
 import { InputsData } from "../../app-shared/types/inputs.js";
 import { CBuffer } from "../../app-shared/utils/cbuffer.js";
 import { GameParams, GameRoom } from "../rooms/game-room.js";
+import { OnJoinCommand, OnLeaveCommand, OnSyncCommand } from "./commands.js";
 
 const COINS_PER_LOSE = 10;
 const COINS_PER_WIN = 20;
-const MAX_INPUTS = 50;
 
 interface UserData {
   inputBuffer: CBuffer<InputsData>;
@@ -24,8 +24,14 @@ class TagWarRoom extends GameRoom<GameState, TagWarEngine, TagWarStats> {
     this.setState(new GameState());
     console.log("tag war room created");
 
-    this.onMessage("*", (_client, type, _message) => {
+    this.onMessage("*", (client, type, message) => {
       switch (type) {
+        case "input":
+          client.userData.inputBuffer.push(message);
+          break;
+        case "ping":
+          client.send("pong");
+          break;
         default:
           console.log("invalid message");
           break;
@@ -44,32 +50,31 @@ class TagWarRoom extends GameRoom<GameState, TagWarEngine, TagWarStats> {
     );
   }
 
-  onJoin(client: Client) {
-    // contains username and id by default
-    client.userData = {
-      inputBuffer: new CBuffer<InputsData>(MAX_INPUTS),
-      ...client.userData,
-    };
-    console.log("tagwar: client joined", client.id);
-    setTimeout(() => {
-      this.gameEngine.endGame();
-    }, 2000);
+  async onJoin(client: Client) {
+    this.dispatcher.dispatch(new OnJoinCommand(), {
+      client: client,
+    });
   }
 
-  async onLeave(client: Client, _consented: boolean) {
-    console.log("tagwar: client leaved", client.id);
+  async onLeave(client: Client, consented: boolean) {
+    this.dispatcher.dispatch(new OnLeaveCommand(), {
+      client: client,
+      consented: consented,
+    });
   }
 
   update(dt: number) {
+    // process input one at a time from user's input buffer
     for (const client of this.clients) {
       const data = client.userData as UserData;
       const inputData = data.inputBuffer.shift();
       if (!inputData) continue;
       this.gameEngine.processInput(inputData.inputs, client.id);
     }
-
-    // Update the game simulation
+    // update the game simulation
     this.gameEngine.fixedUpdate(dt * 0.001);
+    // sync and send new state to clients
+    this.dispatcher.dispatch(new OnSyncCommand());
   }
 }
 

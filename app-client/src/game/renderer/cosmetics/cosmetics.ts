@@ -1,15 +1,15 @@
 import { PlayerRender } from "../player-render";
 import { CosmeticAssets } from "../../configs/assets-config";
-import { Container, Sprite, Texture } from "pixi.js";
+import { Container, Graphics, Sprite, Texture } from "pixi.js";
 import {
-  WIDTH,
   HEIGHT,
   PLAYER_RATIO,
+  WIDTH,
 } from "../../../../../app-shared/disc-war";
 import { SelectedItems } from "../../../../../app-shared/types";
 
 class Cosmetics {
-  playerRender: PlayerRender;
+  playerRender: { display: Graphics; reflection?: Graphics };
   cosmeticsAssets: CosmeticAssets;
   hatContainer: Container;
   hatReflection: Container;
@@ -18,7 +18,10 @@ class Cosmetics {
   container: Container;
   reflection: Container;
 
-  constructor(playerRender: PlayerRender, cosmeticsAssets: CosmeticAssets) {
+  constructor(
+    playerRender: { display: Graphics; reflection?: Graphics },
+    cosmeticsAssets: CosmeticAssets,
+  ) {
     this.playerRender = playerRender;
     this.cosmeticsAssets = cosmeticsAssets;
 
@@ -46,22 +49,30 @@ class Cosmetics {
     switch (skinID) {
       case 0:
         this.playerRender.display.tint = 0x990000;
-        this.playerRender.reflection.tint = 0x990000;
+        if (this.playerRender.reflection) {
+          this.playerRender.reflection.tint = 0x990000;
+        }
         break;
 
       case 1:
         this.playerRender.display.tint = 0x000099;
-        this.playerRender.reflection.tint = 0x000099;
+        if (this.playerRender.reflection) {
+          this.playerRender.reflection.tint = 0x000099;
+        }
         break;
 
       case 2:
         this.playerRender.display.tint = 0x009900;
-        this.playerRender.reflection.tint = 0x009900;
+        if (this.playerRender.reflection) {
+          this.playerRender.reflection.tint = 0x009900;
+        }
         break;
 
       case 3:
         this.playerRender.display.tint = 0x999900;
-        this.playerRender.reflection.tint = 0x999900;
+        if (this.playerRender.reflection) {
+          this.playerRender.reflection.tint = 0x999900;
+        }
         break;
 
       default:
@@ -106,7 +117,9 @@ class Cosmetics {
 
     if (sprite) {
       this.hatContainer.addChild(sprite);
-      this.addTextureReflection(sprite, this.hatReflection);
+      if (this.playerRender.reflection) {
+        this.addTextureReflection(sprite, this.hatReflection);
+      }
     }
   }
 
@@ -148,7 +161,9 @@ class Cosmetics {
 
     if (sprite) {
       this.faceContainer.addChild(sprite);
-      this.addTextureReflection(sprite, this.faceReflection);
+      if (this.playerRender.reflection) {
+        this.addTextureReflection(sprite, this.faceReflection);
+      }
     }
   }
 }
