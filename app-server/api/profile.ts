@@ -2,6 +2,7 @@ import { Request, Response, Router } from "express";
 import { DEFAULT_DISCWAR_STATS } from "../../app-shared/disc-war/types.js";
 import { Database } from "../database/database.js";
 import { AppError } from "../utils/error.js";
+import { DEFAULT_TAGWAR_STATS } from "../../app-shared/tag-war/types.js";
 
 export default function (db: Database): Router {
   const router = Router({ mergeParams: true });
@@ -21,6 +22,17 @@ export default function (db: Database): Router {
     const profile = await db.discWar.getProfile(
       user._id,
       DEFAULT_DISCWAR_STATS,
+    );
+    res.status(200).json(profile);
+  });
+
+  router.get("/profile/tag-war/:username", async (req: Request, res: Response) => {
+    const username = req.params.username;
+    const user = await db.searchUser(username);
+    if (!user) throw new AppError(400, "User does not exist");
+    const profile = await db.tagWar.getProfile(
+      user._id,
+      DEFAULT_TAGWAR_STATS,
     );
     res.status(200).json(profile);
   });
