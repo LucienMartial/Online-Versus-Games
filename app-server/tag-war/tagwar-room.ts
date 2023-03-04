@@ -1,5 +1,4 @@
 import { Client } from "colyseus";
-import { Player } from "../../app-shared/tag-war/player.js";
 import { EndGameState } from "../../app-shared/tag-war/state/end-game-state.js";
 import { GameState } from "../../app-shared/tag-war/state/game-state.js";
 import { TagWarEngine } from "../../app-shared/tag-war/tag-war.js";

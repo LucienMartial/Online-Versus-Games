@@ -14,6 +14,7 @@ class PlayerState extends Schema {
   @type(CosmeticState)
   cosmetic = new CosmeticState();
 
+  // get server auhtorative player and update network
   sync(player: Player) {
     this.x = player.position.x;
     this.y = player.position.y;

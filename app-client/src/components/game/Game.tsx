@@ -94,7 +94,9 @@ function Game<T, E, G extends GameScene<T>>(
 
     // resize
     const resize = () => {
-      const desiredHeight = screenIsTouchable ? window.innerHeight / 1.5 : window.innerHeight;
+      const desiredHeight = screenIsTouchable
+        ? window.innerHeight / 1.5
+        : window.innerHeight;
       app.renderer.resize(document.documentElement.clientWidth, desiredHeight);
       gameScene.stage.filterArea = app.renderer.screen;
       viewport.resize(document.documentElement.clientWidth, desiredHeight);

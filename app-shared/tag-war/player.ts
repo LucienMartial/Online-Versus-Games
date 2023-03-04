@@ -34,6 +34,7 @@ class Player extends BodyEntity {
     this.cosmetics = { skinID: -1, hatID: -2, faceID: -3 };
   }
 
+  // get server state and update client player
   sync(state: PlayerState) {
     this.setPosition(state.x, state.y);
     this.collisionWithOther = state.collisionWithOther;

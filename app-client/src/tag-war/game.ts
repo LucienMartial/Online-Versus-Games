@@ -41,7 +41,7 @@ class TagWarScene extends GameScene<GameState> {
       this.id,
       this.cosmeticsAssets,
     );
-    this.add(this.mainPlayerRender, true);
+    this.add(this.mainPlayerRender);
 
     // room events
     this.room.onStateChange.once(this.initGame.bind(this));
@@ -68,6 +68,7 @@ class TagWarScene extends GameScene<GameState> {
     super.destroy();
   }
 
+  // run 1 time when the game start and get server state
   initGame(state: GameState) {
     console.log("basic state");
     for (const [id, playerState] of state.players.entries()) {
@@ -75,6 +76,7 @@ class TagWarScene extends GameScene<GameState> {
     }
   }
 
+  // run every time server synchronize
   sync(state: GameState) {
     // sync players
     for (const [id, playerState] of state.players.entries()) {
