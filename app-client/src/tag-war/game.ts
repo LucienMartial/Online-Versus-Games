@@ -19,7 +19,8 @@ class TagWarScene extends GameScene<GameState> {
   cosmeticsAssets!: CosmeticAssets;
   lastPingTime: Date = new Date();
   pingInterval: number = 0;
-  averagePingBuffer: CBuffer<number> = new CBuffer(500);
+  averagePingBuffer: CBuffer<number> = new CBuffer(50);
+  receive: boolean = false;
 
   constructor(
     viewport: Viewport,
@@ -50,16 +51,18 @@ class TagWarScene extends GameScene<GameState> {
     this.room.onStateChange(this.sync.bind(this));
 
     this.room.onMessage("pong", () => {
+      this.receive = false;
       const now = new Date();
       const ping = now.getTime() - this.lastPingTime.getTime();
       this.averagePingBuffer.push(ping);
       
       // compute average ping
       this.pingInterval = 0;
-      for (const ping of this.averagePingBuffer.toArray()) {
+      const pingArray = this.averagePingBuffer.toArray();
+      for (const ping of pingArray) {
         this.pingInterval += ping;
       }
-      this.pingInterval /= this.averagePingBuffer.size();
+      this.pingInterval /= pingArray.length;
     });
   }
 
@@ -101,8 +104,11 @@ class TagWarScene extends GameScene<GameState> {
     this.gameEngine.processInput(inputData.inputs, this.id);
 
     // send ping to the room
-    this.lastPingTime = new Date();
-    this.room.send("ping");
+    if (!this.receive) {
+      this.lastPingTime = new Date();
+      this.room.send("ping");
+      this.receive = true;
+    }
   }
 
   /**
