@@ -9,11 +9,13 @@ export const WIDTH = 100;
 export const HEIGHT = 60;
 
 // movement
-const MAX_SPEED = 400;
+const MAX_SPEED = 350;
+const BOOST_SPEED = 600;
 
 class Player extends BodyEntity {
   private isPuppet: boolean;
   collisionWithOther: boolean;
+  boostEnabled: boolean = false;
 
   // cosmetics
   cosmetics: SelectedItems;
@@ -38,8 +40,6 @@ class Player extends BodyEntity {
   sync(state: PlayerState) {
     this.setPosition(state.x, state.y);
     this.collisionWithOther = state.collisionWithOther;
-    if (this.collisionWithOther)
-      console.log("collision with other");
   }
 
   // will surely need collisions
@@ -48,11 +48,21 @@ class Player extends BodyEntity {
 
     if (!other.static) {
       this.collisionWithOther = true;
+      return;
     }
+
+    this.move(-response.overlapV.x, -response.overlapV.y);
   }
 
   processInput(inputs: Inputs) {
     if (this.isPuppet || this.isDead) return;
+
+    // boost
+    if (inputs.keys.space) {
+      this.boostEnabled = true;
+    } else {
+      this.boostEnabled = false;
+    }
 
     // get direction
     this.direction = new SAT.Vector();
@@ -66,7 +76,8 @@ class Player extends BodyEntity {
 
     // move
     this.direction.normalize();
-    const force = this.direction.clone().scale(MAX_SPEED);
+    const SPEED = this.boostEnabled ? BOOST_SPEED : MAX_SPEED;
+    const force = this.direction.clone().scale(SPEED);
     this.setVelocity(force.x, force.y);
   }
 

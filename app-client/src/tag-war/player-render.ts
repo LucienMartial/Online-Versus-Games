@@ -22,6 +22,7 @@ class PlayerRender extends RenderObject {
       shape.height,
       0xffffff,
     );
+    this.setOffset(player.offset.x, player.offset.y);
     this.addChild(this.display);
 
     // cosmetics

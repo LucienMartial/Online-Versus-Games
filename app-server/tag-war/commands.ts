@@ -8,7 +8,7 @@ import { syncCosmetics } from "../utils/commands.js";
 import { TagWarRoom } from "./tagwar-room.js";
 
 const RECONNECTION_TIME = 10;
-const MAX_INPUTS = 50;
+const MAX_INPUTS = 5;
 
 class OnSyncCommand extends Command<TagWarRoom> {
   execute() {
