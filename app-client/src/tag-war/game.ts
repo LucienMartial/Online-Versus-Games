@@ -11,16 +11,22 @@ import { CosmeticAssets } from "../game/configs/assets-config";
 import { GameScene } from "../game/scene";
 import { PlayerRender } from "./player-render";
 import { CBuffer } from "../../../app-shared/utils";
+import { MapRender } from "./map-render";
+import { Container } from "pixi.js";
 
 class TagWarScene extends GameScene<GameState> {
   gameEngine: TagWarEngine;
   mainPlayer: Player;
   mainPlayerRender!: PlayerRender;
   cosmeticsAssets!: CosmeticAssets;
+  mapFiltered: Container;
   lastPingTime: Date = new Date();
   pingInterval: number = 0;
   averagePingBuffer: CBuffer<number> = new CBuffer(50);
   receive: boolean = false;
+  lastFrame: Date = new Date();
+  averageFps: number = 0;
+  averageFpsBuffer: CBuffer<number> = new CBuffer(50);
 
   constructor(
     viewport: Viewport,
@@ -31,27 +37,44 @@ class TagWarScene extends GameScene<GameState> {
     super(viewport, sceneElement, client, room);
     this.gameEngine = new TagWarEngine(false, this.id);
     this.mainPlayer = this.gameEngine.addPlayer(this.id);
+    this.mapFiltered = new Container();
   }
 
   async load(): Promise<void> {
     this.cosmeticsAssets = await Assets.loadBundle("cosmetics");
+    
+    this.mapFiltered = new Container();
+    this.mapFiltered.sortableChildren = true;
 
+    // map
+    const mapRender = new MapRender(this.gameEngine);
+    mapRender.wallsContainer.zIndex = 20;
+    this.stage.addChild(mapRender.wallsContainer);
+    this.add(mapRender);
+    
+    // player are displayed inside the map
+    this.mapFiltered.mask = mapRender.floorMask;
+    this.mapFiltered.addChild(mapRender.floorMask);
+    this.stage.addChild(this.mapFiltered);
+    
     // player
     this.mainPlayerRender = new PlayerRender(
       this.mainPlayer,
       this.id,
       this.cosmeticsAssets,
     );
-    this.add(this.mainPlayerRender);
-
+    this.mainPlayerRender.container.zIndex = 10;
+    this.add(this.mainPlayerRender, false);
+    this.mapFiltered.addChild(this.mainPlayerRender.container);
+    
     // room events
     this.room.onStateChange.once(this.initGame.bind(this));
     this.room.state.players.onAdd = this.addPlayer.bind(this);
     this.room.state.players.onRemove = this.removePlayer.bind(this);
     this.room.onStateChange(this.sync.bind(this));
 
+    // ping
     this.room.onMessage("pong", () => {
-      this.receive = false;
       const now = new Date();
       const ping = now.getTime() - this.lastPingTime.getTime();
       this.averagePingBuffer.push(ping);
@@ -63,6 +86,12 @@ class TagWarScene extends GameScene<GameState> {
         this.pingInterval += ping;
       }
       this.pingInterval /= pingArray.length;
+      this.receive = false;
+    });
+
+    // error with room
+    this.room.onError((code, message) => {
+      console.log("error occured:", code, message);
     });
   }
 
@@ -103,6 +132,20 @@ class TagWarScene extends GameScene<GameState> {
     this.room.send("input", inputData);
     this.gameEngine.processInput(inputData.inputs, this.id);
 
+    // compute time since last frame
+    let nowFrame = new Date();
+    let fps = 1000 / (nowFrame.getTime() - this.lastFrame.getTime());
+    this.averageFpsBuffer.push(fps);
+    this.lastFrame = nowFrame;
+
+    // compute average fps
+    this.averageFps = 0;
+    const fpsArray = this.averageFpsBuffer.toArray();
+    for (const fps of fpsArray) {
+      this.averageFps += fps;
+    }
+    this.averageFps /= fpsArray.length;
+
     // send ping to the room
     if (!this.receive) {
       this.lastPingTime = new Date();
@@ -134,15 +177,18 @@ class TagWarScene extends GameScene<GameState> {
     const player = this.gameEngine.addPlayer(id);
     this.setupPlayerCosmetics(player, state.cosmetic);
     const playerRender = new PlayerRender(player, id, this.cosmeticsAssets);
-    this.add(playerRender, true);
+    this.add(playerRender, false);
+    this.mapFiltered.addChild(playerRender.container);
   }
 
   removePlayer(_state: PlayerState, id: string) {
     console.log("leaved");
     if (this.id === id) return;
-    console.log("player with id", id, "leaved the game");
-    this.gameEngine.removePlayer(id);
-    this.removeById(id);
+    console.log("player with id", id, "leaved the game");  
+    const object = this.getById(id);
+    if (!object) return;
+    this.remove(object);
+    this.mapFiltered.removeChild(object.container);
   }
 }
 
