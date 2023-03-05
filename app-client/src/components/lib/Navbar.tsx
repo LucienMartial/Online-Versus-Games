@@ -48,7 +48,7 @@ function Navbar({ tryLogout }: NavbarProps) {
             <AppButton
               className="!w-full sm:w-fit"
               color={"regular"}
-              onClick={() => navigate("/home")}
+              href={"/home"}
             >
               Home
             </AppButton>
@@ -74,14 +74,14 @@ function Navbar({ tryLogout }: NavbarProps) {
             <AppButton
               className="!w-full sm:w-fit"
               color={"regular"}
-              onClick={() => navigate("/shop")}
+              href={"/shop"}
             >
               Shop
             </AppButton>
             <AppButton
               className="!w-full sm:w-fit"
               color={"regular"}
-              onClick={() => navigate("/user")}
+              href={"/user"}
             >
               Profile
             </AppButton>
