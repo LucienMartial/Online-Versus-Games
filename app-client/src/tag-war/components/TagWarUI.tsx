@@ -7,13 +7,15 @@ interface GameUIProps {
 
 function TagWarUI({ gameScene }: GameUIProps) {
   const [ping, setPing] = useState(gameScene.pingInterval);
+  const [fps, setFps] = useState(gameScene.averageFps);
 
   setInterval(() => {
     setPing(Math.floor(gameScene.pingInterval));
+    setFps(Math.floor(gameScene.averageFps));
   }, 200);
 
   return (<>
-    <p>Ping {ping}</p>
+    <p>{ping} ms{" "}{fps} fps</p>
   </>);
 }
 
