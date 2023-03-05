@@ -61,7 +61,7 @@ function GameQueue({ client, gameData, tryConnection, nbClients }: GameProps) {
         <div>
           {
             gameData.keybinds.map((keybinding) => (
-              <div className="grid grid-cols-2 px-2 even:bg-slate-300 odd:bg-slate-100 dark:even:bg-slate-800 dark:odd:bg-slate-700">
+              <div className="grid grid-cols-2 px-2 even:bg-slate-300 odd:bg-slate-100 dark:even:bg-slate-800 dark:odd:bg-slate-700" key={keybinding.key}>
                 <span className="text-left">{keybinding.key}</span>
                 <span className="text-right text-ellipsis overflow-hidden">{keybinding.description}</span>
               </div>

@@ -72,6 +72,7 @@ function Home({ tryConnection, client }: HomeProps) {
         <section className="grow px-3 flex flex-row flex-wrap gap-3">
           {gamesInfos.map((gameInfo) => (
             <GameQueue
+            key={gameInfo.name}
             gameData={gameInfo}
             tryConnection={tryConnection}
             nbClients={nbClients}
