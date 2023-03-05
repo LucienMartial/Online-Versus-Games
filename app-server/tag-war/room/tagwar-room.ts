@@ -1,15 +1,16 @@
 import { Client } from "colyseus";
-import { EndGameState } from "../../app-shared/tag-war/state/end-game-state.js";
-import { GameState } from "../../app-shared/tag-war/state/game-state.js";
-import { TagWarEngine } from "../../app-shared/tag-war/tag-war.js";
+import { EndGameState } from "../../../app-shared/tag-war/state/end-game-state.js";
+import { GameState } from "../../../app-shared/tag-war/state/game-state.js";
+import { TagWarEngine } from "../../../app-shared/tag-war/tag-war.js";
 import {
   DEFAULT_TAGWAR_STATS,
   TagWarStats,
-} from "../../app-shared/tag-war/types.js";
-import { InputsData } from "../../app-shared/types/inputs.js";
-import { CBuffer } from "../../app-shared/utils/cbuffer.js";
-import { GameParams, GameRoom } from "../rooms/game-room.js";
-import { OnJoinCommand, OnLeaveCommand, OnSyncCommand } from "./commands.js";
+} from "../../../app-shared/tag-war/types.js";
+import { InputsData } from "../../../app-shared/types/inputs.js";
+import { CBuffer } from "../../../app-shared/utils/cbuffer.js";
+import { GameParams, GameRoom } from "../../rooms/game-room.js";
+import { OnJoinCommand, OnLeaveCommand, OnSyncCommand } from "../commands.js";
+import { NB_MAPS } from "../../../app-shared/tag-war/configs/map-configs.js";
 
 const COINS_PER_LOSE = 10;
 const COINS_PER_WIN = 20;
@@ -19,10 +20,19 @@ interface UserData {
 }
 
 class TagWarRoom extends GameRoom<GameState, TagWarEngine, TagWarStats> {
+  thiefId: string | null = null;
+  copId: string | null = null;
+  maxClients = 2;
+
   onCreate(params: GameParams<TagWarEngine, TagWarStats>) {
     super.onCreate(params);
-    this.setState(new GameState());
+
+    const state = new GameState();
+    state.mapConfigId = Math.floor(Math.random() * NB_MAPS);
+
+    this.setState(state);
     console.log("tag war room created");
+    console.log("map config id", this.state.mapConfigId);
 
     this.onMessage("*", (client, type, message) => {
       switch (type) {

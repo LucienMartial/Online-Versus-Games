@@ -335,7 +335,7 @@ export default function Shop() {
             />
             <div className={"flex items-center min-h-0 h-full"}>
               <AppButton
-                className={"text-sm lg:text-2xl h-fit w-fit sm:w-72 sm:h-16"}
+                className={"text-sm lg:text-2xl h-fit w-fit sm:w-48"}
                 color={"regular"}
                 onClick={selectCharacterServer}
                 grayedOut={grayedOut}

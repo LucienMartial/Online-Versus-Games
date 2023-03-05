@@ -8,7 +8,7 @@ class Graphics {
   static createRectangle(
     width = 100,
     height = 100,
-    color = 0x990000
+    color = 0x990000,
   ): PIXI.Graphics {
     const obj = new PIXI.Graphics();
     obj.beginFill(color);
@@ -28,7 +28,7 @@ class Graphics {
   static createHollowCircle(
     radius = 100,
     outline = 10,
-    color = 0x990000
+    color = 0x990000,
   ): PIXI.Graphics {
     const obj = new PIXI.Graphics();
     obj.lineStyle(outline, color, 1, 0);
@@ -43,7 +43,7 @@ class Graphics {
     x2: number,
     y2: number,
     height: number,
-    color = 0x990000
+    color = 0x990000,
   ) {
     const obj = new PIXI.Graphics();
     obj.beginFill(color);
@@ -55,6 +55,24 @@ class Graphics {
     return obj;
   }
 
+  static createParallelogram(
+    x1: number,
+    y1: number,
+    x2: number,
+    y2: number,
+    height: number,
+    color = 0x990000,
+  ) {
+    const obj = new PIXI.Graphics();
+    obj.beginFill(color);
+    obj.moveTo(x1, y1);
+    obj.lineTo(x2, y2);
+    obj.lineTo(x2 + height / 2, y2 + height);
+    obj.lineTo(x1 + height / 2, y1 + height);
+    obj.endFill();
+    return obj;
+  }
+
   static createLine(
     x1: number,
     y1: number,
@@ -62,7 +80,7 @@ class Graphics {
     y2: number,
     thickness = 5,
     color = 0x990000,
-    cap = LINE_CAP.ROUND
+    cap = LINE_CAP.ROUND,
   ): PIXI.Graphics {
     const obj = new PIXI.Graphics();
     obj.lineStyle({

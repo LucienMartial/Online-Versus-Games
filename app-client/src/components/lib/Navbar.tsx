@@ -10,14 +10,21 @@ interface NavbarProps {
 function Navbar({ tryLogout }: NavbarProps) {
   const navigate = useNavigate();
   const searchbarRef = useRef<HTMLInputElement>(null);
+  const navTogglerRef = useRef<HTMLInputElement>(null);
 
   const handleUserSearch = (e: FormEvent) => {
     e.preventDefault();
     const username = searchbarRef.current?.value.trim() ?? "";
     if (username === "") return;
+    hideNavBar();
     searchbarRef.current!.value = "";
     navigate(`/user/${username}`);
   };
+
+  const hideNavBar = () => {
+    console.log(navTogglerRef.current);
+    navTogglerRef.current!.checked = false;
+  }
 
   return (
     <StrictMode>
@@ -26,6 +33,7 @@ function Navbar({ tryLogout }: NavbarProps) {
           id="navToggler"
           type={"checkbox"}
           className={"peer hidden"}
+          ref={navTogglerRef}
         ></input>
         <label
           htmlFor="navToggler"
@@ -48,7 +56,8 @@ function Navbar({ tryLogout }: NavbarProps) {
             <AppButton
               className="!w-full sm:w-fit"
               color={"regular"}
-              onClick={() => navigate("/home")}
+              href={"/home"}
+              onClick={hideNavBar}
             >
               Home
             </AppButton>
@@ -74,21 +83,23 @@ function Navbar({ tryLogout }: NavbarProps) {
             <AppButton
               className="!w-full sm:w-fit"
               color={"regular"}
-              onClick={() => navigate("/shop")}
+              href={"/shop"}
+              onClick={hideNavBar}
             >
               Shop
             </AppButton>
             <AppButton
               className="!w-full sm:w-fit"
               color={"regular"}
-              onClick={() => navigate("/user")}
+              href={"/user"}
+              onClick={hideNavBar}
             >
               Profile
             </AppButton>
             <AppButton
               className="!w-full sm:w-fit"
               color={"regular"}
-              onClick={tryLogout}
+              onClick={() => {hideNavBar(); tryLogout()}}
             >
               Logout
             </AppButton>

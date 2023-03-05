@@ -1,4 +1,5 @@
 import { ReactNode } from "react";
+import { Link } from "react-router-dom";
 
 interface AppButtonProps {
   onClick?: () => void;
@@ -7,6 +8,7 @@ interface AppButtonProps {
   children?: ReactNode;
   className?: string;
   grayedOut?: boolean;
+  href?: string;
 }
 
 export default function AppButton({
@@ -16,6 +18,7 @@ export default function AppButton({
   children,
   className,
   grayedOut = false,
+  href: href,
 }: AppButtonProps) {
   function buttonStyle() {
     switch (color) {
@@ -33,8 +36,8 @@ export default function AppButton({
     }
   }
 
-  return (
-    <button
+  function renderButton(){
+    return(<button
       onClick={handleClick}
       type={type}
       className={
@@ -47,6 +50,23 @@ export default function AppButton({
       disabled={grayedOut}
     >
       {children}
-    </button>
-  );
+    </button>)
+  }
+
+  function renderAnchor(){
+    return(<Link
+      className={
+        `${
+          !grayedOut
+            ? `${buttonStyle()} `
+            : `bg-gray-500 `
+        } ${className??""} text-white font-bold py-2.5 px-5 rounded w-fit`
+      }
+      to={href?href:""}
+      onClick={handleClick??undefined}
+    >
+      {children}
+    </Link>)
+  }
+  return href?renderAnchor():renderButton();
 }

@@ -1,9 +1,8 @@
 import { MapSchema, Schema, type } from "@colyseus/schema";
-import { TagWarRoom } from "../../../app-server/tag-war/tagwar-room.js";
+import { TagWarRoom } from "../../../app-server/tag-war/room/tagwar-room.js";
 import { TagWarEngine } from "../tag-war.js";
 
-class Stats extends Schema {
-}
+class Stats extends Schema {}
 
 class EndGamePlayerState extends Schema {
   @type("string")
