@@ -63,6 +63,7 @@ export default function AppButton({
         } ${className??""} text-white font-bold py-2.5 px-5 rounded w-fit`
       }
       to={href?href:""}
+      onClick={handleClick??undefined}
     >
       {children}
     </Link>)
