@@ -36,10 +36,10 @@ class PlayerRender extends RenderObject {
     super.update(dt, now);
     this.position.set(this.player.position.x, this.player.position.y);
 
-    if (this.player.collisionWithOther) {
-      this.display.tint = 0xff0000;
+    if (this.player.isThief) {
+      this.display.tint = 0x0000ff;
     } else {
-      this.display.tint = 0xffffff;
+      this.display.tint = 0xff0000;
     }
   }
 }

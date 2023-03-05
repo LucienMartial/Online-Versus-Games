@@ -4,18 +4,30 @@ import { BoxShape } from "../physics/collision.js";
 import { SelectedItems } from "../types/index.js";
 import { Inputs } from "../types/inputs.js";
 import { PlayerState } from "./state/player-state.js";
+import { HOME_WALL_OFFSET, MAP_OFFSET_X, MAP_OFFSET_Y } from "./map.js";
+import { WORLD_HEIGHT, WORLD_WIDTH } from "../utils/constants.js";
 
-export const WIDTH = 100;
+export const WIDTH = 60;
 export const HEIGHT = 60;
 
 // movement
 const MAX_SPEED = 350;
 const BOOST_SPEED = 600;
 
+// thief position
+const THIEF_X = MAP_OFFSET_X + HOME_WALL_OFFSET * 1.8;
+const THIEF_Y = WORLD_HEIGHT / 2;
+
+// police position
+const COP_X = WORLD_WIDTH - MAP_OFFSET_X - HOME_WALL_OFFSET * 1.8;
+const COP_Y = WORLD_HEIGHT / 2;
+
 class Player extends BodyEntity {
   private isPuppet: boolean;
   collisionWithOther: boolean;
   boostEnabled: boolean = false;
+  isThief: boolean;
+  touchedCallback: Function;
 
   // cosmetics
   cosmetics: SelectedItems;
@@ -23,7 +35,12 @@ class Player extends BodyEntity {
   // movement
   direction: SAT.Vector;
 
-  constructor(id: string, isPuppet: boolean) {
+  constructor(
+    id: string,
+    isPuppet: boolean,
+    isThief: boolean,
+    touchedCallback: Function,
+  ) {
     const collisionShape = new BoxShape(WIDTH, HEIGHT);
     super(collisionShape, false, id);
     this.setOffset(WIDTH / 2, HEIGHT / 2);
@@ -31,6 +48,19 @@ class Player extends BodyEntity {
     this.friction = new SAT.Vector();
     this.direction = new SAT.Vector();
     this.collisionWithOther = false;
+    this.isThief = isThief;
+
+    // callbacks
+    this.touchedCallback = touchedCallback;
+
+    if (!this.isPuppet) console.log("player created", this.id, this.isThief);
+
+    // set position
+    if (this.isThief) {
+      this.setPosition(THIEF_X, THIEF_Y);
+    } else {
+      this.setPosition(COP_X, COP_Y);
+    }
 
     // cosmetics
     this.cosmetics = { skinID: -1, hatID: -2, faceID: -3 };
@@ -40,6 +70,7 @@ class Player extends BodyEntity {
   sync(state: PlayerState) {
     this.setPosition(state.x, state.y);
     this.collisionWithOther = state.collisionWithOther;
+    this.isThief = state.isThief;
   }
 
   // will surely need collisions
@@ -48,6 +79,7 @@ class Player extends BodyEntity {
 
     if (!other.static) {
       this.collisionWithOther = true;
+      this.touchedCallback(this);
       return;
     }
 

@@ -7,7 +7,7 @@ import * as PIXI from "pixi.js";
 import { PERSPECTIVE_OFFSET } from "../../../app-shared/disc-war";
 import { Vector } from "sat";
 import { Container } from "pixi.js";
-import { MAP_COLOR_CONFIGS } from "../game/configs/map-configs";
+import { MAP_COLOR_CONFIGS } from "../../../app-shared/disc-war/configs/map-configs";
 
 // walls
 const TOP_WALL_HEIGHT = 138;

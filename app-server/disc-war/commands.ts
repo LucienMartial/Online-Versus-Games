@@ -1,6 +1,6 @@
 import { Command } from "@colyseus/command";
 import { Disc, Player } from "../../app-shared/disc-war/index.js";
-import { DiscWarRoom } from "../disc-war/room/game-room.js";
+import { DiscWarRoom } from "./room/discwar-room.js";
 import { PlayerState } from "../../app-shared/disc-war/state/index.js";
 import { Client } from "colyseus";
 import { syncCosmetics } from "../utils/commands.js";
@@ -53,8 +53,10 @@ class OnJoinCommand extends Command<DiscWarRoom, { client: Client }> {
   }
 }
 
-class OnInputCommand
-  extends Command<DiscWarRoom, { client: Client; data: InputsData }> {
+class OnInputCommand extends Command<
+  DiscWarRoom,
+  { client: Client; data: InputsData }
+> {
   execute({ client, data } = this.payload) {
     client.userData.inputBuffer.push(data);
   }

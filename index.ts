@@ -41,19 +41,19 @@ const gameServer = new Server({
 });
 
 if (process.env.NODE_ENV !== "production") {
-  // simulate 200ms latency between server and client.
-  gameServer.simulateLatency(50);
+  // simulate 80ms latency between server and client.
+  gameServer.simulateLatency(80);
 }
 
 // rooms
 import { createApp } from "./app-server/app.js";
-import { DiscWarRoom } from "./app-server/disc-war/room/game-room.js";
+import { DiscWarRoom } from "./app-server/disc-war/room/discwar-room.js";
 import { ChatRoom } from "./app-server/rooms/chat-room.js";
 import SocialRoom from "./app-server/rooms/social-room.js";
 import QueueRoom from "./app-server/rooms/queue-room.js";
 import { DiscWarEngine } from "./app-shared/disc-war/index.js";
 import { TagWarEngine } from "./app-shared/tag-war/tag-war.js";
-import { TagWarRoom } from "./app-server/tag-war/tagwar-room.js";
+import { TagWarRoom } from "./app-server/tag-war/room/tagwar-room.js";
 
 gameServer.define("social", SocialRoom);
 gameServer.define("chat-room", ChatRoom);
