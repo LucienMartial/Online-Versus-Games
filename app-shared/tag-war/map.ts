@@ -1,7 +1,6 @@
 import SAT from "sat";
 import { BodyEntity, Entity } from "../game/index.js";
 import { PolylineShape } from "../physics/index.js";
-import { MIDDLE_LINE_ID } from "../utils/constants.js";
 
 const SIDE_WIDTH_RATIO = 0.71;
 const SIDE_HEIGHT_RATIO = 0.6;
