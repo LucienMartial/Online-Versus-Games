@@ -68,8 +68,8 @@ function Home({ tryConnection, client }: HomeProps) {
 
   return (
     <StrictMode>
-      <main className="flex grow">
-        <section className="grow">
+      <main className="flex grow flex-col-reverse sm:flex-row gap-2">
+        <section className="grow px-3 flex flex-row flex-wrap gap-3">
           {gamesInfos.map((gameInfo) => (
             <GameQueue
             gameData={gameInfo}

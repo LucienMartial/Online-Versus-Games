@@ -53,15 +53,21 @@ function GameQueue({ client, gameData, tryConnection, nbClients }: GameProps) {
   }, [queueRoom]);
 
   return (
-    <section className="grow">
+    <section className="w-full sm:w-80 h-fit rounded bg-slate-200 text-slate-900 dark:bg-slate-900 dark:text-slate-200 px-2.5 py-2.5">
       <h1 className="text-3xl">{gameData.name}</h1>
       <p>{gameData.description}</p>
-      {
-      gameData.keybinds.map((keybinding) => (
-        <p key={keybinding.key}>
-          {keybinding.key}: {keybinding.description}
-        </p>
-      ))}
+      <details className="py-2">
+        <summary>Keybinds</summary>
+        <div>
+          {
+            gameData.keybinds.map((keybinding) => (
+              <div className="grid grid-cols-2 px-2 even:bg-slate-300 odd:bg-slate-100 dark:even:bg-slate-800 dark:odd:bg-slate-700">
+                <span className="text-left">{keybinding.key}</span>
+                <span className="text-right text-ellipsis overflow-hidden">{keybinding.description}</span>
+              </div>
+            ))}
+        </div>
+      </details>
 
       {!queueRoom && (
         <AppButton color="regular" onClick={connectToQueue}>
