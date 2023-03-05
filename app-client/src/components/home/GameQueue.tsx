@@ -2,21 +2,22 @@ import AppButton from "../lib/AppButton";
 import { Client } from "colyseus.js";
 import { useCallback, useEffect, useState } from "react";
 import { Room } from "colyseus.js";
+import gameInfosType from "../../types/gameInfosType";
 
 interface GameProps {
   tryConnection: (reservation: any) => Promise<void>;
-  gameName: string;
+  gameData: gameInfosType;
   nbClients: number;
   client: Client | undefined;
 }
 
-function GameQueue({ client, gameName, tryConnection, nbClients }: GameProps) {
+function GameQueue({ client, gameData, tryConnection, nbClients }: GameProps) {
   const [queueRoom, setQueueRoom] = useState<Room>();
 
   const connectToQueue = useCallback(async () => {
     if (!client) return;
     try {
-      const room = await client.joinOrCreate("queue", { game: gameName });
+      const room = await client.joinOrCreate("queue", { game: gameData.id });
       setQueueRoom(room);
       console.log("sucessfuly joined queue room");
     } catch (e) {
@@ -53,7 +54,15 @@ function GameQueue({ client, gameName, tryConnection, nbClients }: GameProps) {
 
   return (
     <section className="grow">
-      <h1 className="text-3xl">Game</h1>
+      <h1 className="text-3xl">{gameData.name}</h1>
+      <p>{gameData.description}</p>
+      {
+      gameData.keybinds.map((keybinding) => (
+        <p key={keybinding.key}>
+          {keybinding.key}: {keybinding.description}
+        </p>
+      ))}
+
       {!queueRoom && (
         <AppButton color="regular" onClick={connectToQueue}>
           Play
