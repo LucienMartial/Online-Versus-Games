@@ -10,8 +10,10 @@ class RenderObject {
   id: string;
   timer: ClockTimer;
   onUpdate?: { (dt: number, now: number): void };
+  children: RenderObject[];
 
   constructor(id = "") {
+    this.children = [];
     this.container = new Container();
     this.id = id;
     this.timer = new ClockTimer();
@@ -19,12 +21,27 @@ class RenderObject {
 
   update(dt: number, now: number) {
     this.onUpdate?.(dt, now);
+    for (const child of this.children) {
+      child.update(dt, now);
+    }
     this.timer.tick();
   }
 
   // getters, setters
   addChild(object: DisplayObject) {
     this.container.addChild(object);
+  }
+
+  add(object: RenderObject) {
+    this.children.push(object);
+    this.container.addChild(object.container);
+  }
+
+  remove(id: string) {
+    const foundId = this.children.findIndex((child) => child.id === id);
+    if (foundId < 0) return;
+    this.container.removeChild(this.children[foundId].container);
+    this.children.splice(foundId, 1);
   }
 
   setPosition(x: number, y: number) {

@@ -161,6 +161,7 @@ class DiscWarScene extends GameScene<GameState> {
       this.deathAnimManager,
       this.viewport,
       this.cosmeticsAssets!,
+      true,
     );
     this.mainPlayerRender.container.zIndex = 10;
     this.add(this.mainPlayerRender, false);

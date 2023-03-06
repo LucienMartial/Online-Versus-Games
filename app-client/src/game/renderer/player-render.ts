@@ -10,6 +10,7 @@ import { Cosmetics } from "./cosmetics/cosmetics";
 import { CosmeticAssets } from "../configs/assets-config";
 import { DEFAULT_SKIN } from "../../../../app-shared/configs/shop-config";
 import { Container } from "pixi.js";
+import { PlayerCursor } from "./player-cursor";
 
 class PlayerRender extends RenderObject {
   player: Player;
@@ -23,6 +24,7 @@ class PlayerRender extends RenderObject {
   cosmetics: Cosmetics;
   reflection: PIXI.Graphics;
   reflectionContainer: PIXI.Container;
+  cursor?: PlayerCursor;
 
   constructor(
     player: Player,
@@ -31,6 +33,7 @@ class PlayerRender extends RenderObject {
     deathAnim: DeathAnimManager,
     viewports: Viewport,
     cosmeticsAssets: CosmeticAssets,
+    isMain = false,
   ) {
     super(id);
     this.viewports = viewports;
@@ -45,6 +48,18 @@ class PlayerRender extends RenderObject {
     this.addChild(this.display);
     this.setOffset(player.offset.x, player.offset.y);
     this.container.sortableChildren = true;
+
+    // is main player
+    if (isMain) {
+      const cursorWidth = 10;
+      const cursorHeight = 30;
+      this.cursor = new PlayerCursor();
+      this.cursor.setOffset(
+        -player.offset.x + cursorWidth / 2,
+        player.offset.y * 1.2 - cursorHeight / 2,
+      );
+      this.add(this.cursor);
+    }
 
     // shield
     const radius = shape.height / 2 + 15;
@@ -94,12 +109,18 @@ class PlayerRender extends RenderObject {
     // dead watcher
     this.deadWatcher = new Watcher();
     this.deadWatcher.onActive = () => {
-      this.display.alpha = 0.1;
-      this.cosmetics.container.alpha = 0.1;
+      this.display.alpha = 0.01;
+      this.cosmetics.container.alpha = 0.01;
+      if (this.cursor) {
+        this.cursor.container.alpha = 0.01;
+      }
     };
     this.deadWatcher.onInactive = () => {
       this.display.alpha = 1;
       this.cosmetics.container.alpha = 1;
+      if (this.cursor) {
+        this.cursor.container.alpha = 1;
+      }
     };
 
     // dash
