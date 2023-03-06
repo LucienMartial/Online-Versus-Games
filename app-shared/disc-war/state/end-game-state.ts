@@ -1,5 +1,5 @@
 import { MapSchema, Schema, type } from "@colyseus/schema";
-import { DiscWarRoom } from "../../../app-server/disc-war/room/game-room.js";
+import { DiscWarRoom } from "../../../app-server/disc-war/room/discwar-room.js";
 import { DiscWarEngine } from "../index.js";
 
 class Stats extends Schema {

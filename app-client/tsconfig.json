@@ -20,6 +20,6 @@
       "shared/*": ["../../app-shared/*"]
     }
   },
-  "include": ["src"],
+  "include": ["src", "../app-shared/tag-war/configs", "../app-shared/disc-war/configs"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

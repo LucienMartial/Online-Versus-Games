@@ -136,7 +136,7 @@ function FriendList({ client }: FriendListProps) {
   }, [socialRoom, friends]);
 
   const mainClasses =
-    "backdrop-blur grow max-w-xs mx-auto h-full shadow-lg shadow-slate-600/50 rounded-xl ";
+    "backdrop-blur grow-0 sm:grow max-w-xs h-fit shadow-lg shadow-slate-600/50 rounded-xl pb-3";
 
   if (loading) {
     return (

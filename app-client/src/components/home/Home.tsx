@@ -3,6 +3,8 @@ import FriendList from "./friends-list/FriendList";
 import { Client } from "colyseus.js";
 import { Room, RoomAvailable } from "colyseus.js";
 import GameQueue from "./GameQueue";
+import gamesInfos from "../../data/games-infos";
+import gameInfosType from "../../types/gameInfosType";
 
 declare module "colyseus.js" {
   interface RoomAvailable {
@@ -66,20 +68,17 @@ function Home({ tryConnection, client }: HomeProps) {
 
   return (
     <StrictMode>
-      <main className="flex grow">
-        <section className="grow">
-          <GameQueue
-            gameName="disc-war"
+      <main className="flex grow flex-col-reverse sm:flex-row gap-2">
+        <section className="grow px-3 flex flex-row flex-wrap gap-3">
+          {gamesInfos.map((gameInfo) => (
+            <GameQueue
+            key={gameInfo.name}
+            gameData={gameInfo}
             tryConnection={tryConnection}
             nbClients={nbClients}
-            client={client}
-          />
-          <GameQueue
-            gameName="tag-war"
-            tryConnection={tryConnection}
-            nbClients={nbClients}
-            client={client}
-          />
+            client={client} />
+          ))
+            }
         </section>
         <FriendList client={client} />
       </main>

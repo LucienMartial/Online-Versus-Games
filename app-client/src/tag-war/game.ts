@@ -20,6 +20,7 @@ class TagWarScene extends GameScene<GameState> {
   mainPlayerRender!: PlayerRender;
   cosmeticsAssets!: CosmeticAssets;
   mapFiltered: Container;
+  mapRender!: MapRender;
   lastPingTime: Date = new Date();
   pingInterval: number = 0;
   averagePingBuffer: CBuffer<number> = new CBuffer(50);
@@ -36,37 +37,16 @@ class TagWarScene extends GameScene<GameState> {
   ) {
     super(viewport, sceneElement, client, room);
     this.gameEngine = new TagWarEngine(false, this.id);
-    this.mainPlayer = this.gameEngine.addPlayer(this.id);
+    this.mainPlayer = this.gameEngine.addPlayer(this.id, true);
     this.mapFiltered = new Container();
   }
 
   async load(): Promise<void> {
     this.cosmeticsAssets = await Assets.loadBundle("cosmetics");
-    
+
     this.mapFiltered = new Container();
     this.mapFiltered.sortableChildren = true;
 
-    // map
-    const mapRender = new MapRender(this.gameEngine);
-    mapRender.wallsContainer.zIndex = 20;
-    this.stage.addChild(mapRender.wallsContainer);
-    this.add(mapRender);
-    
-    // player are displayed inside the map
-    this.mapFiltered.mask = mapRender.floorMask;
-    this.mapFiltered.addChild(mapRender.floorMask);
-    this.stage.addChild(this.mapFiltered);
-    
-    // player
-    this.mainPlayerRender = new PlayerRender(
-      this.mainPlayer,
-      this.id,
-      this.cosmeticsAssets,
-    );
-    this.mainPlayerRender.container.zIndex = 10;
-    this.add(this.mainPlayerRender, false);
-    this.mapFiltered.addChild(this.mainPlayerRender.container);
-    
     // room events
     this.room.onStateChange.once(this.initGame.bind(this));
     this.room.state.players.onAdd = this.addPlayer.bind(this);
@@ -78,7 +58,7 @@ class TagWarScene extends GameScene<GameState> {
       const now = new Date();
       const ping = now.getTime() - this.lastPingTime.getTime();
       this.averagePingBuffer.push(ping);
-      
+
       // compute average ping
       this.pingInterval = 0;
       const pingArray = this.averagePingBuffer.toArray();
@@ -102,7 +82,25 @@ class TagWarScene extends GameScene<GameState> {
 
   // run 1 time when the game start and get server state
   initGame(state: GameState) {
-    console.log("basic state");
+    // init map
+    this.mapRender = new MapRender(this.gameEngine, state.mapConfigId);
+    this.mapRender.wallsContainer.zIndex = 20;
+    this.stage.addChild(this.mapRender.wallsContainer);
+    this.add(this.mapRender);
+
+    // init player
+    this.mainPlayerRender = new PlayerRender(
+      this.mainPlayer,
+      this.id,
+      this.cosmeticsAssets,
+    );
+    this.mainPlayerRender.container.zIndex = 10;
+    this.add(this.mainPlayerRender, false);
+    this.mapFiltered.addChild(this.mainPlayerRender.container);
+
+    this.stage.addChild(this.mapFiltered);
+
+    // init players
     for (const [id, playerState] of state.players.entries()) {
       this.addPlayer(playerState, id);
     }
@@ -174,7 +172,7 @@ class TagWarScene extends GameScene<GameState> {
     if (this.gameEngine.getPlayer(id)) return;
     // add player
     console.log("new player with id", id, "joined the game");
-    const player = this.gameEngine.addPlayer(id);
+    const player = this.gameEngine.addPlayer(id, false);
     this.setupPlayerCosmetics(player, state.cosmetic);
     const playerRender = new PlayerRender(player, id, this.cosmeticsAssets);
     this.add(playerRender, false);
@@ -184,7 +182,7 @@ class TagWarScene extends GameScene<GameState> {
   removePlayer(_state: PlayerState, id: string) {
     console.log("leaved");
     if (this.id === id) return;
-    console.log("player with id", id, "leaved the game");  
+    console.log("player with id", id, "leaved the game");
     const object = this.getById(id);
     if (!object) return;
     this.remove(object);

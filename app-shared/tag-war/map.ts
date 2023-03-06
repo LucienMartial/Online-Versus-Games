@@ -1,18 +1,22 @@
 import SAT from "sat";
 import { BodyEntity, Entity } from "../game/index.js";
 import { PolylineShape } from "../physics/index.js";
-import { MIDDLE_LINE_ID } from "../utils/constants.js";
 
 const SIDE_WIDTH_RATIO = 0.71;
 const SIDE_HEIGHT_RATIO = 0.6;
 export const LINE_THICKNESS = 20;
-export const PERSPECTIVE_OFFSET = 50;
+export const PERSPECTIVE_OFFSET = 25;
+export const HOME_WALL_OFFSET = 44;
+export const MAP_OFFSET_X = 50;
+export const MAP_OFFSET_Y = 30;
 
 class Map extends Entity {
   topLeftWall: BodyEntity;
   topMiddleWall: BodyEntity;
   topRightWall: BodyEntity;
   topWalls: BodyEntity[];
+  leftHomeWalls: BodyEntity[];
+  rightHomeWalls: BodyEntity[];
   walls: BodyEntity[];
   floor: SAT.Vector[];
 
@@ -23,8 +27,8 @@ class Map extends Entity {
     this.topWalls = [];
     this.floor = [];
 
-    const offsetX = 50;
-    const offsetY = 30;
+    const offsetX = MAP_OFFSET_X;
+    const offsetY = MAP_OFFSET_Y;
     const top = offsetY;
     const bot = worldHeight - offsetY;
     const left = offsetX;
@@ -35,25 +39,28 @@ class Map extends Entity {
     const sideHeight = height * SIDE_HEIGHT_RATIO;
     const diagonalWidth = (width - sideWidth) / 2;
     const diagonalHeight = (height - sideHeight) / 2;
+    const homeWidth = sideHeight / 3;
+    const homeTop = height / 2 - sideHeight / 6 + offsetY;
+    const homeBot = height / 2 + sideHeight / 6 + offsetY;
 
     // bottom walls
     // center
     const botMiddleWall = this.addWall(
       new SAT.Vector(0, 0),
       new SAT.Vector(sideWidth, 0),
-      new SAT.Vector(left + diagonalWidth, bot)
+      new SAT.Vector(left + diagonalWidth, bot),
     );
     // left
     const botLeftWall = this.addWall(
       new SAT.Vector(0, 0),
       new SAT.Vector(diagonalWidth, diagonalHeight),
-      new SAT.Vector(left, bot - diagonalHeight)
+      new SAT.Vector(left, bot - diagonalHeight),
     );
     // right
     const botRightWall = this.addWall(
       new SAT.Vector(0, 0),
       new SAT.Vector(diagonalWidth, -diagonalHeight),
-      new SAT.Vector(right - diagonalWidth, bot)
+      new SAT.Vector(right - diagonalWidth, bot),
     );
 
     // top walls
@@ -61,19 +68,19 @@ class Map extends Entity {
     this.topMiddleWall = this.addWall(
       new SAT.Vector(sideWidth, 0),
       new SAT.Vector(0, 0),
-      new SAT.Vector(left + diagonalWidth, top + PERSPECTIVE_OFFSET)
+      new SAT.Vector(left + diagonalWidth, top + PERSPECTIVE_OFFSET),
     );
     // left
     this.topLeftWall = this.addWall(
       new SAT.Vector(diagonalWidth, -diagonalHeight),
       new SAT.Vector(0, 0),
-      new SAT.Vector(left, top + diagonalHeight + PERSPECTIVE_OFFSET)
+      new SAT.Vector(left, top + diagonalHeight + PERSPECTIVE_OFFSET),
     );
     // right
     this.topRightWall = this.addWall(
       new SAT.Vector(diagonalWidth, diagonalHeight),
       new SAT.Vector(0, 0),
-      new SAT.Vector(right - diagonalWidth, top + PERSPECTIVE_OFFSET)
+      new SAT.Vector(right - diagonalWidth, top + PERSPECTIVE_OFFSET),
     );
 
     // side walls
@@ -81,13 +88,13 @@ class Map extends Entity {
     const leftWall = this.addWall(
       new SAT.Vector(0, 0),
       new SAT.Vector(0, sideHeight),
-      new SAT.Vector(left, top + diagonalHeight)
+      new SAT.Vector(left, top + diagonalHeight),
     );
     // right
     const rightWall = this.addWall(
       new SAT.Vector(0, sideHeight),
       new SAT.Vector(0, 0),
-      new SAT.Vector(right, top + diagonalHeight)
+      new SAT.Vector(right, top + diagonalHeight),
     );
 
     // add walls, (top walls handled separatly)
@@ -97,27 +104,64 @@ class Map extends Entity {
     this.walls.push(rightWall);
     this.walls.push(leftWall);
 
+    // home walls left
+    // top left
+    const topLeftHomeWall = this.addWall(
+      new SAT.Vector(0, 0),
+      new SAT.Vector(homeWidth, 0),
+      new SAT.Vector(left, homeTop),
+      HOME_WALL_OFFSET,
+    );
+
+    // bottom left
+    const botLeftHomeWall = this.addWall(
+      new SAT.Vector(0, 0),
+      new SAT.Vector(homeWidth, 0),
+      new SAT.Vector(left, homeBot),
+      HOME_WALL_OFFSET,
+    );
+
+    // home walls right
+    // top right
+    const topRightHomeWall = this.addWall(
+      new SAT.Vector(0, 0),
+      new SAT.Vector(homeWidth, 0),
+      new SAT.Vector(right - homeWidth, homeTop),
+      HOME_WALL_OFFSET,
+    );
+
+    // bottom right
+    const botRightHomeWall = this.addWall(
+      new SAT.Vector(0, 0),
+      new SAT.Vector(homeWidth, 0),
+      new SAT.Vector(right - homeWidth, homeBot),
+      HOME_WALL_OFFSET,
+    );
+
+    this.leftHomeWalls = [topLeftHomeWall, botLeftHomeWall];
+    this.rightHomeWalls = [topRightHomeWall, botRightHomeWall];
+
     // add floor
     const offset = 8;
     this.pushFloor(
       botLeftWall,
       LINE_THICKNESS / 2 - offset,
-      -LINE_THICKNESS / 2
+      -LINE_THICKNESS / 2,
     );
     this.pushFloor(
       botRightWall,
       -LINE_THICKNESS / 2 + offset,
-      -LINE_THICKNESS / 2
+      -LINE_THICKNESS / 2,
     );
     this.pushFloor(
       this.topRightWall,
       -LINE_THICKNESS / 2 + offset,
-      LINE_THICKNESS / 2 - PERSPECTIVE_OFFSET
+      LINE_THICKNESS / 2 - PERSPECTIVE_OFFSET,
     );
     this.pushFloor(
       this.topLeftWall,
       LINE_THICKNESS / 2 - offset,
-      LINE_THICKNESS / 2 - PERSPECTIVE_OFFSET
+      LINE_THICKNESS / 2 - PERSPECTIVE_OFFSET,
     );
   }
 
@@ -139,10 +183,10 @@ class Map extends Entity {
     p1: SAT.Vector,
     p2: SAT.Vector,
     position: SAT.Vector,
-    thickness: number = LINE_THICKNESS
+    thickness: number = LINE_THICKNESS,
   ): BodyEntity {
     const wall = new BodyEntity(
-      new PolylineShape(p1.x, p1.y, p2.x, p2.y, thickness)
+      new PolylineShape(p1.x, p1.y, p2.x, p2.y, thickness),
     );
     wall.setPosition(position.x, position.y);
     return wall;
