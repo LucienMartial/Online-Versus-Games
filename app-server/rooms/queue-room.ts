@@ -5,9 +5,11 @@ class QueueRoom extends Room {
   /** map session id to client id */
   clientsMap: Map<string, string> = new Map();
   alreadyMatched = 0;
+  gameName!: string;
 
-  onCreate() {
+  onCreate({ gameName }: { gameName: string }) {
     this.setPatchRate(0);
+    this.gameName = gameName;
   }
 
   onAuth(client: Client, _options: unknown, request: Request) {
@@ -28,8 +30,8 @@ class QueueRoom extends Room {
     return true;
   }
 
-  async onJoin(_client: Client, options: { game: string }) {
-    console.log("client joined queue");
+  async onJoin(_client: Client) {
+    console.log(`client joined queue (${this.gameName})`);
 
     // no matchmaking, not enough players
     if (this.clients.length - this.alreadyMatched <= 1) {
@@ -52,7 +54,7 @@ class QueueRoom extends Room {
 
     setTimeout(async () => {
       this.alreadyMatched -= 2;
-      console.log("try to match 2 players");
+      console.log(`try to match 2 players (${this.gameName})`);
 
       // check if client still connected
       if (
@@ -63,7 +65,7 @@ class QueueRoom extends Room {
       }
 
       // create game, send reservation
-      const gameRoom = await matchMaker.createRoom(options.game, {});
+      const gameRoom = await matchMaker.createRoom(this.gameName, {});
       const firstReservation = await matchMaker.reserveSeatFor(gameRoom, {});
       const secondReservation = await matchMaker.reserveSeatFor(gameRoom, {});
       firstClient.send("game-found", firstReservation);

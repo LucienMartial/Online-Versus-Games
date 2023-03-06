@@ -1,13 +1,14 @@
 interface keybind {
-    key: string;
-    description: string;
+  key: string;
+  description: string;
 }
 
 interface gameInfosType {
-    name: string;
-    id: string;
-    description: string;
-    keybinds: keybind[];
+  name: string;
+  queueName: string;
+  id: string;
+  description: string;
+  keybinds: keybind[];
 }
 
 export default gameInfosType;

@@ -1,10 +1,9 @@
-import { StrictMode, useCallback, useEffect, useRef, useState } from "react";
+import { StrictMode, useCallback, useEffect, useState } from "react";
 import FriendList from "./friends-list/FriendList";
 import { Client } from "colyseus.js";
-import { Room, RoomAvailable } from "colyseus.js";
+import { Room } from "colyseus.js";
 import GameQueue from "./GameQueue";
 import gamesInfos from "../../data/games-infos";
-import gameInfosType from "../../types/gameInfosType";
 
 declare module "colyseus.js" {
   interface RoomAvailable {
@@ -19,8 +18,7 @@ interface HomeProps {
 
 function Home({ tryConnection, client }: HomeProps) {
   const [lobbyRoom, setLobbyRoom] = useState<Room>();
-  const [nbClients, setNbClients] = useState(0);
-  let queueRoomId = useRef("");
+  const [queueRoom, setQueueRoom] = useState<Room>();
 
   const connectToLobby = useCallback(async () => {
     if (!client) return;
@@ -43,42 +41,21 @@ function Home({ tryConnection, client }: HomeProps) {
     };
   }, [client]);
 
-  useEffect(() => {
-    if (!lobbyRoom) return;
-    lobbyRoom.removeAllListeners();
-
-    lobbyRoom.onMessage("rooms", (rooms: RoomAvailable[]) => {
-      const queueRoom = rooms.find((room) => room.name === "queue");
-      if (!queueRoom) return;
-      queueRoomId.current = queueRoom.roomId;
-      setNbClients(queueRoom.clients);
-    });
-
-    lobbyRoom.onMessage("+", ([roomId, room]) => {
-      if (room.name !== "queue") return;
-      queueRoomId.current = room.roomId;
-      setNbClients(room.clients);
-    });
-
-    lobbyRoom.onMessage("-", (roomId) => {
-      if (roomId !== queueRoomId.current) return;
-      setNbClients(0);
-    });
-  }, [lobbyRoom]);
-
   return (
     <StrictMode>
       <main className="flex grow flex-col-reverse sm:flex-row gap-2">
         <section className="grow px-3 flex flex-row flex-wrap gap-3">
           {gamesInfos.map((gameInfo) => (
             <GameQueue
-            key={gameInfo.name}
-            gameData={gameInfo}
-            tryConnection={tryConnection}
-            nbClients={nbClients}
-            client={client} />
-          ))
-            }
+              key={gameInfo.name}
+              gameData={gameInfo}
+              setQueueRoom={setQueueRoom}
+              queueRoom={queueRoom}
+              tryConnection={tryConnection}
+              lobbyRoom={lobbyRoom}
+              client={client}
+            />
+          ))}
         </section>
         <FriendList client={client} />
       </main>
