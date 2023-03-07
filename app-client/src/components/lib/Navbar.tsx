@@ -28,7 +28,7 @@ function Navbar({ tryLogout }: NavbarProps) {
 
   return (
     <StrictMode>
-      <header className="z-10 flex w-screen flex-row justify-start border-slate-400 dark:border-slate-700 border-b p-2 sm:justify-between">
+      <header className="z-10 flex flex-row justify-start sm:bg-slate-200 sm:dark:bg-slate-800 mx-3 my-2.5 rounded-lg p-3 sm:justify-between">
         <input
           id="navToggler"
           type={"checkbox"}
@@ -69,7 +69,7 @@ function Navbar({ tryLogout }: NavbarProps) {
               <input
                 type="text"
                 className={
-                  "h-full bg-slate-300 dark:bg-slate-800 rounded outline-none text-slate-900 dark:text-white pl-2 py-2.5 sm:py-0 grow"
+                  "h-full bg-slate-300 dark:bg-slate-700 rounded outline-none text-slate-900 dark:text-white pl-2 py-2.5 sm:py-0 grow"
                 }
                 placeholder={"Search a user"}
                 ref={searchbarRef}
