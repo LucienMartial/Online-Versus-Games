@@ -34,6 +34,7 @@ class PlayerRender extends RenderObject {
     viewports: Viewport,
     cosmeticsAssets: CosmeticAssets,
     isMain = false,
+    stage: Container | undefined = undefined,
   ) {
     super(id);
     this.viewports = viewports;
@@ -53,12 +54,13 @@ class PlayerRender extends RenderObject {
     if (isMain) {
       const cursorWidth = 10;
       const cursorHeight = 30;
-      this.cursor = new PlayerCursor();
-      this.cursor.setOffset(
+      this.cursor = new PlayerCursor(
         -player.offset.x + cursorWidth / 2,
         player.offset.y * 1.2 - cursorHeight / 2,
       );
-      this.add(this.cursor);
+      // this.add(this.cursor);
+      this.cursor.container.zIndex = 50;
+      stage?.addChild(this.cursor.container);
     }
 
     // shield
@@ -142,6 +144,11 @@ class PlayerRender extends RenderObject {
   update(dt: number, now: number) {
     super.update(dt, now);
     // dashAnim & deathAnim (auto update is on)
+    this.cursor?.setPosition(
+      this.player.position.x - this.player.offset.x,
+      this.player.position.y - this.player.offset.y,
+    );
+    this.cursor?.update(dt, now);
     this.deadWatcher.watch(this.player.isDead);
     this.shieldWatcher.watch(this.player.counterTimer.active);
     this.position.set(this.player.position.x, this.player.position.y);

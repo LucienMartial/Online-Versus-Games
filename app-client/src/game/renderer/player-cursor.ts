@@ -1,8 +1,9 @@
+import { Vector } from "sat";
 import { Graphics } from "../utils";
 import { RenderObject } from "./render-object";
 
 class PlayerCursor extends RenderObject {
-  constructor() {
+  constructor(offsetX: number, offsetY: number) {
     super();
     const width = 10;
     const height = 30;
@@ -13,7 +14,8 @@ class PlayerCursor extends RenderObject {
     );
     left.pivot.set(width / 2, height / 2);
     left.rotation = -Math.PI / 4;
-    left.position.x += -width + width / 2 - 2.5;
+    left.position.x += -width + width / 2 - 2.5 + 2.5 - offsetX;
+    left.position.y -= offsetY;
     const right = Graphics.createRectangle(
       width,
       height,
@@ -21,13 +23,14 @@ class PlayerCursor extends RenderObject {
     );
     right.pivot.set(width / 2, height / 2);
     right.rotation = Math.PI / 4;
-    right.position.x += width - width / 2 + 2.5;
+    right.position.x += width - width / 2 + 2.5 + 2.5 - offsetX;
+    right.position.y -= offsetY;
     this.addChild(left);
     this.addChild(right);
   }
 
   update(dt: number, now: number) {
-    this.position.y = Math.cos(now * 0.005) * 3;
+    this.container.pivot.y = Math.cos(now * 0.005) * 3;
   }
 }
 

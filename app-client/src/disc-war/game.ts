@@ -129,6 +129,7 @@ class DiscWarScene extends GameScene<GameState> {
     this.stage.addChild(mapRender.wallsContainer);
     this.add(mapRender);
     mapRender.splitLineContainer.zIndex = 5;
+    this.mapFiltered.addChild(mapRender.container);
     this.mapFiltered.addChild(mapRender.splitLineContainer);
 
     // player are displayed inside the map
@@ -162,6 +163,7 @@ class DiscWarScene extends GameScene<GameState> {
       this.viewport,
       this.cosmeticsAssets!,
       true,
+      this.stage,
     );
     this.mainPlayerRender.container.zIndex = 10;
     this.add(this.mainPlayerRender, false);
