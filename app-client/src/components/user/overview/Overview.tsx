@@ -153,7 +153,7 @@ function Overview({
         </section>
         <section className="grow m-auto w-full mt-5 mb-1 grid md:grid-cols-5 gap-3 h-fit">
           <section className="rounded-md grid grid-cols-2 gap-2 col-span-3 row-span-1 p-2">
-            <div className="flex flex-col justify-center gap-2 bg-white/40 dark:bg-black/40 backdrop-blur-md p-2">
+            <div className="flex flex-col justify-center rounded-md gap-2 bg-white/40 dark:bg-black/40 backdrop-blur-md p-2">
               <h2 className="text-5xl">Winrate</h2>
               <span className="text-5xl">{winrate}%</span>
             </div>
