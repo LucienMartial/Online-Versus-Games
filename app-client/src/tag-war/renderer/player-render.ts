@@ -6,6 +6,7 @@ import { Cosmetics } from "../../game/renderer/cosmetics/cosmetics";
 import { PlayerCursor } from "../../game/renderer/player-cursor";
 import { Graphics } from "../../game/utils/graphics";
 import * as PIXI from "pixi.js";
+import { Container } from "pixi.js";
 
 class PlayerRender extends RenderObject {
   player: Player;
@@ -18,6 +19,7 @@ class PlayerRender extends RenderObject {
     id: string,
     cosmeticsAssets: CosmeticAssets,
     isMain = false,
+    stage: Container | undefined = undefined,
   ) {
     super(id);
     this.player = player;
@@ -32,18 +34,18 @@ class PlayerRender extends RenderObject {
     this.setOffset(player.offset.x, player.offset.y);
     this.addChild(this.display);
 
-    // // cursor
-    // if (isMain) {
-    //   const cursorWidth = 10;
-    //   const cursorHeight = 30;
-    //   this.cursor = new PlayerCursor();
-    //   this.cursor.setOffset(
-    //     -player.offset.x * 1.1 + cursorWidth / 2,
-    //     player.offset.y * 2 - cursorHeight / 2,
-    //   );
-    //   this.cursor.container.zIndex = 20;
-    //   this.add(this.cursor);
-    // }
+    // cursor
+    if (isMain && stage) {
+      const cursorWidth = 10;
+      const cursorHeight = 30;
+      this.cursor = new PlayerCursor(
+        -player.offset.x * 1.1 + cursorWidth / 2,
+        player.offset.y * 2 - cursorHeight / 2,
+      );
+      this.cursor.container.zIndex = 50;
+      // stage.addChild(this.cursor.container);
+      this.add(this.cursor);
+    }
 
     // cosmetics
     this.cosmetics = new Cosmetics(this, cosmeticsAssets);

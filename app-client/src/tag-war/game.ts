@@ -86,8 +86,9 @@ class TagWarScene extends GameScene<GameState> {
     // init map
     this.mapRender = new MapRender(this.gameEngine, state.mapConfigId);
     this.mapRender.wallsContainer.zIndex = 20;
-    this.stage.addChild(this.mapRender.wallsContainer);
-    this.add(this.mapRender);
+    this.add(this.mapRender, true);
+    this.mapFiltered.addChild(this.mapRender.wallsContainer);
+    this.stage.addChild(this.mapFiltered);
 
     // init main player
     this.mainPlayerRender = new PlayerRender(
@@ -95,13 +96,12 @@ class TagWarScene extends GameScene<GameState> {
       this.id,
       this.cosmeticsAssets,
       true,
+      this.stage,
     );
     this.mainPlayerRender.container.zIndex = 10;
     this.mainPlayerRender.container.sortableChildren = true;
-    this.add(this.mainPlayerRender, true);
+    this.add(this.mainPlayerRender, false);
     this.mapFiltered.addChild(this.mainPlayerRender.container);
-
-    this.stage.addChild(this.mapFiltered);
 
     // init players
     for (const [id, playerState] of state.players.entries()) {
