@@ -24,7 +24,7 @@ function Navbar({ tryLogout }: NavbarProps) {
   const hideNavBar = () => {
     console.log(navTogglerRef.current);
     navTogglerRef.current!.checked = false;
-  }
+  };
 
   return (
     <StrictMode>
@@ -99,7 +99,18 @@ function Navbar({ tryLogout }: NavbarProps) {
             <AppButton
               className="!w-full sm:w-fit"
               color={"regular"}
-              onClick={() => {hideNavBar(); tryLogout()}}
+              href={"/settings"}
+              onClick={hideNavBar}
+            >
+              Settings
+            </AppButton>
+            <AppButton
+              className="!w-full sm:w-fit"
+              color={"regular"}
+              onClick={() => {
+                hideNavBar();
+                tryLogout();
+              }}
             >
               Logout
             </AppButton>

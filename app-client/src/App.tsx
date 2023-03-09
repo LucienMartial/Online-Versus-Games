@@ -19,6 +19,7 @@ import EndScreen from "./disc-war/components/EndScreen";
 import { TagWarScene } from "./tag-war/game";
 import { TagWarUI } from "./tag-war/components/TagWarUI";
 import TagWarEndScreen from "./tag-war/components/TagWarEndScreen";
+import { Settings } from "./components/user/settings/Settings";
 
 const Game: any = lazy(() => import("./components/game/Game"));
 const Login = lazy(() => import("./components/forms/Login"));
@@ -167,6 +168,17 @@ function App() {
     );
   };
 
+  // settings page
+
+  const renderSettings = () => {
+    if (!loggedIn) return <Navigate to={"/login"} />;
+    return (
+      <MainUI tryLogout={tryLogout}>
+        <Settings />
+      </MainUI>
+    );
+  };
+
   // shop page
 
   const renderShop = () => {
@@ -205,6 +217,7 @@ function App() {
                 />
                 <Route path="/user/:username" element={renderUser()} />
                 <Route path="/shop" element={renderShop()} />
+                <Route path="/settings" element={renderSettings()} />
                 <Route path="/login" element={renderLogin()} />
                 <Route path="/register" element={renderRegister()} />
                 <Route path="/game" element={renderGame()} />
