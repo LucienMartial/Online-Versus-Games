@@ -19,7 +19,6 @@ import EndScreen from "./disc-war/components/EndScreen";
 import { TagWarScene } from "./tag-war/game";
 import { TagWarUI } from "./tag-war/components/TagWarUI";
 import TagWarEndScreen from "./tag-war/components/TagWarEndScreen";
-import { Settings } from "./components/user/settings/Settings";
 
 const Game: any = lazy(() => import("./components/game/Game"));
 const Login = lazy(() => import("./components/forms/Login"));
@@ -32,6 +31,7 @@ const Acknowledgement = lazy(
 );
 const User = lazy(() => import("./components/user/User"));
 const Shop = lazy(() => import("./components/user/shop/Shop"));
+const Settings = lazy(() => import("./components/user/settings/Settings"));
 const MainUI = lazy(() => import("./components/lib/MainUI"));
 
 // user context
