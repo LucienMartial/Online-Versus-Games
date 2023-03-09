@@ -2,6 +2,17 @@
 @import "tailwindcss/components";
 @import "tailwindcss/utilities";
 
+@layer utilities{
+  .text-vertical{
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+  }
+  .text-initial{
+    writing-mode: initial;
+    text-orientation: initial;
+  }
+}
+
 :root {
   /* font-family: Inter, Avenir, Helvetica, Arial, sans-serif; */
 

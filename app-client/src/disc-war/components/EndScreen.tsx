@@ -113,19 +113,19 @@ function EndScreen({
 
   return (
     <StrictMode>
-      <main className="flex flex-col w-screen h-screen items-center my-12">
+      <main className="flex flex-col w-screen h-screen items-center my-2 sm:my-12">
         <h1 className="text-6xl pt-5">{victory ? "Victory" : "Defeat"}</h1>
         <section className="transition-all w-full p-4 my-8">
           <table className="w-full table-fixed border-separate border-spacing-y-2">
             <thead>
               <tr>
                 <th className="px-2 py-1 w-3/6 text-left">Players</th>
-                <th>Deaths</th>
-                <th>Straight Shots</th>
-                <th>Curve Shots</th>
-                <th>Shields</th>
-                <th>Shield Catches</th>
-                <th>Dashes</th>
+                <th className="text-vertical sm:text-initial">Deaths</th>
+                <th className="text-vertical sm:text-initial">Straight Shots</th>
+                <th className="text-vertical sm:text-initial">Curve Shots</th>
+                <th className="text-vertical sm:text-initial">Shields</th>
+                <th className="text-vertical sm:text-initial">Shield Catches</th>
+                <th className="text-vertical sm:text-initial">Dashes</th>
               </tr>
             </thead>
             <tbody>{listPlayers}</tbody>
