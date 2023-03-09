@@ -1,13 +1,13 @@
-import { BodyEntity } from "../../../app-shared/game";
-import { PolylineShape } from "../../../app-shared/physics";
-import { Graphics } from "../game/utils/graphics";
-import { RenderObject } from "../game/renderer/render-object";
-import { TagWarEngine, Map } from "../../../app-shared/tag-war";
+import { BodyEntity } from "../../../../app-shared/game";
+import { PolylineShape } from "../../../../app-shared/physics";
+import { Graphics } from "../../game/utils/graphics";
+import { RenderObject } from "../../game/renderer/render-object";
+import { TagWarEngine, Map } from "../../../../app-shared/tag-war";
 import * as PIXI from "pixi.js";
 import { Vector } from "sat";
 import { Container, LINE_CAP } from "pixi.js";
-import { MAP_COLOR_CONFIGS } from "../../../app-shared/tag-war/configs/map-configs";
-import { PERSPECTIVE_OFFSET } from "../../../app-shared/tag-war";
+import { MAP_COLOR_CONFIGS } from "../../../../app-shared/tag-war/configs/map-configs";
+import { PERSPECTIVE_OFFSET } from "../../../../app-shared/tag-war";
 
 // walls
 const TOP_WALL_HEIGHT = 50;
@@ -204,6 +204,7 @@ class MapRender extends RenderObject {
       color,
     );
     displayLine.position.set(wall.position.x, wall.position.y);
+    displayLine.zIndex = 1;
     this.wallsContainer.addChild(displayLine);
   }
 }

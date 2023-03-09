@@ -77,9 +77,11 @@ gameServer.define("tag-war", TagWarRoom, {
   engine: TagWarEngine,
 });
 
-gameServer.define("queue-disc-war", QueueRoom, { gameName: "disc-war" })
+gameServer
+  .define("queue-disc-war", QueueRoom, { gameName: "disc-war" })
   .enableRealtimeListing();
-gameServer.define("queue-tag-war", QueueRoom, { gameName: "tag-war" })
+gameServer
+  .define("queue-tag-war", QueueRoom, { gameName: "tag-war" })
   .enableRealtimeListing();
 
 server.listen(port, () => {

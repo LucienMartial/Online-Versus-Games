@@ -1,13 +1,13 @@
-import { BodyEntity } from "../../../app-shared/game";
-import { PolylineShape } from "../../../app-shared/physics";
-import { Graphics } from "../game/utils/graphics";
-import { RenderObject } from "../game/renderer/render-object";
-import { DiscWarEngine, Map } from "../../../app-shared/disc-war";
+import { BodyEntity } from "../../../../app-shared/game";
+import { PolylineShape } from "../../../../app-shared/physics";
+import { Graphics } from "../../game/utils/graphics";
+import { RenderObject } from "../../game/renderer/render-object";
+import { DiscWarEngine, Map } from "../../../../app-shared/disc-war";
 import * as PIXI from "pixi.js";
-import { PERSPECTIVE_OFFSET } from "../../../app-shared/disc-war";
+import { PERSPECTIVE_OFFSET } from "../../../../app-shared/disc-war";
 import { Vector } from "sat";
 import { Container } from "pixi.js";
-import { MAP_COLOR_CONFIGS } from "../../../app-shared/disc-war/configs/map-configs";
+import { MAP_COLOR_CONFIGS } from "../../../../app-shared/disc-war/configs/map-configs";
 
 // walls
 const TOP_WALL_HEIGHT = 138;
@@ -38,7 +38,7 @@ class MapRender extends RenderObject {
       TOP_WALL_HEIGHT,
       COLOR_CONFIG.TOP_WALL_SIDE_COLOR,
       TOP_WALL_OFFSET,
-      0
+      0,
     );
     // top right
     this.renderTopWall(
@@ -46,7 +46,7 @@ class MapRender extends RenderObject {
       TOP_WALL_HEIGHT,
       COLOR_CONFIG.TOP_WALL_SIDE_COLOR,
       -TOP_WALL_OFFSET,
-      0
+      0,
     );
     // top center
     this.renderTopWall(
@@ -54,7 +54,7 @@ class MapRender extends RenderObject {
       TOP_WALL_HEIGHT,
       COLOR_CONFIG.TOP_WALL_COLOR,
       0,
-      -TOP_WALL_OFFSET
+      -TOP_WALL_OFFSET,
     );
 
     // split line
@@ -79,7 +79,7 @@ class MapRender extends RenderObject {
       shape.p2.x,
       shape.p2.y,
       shape.thickness,
-      COLOR_CONFIG.SPLIT_LINE_COLOR
+      COLOR_CONFIG.SPLIT_LINE_COLOR,
     );
     displayLine.alpha = COLOR_CONFIG.SPLIT_LINE_ALPHA;
     displayLine.position.set(splitLine.position.x, splitLine.position.y);
@@ -105,7 +105,7 @@ class MapRender extends RenderObject {
     height: number,
     color: number,
     offset: number,
-    widthOffset: number
+    widthOffset: number,
   ) {
     const shape = wall.collisionShape as PolylineShape;
     const p1 = shape.p1;
@@ -116,11 +116,11 @@ class MapRender extends RenderObject {
       p2.x - widthOffset,
       p2.y,
       height,
-      color
+      color,
     );
     innerWall.position.set(
       wall.position.x + offset,
-      wall.position.y - PERSPECTIVE_OFFSET
+      wall.position.y - PERSPECTIVE_OFFSET,
     );
 
     // reflection
@@ -141,7 +141,7 @@ class MapRender extends RenderObject {
       shape.p2.x,
       shape.p2.y + offset,
       shape.thickness,
-      COLOR_CONFIG.WALL_COLOR
+      COLOR_CONFIG.WALL_COLOR,
     );
     displayLine.position.set(wall.position.x, wall.position.y);
     this.wallsContainer.addChild(displayLine);

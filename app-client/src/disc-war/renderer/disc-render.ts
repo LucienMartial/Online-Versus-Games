@@ -1,10 +1,10 @@
 import * as PIXI from "pixi.js";
-import { Disc } from "../../../app-shared/disc-war";
-import { CircleShape } from "../../../app-shared/physics";
-import { Graphics } from "../game/utils/graphics";
-import { RenderObject } from "../game/renderer/render-object";
+import { Disc } from "../../../../app-shared/disc-war";
+import { CircleShape } from "../../../../app-shared/physics";
+import { Graphics } from "../../game/utils/graphics";
+import { RenderObject } from "../../game/renderer/render-object";
 import { Viewport } from "pixi-viewport";
-import { ShockwaveManager } from "./effects/shockwave-manager";
+import { ShockwaveManager } from "../effects/shockwave-manager";
 
 const COLOR = 0x00ffdd;
 const MAX_TIME_SHOCKWAVE = 2.5;

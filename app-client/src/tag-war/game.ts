@@ -9,10 +9,11 @@ import { TagWarEngine } from "../../../app-shared/tag-war/tag-war";
 import { InputsData } from "../../../app-shared/types";
 import { CosmeticAssets } from "../game/configs/assets-config";
 import { GameScene } from "../game/scene";
-import { PlayerRender } from "./player-render";
+import { PlayerRender } from "./renderer/player-render";
 import { CBuffer } from "../../../app-shared/utils";
-import { MapRender } from "./map-render";
+import { MapRender } from "./renderer/map-render";
 import { Container } from "pixi.js";
+import { PlayerCursor } from "../game/renderer/player-cursor";
 
 class TagWarScene extends GameScene<GameState> {
   gameEngine: TagWarEngine;
@@ -88,14 +89,16 @@ class TagWarScene extends GameScene<GameState> {
     this.stage.addChild(this.mapRender.wallsContainer);
     this.add(this.mapRender);
 
-    // init player
+    // init main player
     this.mainPlayerRender = new PlayerRender(
       this.mainPlayer,
       this.id,
       this.cosmeticsAssets,
+      true,
     );
     this.mainPlayerRender.container.zIndex = 10;
-    this.add(this.mainPlayerRender, false);
+    this.mainPlayerRender.container.sortableChildren = true;
+    this.add(this.mainPlayerRender, true);
     this.mapFiltered.addChild(this.mainPlayerRender.container);
 
     this.stage.addChild(this.mapFiltered);

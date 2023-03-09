@@ -1,16 +1,16 @@
 import { Player } from "../../../../app-shared/disc-war";
 import { BoxShape } from "../../../../app-shared/physics";
-import { RenderObject } from "./render-object";
-import { Graphics, Watcher } from "../utils";
+import { RenderObject } from "../../game/renderer/render-object";
+import { Graphics, Watcher } from "../../game/utils";
 import * as PIXI from "pixi.js";
-import { DashAnimManager } from "../../disc-war/effects/dash-anim-manager";
-import { DeathAnimManager } from "../../disc-war/effects/death-anim-manager";
+import { DashAnimManager } from "../effects/dash-anim-manager";
+import { DeathAnimManager } from "../effects/death-anim-manager";
 import { Viewport } from "pixi-viewport";
-import { Cosmetics } from "./cosmetics/cosmetics";
-import { CosmeticAssets } from "../configs/assets-config";
+import { Cosmetics } from "../../game/renderer/cosmetics/cosmetics";
+import { CosmeticAssets } from "../../game/configs/assets-config";
 import { DEFAULT_SKIN } from "../../../../app-shared/configs/shop-config";
 import { Container } from "pixi.js";
-import { PlayerCursor } from "./player-cursor";
+import { PlayerCursor } from "../../game/renderer/player-cursor";
 
 class PlayerRender extends RenderObject {
   player: Player;
