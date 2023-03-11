@@ -8,35 +8,35 @@ const gamesInfos: gameInfosType[] = [
     description: "A game where you have to throw discs at your opponents",
     keybinds: [
       {
-        key: "Q - A - Arrow Left",
+        key: ["Q", "A", "Left Arrow"],
         description: "Move left",
       },
       {
-        key: "D - Arrow Right",
+        key: ["D", "Right Arrow"],
         description: "Move right",
       },
       {
-        key: "W - Z - Arrow Up",
+        key: ["W", "Z", "Up Arrow"],
         description: "Move up",
       },
       {
-        key: "S - Arrow Down",
+        key: ["S", "Down Arrow"],
         description: "Move down",
       },
       {
-        key: "Space",
+        key: ["Space"],
         description: "Do a dash",
       },
       {
-        key: "Shift",
+        key: ["Shift"],
         description: "Use your shield",
       },
       {
-        key: "Left Click - One Finger Tap",
+        key: ["Left Click", "One Finger Tap"],
         description: "Throw a disc linearly",
       },
       {
-        key: "Right Click - Two Fingers Tap",
+        key: ["Right Click", "Two Fingers Tap"],
         description: "Throw a curved disc",
       },
     ],
@@ -48,19 +48,19 @@ const gamesInfos: gameInfosType[] = [
     description: "A game where you have to tag your opponents",
     keybinds: [
       {
-        key: "Q - A - Arrow Left",
+        key: ["Q", "A", "Left Arrow"],
         description: "Move left",
       },
       {
-        key: "D - Arrow Right",
+        key: ["D", "Right Arrow"],
         description: "Move right",
       },
       {
-        key: "W - Z - Arrow Up",
+        key: ["W", "Z", "Up Arrow"],
         description: "Move up",
       },
       {
-        key: "S - Arrow Down",
+        key: ["S", "Down Arrow"],
         description: "Move down",
       },
       /* TODO: add keybinds */

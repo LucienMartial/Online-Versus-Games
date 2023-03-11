@@ -1,5 +1,5 @@
 interface keybind {
-  key: string;
+  key: string[];
   description: string;
 }
 

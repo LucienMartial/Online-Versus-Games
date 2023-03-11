@@ -88,9 +88,11 @@ function GameQueue(
           {gameData.keybinds.map((keybinding) => (
             <div
               className="grid grid-cols-2 px-2 even:bg-slate-300 odd:bg-slate-100 dark:even:bg-slate-800 dark:odd:bg-slate-700"
-              key={keybinding.key}
+              key={keybinding.description}
             >
-              <span className="text-left">{keybinding.key}</span>
+              <span className="text-left ">{keybinding.key.map((key) => (
+                <kbd key={key} className="[&:not(:last-child)]:after:content-['-'] [&:not(:last-child)]:after:mx-1">{key}</kbd>
+              ))}</span>
               <span className="text-right text-ellipsis overflow-hidden">
                 {keybinding.description}
               </span>
