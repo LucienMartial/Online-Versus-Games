@@ -44,7 +44,7 @@ export default function Register({ tryRegister }: RegisterProps) {
       <form
         action=""
         onSubmit={register}
-        className={"text-blue-800 flex justify-center items-center flex-col gap-8 mx-4 sm:mx-0 my-auto w-fit h-fit bg-gray-100 border border-white/10 p-10 rounded"}
+        className={"text-blue-600 flex justify-center items-center flex-col gap-8 mx-4 sm:mx-0 my-auto w-fit h-fit bg-white/40 dark:bg-black/40 backdrop-blur-md border border-white/10 p-10 rounded"}
       >
         <h1 className="text-5xl">Create an account</h1>
         <AnimatedInput
