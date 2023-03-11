@@ -25,7 +25,7 @@ const gamesInfos: gameInfosType[] = [
       },
       {
         key: "Space",
-        description: "Do a shift",
+        description: "Do a dash",
       },
       {
         key: "Shift",
