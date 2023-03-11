@@ -29,6 +29,8 @@ function FriendList({ client }: FriendListProps) {
   const [requestCount, setRequestCount] = useState(0);
   const [refresh, setRefresh] = useState(false);
 
+  const isMobile = window.innerWidth < 640; // tailwind's sm breakpoint
+
   const onFriendAccept = useCallback((otherId: ObjectId) => {
     setRequestCount(requestCount - 1);
     setFriends([...friendsRequestsData.current!.friendsData.friends]);
@@ -178,7 +180,7 @@ function FriendList({ client }: FriendListProps) {
           onRemoveRequest={onRemoveRequest}
         />
       </FriendTab>
-      <FriendTab className="mt-2.5" expandedByDefault={true} title="Friends">
+      <FriendTab className="mt-2.5" expandedByDefault={!isMobile} title="Friends">
         <ul>
           {friends
             .sort((friend) => {
