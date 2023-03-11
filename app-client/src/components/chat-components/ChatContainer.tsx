@@ -58,39 +58,35 @@ function ChatContainer({ chatRoom }: ChatContainerProperties) {
 
   return (
     <StrictMode>
-      <section className={"flex justify-center min-h-0 max-h-full"}>
+      <div
+        className={
+          "bg-white/40 dark:bg-black/40 backdrop-blur-md rounded-md min-h-0  h-full w-full sm:w-auto flex flex-col sm:aspect-[16/9]"
+        }
+      >
+        <div>
+          <h1 className={"font-bold text-lg mx-3 my-2 text-center"}>
+            What do you want to talk about?
+          </h1>
+        </div>
         <div
+          ref={chatBoxRef}
           className={
-            "border-2 border-black rounded-md min-h-0 max-h-full h-full"
+            "h-48 overflow-y-auto border-solid border-y border-white grow"
           }
         >
-          <div>
-            <h1 className={"font-bold text-lg mx-0 my-2 text-center"}>
-              What do you want to talk about?
-            </h1>
-          </div>
-          <div
-            ref={chatBoxRef}
-            className={
-              "h-48 overflow-y-auto border-solid border-y border-white "
-            }
-          >
-            {renderChatElements()}
-          </div>
-          <div className={"m-0 rounded"}>
-            <form action="" onSubmit={submitMessage} className={"m-0 p-0"}>
-              <input
-                ref={inputReference}
-                type="text"
-                placeholder="Type your message here"
-                className={
-                  "placeholder:text-xl rounded box-border m-0 py-3 px-5 w-full h-1/4 bg-blue-800 outline-none"
-                }
-              />
-            </form>
-          </div>
+          {renderChatElements()}
         </div>
-      </section>
+        <form action="" onSubmit={submitMessage} className={"m-0 p-0"}>
+          <input
+            ref={inputReference}
+            type="text"
+            placeholder="Type your message here"
+            className={
+              "placeholder:text-xl rounded box-border m-0 py-3 px-5 w-full h-full bg-blue-800 outline-none"
+            }
+          />
+        </form>
+      </div>
     </StrictMode>
   );
 }

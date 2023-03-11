@@ -113,7 +113,7 @@ function EndScreen({
 
   return (
     <StrictMode>
-      <main className="flex flex-col w-screen h-screen items-center my-2 sm:my-12">
+      <main className="flex flex-col w-screen h-screen items-center pt-2 sm:pt-12 min-h-0">
         <h1 className="text-6xl pt-5">{victory ? "Victory" : "Defeat"}</h1>
         <section className="transition-all w-full p-4 my-8">
           <table className="w-full table-fixed border-separate border-spacing-y-2">
@@ -131,9 +131,9 @@ function EndScreen({
             <tbody>{listPlayers}</tbody>
           </table>
         </section>
-        <section className={"flex flex-row justify-evenly items-center w-full"}>
+        <section className={"flex flex-col justify-evenly items-center w-full h-full grow gap-1"}>
           <ChatContainer chatRoom={chatRoom} />
-          <AppButton color="regular" onClick={leaveGame}>
+          <AppButton className="my-6" color="danger" onClick={leaveGame}>
             Leave
           </AppButton>
         </section>
