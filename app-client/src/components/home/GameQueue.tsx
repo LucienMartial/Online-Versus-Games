@@ -102,7 +102,7 @@ function GameQueue({
                 {keybinding.key.map((key) => (
                   <kbd
                     key={key}
-                    className="[&:not(:last-child)]:after:content-['-'] [&:not(:last-child)]:after:mx-1"
+                    className="[&:not(:last-child)]:after:content-['_-_']"
                   >
                     {key}
                   </kbd>
