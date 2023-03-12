@@ -41,6 +41,15 @@ interface UserContextType {
 }
 const UserContext = createContext<UserContextType>({} as UserContextType);
 
+// user settings context
+interface UserSettingsContextType {
+  soundEnabled: boolean;
+  musicEnabled: boolean;
+}
+const UserSettingsContext = createContext<UserSettingsContextType>(
+  {} as UserSettingsContextType,
+);
+
 // Friends context
 const FriendsContext = createContext<useFriendsRes>({} as useFriendsRes);
 
@@ -51,6 +60,10 @@ function App() {
   const [userData, setUserData] = useState<UserContextType>(
     {} as UserContextType,
   );
+  const [userSettings, setUserSettings] = useState<UserSettingsContextType>({
+    soundEnabled: true,
+    musicEnabled: true,
+  });
   const [loaded, setLoaded] = useState(false);
   const { loggedIn, tryLogin, tryLogout, tryRegister, tryRemoveAccount } =
     useAccount();
@@ -78,6 +91,14 @@ function App() {
       if (!userDataString) return;
       const userData: UserContextType = JSON.parse(userDataString);
       setUserData(userData);
+
+      // load settings
+      const userSettingsString = localStorage.getItem("user-settings");
+      if (userSettingsString) {
+        const userSettings: UserSettingsContextType =
+          JSON.parse(userSettingsString);
+        setUserSettings(userSettings);
+      }
 
       // load assets
       await Assets.init({ manifest: manifest });
@@ -206,27 +227,29 @@ function App() {
     <UserContext.Provider value={userData}>
       <FriendsContext.Provider value={friendsRes}>
         <SocialContext.Provider value={socialRes}>
-          <Router>
-            <Suspense fallback={<LoadingPage />}>
-              <Routes>
-                <Route path="/" element={renderDefault()} />
-                <Route path="/home" element={renderHome()} />
-                <Route
-                  path="/user"
-                  element={<Navigate to={"/user/" + userData.username} />}
-                />
-                <Route path="/user/:username" element={renderUser()} />
-                <Route path="/shop" element={renderShop()} />
-                <Route path="/settings" element={renderSettings()} />
-                <Route path="/login" element={renderLogin()} />
-                <Route path="/register" element={renderRegister()} />
-                <Route path="/game" element={renderGame()} />
-                <Route path="/privacy" element={<Privacy />} />
-                <Route path="/acknowledgment" element={<Acknowledgement />} />
-                <Route path="*" element={<Page404 />} />
-              </Routes>
-            </Suspense>
-          </Router>
+          <UserSettingsContext.Provider value={userSettings}>
+            <Router>
+              <Suspense fallback={<LoadingPage />}>
+                <Routes>
+                  <Route path="/" element={renderDefault()} />
+                  <Route path="/home" element={renderHome()} />
+                  <Route
+                    path="/user"
+                    element={<Navigate to={"/user/" + userData.username} />}
+                  />
+                  <Route path="/user/:username" element={renderUser()} />
+                  <Route path="/shop" element={renderShop()} />
+                  <Route path="/settings" element={renderSettings()} />
+                  <Route path="/login" element={renderLogin()} />
+                  <Route path="/register" element={renderRegister()} />
+                  <Route path="/game" element={renderGame()} />
+                  <Route path="/privacy" element={<Privacy />} />
+                  <Route path="/acknowledgment" element={<Acknowledgement />} />
+                  <Route path="*" element={<Page404 />} />
+                </Routes>
+              </Suspense>
+            </Router>
+          </UserSettingsContext.Provider>
         </SocialContext.Provider>
       </FriendsContext.Provider>
     </UserContext.Provider>
@@ -234,5 +257,5 @@ function App() {
 }
 
 export default App;
-export { FriendsContext, SocialContext, UserContext };
-export type { UserContextType };
+export { FriendsContext, SocialContext, UserContext, UserSettingsContext };
+export type { UserContextType, UserSettingsContextType };
