@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 
 interface AppButtonProps {
   onClick?: () => void;
-  color: "regular" | "danger";
+  color: "regular" | "danger" | "warning";
   type?: "submit" | "button";
   children?: ReactNode;
   className?: string;
@@ -26,6 +26,8 @@ export default function AppButton({
         return "bg-red-800 hover:bg-red-900";
       case "regular":
         return "bg-blue-800 hover:bg-blue-900";
+      case "warning":
+        return "bg-red-800 hover:bg-red-900";
     }
   }
 
@@ -36,37 +38,33 @@ export default function AppButton({
     }
   }
 
-  function renderButton(){
-    return(<button
-      onClick={handleClick}
-      type={type}
-      className={
-        `${
-          !grayedOut
-            ? `${buttonStyle()} `
-            : `bg-gray-500 `
-        } ${className??""} text-white font-bold py-2.5 px-5 rounded w-fit`
-      }
-      disabled={grayedOut}
-    >
-      {children}
-    </button>)
+  function renderButton() {
+    return (
+      <button
+        onClick={handleClick}
+        type={type}
+        className={`${!grayedOut ? `${buttonStyle()} ` : `bg-gray-500 `} ${
+          className ?? ""
+        } text-white font-bold py-2.5 px-5 rounded w-fit`}
+        disabled={grayedOut}
+      >
+        {children}
+      </button>
+    );
   }
 
-  function renderAnchor(){
-    return(<Link
-      className={
-        `${
-          !grayedOut
-            ? `${buttonStyle()} `
-            : `bg-gray-500 `
-        } ${className??""} text-white font-bold py-2.5 px-5 rounded w-fit`
-      }
-      to={href?href:""}
-      onClick={handleClick??undefined}
-    >
-      {children}
-    </Link>)
+  function renderAnchor() {
+    return (
+      <Link
+        className={`${!grayedOut ? `${buttonStyle()} ` : `bg-gray-500 `} ${
+          className ?? ""
+        } text-white font-bold py-2.5 px-5 rounded w-fit`}
+        to={href ? href : ""}
+        onClick={handleClick ?? undefined}
+      >
+        {children}
+      </Link>
+    );
   }
-  return href?renderAnchor():renderButton();
+  return href ? renderAnchor() : renderButton();
 }
