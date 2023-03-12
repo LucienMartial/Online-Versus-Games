@@ -66,51 +66,51 @@ export default function Settings() {
       <div className={"flex justify-start"}>
         <div
           className={
-            "flex border-4 border-slate-100 hover:border-slate-300 m-4 rounded-md"
+            "flex border-2 border-slate-100 hover:border-slate-300 m-4 rounded-md"
           }
         >
           {userSettings.soundEnabled ? (
             <AppButton
               onClick={toggleSound}
-              color={"warning"}
-              className={"p-4 items-center"}
+              color={"regular"}
+              className={"p-4 items-center text-xl"}
             >
-              Disable Sound{" "}
-              <BsFillVolumeMuteFill className={"inline-block ml-2 text-2xl"} />
+              Sound enabled{" "}
+              <BsFillVolumeUpFill className={"inline-block ml-2 text-2xl"} />
             </AppButton>
           ) : (
             <AppButton
               onClick={toggleSound}
-              color={"regular"}
-              className={"p-4 items-center"}
+              color={"warning"}
+              className={"p-4 items-center text-xl"}
             >
-              Enable Sound{" "}
-              <BsFillVolumeUpFill className={"inline-block ml-2 text-2xl"} />
+              Sound disabled{" "}
+              <BsFillVolumeMuteFill className={"inline-block ml-2 text-2xl"} />
             </AppButton>
           )}
         </div>
         <div
           className={
-            "flex border-4 border-slate-100 hover:border-slate-300 m-4 rounded-md"
+            "flex border-2 border-slate-100 hover:border-slate-300 m-4 rounded-md"
           }
         >
           {userSettings.musicEnabled ? (
             <AppButton
               onClick={toggleMusic}
-              color={"warning"}
-              className={"p-4 items-center"}
+              color={"regular"}
+              className={"p-4 items-center text-xl"}
             >
-              Disable Music{" "}
-              <MdMusicOff className={"inline-block ml-2 text-2xl"} />
+              Music enabled{" "}
+              <MdMusicNote className={"inline-block ml-2 text-2xl"} />
             </AppButton>
           ) : (
             <AppButton
               onClick={toggleMusic}
-              color={"regular"}
-              className={"p-4 items-center"}
+              color={"warning"}
+              className={"p-4 items-center text-xl"}
             >
-              Enable Music{" "}
-              <MdMusicNote className={"inline-block ml-2 text-2xl"} />
+              Music disabled{" "}
+              <MdMusicOff className={"inline-block ml-2 text-2xl"} />
             </AppButton>
           )}
         </div>
