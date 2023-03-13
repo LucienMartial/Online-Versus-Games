@@ -19,7 +19,7 @@
   /* Delete Helvetica because it causes a bug in Firefox
   (original font-family is "Inter, Avenir, Helvetica, Arial, sans-serif") */
   
-  font-family: Inter, Avenir, Arial, sans-serif;
+  font-family: 'Sarala', Arial, sans-serif;
 
 
   font-synthesis: none;
