@@ -16,7 +16,7 @@ abstract class GameScene<T> {
   room: Room<T>;
   id: string;
 
-  constructor(
+  protected constructor(
     viewport: Viewport,
     sceneElement: HTMLElement,
     client: Client,

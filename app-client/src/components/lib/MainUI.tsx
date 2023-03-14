@@ -1,8 +1,6 @@
-import { ReactNode, useContext } from "react";
+import { ReactNode } from "react";
 import Footer from "./Footer";
 import Navbar from "./Navbar";
-import menuMusic from "/assets/musics/menu-music.mp3";
-import { UserSettingsContext } from "../../App";
 
 interface MainUIProps {
   tryLogout: () => Promise<void>;

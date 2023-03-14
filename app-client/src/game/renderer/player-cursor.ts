@@ -1,4 +1,3 @@
-import { Vector } from "sat";
 import { Graphics } from "../utils";
 import { RenderObject } from "./render-object";
 

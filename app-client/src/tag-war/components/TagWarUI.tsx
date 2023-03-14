@@ -1,4 +1,4 @@
-import { StrictMode, useState } from "react";
+import { useState } from "react";
 import { TagWarScene } from "../game";
 
 interface GameUIProps {

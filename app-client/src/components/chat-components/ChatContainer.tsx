@@ -1,4 +1,4 @@
-import { StrictMode, useState, useRef, useEffect } from "react";
+import { StrictMode, useState, useRef, useEffect, FormEvent } from "react";
 import { Room } from "colyseus.js";
 import ChatMessage from "./ChatMessage";
 import { ClientMessage, ServerMessage } from "../../../../app-shared/types";
@@ -22,7 +22,7 @@ function ChatContainer({ chatRoom }: ChatContainerProperties) {
     });
   }
 
-  function submitMessage(event: React.FormEvent) {
+  function submitMessage(event: FormEvent) {
     event.preventDefault();
     const messageContent = inputReference.current?.value;
     inputReference.current!.value = "";

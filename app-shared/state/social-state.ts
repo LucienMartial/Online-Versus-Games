@@ -1,4 +1,4 @@
-import { Schema, SetSchema, type } from "@colyseus/schema";
+import { Schema, type } from "@colyseus/schema";
 
 class SocialState extends Schema {
   @type({ array: "string" }) users: string[] = [];

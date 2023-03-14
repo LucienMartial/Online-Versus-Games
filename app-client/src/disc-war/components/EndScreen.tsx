@@ -5,6 +5,7 @@ import {
   useContext,
   useEffect,
   useState,
+  SetStateAction,
 } from "react";
 import { DiscWarScene } from "../../disc-war/game";
 import {
@@ -28,7 +29,7 @@ function PlayerRow({
   id: string;
   player: EndGamePlayerState;
   himself: boolean;
-  setProfileName: Dispatch<React.SetStateAction<null | string>>;
+  setProfileName: Dispatch<SetStateAction<null | string>>;
 }) {
   return (
     <tr className="group hover:bg-slate-800">

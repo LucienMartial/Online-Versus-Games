@@ -13,7 +13,6 @@ import { PlayerRender } from "./renderer/player-render";
 import { CBuffer } from "../../../app-shared/utils";
 import { MapRender } from "./renderer/map-render";
 import { Container } from "pixi.js";
-import { PlayerCursor } from "../game/renderer/player-cursor";
 
 class TagWarScene extends GameScene<GameState> {
   gameEngine: TagWarEngine;

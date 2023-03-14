@@ -1,4 +1,4 @@
-import { StrictMode, useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import {
   UserShop,
   SelectedItems,
