@@ -35,7 +35,7 @@ export default function AnimatedInput({
           }
           defaultValue={defaultValue}
         />
-        <label htmlFor={id} className={"absolute left-0 top-[50%] -translate-y-1/2 text-xl cursor-text select-none ml-1 px-2 duration-150 peer-focus:top-0 peer-focus:opacity-0 backdrop-blur peer-focus:text-lg peer-[:not(:placeholder-shown)]:top-0 peer-[:not(:placeholder-shown)]:opacity-0 peer-[:not(:placeholder-shown)]:text-lg"}>
+        <label htmlFor={id} className={"absolute left-0 top-[50%] -translate-y-1/2 text-xl cursor-text select-none ml-1 px-2 duration-150 peer-focus:top-0 peer-focus:opacity-0 peer-focus:text-lg peer-[:not(:placeholder-shown)]:top-0 peer-[:not(:placeholder-shown)]:opacity-0 peer-[:not(:placeholder-shown)]:text-lg"}>
           {label}
         </label>
       </div>
