@@ -61,8 +61,8 @@ function App() {
     {} as UserContextType,
   );
   const [userSettings, setUserSettings] = useState<UserSettingsContextType>({
-    soundEnabled: true,
-    musicEnabled: true,
+    soundEnabled: false,
+    musicEnabled: false,
   });
   const [loaded, setLoaded] = useState(false);
   const { loggedIn, tryLogin, tryLogout, tryRegister, tryRemoveAccount } =
