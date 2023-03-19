@@ -1,4 +1,4 @@
-import { ReactNode, StrictMode, useState } from "react";
+import { ReactNode, useState } from "react";
 
 interface TabData {
   title: string;

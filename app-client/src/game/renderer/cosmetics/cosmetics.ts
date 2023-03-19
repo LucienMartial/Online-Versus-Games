@@ -1,4 +1,3 @@
-import { PlayerRender } from "../player-render";
 import { CosmeticAssets } from "../../configs/assets-config";
 import { Container, Graphics, Sprite, Texture } from "pixi.js";
 import {

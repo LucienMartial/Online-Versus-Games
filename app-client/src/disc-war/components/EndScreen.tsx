@@ -5,6 +5,7 @@ import {
   useContext,
   useEffect,
   useState,
+  SetStateAction,
 } from "react";
 import { DiscWarScene } from "../../disc-war/game";
 import {
@@ -28,7 +29,7 @@ function PlayerRow({
   id: string;
   player: EndGamePlayerState;
   himself: boolean;
-  setProfileName: Dispatch<React.SetStateAction<null | string>>;
+  setProfileName: Dispatch<SetStateAction<null | string>>;
 }) {
   return (
     <tr className="group hover:bg-slate-800">
@@ -113,27 +114,27 @@ function EndScreen({
 
   return (
     <StrictMode>
-      <main className="flex flex-col w-screen h-screen items-center my-12">
+      <main className="flex flex-col w-screen h-screen items-center pt-2 sm:pt-12 min-h-0">
         <h1 className="text-6xl pt-5">{victory ? "Victory" : "Defeat"}</h1>
         <section className="transition-all w-full p-4 my-8">
           <table className="w-full table-fixed border-separate border-spacing-y-2">
             <thead>
               <tr>
                 <th className="px-2 py-1 w-3/6 text-left">Players</th>
-                <th>Deaths</th>
-                <th>Straight Shots</th>
-                <th>Curve Shots</th>
-                <th>Shields</th>
-                <th>Shield Catches</th>
-                <th>Dashes</th>
+                <th className="text-vertical sm:text-initial">Deaths</th>
+                <th className="text-vertical sm:text-initial">Straight Shots</th>
+                <th className="text-vertical sm:text-initial">Curve Shots</th>
+                <th className="text-vertical sm:text-initial">Shields</th>
+                <th className="text-vertical sm:text-initial">Shield Catches</th>
+                <th className="text-vertical sm:text-initial">Dashes</th>
               </tr>
             </thead>
             <tbody>{listPlayers}</tbody>
           </table>
         </section>
-        <section className={"flex flex-row justify-evenly items-center w-full"}>
+        <section className={"flex flex-col justify-evenly items-center w-full h-full grow gap-1"}>
           <ChatContainer chatRoom={chatRoom} />
-          <AppButton color="regular" onClick={leaveGame}>
+          <AppButton className="my-6" color="danger" onClick={leaveGame}>
             Leave
           </AppButton>
         </section>

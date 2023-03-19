@@ -1,10 +1,10 @@
-import { Dispatch, StrictMode } from "react";
+import { Dispatch, StrictMode, SetStateAction } from "react";
 import Profile from "./ProfileView";
 import { FiArrowLeftCircle } from "react-icons/fi";
 
 interface UserProps {
   username: string;
-  setProfileUsername: Dispatch<React.SetStateAction<null | string>>;
+  setProfileUsername: Dispatch<SetStateAction<null | string>>;
 }
 
 function ProfilePopup({ username, setProfileUsername }: UserProps) {

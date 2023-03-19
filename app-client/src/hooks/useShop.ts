@@ -1,4 +1,3 @@
-import { useState, useEffect } from "react";
 import { Item } from "../../../app-shared/types";
 
 // function getItems(): Item[] {

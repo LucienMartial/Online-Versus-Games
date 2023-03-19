@@ -4,7 +4,7 @@ import { BoxShape } from "../physics/collision.js";
 import { SelectedItems } from "../types/index.js";
 import { Inputs } from "../types/inputs.js";
 import { PlayerState } from "./state/player-state.js";
-import { HOME_WALL_OFFSET, MAP_OFFSET_X, MAP_OFFSET_Y } from "./map.js";
+import { HOME_WALL_OFFSET, MAP_OFFSET_X } from "./map.js";
 import { WORLD_HEIGHT, WORLD_WIDTH } from "../utils/constants.js";
 
 export const WIDTH = 60;

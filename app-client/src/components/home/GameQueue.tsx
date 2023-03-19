@@ -13,10 +13,14 @@ interface GameProps {
   setQueueRoom: (room: Room | undefined) => void;
 }
 
-function GameQueue(
-  { client, gameData, tryConnection, lobbyRoom, queueRoom, setQueueRoom }:
-    GameProps,
-) {
+function GameQueue({
+  client,
+  gameData,
+  tryConnection,
+  lobbyRoom,
+  queueRoom,
+  setQueueRoom,
+}: GameProps) {
   const [nbClients, setNbClients] = useState(0);
   const queueRoomId = useRef("");
   const inQueue = queueRoom?.id === queueRoomId.current;
@@ -79,7 +83,11 @@ function GameQueue(
   }, [lobbyRoom]);
 
   return (
-    <section className="w-full sm:w-80 h-fit rounded bg-slate-200 text-slate-900 dark:bg-slate-900 dark:text-slate-200 px-2.5 py-2.5">
+    <section
+      className={`w-full sm:w-80 h-fit rounded bg-slate-200 text-slate-900 dark:bg-slate-900 dark:text-slate-200 px-2.5 py-2.5 ${
+        inQueue && "animate-pulse"
+      }`}
+    >
       <h1 className="text-3xl">{gameData.name}</h1>
       <p>{gameData.description}</p>
       <details className="py-2">
@@ -88,9 +96,18 @@ function GameQueue(
           {gameData.keybinds.map((keybinding) => (
             <div
               className="grid grid-cols-2 px-2 even:bg-slate-300 odd:bg-slate-100 dark:even:bg-slate-800 dark:odd:bg-slate-700"
-              key={keybinding.key}
+              key={keybinding.description}
             >
-              <span className="text-left">{keybinding.key}</span>
+              <span className="text-left ">
+                {keybinding.key.map((key) => (
+                  <kbd
+                    key={key}
+                    className="[&:not(:last-child)]:after:content-['_-_']"
+                  >
+                    {key}
+                  </kbd>
+                ))}
+              </span>
               <span className="text-right text-ellipsis overflow-hidden">
                 {keybinding.description}
               </span>
@@ -111,7 +128,6 @@ function GameQueue(
 
       {inQueue && (
         <section>
-          <p>Searching for a game...</p>
           <AppButton color="regular" onClick={leaveQueue}>
             Leave
           </AppButton>

@@ -29,6 +29,8 @@ function FriendList({ client }: FriendListProps) {
   const [requestCount, setRequestCount] = useState(0);
   const [refresh, setRefresh] = useState(false);
 
+  const isMobile = window.innerWidth < 640; // tailwind's sm breakpoint
+
   const onFriendAccept = useCallback((otherId: ObjectId) => {
     setRequestCount(requestCount - 1);
     setFriends([...friendsRequestsData.current!.friendsData.friends]);
@@ -136,7 +138,7 @@ function FriendList({ client }: FriendListProps) {
   }, [socialRoom, friends]);
 
   const mainClasses =
-    "backdrop-blur grow-0 sm:grow max-w-xs h-fit shadow-lg shadow-slate-600/50 rounded-xl pb-3";
+    "backdrop-blur grow-0 sm:grow sm:max-w-xs h-fit shadow-lg shadow-slate-600/50 rounded-xl pb-3";
 
   if (loading) {
     return (
@@ -178,7 +180,7 @@ function FriendList({ client }: FriendListProps) {
           onRemoveRequest={onRemoveRequest}
         />
       </FriendTab>
-      <FriendTab className="mt-2.5" expandedByDefault={true} title="Friends">
+      <FriendTab className="mt-2.5" expandedByDefault={!isMobile} title="Friends">
         <ul>
           {friends
             .sort((friend) => {

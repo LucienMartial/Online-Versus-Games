@@ -1,4 +1,4 @@
-import { StrictMode, useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import {
   UserShop,
   SelectedItems,
@@ -20,10 +20,12 @@ import { ShopPreview } from "./ShopPreview";
 import { CosmeticAssets } from "../../../game/configs/assets-config";
 import { Assets } from "@pixi/assets";
 import LoadingPage from "../../LoadingPage";
+import cashRegister from "/assets/sounds/cash-register-purchase.mp3";
+import { UserSettingsContext } from "../../../App";
 
 function replaceSelectedItem(
   id: number,
-  selectedItems: SelectedItems
+  selectedItems: SelectedItems,
 ): SelectedItems {
   const IDItem = getItem(id);
   const category = IDItem?.category;
@@ -43,13 +45,15 @@ function replaceSelectedItem(
 export default function Shop() {
   const [shopData, setShopData] = useState<UserShop | null>(null);
   const [cosmeticsAssets, setCosmeticsAssets] = useState<CosmeticAssets | null>(
-    null
+    null,
   );
   const [serverSelectedItems, setServerSelectedItems] =
     useState<SelectedItems | null>(null);
   const [grayedOut, setGrayedOut] = useState<boolean>(true);
   const [previewItem, setPreviewItem] = useState<SelectedItems | null>(null);
   const [payingSkin, setPayingSkin] = useState<number>(0);
+  const settingContext = useContext(UserSettingsContext);
+  const cashAudio = new Audio(cashRegister);
 
   let loaded: boolean = false;
 
@@ -126,7 +130,7 @@ export default function Shop() {
   }
 
   async function selectCharacterServer(
-    replacedItems: SelectedItems | null = null
+    replacedItems: SelectedItems | null = null,
   ): Promise<boolean> {
     if (!shopData || !previewItem) return false;
     let res = null;
@@ -214,6 +218,9 @@ export default function Shop() {
     if (!shopData) return false;
     const res = await buyJsonPosetRequest([id]);
     if (res.status === 200) {
+      if (settingContext.soundEnabled) {
+        cashAudio.play();
+      }
       const replacedItems = replaceSelectedItem(id, shopData.selectedItems);
       const resSelectCharacter = await selectCharacterServer(replacedItems);
       if (resSelectCharacter) {
@@ -250,6 +257,9 @@ export default function Shop() {
     if (!shopData) return false;
     const res = await buyJsonPosetRequest(ids);
     if (res.status === 200) {
+      if (settingContext.soundEnabled) {
+        cashAudio.play();
+      }
       return true;
     }
     const err: Error = await res.json();
@@ -261,7 +271,7 @@ export default function Shop() {
     const itemSet = new Set(shopData?.items);
     const selectedItems = shopData?.selectedItems;
     const categoryItems = SHOP_ITEMS.filter(
-      (item) => item.category === category
+      (item) => item.category === category,
     );
     return categoryItems.map((item) => {
       return {

@@ -4,12 +4,12 @@ import { DiscWarEngine } from "../../../app-shared/disc-war/disc-war";
 import { GameScene } from "../game/scene";
 import { Graphics } from "../game/utils/graphics";
 import { PlayerRender, RenderObject } from "../game/renderer";
-import { DiscRender } from "./disc-render";
+import { DiscRender } from "./renderer/disc-render";
 import { Client, Room } from "colyseus.js";
 import { GameState, PlayerState } from "../../../app-shared/disc-war/state";
 import { InputsData } from "../../../app-shared/utils";
 import { Predictor } from "../game/sync/predictor";
-import { MapRender } from "./map-render";
+import { MapRender } from "./renderer/map-render";
 import { Viewport } from "pixi-viewport";
 import { Disc, Player } from "../../../app-shared/disc-war";
 import { AdvancedBloomFilter } from "@pixi/filter-advanced-bloom";
@@ -129,6 +129,7 @@ class DiscWarScene extends GameScene<GameState> {
     this.stage.addChild(mapRender.wallsContainer);
     this.add(mapRender);
     mapRender.splitLineContainer.zIndex = 5;
+    this.mapFiltered.addChild(mapRender.container);
     this.mapFiltered.addChild(mapRender.splitLineContainer);
 
     // player are displayed inside the map
@@ -161,6 +162,8 @@ class DiscWarScene extends GameScene<GameState> {
       this.deathAnimManager,
       this.viewport,
       this.cosmeticsAssets!,
+      true,
+      this.stage,
     );
     this.mainPlayerRender.container.zIndex = 10;
     this.add(this.mainPlayerRender, false);

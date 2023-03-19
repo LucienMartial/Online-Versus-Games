@@ -9,9 +9,9 @@ import { TagWarEngine } from "../../../app-shared/tag-war/tag-war";
 import { InputsData } from "../../../app-shared/types";
 import { CosmeticAssets } from "../game/configs/assets-config";
 import { GameScene } from "../game/scene";
-import { PlayerRender } from "./player-render";
+import { PlayerRender } from "./renderer/player-render";
 import { CBuffer } from "../../../app-shared/utils";
-import { MapRender } from "./map-render";
+import { MapRender } from "./renderer/map-render";
 import { Container } from "pixi.js";
 
 class TagWarScene extends GameScene<GameState> {
@@ -85,20 +85,22 @@ class TagWarScene extends GameScene<GameState> {
     // init map
     this.mapRender = new MapRender(this.gameEngine, state.mapConfigId);
     this.mapRender.wallsContainer.zIndex = 20;
-    this.stage.addChild(this.mapRender.wallsContainer);
-    this.add(this.mapRender);
+    this.add(this.mapRender, true);
+    this.mapFiltered.addChild(this.mapRender.wallsContainer);
+    this.stage.addChild(this.mapFiltered);
 
-    // init player
+    // init main player
     this.mainPlayerRender = new PlayerRender(
       this.mainPlayer,
       this.id,
       this.cosmeticsAssets,
+      true,
+      this.stage,
     );
     this.mainPlayerRender.container.zIndex = 10;
+    this.mainPlayerRender.container.sortableChildren = true;
     this.add(this.mainPlayerRender, false);
     this.mapFiltered.addChild(this.mainPlayerRender.container);
-
-    this.stage.addChild(this.mapFiltered);
 
     // init players
     for (const [id, playerState] of state.players.entries()) {

@@ -12,7 +12,7 @@ function StatCard({
   return (
     <section
       className={
-        "flex flex-col justify-center items-center bg-slate-400 dark:bg-slate-800 rounded-xl p-4 " +
+        "flex flex-col justify-center items-center bg-white/40 dark:bg-black/40 backdrop-blur-md rounded-xl p-4 " +
         className
       }
     >

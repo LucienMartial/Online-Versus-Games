@@ -1,16 +1,6 @@
-import {
-  Application,
-  Container,
-  Graphics,
-  Loader,
-  Sprite,
-  Texture,
-} from "pixi.js";
-import { CosmeticAssets } from "../../../game/configs/assets-config";
 import { ShopButton } from "./ShopButton";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { DEFAULT_SKIN } from "../../../../../app-shared/configs/shop-config";
-import LoadingPage from "../../LoadingPage";
 
 interface ItemProps {
   id: number;
@@ -180,7 +170,7 @@ function ShopItem({
             }
           ></div>
         ) : (
-          <img width={IMG_WIDTH} height={IMG_HEIGHT} src={COSMETIC_URL} />
+          <img width={IMG_WIDTH} height={IMG_HEIGHT} src={COSMETIC_URL} alt="Shop item" />
         )}
       </div>
       <div

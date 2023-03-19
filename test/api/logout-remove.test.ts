@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, vi, withCallback } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import request from "supertest";
 import { initApp, withCookie } from "../utils";
 import { ObjectId } from "mongodb";

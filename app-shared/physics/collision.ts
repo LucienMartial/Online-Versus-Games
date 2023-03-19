@@ -33,7 +33,7 @@ abstract class CollisionShape {
   type: ShapeType;
   shape: Shape;
 
-  constructor(type: ShapeType) {
+  protected constructor(type: ShapeType) {
     this.type = type;
     this.shape = new SAT.Circle();
   }

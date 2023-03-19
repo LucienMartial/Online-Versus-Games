@@ -1,5 +1,3 @@
-import { CosmeticAssets } from "../../app-client/src/game/configs/assets-config.js";
-
 type ItemCategory = "skin" | "hat" | "face";
 
 interface Item {
