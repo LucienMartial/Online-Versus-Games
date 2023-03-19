@@ -86,20 +86,20 @@ function Navbar({ tryLogout }: NavbarProps) {
               href={"/shop"}
               onClick={hideNavBar}
             >
-              Shop
-            </AppButton>
-            <AppButton
-              className="!w-full sm:w-fit"
-              color={"regular"}
-              href={"/user"}
-              onClick={hideNavBar}
-            >
               Profile
             </AppButton>
             <AppButton
               className="!w-full sm:w-fit"
               color={"regular"}
               href={"/settings"}
+              onClick={hideNavBar}
+            >
+              Shop
+            </AppButton>
+            <AppButton
+              className="!w-full sm:w-fit"
+              color={"regular"}
+              href={"/user"}
               onClick={hideNavBar}
             >
               Settings
