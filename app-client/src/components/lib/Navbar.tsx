@@ -83,7 +83,7 @@ function Navbar({ tryLogout }: NavbarProps) {
             <AppButton
               className="!w-full sm:w-fit"
               color={"regular"}
-              href={"/shop"}
+              href={"/user"}
               onClick={hideNavBar}
             >
               Profile
@@ -91,7 +91,7 @@ function Navbar({ tryLogout }: NavbarProps) {
             <AppButton
               className="!w-full sm:w-fit"
               color={"regular"}
-              href={"/settings"}
+              href={"/shop"}
               onClick={hideNavBar}
             >
               Shop
@@ -99,7 +99,7 @@ function Navbar({ tryLogout }: NavbarProps) {
             <AppButton
               className="!w-full sm:w-fit"
               color={"regular"}
-              href={"/user"}
+              href={"/settings"}
               onClick={hideNavBar}
             >
               Settings
