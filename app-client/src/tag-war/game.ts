@@ -58,7 +58,7 @@ class TagWarScene extends GameScene<GameState> {
     this.mapFiltered.addChild(deathAnimContainer);
     const deathEmitter = new Emitter(
       deathAnimContainer,
-      animationsAssets.red_square,
+      animationsAssets.red_drop,
       DEATH_ANIMATION.CONFIG_3,
     );
     this.deathAnimManager = new DeathAnimManager(this.gameEngine, deathEmitter);

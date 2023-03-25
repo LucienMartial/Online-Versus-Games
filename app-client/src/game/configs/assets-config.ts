@@ -19,8 +19,8 @@ const manifest = {
           srcs: "../assets/animations/bubble.png",
         },
         {
-          name: "red_square",
-          srcs: "../assets/animations/red_square.png",
+          name: "red_drop",
+          srcs: "../assets/animations/red_drop.png",
         },
       ],
     },
