@@ -4,7 +4,8 @@ import AppLink from "../lib/AppLink";
 import AppError from "./AppError";
 import Footer from "../lib/Footer";
 import AppButton from "../lib/AppButton";
-import { useLocation } from "react-router-dom";
+import {useLocation} from "react-router-dom";
+import useTitle from "../../hooks/useTitle";
 
 interface RegisterProps {
   tryRegister: (username: string, password: string) => Promise<void>;
@@ -17,6 +18,8 @@ export default function Register({ tryRegister }: RegisterProps) {
   const [invalidPassword, setInvalidPassword] = React.useState(false);
   const [registerError, setRegisterError] = React.useState("");
   const { state } = useLocation();
+
+  useTitle("Register - Online Versus Games");
 
   useEffect(() => {
     if (state?.params?.username) setUsername(state.params.username);

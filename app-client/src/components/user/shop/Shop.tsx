@@ -22,6 +22,7 @@ import { Assets } from "@pixi/assets";
 import LoadingPage from "../../LoadingPage";
 import cashRegister from "/assets/sounds/cash-register-purchase.mp3";
 import { UserSettingsContext } from "../../../App";
+import useTitle from "../../../hooks/useTitle";
 
 function replaceSelectedItem(
   id: number,
@@ -54,6 +55,8 @@ export default function Shop() {
   const [payingSkin, setPayingSkin] = useState<number>(0);
   const settingContext = useContext(UserSettingsContext);
   const cashAudio = new Audio(cashRegister);
+
+  useTitle("Shop - Online Versus Games");
 
   let loaded: boolean = false;
 

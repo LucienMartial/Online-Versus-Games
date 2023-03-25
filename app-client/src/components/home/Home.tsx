@@ -4,6 +4,7 @@ import { Client } from "colyseus.js";
 import { Room } from "colyseus.js";
 import GameQueue from "./GameQueue";
 import gamesInfos from "../../data/games-infos";
+import useTitle from "../../hooks/useTitle";
 
 declare module "colyseus.js" {
   interface RoomAvailable {
@@ -19,6 +20,8 @@ interface HomeProps {
 function Home({ tryConnection, client }: HomeProps) {
   const [lobbyRoom, setLobbyRoom] = useState<Room>();
   const [queueRoom, setQueueRoom] = useState<Room>();
+
+  useTitle("Online Versus Games");
 
   const connectToLobby = useCallback(async () => {
     if (!client) return;

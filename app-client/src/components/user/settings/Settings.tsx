@@ -4,6 +4,7 @@ import AppButton from "../../lib/AppButton";
 import { UserSettingsContext, UserSettingsContextType } from "../../../App";
 import { BsFillVolumeMuteFill, BsFillVolumeUpFill } from "react-icons/bs";
 import { MdMusicNote, MdMusicOff } from "react-icons/md";
+import useTitle from "../../../hooks/useTitle";
 
 export default function Settings() {
   const settingContext = useContext(UserSettingsContext);
@@ -12,6 +13,8 @@ export default function Settings() {
     musicEnabled: settingContext.musicEnabled,
   });
   const switchAudioEnable = new Audio(switchAudio);
+
+  useTitle("Settings - Online Versus Games");
 
   useEffect(() => {
     const userSettingsString = localStorage.getItem("user-settings");
