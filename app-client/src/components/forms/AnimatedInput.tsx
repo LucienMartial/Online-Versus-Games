@@ -21,7 +21,7 @@ export default function AnimatedInput({
 }: AnimatedInputProps) {
   return (
     <React.StrictMode>
-      <div className={"relative w-full px-2 py-6 sm:py-0 sm:w-96 sm:px-0 aspect-[6/1] text-blue-700 my-2"}>
+      <div className={"relative w-full px-2 py-6 sm:py-0 sm:w-96 sm:px-0 aspect-[6/1] text-blue-500 my-2"}>
         <input
           id={id}
           type={type}
