@@ -25,9 +25,13 @@ const COP_Y = WORLD_HEIGHT / 2;
 class Player extends BodyEntity {
   private isPuppet: boolean;
   collisionWithOther: boolean;
+  otherPosY: number;
   boostEnabled: boolean = false;
   isThief: boolean;
   touchedCallback: Function;
+  onDeath?: {
+    (posX: number, posY: number): void;
+  };
 
   // cosmetics
   cosmetics: SelectedItems;
@@ -48,6 +52,7 @@ class Player extends BodyEntity {
     this.friction = new SAT.Vector();
     this.direction = new SAT.Vector();
     this.collisionWithOther = false;
+    this.otherPosY = 0;
     this.isThief = isThief;
 
     // callbacks
@@ -70,7 +75,13 @@ class Player extends BodyEntity {
   sync(state: PlayerState) {
     this.setPosition(state.x, state.y);
     this.collisionWithOther = state.collisionWithOther;
+    this.otherPosY = state.otherPosY;
     this.isThief = state.isThief;
+    // just die
+    if (!this.isDead && state.isDead) {
+      this.onDeath?.(this.position.x, this.position.y);
+    }
+    this.isDead = state.isDead;
   }
 
   // will surely need collisions
@@ -79,7 +90,14 @@ class Player extends BodyEntity {
 
     if (!other.static) {
       this.collisionWithOther = true;
+      this.otherPosY = other.position.y;
       this.touchedCallback(this);
+      if (this.isThief) {
+        if (!this.isDead) {
+          this.onDeath?.(this.position.x, this.position.y);
+        }
+        this.isDead = true;
+      }
       return;
     }
 

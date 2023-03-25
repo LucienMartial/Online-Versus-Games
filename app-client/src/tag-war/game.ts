@@ -13,6 +13,9 @@ import { PlayerRender } from "./renderer/player-render";
 import { CBuffer } from "../../../app-shared/utils";
 import { MapRender } from "./renderer/map-render";
 import { Container } from "pixi.js";
+import { DeathAnimManager } from "../disc-war/effects/death-anim-manager";
+import { Emitter } from "pixi-particles";
+import { DEATH_ANIMATION } from "../disc-war/effects/configs/death-anim-config";
 
 class TagWarScene extends GameScene<GameState> {
   gameEngine: TagWarEngine;
@@ -25,6 +28,7 @@ class TagWarScene extends GameScene<GameState> {
   pingInterval: number = 0;
   averagePingBuffer: CBuffer<number> = new CBuffer(50);
   receive: boolean = false;
+  deathAnimManager!: DeathAnimManager;
   lastFrame: Date = new Date();
   averageFps: number = 0;
   averageFpsBuffer: CBuffer<number> = new CBuffer(50);
@@ -43,9 +47,21 @@ class TagWarScene extends GameScene<GameState> {
 
   async load(): Promise<void> {
     this.cosmeticsAssets = await Assets.loadBundle("cosmetics");
+    const animationsAssets = await Assets.loadBundle("animations");
 
     this.mapFiltered = new Container();
     this.mapFiltered.sortableChildren = true;
+
+    // death animation
+    const deathAnimContainer = new Container();
+    deathAnimContainer.zIndex = 50;
+    this.mapFiltered.addChild(deathAnimContainer);
+    const deathEmitter = new Emitter(
+      deathAnimContainer,
+      animationsAssets.red_square,
+      DEATH_ANIMATION.CONFIG_3,
+    );
+    this.deathAnimManager = new DeathAnimManager(this.gameEngine, deathEmitter);
 
     // room events
     this.room.onStateChange.once(this.initGame.bind(this));
@@ -77,6 +93,7 @@ class TagWarScene extends GameScene<GameState> {
 
   destroy() {
     Assets.unload("cosmetics");
+    Assets.unload("animations");
     super.destroy();
   }
 
@@ -94,6 +111,7 @@ class TagWarScene extends GameScene<GameState> {
       this.mainPlayer,
       this.id,
       this.cosmeticsAssets,
+      this.deathAnimManager,
       true,
       this.stage,
     );
@@ -176,7 +194,13 @@ class TagWarScene extends GameScene<GameState> {
     console.log("new player with id", id, "joined the game");
     const player = this.gameEngine.addPlayer(id, false);
     this.setupPlayerCosmetics(player, state.cosmetic);
-    const playerRender = new PlayerRender(player, id, this.cosmeticsAssets);
+    const playerRender = new PlayerRender(
+      player,
+      id,
+      this.cosmeticsAssets,
+      this.deathAnimManager,
+    );
+    playerRender.container.zIndex = 9;
     this.add(playerRender, false);
     this.mapFiltered.addChild(playerRender.container);
   }

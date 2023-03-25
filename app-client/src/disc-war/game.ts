@@ -61,26 +61,6 @@ class DiscWarScene extends GameScene<GameState> {
     this.cosmeticsAssets = await Assets.loadBundle("cosmetics");
     const animationsAssets = await Assets.loadBundle("animations");
 
-    // particle effects
-    this.dashAnimManager = new DashAnimManager(
-      this.gameEngine,
-      new Emitter(
-        new Container(),
-        animationsAssets.bubble,
-        DASH_ANIMATION.CONFIG_1,
-      ),
-    );
-
-    // death effect
-    this.deathAnimManager = new DeathAnimManager(
-      this.gameEngine,
-      new Emitter(
-        new Container(),
-        animationsAssets.red_square,
-        DEATH_ANIMATION.CONFIG_1,
-      ),
-    );
-
     // filters
     const shockwaveManager = new ShockwaveManager(
       this.gameEngine,
@@ -105,6 +85,7 @@ class DiscWarScene extends GameScene<GameState> {
 
     // dash animation
     const dashAnimContainer = new Container();
+    dashAnimContainer.zIndex = 50;
     this.mapFiltered.addChild(dashAnimContainer);
     const dashEmitter = new Emitter(
       dashAnimContainer,
@@ -115,6 +96,7 @@ class DiscWarScene extends GameScene<GameState> {
 
     // death animation
     const deathAnimContainer = new Container();
+    deathAnimContainer.zIndex = 50;
     this.mapFiltered.addChild(deathAnimContainer);
     const deathEmitter = new Emitter(
       deathAnimContainer,
@@ -160,7 +142,6 @@ class DiscWarScene extends GameScene<GameState> {
       this.id,
       this.dashAnimManager,
       this.deathAnimManager,
-      this.viewport,
       this.cosmeticsAssets!,
       true,
       this.stage,
@@ -215,6 +196,7 @@ class DiscWarScene extends GameScene<GameState> {
   destroy() {
     Assets.unload("basic");
     Assets.unload("cosmetics");
+    Assets.unload("animations");
     super.destroy();
   }
 
@@ -255,7 +237,6 @@ class DiscWarScene extends GameScene<GameState> {
         id,
         this.dashAnimManager,
         this.deathAnimManager,
-        this.viewport,
         this.cosmeticsAssets!,
       );
       this.add(playerRender, false);

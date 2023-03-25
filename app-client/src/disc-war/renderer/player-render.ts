@@ -5,7 +5,6 @@ import { Graphics, Watcher } from "../../game/utils";
 import * as PIXI from "pixi.js";
 import { DashAnimManager } from "../effects/dash-anim-manager";
 import { DeathAnimManager } from "../effects/death-anim-manager";
-import { Viewport } from "pixi-viewport";
 import { Cosmetics } from "../../game/renderer/cosmetics/cosmetics";
 import { CosmeticAssets } from "../../game/configs/assets-config";
 import { DEFAULT_SKIN } from "../../../../app-shared/configs/shop-config";
@@ -18,7 +17,6 @@ class PlayerRender extends RenderObject {
   deadWatcher: Watcher;
   shieldWatcher: Watcher;
   shield: PIXI.Graphics;
-  viewports: Viewport;
   dashAnim: DashAnimManager;
   deathAnim: DeathAnimManager;
   cosmetics: Cosmetics;
@@ -31,13 +29,11 @@ class PlayerRender extends RenderObject {
     id: string,
     dashAnim: DashAnimManager,
     deathAnim: DeathAnimManager,
-    viewports: Viewport,
     cosmeticsAssets: CosmeticAssets,
     isMain = false,
     stage: Container | undefined = undefined,
   ) {
     super(id);
-    this.viewports = viewports;
     const shape = player.collisionShape as BoxShape;
     this.player = player;
     this.display = Graphics.createRectangle(
@@ -58,7 +54,6 @@ class PlayerRender extends RenderObject {
         -player.offset.x + cursorWidth / 2,
         player.offset.y * 1.2 - cursorHeight / 2,
       );
-      // this.add(this.cursor);
       this.cursor.container.zIndex = 50;
       stage?.addChild(this.cursor.container);
     }

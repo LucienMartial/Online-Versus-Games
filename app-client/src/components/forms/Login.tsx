@@ -5,6 +5,7 @@ import AppError from "./AppError";
 import Footer from "../lib/Footer";
 import AppButton from "../lib/AppButton";
 import { useLocation } from "react-router-dom";
+import useTitle from "../../hooks/useTitle";
 
 interface LoginProps {
   tryLogin: (username: string, password: string) => Promise<void>;
@@ -15,6 +16,8 @@ function Login({ tryLogin }: LoginProps) {
   const [password, setPassword] = React.useState("");
   const [errorMessage, setErrorMessage] = React.useState("");
   const { state } = useLocation();
+
+  useTitle("Login - Online Versus Games");
 
   useEffect(() => {
     if (state?.params?.username) setUsername(state.params.username);

@@ -9,8 +9,10 @@ import {
   WORLD_HEIGHT,
   WORLD_WIDTH,
 } from "../../../../app-shared/utils/constants";
+import useTitle from "../../hooks/useTitle";
 
 export interface GameProps<T, G extends GameScene<T>> {
+  displayName : string;
   client: Client;
   gameRoom: Room<T>;
   setGameRoom: Dispatch<Room<T> | undefined>;
@@ -35,13 +37,15 @@ export interface GameProps<T, G extends GameScene<T>> {
 
 // T: game state, E: end game state, G: game scene
 function Game<T, E, G extends GameScene<T>>(
-  { client, gameRoom, setGameRoom, GameUI, EndScreen, game }: GameProps<T, G>,
+  { client, gameRoom, setGameRoom, GameUI, EndScreen, game, displayName }: GameProps<T, G>,
 ) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const guiRef = useRef<HTMLDivElement>(null);
   const [gameScene, setGameScene] = useState<GameScene<T> | undefined>();
   const [endGameState, setEndGameState] = useState<E>();
   const [chatRoom, setChatRoom] = useState<Room | null>(null);
+
+  useTitle(displayName || "Game");
 
   const screenIsTouchable = "ontouchstart" in window ||
     navigator.maxTouchPoints > 0;

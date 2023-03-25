@@ -1,9 +1,11 @@
 import { StrictMode } from "react";
 import StaticPage from "./StaticPage";
 import {useLocation} from "react-router-dom";
+import useTitle from "../../hooks/useTitle";
 
 function Privacy() {
   const {state} = useLocation();
+  useTitle("Privacy Policy - Online Versus Games");
   return (
     <StrictMode>
       <StaticPage returnURL={state}>

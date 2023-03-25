@@ -21,8 +21,19 @@ class EndGameState extends Schema {
 
   constructor(engine: TagWarEngine, room: TagWarRoom) {
     super();
-    // todo: fetch darta from engine, populate state
+
+    for (const client of room.clients) {
+      const player = engine.getPlayer(client.id);
+      if (!player) continue;
+      const state = new EndGamePlayerState();
+
+      state.username = client.userData.username;
+      state.id = client.userData.id;
+      state.victory = !player.isDead;
+
+      this.players.set(player.id, state);
+    }
   }
 }
 
-export { EndGameState };
+export { EndGamePlayerState, EndGameState };

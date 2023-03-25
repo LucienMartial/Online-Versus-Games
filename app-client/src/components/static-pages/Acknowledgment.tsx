@@ -1,7 +1,9 @@
 import { StrictMode } from "react";
+import useTitle from "../../hooks/useTitle";
 import StaticPage from "./StaticPage";
 
 function Acknowledgment() {
+  useTitle("Acknowledgment - Online Versus Games");
   return (
     <StrictMode>
       <StaticPage>

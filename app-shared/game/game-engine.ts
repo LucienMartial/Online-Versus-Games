@@ -29,7 +29,6 @@ class GameEngine {
   processInput(_inputs: Inputs, _id: string) {}
 
   endGame() {
-    console.log("triggered end game", this.onEndGame);
     this.onEndGame?.();
   }
 
