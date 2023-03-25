@@ -196,6 +196,7 @@ class DiscWarScene extends GameScene<GameState> {
   destroy() {
     Assets.unload("basic");
     Assets.unload("cosmetics");
+    Assets.unload("animations");
     super.destroy();
   }
 
@@ -236,7 +237,6 @@ class DiscWarScene extends GameScene<GameState> {
         id,
         this.dashAnimManager,
         this.deathAnimManager,
-        this.viewport,
         this.cosmeticsAssets!,
       );
       this.add(playerRender, false);
