@@ -99,8 +99,60 @@ const DEATH_ANIMATION = {
       r: 10,
     },
   },
-
   CONFIG_3: {
+    alpha: {
+      start: 1,
+      end: 0,
+    },
+    scale: {
+      start: 0.007,
+      end: 0.08,
+      minimumScaleMultiplier: 1.5,
+    },
+    color: {
+      start: "ffffff",
+      end: "ffffff",
+    },
+    speed: {
+      start: 500,
+      end: 200,
+      minimumSpeedMultiplier: 1.5,
+    },
+    acceleration: {
+      x: 0,
+      y: 0,
+    },
+    startRotation: {
+      min: 0,
+      max: 360,
+    },
+    rotationSpeed: {
+      min: 0,
+      max: 0,
+    },
+    lifetime: {
+      min: 0.5,
+      max: 0.8,
+    },
+    blendMode: "lighten",
+    frequency: 0.005,
+    emitterLifetime: 0.8,
+    maxParticles: 10000000,
+    pos: {
+      x: 0,
+      y: 0,
+    },
+    addAtBack: true,
+    spawnType: "rect",
+    spawnRect: {
+      x: 0,
+      y: 0,
+      w: WIDTH / 2,
+      h: HEIGHT / 2,
+    },
+  },
+
+  CONFIG_4: {
     alpha: {
       start: 1,
       end: 0,

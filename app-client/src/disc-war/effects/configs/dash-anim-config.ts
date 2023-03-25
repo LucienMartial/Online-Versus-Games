@@ -110,8 +110,8 @@ export const DASH_ANIMATION = {
       end: 0,
     },
     scale: {
-      start: 0.05,
-      end: 0.1,
+      start: 0.1,
+      end: 0.2,
       minimumScaleMultiplier: 1,
     },
     color: {
