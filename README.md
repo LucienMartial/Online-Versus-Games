@@ -1,4 +1,4 @@
-# Online Versus Game
+# Online Versus Games
 
 Bachelor's degree project.
 
