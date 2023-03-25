@@ -1,10 +1,10 @@
-import React, {useEffect} from "react";
+import React, { useEffect } from "react";
 import AnimatedInput from "./AnimatedInput";
 import AppLink from "../lib/AppLink";
 import AppError from "./AppError";
 import Footer from "../lib/Footer";
 import AppButton from "../lib/AppButton";
-import {useLocation} from "react-router-dom";
+import { useLocation } from "react-router-dom";
 
 interface RegisterProps {
   tryRegister: (username: string, password: string) => Promise<void>;
@@ -16,7 +16,7 @@ export default function Register({ tryRegister }: RegisterProps) {
   const [password2, setPassword2] = React.useState("");
   const [invalidPassword, setInvalidPassword] = React.useState(false);
   const [registerError, setRegisterError] = React.useState("");
-  const {state} = useLocation();
+  const { state } = useLocation();
 
   useEffect(() => {
     if (state?.params?.username) setUsername(state.params.username);
@@ -72,16 +72,20 @@ export default function Register({ tryRegister }: RegisterProps) {
           required={false}
           onChange={(e) => setPassword2(e.target.value)}
         />
-        <p>
+        <p className="flex">
           <input
             type={"checkbox"}
             id={"privacyCheckbox"}
             className={"w-4 h-4 rounded accent-themelighter mx-2"}
             required={true}
           />
-          <label htmlFor={"privacyCheckbox"}>
-            I have read and accept the{" "}
-            <AppLink className={"text-blue-500"} to={"/privacy"} returnURL={{url:"/register", params:{username:username}}}>privacy policy</AppLink>
+          <label
+            htmlFor={"privacyCheckbox"}
+            className="text-sm -mt-0.5 inline-block"
+          >
+            Game progress and preferences may be stored on our servers and your
+            device. <br /> We won't share your information without permission.
+            <br />Please check the box above to confirm your agreement.
           </label>
         </p>
         {invalidPassword && <AppError>Passwords must match</AppError>}
@@ -90,10 +94,13 @@ export default function Register({ tryRegister }: RegisterProps) {
           Register
         </AppButton>
         <p>
-          Already have an account ? <AppLink className={"text-blue-500"} to={"/login"}>Login</AppLink>
+          Already have an account ?{" "}
+          <AppLink className={"text-blue-500"} to={"/login"}>Login</AppLink>
         </p>
       </form>
-      <Footer returnURL={{url:"/register", params:{username:username}}} />
+      <Footer
+        returnURL={{ url: "/register", params: { username: username } }}
+      />
     </div>
   );
 }

@@ -10,7 +10,7 @@ const START_DURATION = 3 * 60;
 class TagWarEngine extends GameEngine {
   mapConfigId: number = 0;
   respawnTimer: SyncTimer;
-  paused: boolean = true;
+  paused: boolean = false;
 
   constructor(isServer = false, playerId = "") {
     super(isServer, playerId);
@@ -30,15 +30,14 @@ class TagWarEngine extends GameEngine {
 
   sync(state: GameState) {
     this.mapConfigId = state.mapConfigId;
-
     // timer
     this.respawnTimer.sync(state.respawnTimer);
-
     // pause
     this.paused = state.paused;
   }
 
   processInput(inputs: Inputs, id: string) {
+    if (this.paused) return;
     const player = this.getPlayer(id);
     if (!player) return;
     player.processInput(inputs);
@@ -84,6 +83,12 @@ class TagWarEngine extends GameEngine {
 
   async playerTouched(player: Player) {
     if (this.paused) return;
+    player.isDead = true;
+    this.paused = true;
+    setTimeout(
+      this.endGame.bind(this),
+      2000,
+    );
   }
 
   /**
@@ -92,9 +97,6 @@ class TagWarEngine extends GameEngine {
 
   // start the game
   startGame() {
-    // choose random player
-    const players = Array.from(this.get<Player>("players").values());
-
     // timer before the game start
     this.respawnTimer.timeout(START_DURATION, () => {
       this.paused = false;
@@ -102,7 +104,7 @@ class TagWarEngine extends GameEngine {
   }
 
   endGame(): void {
-    this.paused = true;
+    super.endGame();
   }
 }
 

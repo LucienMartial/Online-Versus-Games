@@ -15,11 +15,11 @@ export default function HistoryEntry({ game, username }: HistoryEntryProps) {
 
   return (
     <li
-      className={`text-2xl flex flex-col px-2 bg-slate-500 border-b-2 last:border-b-0 border-slate-700 ${
-        won ? "bg-green-900" : "bg-red-900"
-      }`}
+      className={`text-2xl flex flex-col p-2 border-b-2 last:border-b-0 border-gray-400 ${
+        won ? "bg-green-800" : "bg-red-800"
+      } bg-opacity-80 backdrop-blur-md`}
     >
-      <span className={"border-b border-slate-400"}>
+      <span className={""}>
         {date.toDateString() +
           " - " +
           date.getHours() +

@@ -7,9 +7,14 @@ class PlayerState extends Schema {
   x: number = 0;
   @type("number")
   y: number = 0;
+
   @type("boolean")
   collisionWithOther: boolean = false;
+  @type("number")
+  otherPosY: number = 0;
 
+  @type("boolean")
+  isDead: boolean = false;
   @type("boolean")
   isThief: boolean = false;
 
@@ -22,6 +27,8 @@ class PlayerState extends Schema {
     this.x = player.position.x;
     this.y = player.position.y;
     this.collisionWithOther = player.collisionWithOther;
+    this.otherPosY = player.otherPosY;
+    this.isDead = player.isDead;
     this.isThief = player.isThief;
   }
 }

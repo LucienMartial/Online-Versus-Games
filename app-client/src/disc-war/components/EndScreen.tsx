@@ -1,11 +1,11 @@
 import {
   Dispatch,
+  SetStateAction,
   StrictMode,
   useCallback,
   useContext,
   useEffect,
   useState,
-  SetStateAction,
 } from "react";
 import { DiscWarScene } from "../../disc-war/game";
 import {
@@ -32,7 +32,7 @@ function PlayerRow({
   setProfileName: Dispatch<SetStateAction<null | string>>;
 }) {
   return (
-    <tr className="group hover:bg-slate-800">
+    <tr className="group hover:bg-slate-800 hover:bg-opacity-20">
       <td className="text-left py-5">
         <div className="flex items-center">
           <span className="border-l-4 h-16 -mt-6 -mb-6 border-blue-900 group-hover:border-blue-400">
@@ -122,17 +122,23 @@ function EndScreen({
               <tr>
                 <th className="px-2 py-1 w-3/6 text-left">Players</th>
                 <th className="text-vertical sm:text-initial">Deaths</th>
-                <th className="text-vertical sm:text-initial">Straight Shots</th>
+                <th className="text-vertical sm:text-initial">
+                  Straight Shots
+                </th>
                 <th className="text-vertical sm:text-initial">Curve Shots</th>
                 <th className="text-vertical sm:text-initial">Shields</th>
-                <th className="text-vertical sm:text-initial">Shield Catches</th>
+                <th className="text-vertical sm:text-initial">
+                  Shield Catches
+                </th>
                 <th className="text-vertical sm:text-initial">Dashes</th>
               </tr>
             </thead>
             <tbody>{listPlayers}</tbody>
           </table>
         </section>
-        <section className={"flex flex-col justify-evenly items-center w-full h-full grow gap-1"}>
+        <section
+          className={"flex flex-col justify-evenly items-center w-full h-full grow gap-1"}
+        >
           <ChatContainer chatRoom={chatRoom} />
           <AppButton className="my-6" color="danger" onClick={leaveGame}>
             Leave

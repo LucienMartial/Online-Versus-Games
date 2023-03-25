@@ -1,12 +1,12 @@
-import { DiscWarEngine } from "../../../../app-shared/disc-war";
 import { Emitter } from "pixi-particles";
+import { GameEngine } from "../../../../app-shared/game";
 
 class DeathAnimManager {
-  gameEngine: DiscWarEngine;
+  gameEngine: GameEngine;
   dashEmitter: Emitter;
   activatable: boolean;
 
-  constructor(gameEngine: DiscWarEngine, dashEmitter: Emitter) {
+  constructor(gameEngine: GameEngine, dashEmitter: Emitter) {
     this.gameEngine = gameEngine;
     this.dashEmitter = dashEmitter;
     this.dashEmitter.emit = false;
