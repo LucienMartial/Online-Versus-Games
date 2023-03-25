@@ -163,6 +163,7 @@ function App() {
           GameUI={TagWarUI}
           EndScreen={TagWarEndScreen}
           game={TagWarScene}
+          displayName="Tag War"
         />
       );
     }
@@ -176,6 +177,7 @@ function App() {
         GameUI={DiscWarUI}
         EndScreen={EndScreen}
         game={DiscWarScene}
+        displayName="Disc War"
       />
     );
   };
