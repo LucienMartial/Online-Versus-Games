@@ -7,3 +7,7 @@ run:
 .PHONY: connect
 connect:
 	docker exec -it $(PROJECT_NAME)-web /bin/bash
+
+.PHONY: stop
+stop:
+	docker-compose stop

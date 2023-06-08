@@ -52,17 +52,31 @@ make run
 
 ### Use the app
 
-1. Run the server
+1. Make sure the containers are running
+
+```bash
+make run
+```
+
+2. Run the server
 
 ```bash
 make connect
 npm start
 ```
 
-2. Open the app
+3. Open the app
 
 Open your browser and go to [http://localhost:3000](http://localhost:3000)
 
 ### See the database
 
 Open your browser and go to [http://localhost:8081](http://localhost:8081)
+
+### Stop the app
+
+Close the containers
+
+```bash
+make stop
+```
