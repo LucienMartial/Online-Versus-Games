@@ -1,0 +1,30 @@
+version: '3'
+services:
+  web:
+    container_name: ${PROJECT_NAME}-web
+    build:
+      context: ./app
+      dockerfile: Dockerfile
+    ports:
+      - 3000:3000
+    volumes:
+      - ./app:/usr/src/app
+    tty: true
+    depends_on:
+      - database
+    working_dir: /usr/src/app
+    environment:
+      - MONGODB_URL=mongodb://root:${DB_PASS}@database:27017
+      - COOKIE_KEY_1=key1
+      - COOKIE_KEY_2=key2
+
+  database:
+    container_name: ${PROJECT_NAME}-database
+    image: mongo:latest
+    ports:
+      - '${DB_PORT}:${DB_PORT}'
+    restart: always
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=${DB_PASS}
+    
