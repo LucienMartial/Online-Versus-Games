@@ -28,4 +28,16 @@ services:
     environment:
       - MONGO_INITDB_ROOT_USERNAME=root
       - MONGO_INITDB_ROOT_PASSWORD=${DB_PASS}
+
+  mongo-express:
+    container_name: ${PROJECT_NAME}-mongo-express
+    image: mongo-express
+    ports:
+      - 8081:8081
+    restart: always
+    environment:
+      - ME_CONFIG_MONGODB_SERVER=database
+      - ME_CONFIG_MONGODB_PORT=${DB_PORT}
+      - ME_CONFIG_MONGODB_ADMINUSERNAME=root
+      - ME_CONFIG_MONGODB_ADMINPASSWORD=${DB_PASS}
     
